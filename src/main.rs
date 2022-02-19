@@ -14,6 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-fn main() -> Result<(), i64>{
+mod cache;
+use std::path::PathBuf;
+use anyhow::Result;
+
+fn main() -> Result<()>{
+    let cache = cache::Cache::new(PathBuf::from("./cache"));
+    let result = cache.run_cached("lel", || {
+        print!("I ran!");
+        Ok(5)
+    });
+    print!("Result is {:?}", result);
     Ok(())
 }
