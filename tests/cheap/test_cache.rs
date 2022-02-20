@@ -69,100 +69,106 @@ fn test_failing_load(cache_in_tempdir: CacheInTempDir) {
 #[rstest]
 fn test_cached_run_simple(cache_in_tempdir: CacheInTempDir) {
     let cache = cache_in_tempdir.cache;
-    let mut fn_ran = 0;
+    let mut fn_run_count = 0;
 
     assert_eq!(
         cache
             .run_cached("key1", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 Ok(5)
             })
             .unwrap(),
         5,
         "Simple successful run"
     );
-    assert_eq!(fn_ran, 1, "Function ran once");
+    assert_eq!(fn_run_count, 1, "Function ran once");
 
     assert_eq!(
         cache
             .run_cached("key1", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 Ok(5)
             })
             .unwrap(),
         5,
         "Second run"
     );
-    assert_eq!(fn_ran, 1, "Function still only ran once");
+    assert_eq!(fn_run_count, 1, "Function still only ran once");
 
     assert_eq!(
         cache
             .run_cached("key1", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 Ok(1337)
             })
             .unwrap(),
         5,
         "If cache exists, cached value is returned"
     );
-    assert_eq!(fn_ran, 1, "Function still only ran once");
+    assert_eq!(fn_run_count, 1, "Function still only ran once");
 
     assert_eq!(
         cache
             .run_cached("key2", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 Ok(1337)
             })
             .unwrap(),
         1337,
         "Different keys store different values"
     );
-    assert_eq!(fn_ran, 2, "Function ran twice for two keys");
+    assert_eq!(fn_run_count, 2, "Function ran twice for two keys");
 
     assert_eq!(
         cache
             .run_cached("key2", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 Ok(420420)
             })
             .unwrap(),
         1337,
         "Caching works for both keys separately"
     );
-    assert_eq!(fn_ran, 2, "Function still only ran twice for two keys");
+    assert_eq!(
+        fn_run_count, 2,
+        "Function still only ran twice for two keys"
+    );
 }
 
 #[rstest]
 fn test_cached_run_errors(cache_in_tempdir: CacheInTempDir) {
     let cache = cache_in_tempdir.cache;
-    let mut fn_ran = 0;
+    let mut fn_run_count = 0;
 
     assert!(
         cache
             .run_cached("key1", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 anyhow::bail!("oops!")
             })
             .is_err(),
         "Errors are propagated"
     );
-    assert_eq!(fn_ran, 1, "Function ran once");
+    assert_eq!(fn_run_count, 1, "Function ran once");
 
     assert!(
         cache
             .run_cached("key1", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 anyhow::bail!("oops!")
             })
             .is_err(),
         "Errors are still propagated"
     );
-    assert_eq!(fn_ran, 2, "Function is retried if previous run failed");
+    assert_eq!(
+        fn_run_count, 2,
+        "Function is retried if previous run failed"
+    );
 
     assert_eq!(
         cache
             .run_cached("key1", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 Ok(5)
             })
             .unwrap(),
@@ -170,19 +176,22 @@ fn test_cached_run_errors(cache_in_tempdir: CacheInTempDir) {
         "Successful run after the errors"
     );
     assert_eq!(
-        fn_ran, 3,
+        fn_run_count, 3,
         "Function is still retried if previous run failed"
     );
 
     assert_eq!(
         cache
             .run_cached("key1", || -> Result<i32> {
-                fn_ran += 1;
+                fn_run_count += 1;
                 anyhow::bail!("oops!")
             })
             .unwrap(),
         5,
         "Function is not even ran after caching, cahced result is returned"
     );
-    assert_eq!(fn_ran, 3, "Function does not run if cache is available");
+    assert_eq!(
+        fn_run_count, 3,
+        "Function does not run if cache is available"
+    );
 }
