@@ -28,8 +28,13 @@ pub struct Cache {
 }
 
 impl Cache {
-    pub fn new(path: PathBuf) -> Self {
-        Cache { cache_dir: path }
+    pub fn new<T>(path: &T) -> Self
+    where
+        T: std::convert::AsRef<std::ffi::OsStr> + Into<PathBuf>,
+    {
+        Cache {
+            cache_dir: path.into(),
+        }
     }
 
     #[context("Storing cache object '{}'", key)]
@@ -75,9 +80,10 @@ impl Cache {
         Ok(serde_json::from_slice(&the_json)?)
     }
 
-    pub fn run_cached<T>(&self, key: &str, f: fn() -> Result<T>) -> Result<T>
+    pub fn run_cached<T, F>(&self, key: &str, mut f: F) -> Result<T>
     where
         T: serde::Serialize + serde::de::DeserializeOwned,
+        F: FnMut() -> Result<T>,
     {
         if let Ok(loaded_result) = self.load_json_gz::<T>(key) {
             return Ok(loaded_result);
