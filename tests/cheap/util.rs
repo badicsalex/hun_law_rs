@@ -10,7 +10,18 @@ pub fn tempdir() -> TempDir {
         .unwrap()
 }
 
+pub struct CacheInTempDir {
+    pub cache: Cache,
+
+    // This field is here so that drop is called when the whole fixture goes out of scope
+    #[allow(dead_code)]
+    tempdir: TempDir,
+}
+
 #[fixture]
-pub fn cache(tempdir: TempDir) -> Cache {
-    Cache::new(&tempdir.path())
+pub fn cache_in_tempdir(tempdir: TempDir) -> CacheInTempDir {
+    CacheInTempDir {
+        cache: Cache::new(&tempdir.path()),
+        tempdir,
+    }
 }

@@ -1,11 +1,11 @@
-use super::util::cache;
+use super::util::{cache_in_tempdir, CacheInTempDir};
 use anyhow::Result;
-use hun_law::cache::Cache;
 use rstest::rstest;
 use serde::{Deserialize, Serialize};
 
 #[rstest]
-fn test_cache_simple_store_load(cache: Cache) {
+fn test_cache_simple_store_load(cache_in_tempdir: CacheInTempDir) {
+    let cache = cache_in_tempdir.cache;
     assert!(cache.store("abcd", b"testdata").is_ok());
     assert_eq!(cache.load("abcd").unwrap(), b"testdata");
 
@@ -14,7 +14,8 @@ fn test_cache_simple_store_load(cache: Cache) {
 }
 
 #[rstest]
-fn test_cache_subdir_store_load(cache: Cache) {
+fn test_cache_subdir_store_load(cache_in_tempdir: CacheInTempDir) {
+    let cache = cache_in_tempdir.cache;
     assert!(cache.store("abc/abcd", b"testdata").is_ok());
     assert!(cache.store("123/abcd", b"123testdata").is_ok());
     assert_eq!(cache.load("abc/abcd").unwrap(), b"testdata");
@@ -35,7 +36,8 @@ enum CacheTestEnum {
 }
 
 #[rstest]
-fn test_cache_structured(cache: Cache) {
+fn test_cache_structured(cache_in_tempdir: CacheInTempDir) {
+    let cache = cache_in_tempdir.cache;
     let test_struct = CacheTestStruct {
         x: 1234,
         s: "lel".to_string(),
@@ -58,13 +60,15 @@ fn test_cache_structured(cache: Cache) {
 }
 
 #[rstest]
-fn test_failing_load(cache: Cache) {
+fn test_failing_load(cache_in_tempdir: CacheInTempDir) {
+    let cache = cache_in_tempdir.cache;
     assert!(cache.load("abcd").is_err());
     assert!(cache.load_json_gz::<CacheTestStruct>("strct").is_err());
 }
 
 #[rstest]
-fn test_cached_run_simple(cache: Cache) {
+fn test_cached_run_simple(cache_in_tempdir: CacheInTempDir) {
+    let cache = cache_in_tempdir.cache;
     let mut fn_ran = 0;
 
     assert_eq!(
@@ -129,7 +133,8 @@ fn test_cached_run_simple(cache: Cache) {
 }
 
 #[rstest]
-fn test_cached_run_errors(cache: Cache) {
+fn test_cached_run_errors(cache_in_tempdir: CacheInTempDir) {
+    let cache = cache_in_tempdir.cache;
     let mut fn_ran = 0;
 
     assert!(
