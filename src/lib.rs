@@ -15,8 +15,15 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::Result;
-use hun_law::cli_main;
 
-fn main() -> Result<()> {
-    cli_main()
+pub mod cache;
+
+pub fn cli_main() -> Result<()> {
+    let cache = cache::Cache::new(&"./cache");
+    let result = cache.run_cached("lel", || {
+        print!("I ran!");
+        Ok(5)
+    });
+    print!("Result is {:?}", result);
+    Ok(())
 }
