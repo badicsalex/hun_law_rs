@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::str::FromStr;
-
-use anyhow::{ensure, Result};
+use anyhow::Result;
 use clap::Parser;
+use log::info;
 
 pub mod cache;
+mod mk_downloader;
+
+use cache::Cache;
+use mk_downloader::{download_mk_issue, MkIssue};
 
 #[derive(Parser, Debug)]
 /// Hun-Law output generator
@@ -31,34 +34,16 @@ struct HunLawArgs {
     issues: Vec<MkIssue>,
 }
 
-#[derive(Debug)]
-struct MkIssue {
-    year: i64,
-    issue: i64,
-}
-
-impl FromStr for MkIssue {
-    type Err = anyhow::Error;
-    fn from_str(s: &str) -> Result<Self> {
-        let parts: Vec<&str> = s.split('/').collect();
-        ensure!(
-            parts.len() == 2,
-            "Magyar Közlöny issue descriptor format is YEAR/ISSUE"
-        );
-        Ok(MkIssue {
-            year: parts[0].parse::<i64>()?,
-            issue: parts[1].parse::<i64>()?,
-        })
-    }
-}
-
 pub fn cli_main() -> Result<()> {
     let args = HunLawArgs::parse();
+    let cache = Cache::new(&"./cache");
     for issue in &args.issues {
-        println!(
-            "Would process Mk Issue year: {:?}, issue: {:?}",
+        info!(
+            "Processing Mk Issue {:?}. issue: {:?}",
             issue.year, issue.issue
-        )
+        );
+        let body = download_mk_issue(issue, &cache)?;
+        info!("{:?} bytes", body.len());
     }
     Ok(())
 }

@@ -16,7 +16,14 @@
 
 use anyhow::Result;
 use hun_law::cli_main;
+use std::io::Write;
 
 fn main() -> Result<()> {
+    env_logger::Builder::from_env(
+        env_logger::Env::default().filter_or(env_logger::DEFAULT_FILTER_ENV, "info"),
+    )
+    .format(|buf, record| writeln!(buf, "{:>5}: {}", record.level(), record.args()))
+    .init();
+
     cli_main()
 }
