@@ -14,16 +14,51 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::Result;
+use std::str::FromStr;
+
+use anyhow::{ensure, Result};
+use clap::Parser;
 
 pub mod cache;
 
+#[derive(Parser, Debug)]
+/// Hun-Law output generator
+///
+/// Downloads Magyar Közlöny issues as PDFs and converts the Acts in them to machine-parseable formats.
+struct HunLawArgs {
+    #[clap(required = true, name = "issue")]
+    ///The  Magyar Közlöny issue to download in YEAR/ISSUE format. Example: '2013/31'
+    issues: Vec<MkIssue>,
+}
+
+#[derive(Debug)]
+struct MkIssue {
+    year: i64,
+    issue: i64,
+}
+
+impl FromStr for MkIssue {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> Result<Self> {
+        let parts: Vec<&str> = s.split('/').collect();
+        ensure!(
+            parts.len() == 2,
+            "Magyar Közlöny issue descriptor format is YEAR/ISSUE"
+        );
+        Ok(MkIssue {
+            year: parts[0].parse::<i64>()?,
+            issue: parts[1].parse::<i64>()?,
+        })
+    }
+}
+
 pub fn cli_main() -> Result<()> {
-    let cache = cache::Cache::new(&"./cache");
-    let result = cache.run_cached("lel", || {
-        print!("I ran!");
-        Ok(5)
-    });
-    print!("Result is {:?}", result);
+    let args = HunLawArgs::parse();
+    for issue in &args.issues {
+        println!(
+            "Would process Mk Issue year: {:?}, issue: {:?}",
+            issue.year, issue.issue
+        )
+    }
     Ok(())
 }
