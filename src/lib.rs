@@ -20,9 +20,11 @@ use log::info;
 
 pub mod cache;
 mod mk_downloader;
+mod pdf_parser;
 
 use cache::Cache;
 use mk_downloader::{download_mk_issue, MkIssue};
+use pdf_parser::parse_pdf;
 
 #[derive(Parser, Debug)]
 /// Hun-Law output generator
@@ -44,6 +46,12 @@ pub fn cli_main() -> Result<()> {
         );
         let body = download_mk_issue(issue, &cache)?;
         info!("{:?} bytes", body.len());
+        let parsed = parse_pdf(&body)?;
+        for page in parsed {
+            println!("");
+            println!("------------");
+            print!("{}", page.lines.join("\n"));
+        }
     }
     Ok(())
 }
