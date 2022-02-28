@@ -21,10 +21,12 @@ use log::info;
 pub mod cache;
 mod mk_downloader;
 mod pdf_parser;
+mod util;
 
 use cache::Cache;
 use mk_downloader::{download_mk_issue, MkIssue};
 use pdf_parser::parse_pdf;
+use util::indentedline::IndentedLine;
 
 #[derive(Parser, Debug)]
 /// Hun-Law output generator
@@ -34,6 +36,18 @@ struct HunLawArgs {
     #[clap(required = true, name = "issue")]
     ///The  Magyar Közlöny issue to download in YEAR/ISSUE format. Example: '2013/31'
     issues: Vec<MkIssue>,
+}
+
+pub fn quick_display_indented_line(l: &IndentedLine) -> String {
+    let mut s = String::new();
+    let mut indent = (l.indent() * 0.1) as usize;
+    if l.is_bold() {
+        s.push_str("<B>");
+        indent -= 4;
+    }
+    s.push_str(&" ".repeat(indent));
+    s.push_str(l.content());
+    s
 }
 
 pub fn cli_main() -> Result<()> {
@@ -48,9 +62,16 @@ pub fn cli_main() -> Result<()> {
         info!("{:?} bytes", body.len());
         let parsed = parse_pdf(&body)?;
         for page in parsed {
-            println!("");
+            println!();
             println!("------------");
-            print!("{}", page.lines.join("\n"));
+            print!(
+                "{}",
+                page.lines
+                    .iter()
+                    .map(quick_display_indented_line)
+                    .collect::<Vec<String>>()
+                    .join("\n")
+            );
         }
     }
     Ok(())

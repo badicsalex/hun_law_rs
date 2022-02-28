@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use crate::util::indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE};
 use anyhow::Result;
 use log::warn;
 use pdf_extract_fhl as pdf_extract;
@@ -49,7 +50,7 @@ struct PdfExtractor {
 
 #[derive(Debug)]
 pub struct PageOfLines {
-    pub lines: Vec<String>,
+    pub lines: Vec<IndentedLine>,
 }
 
 impl PdfExtractor {
@@ -57,38 +58,44 @@ impl PdfExtractor {
         Default::default()
     }
 
-    fn consolidate_line(mut chars: Vec<PositionedChar>) -> String {
+    fn consolidate_line(mut chars: Vec<PositionedChar>) -> IndentedLine {
         if chars.is_empty() {
-            return String::new();
+            return EMPTY_LINE;
         }
         chars.sort_unstable_by(|c1, c2| compare_float_for_sorting(c1.x, c2.x));
-        let mut result: String = String::new();
+        let mut result = Vec::<IndentedLinePart>::new();
         let mut threshold_to_space = f64::INFINITY;
         let mut last_was_space = false;
+        let mut prev_x = 0.0;
         for current_char in &chars {
             if current_char.x > threshold_to_space
                 && current_char.first_char_of_word
                 && !last_was_space
                 && current_char.content != ' '
             {
-                result.push(' ');
+                result.push(IndentedLinePart {
+                    dx: threshold_to_space - prev_x,
+                    content: ' ',
+                    bold: current_char.bold,
+                });
+                prev_x = threshold_to_space;
             }
-            result.push(current_char.content);
+            result.push(IndentedLinePart {
+                dx: current_char.x - prev_x,
+                content: current_char.content,
+                bold: current_char.bold,
+            });
+            prev_x = current_char.x;
             threshold_to_space = current_char.x
                 + current_char.width
                 + current_char.width_of_space * SPACE_DETECTION_THRESHOLD_RATIO;
             last_was_space = current_char.content == ' ';
         }
-        if chars.iter().all(|c| c.bold) {
-            result = format!("* {} *", result)
-        }
-        let indent = (chars[0].x * 0.1) as usize;
-        result.insert_str(0, &" ".repeat(indent));
-        result
+        IndentedLine::from_parts(result)
     }
 
     fn consolidate_page(page: PageOfPositionedChars) -> Result<PageOfLines> {
-        let mut result = Vec::<String>::new();
+        let mut result = Vec::<IndentedLine>::new();
         let mut chars = page.chars;
         chars.sort_unstable_by(|c1, c2| compare_float_for_sorting(c2.y, c1.y));
         let mut current_line = Vec::<PositionedChar>::new();
@@ -109,7 +116,7 @@ impl PdfExtractor {
                 // Should be based on actual font height, but this is
                 // good enough for the rest of the parsing steps.
                 if y_diff > ADDITIONAL_EMPTY_LINE_THRESHOLD {
-                    result.push("".to_string());
+                    result.push(EMPTY_LINE);
                 }
                 current_line = vec![current_char];
             }
