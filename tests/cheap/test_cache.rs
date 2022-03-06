@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use super::util::{cache_in_tempdir, CacheInTempDir};
+use crate::test_utils::{cache_in_tempdir, CacheInTempDir};
 use anyhow::Result;
 use rstest::rstest;
 use serde::{Deserialize, Serialize};

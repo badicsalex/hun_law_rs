@@ -17,7 +17,7 @@
 use std::io::Read;
 use std::str::FromStr;
 
-use super::cache::Cache;
+use crate::cache::Cache;
 use anyhow::{ensure, Result};
 use log::info;
 
