@@ -91,6 +91,12 @@ impl PdfExtractor {
                 + current_char.width_of_space * SPACE_DETECTION_THRESHOLD_RATIO;
             last_was_space = current_char.content == ' ';
         }
+        while let Some(IndentedLinePart { content: ' ', .. }) = result.get(0) {
+            result.remove(0);
+        }
+        while let Some(IndentedLinePart { content: ' ', .. }) = result.last() {
+            result.pop();
+        }
         IndentedLine::from_parts(result)
     }
 
