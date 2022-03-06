@@ -16,6 +16,7 @@
 
 use hun_law::cache::Cache;
 use rstest::fixture;
+
 pub use tempfile::TempDir;
 
 #[fixture]
@@ -41,3 +42,27 @@ pub fn cache_in_tempdir(tempdir: TempDir) -> CacheInTempDir {
         tempdir,
     }
 }
+
+#[allow(unused_macros)]
+macro_rules! test_data_from_file {
+    ($file_path:expr) => {{
+        use std::fs::File;
+        use std::io::Read;
+        use std::path::{Path, PathBuf};
+        let mut fname = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        fname.push(
+            Path::new(file!())
+                .parent()
+                .expect("No parent of calling module"),
+        );
+        fname.push($file_path);
+        let mut f =
+            File::open(&fname).unwrap_or_else(|_| panic!("Opening {:?} unsuccessful", fname));
+        let mut buffer = Vec::<u8>::new();
+        f.read_to_end(&mut buffer).expect("Cannot read file");
+        buffer
+    }};
+}
+// Hack to export the macro
+#[allow(unused_imports)]
+pub(crate) use test_data_from_file;

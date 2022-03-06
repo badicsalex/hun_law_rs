@@ -20,8 +20,8 @@ use log::info;
 
 pub mod cache;
 mod mk_downloader;
-mod pdf_parser;
-mod util;
+pub mod pdf_parser;
+pub mod util;
 
 use cache::Cache;
 use mk_downloader::{download_mk_issue, MkIssue};
