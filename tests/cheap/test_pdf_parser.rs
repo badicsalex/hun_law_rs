@@ -55,6 +55,7 @@ impl From<&IndentedLine> for SimplifiedLine {
 }
 
 #[rstest]
+#[case("data/2010_181_part.pdf", "data/2010_181_part.json")]
 #[case("data/ptk_part.pdf", "data/ptk_part.json")]
 #[case("data/korona_part.pdf", "data/korona_part.json")]
 fn test_parsing_mk(#[case] pdf_path: &str, #[case] json_path: &str) {
@@ -69,6 +70,7 @@ fn test_parsing_mk(#[case] pdf_path: &str, #[case] json_path: &str) {
     let lines: Vec<SimplifiedLine> = parsed[0].lines.iter().map(SimplifiedLine::from).collect();
     let expected_lines: Vec<SimplifiedLine> =
         serde_json::from_slice(&test_data_from_file!(json_path)).unwrap();
+    print!("{}", serde_json::to_string_pretty(&lines).unwrap());
     for (line, expected_line) in std::iter::zip(lines, expected_lines) {
         assert_eq!(line, expected_line);
     }

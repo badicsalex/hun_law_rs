@@ -31,7 +31,6 @@ struct PositionedChar {
     width: f64,
     width_of_space: f64,
     bold: bool,
-    first_char_of_word: bool,
     content: char,
 }
 
@@ -45,7 +44,6 @@ struct PdfExtractor {
     pages: Vec<PageOfPositionedChars>,
     width_of_space: f64,
     current_font_is_bold: bool,
-    first_char_incoming: bool,
     crop: CropBox,
 }
 
@@ -98,14 +96,9 @@ impl PdfExtractor {
         chars.sort_unstable_by(|c1, c2| compare_float_for_sorting(c1.x, c2.x));
         let mut result = Vec::<IndentedLinePart>::new();
         let mut threshold_to_space = f64::INFINITY;
-        let mut last_was_space = false;
         let mut prev_x = 0.0;
         for current_char in &chars {
-            if current_char.x > threshold_to_space
-                && current_char.first_char_of_word
-                && !last_was_space
-                && current_char.content != ' '
-            {
+            if current_char.x > threshold_to_space {
                 result.push(IndentedLinePart {
                     dx: threshold_to_space - prev_x,
                     content: ' ',
@@ -122,7 +115,6 @@ impl PdfExtractor {
             threshold_to_space = current_char.x
                 + current_char.width
                 + current_char.width_of_space * SPACE_DETECTION_THRESHOLD_RATIO;
-            last_was_space = current_char.content == ' ';
         }
         while let Some(IndentedLinePart { content: ' ', .. }) = result.get(0) {
             result.remove(0);
@@ -193,15 +185,15 @@ impl pdf_extract::OutputDev for PdfExtractor {
         &mut self,
         trm: &pdf_extract::Transform,
         width: f64,
-        _spacing: f64,
+        spacing: f64,
         font_size: f64,
         char: &str,
     ) -> Result<(), pdf_extract::OutputError> {
-        let width = width * trm.m11 * font_size;
+        let transformed_width = (width * font_size + spacing) * trm.m11;
         let x_start = trm.m31;
         // Horrible hack to separate ligatures into graphemes.
         // We don't really need to be exact, this 'x' information will probably not be used
-        let x_step = width / (char.chars().count() as f64);
+        let x_step = transformed_width / (char.chars().count() as f64);
         let y = trm.m32;
 
         let new_positioned_chars_iter = char
@@ -210,19 +202,17 @@ impl pdf_extract::OutputDev for PdfExtractor {
             .map(|(i, raw_char)| PositionedChar {
                 x: x_start + x_step * (i as f64),
                 y,
-                width,
+                width: transformed_width,
                 width_of_space: self.width_of_space * trm.m11 * font_size,
                 content: fix_character_coding_quirks(raw_char),
                 bold: self.current_font_is_bold,
-                first_char_of_word: self.first_char_incoming,
             })
-            .filter(|p| self.crop.is_inside(p.x, p.y));
+            .filter(|p| p.content != ' ' && self.crop.is_inside(p.x, p.y));
         self.pages
             .last_mut()
             .unwrap()
             .chars
             .extend(new_positioned_chars_iter);
-        self.first_char_incoming = false;
         Ok(())
     }
 
@@ -236,7 +226,6 @@ impl pdf_extract::OutputDev for PdfExtractor {
             self.width_of_space = DEFAULT_WIDTH_OF_SPACE;
         };
         let base_font = font.get_basefont();
-        self.first_char_incoming = true;
         self.current_font_is_bold = base_font.contains("bold") || base_font.contains("Bold");
         Ok(())
     }
