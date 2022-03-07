@@ -56,6 +56,7 @@ impl From<&IndentedLine> for SimplifiedLine {
 
 #[rstest]
 #[case("data/2010_181_part.pdf", "data/2010_181_part.json")]
+#[case("data/2015_124_part.pdf", "data/2015_124_part.json")]
 #[case("data/ptk_part.pdf", "data/ptk_part.json")]
 #[case("data/korona_part.pdf", "data/korona_part.json")]
 fn test_parsing_mk(#[case] pdf_path: &str, #[case] json_path: &str) {
