@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use hun_law::pdf_parser::parse_pdf;
+use hun_law::pdf_parser::{parse_pdf, CropBox};
 use hun_law::util::indentedline::IndentedLine;
 
 use crate::test_utils::test_data_from_file;
@@ -57,9 +57,14 @@ impl From<&IndentedLine> for SimplifiedLine {
 #[rstest]
 #[case("data/ptk_part.pdf", "data/ptk_part.json")]
 #[case("data/korona_part.pdf", "data/korona_part.json")]
-fn test_parsing_ptk(#[case] pdf_path: &str, #[case] json_path: &str) {
+fn test_parsing_mk(#[case] pdf_path: &str, #[case] json_path: &str) {
     let data = test_data_from_file!(pdf_path);
-    let parsed = parse_pdf(&data).unwrap();
+    let crop = CropBox {
+        top: 842.0 - 1.25 * 72.0,
+        ..Default::default()
+    };
+
+    let parsed = parse_pdf(&data, crop).unwrap();
     assert_eq!(parsed.len(), 1);
     let lines: Vec<SimplifiedLine> = parsed[0].lines.iter().map(SimplifiedLine::from).collect();
     let expected_lines: Vec<SimplifiedLine> =

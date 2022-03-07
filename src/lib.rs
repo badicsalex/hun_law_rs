@@ -25,7 +25,7 @@ pub mod util;
 
 use cache::Cache;
 use mk_downloader::{download_mk_issue, MkIssue};
-use pdf_parser::parse_pdf;
+use pdf_parser::{parse_pdf, CropBox};
 use util::indentedline::IndentedLine;
 
 #[derive(Parser, Debug)]
@@ -60,7 +60,11 @@ pub fn cli_main() -> Result<()> {
         );
         let body = download_mk_issue(issue, &cache)?;
         info!("{:?} bytes", body.len());
-        let parsed = parse_pdf(&body)?;
+        let crop = CropBox {
+            top: 842.0 - 1.25 * 72.0,
+            ..Default::default()
+        };
+        let parsed = parse_pdf(&body, crop)?;
         for page in parsed {
             println!();
             println!("------------");

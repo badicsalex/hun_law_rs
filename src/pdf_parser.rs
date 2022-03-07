@@ -46,6 +46,7 @@ struct PdfExtractor {
     width_of_space: f64,
     current_font_is_bold: bool,
     first_char_incoming: bool,
+    crop: CropBox,
 }
 
 #[derive(Debug)]
@@ -53,9 +54,41 @@ pub struct PageOfLines {
     pub lines: Vec<IndentedLine>,
 }
 
+/// Box in PDF coorinates
+///
+/// Coordinates start from bottom left. Unit is 'point', there are 72 'points' in an inch
+/// An A4 page is 595 x 842 points
+/// A typical margin is 0.75 inches.
+#[derive(Debug)]
+pub struct CropBox {
+    pub bottom: f64,
+    pub left: f64,
+    pub top: f64,
+    pub right: f64,
+}
+
+impl CropBox {
+    fn is_inside(&self, x: f64, y: f64) -> bool {
+        self.left <= x && self.right >= x && self.bottom <= y && self.top >= y
+    }
+}
+impl Default for CropBox {
+    fn default() -> Self {
+        Self {
+            bottom: 0.0,
+            left: 0.0,
+            top: 1000.0,
+            right: 1000.0,
+        }
+    }
+}
+
 impl PdfExtractor {
-    pub fn new() -> Self {
-        Default::default()
+    pub fn new(crop: CropBox) -> Self {
+        Self {
+            crop,
+            ..Default::default()
+        }
     }
 
     fn consolidate_line(mut chars: Vec<PositionedChar>) -> IndentedLine {
@@ -171,18 +204,19 @@ impl pdf_extract::OutputDev for PdfExtractor {
         let x_step = width / (char.chars().count() as f64);
         let y = trm.m32;
 
-        let new_positioned_chars_iter =
-            char.chars()
-                .enumerate()
-                .map(|(i, raw_char)| PositionedChar {
-                    x: x_start + x_step * (i as f64),
-                    y,
-                    width,
-                    width_of_space: self.width_of_space * trm.m11 * font_size,
-                    content: fix_character_coding_quirks(raw_char),
-                    bold: self.current_font_is_bold,
-                    first_char_of_word: self.first_char_incoming,
-                });
+        let new_positioned_chars_iter = char
+            .chars()
+            .enumerate()
+            .map(|(i, raw_char)| PositionedChar {
+                x: x_start + x_step * (i as f64),
+                y,
+                width,
+                width_of_space: self.width_of_space * trm.m11 * font_size,
+                content: fix_character_coding_quirks(raw_char),
+                bold: self.current_font_is_bold,
+                first_char_of_word: self.first_char_incoming,
+            })
+            .filter(|p| self.crop.is_inside(p.x, p.y));
         self.pages
             .last_mut()
             .unwrap()
@@ -238,9 +272,9 @@ fn compare_float_for_sorting(f1: f64, f2: f64) -> std::cmp::Ordering {
     }
 }
 
-pub fn parse_pdf(buffer: &[u8]) -> Result<Vec<PageOfLines>> {
+pub fn parse_pdf(buffer: &[u8], crop: CropBox) -> Result<Vec<PageOfLines>> {
     let document = pdf_extract::Document::load_mem(buffer)?;
-    let mut output = PdfExtractor::new();
+    let mut output = PdfExtractor::new(crop);
     pdf_extract::output_doc(&document, &mut output)?;
     output.get_parsed_pages()
 }
