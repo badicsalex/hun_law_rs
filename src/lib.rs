@@ -19,13 +19,15 @@ use clap::Parser;
 use log::info;
 
 pub mod cache;
-mod mk_downloader;
+pub mod mk_act_section_parser;
+pub mod mk_downloader;
 pub mod pdf_parser;
 pub mod util;
 
 use cache::Cache;
+use mk_act_section_parser::parse_mk_pages_into_acts;
 use mk_downloader::{download_mk_issue, MkIssue};
-use pdf_parser::{parse_pdf, CropBox};
+use pdf_parser::{parse_pdf, CropBox, PageOfLines};
 use util::indentedline::IndentedLine;
 
 #[derive(Parser, Debug)]
@@ -40,7 +42,7 @@ struct HunLawArgs {
 
 pub fn quick_display_indented_line(l: &IndentedLine) -> String {
     let mut s = String::new();
-    let mut indent = (l.indent() * 0.1) as usize;
+    let mut indent = (l.indent() * 0.2) as usize;
     if l.is_bold() {
         s.push_str("<B>");
         indent -= 4;
@@ -50,32 +52,48 @@ pub fn quick_display_indented_line(l: &IndentedLine) -> String {
     s
 }
 
+fn output_indented_lines(lines: &[IndentedLine]) {
+    print!(
+        "{}",
+        lines
+            .iter()
+            .map(quick_display_indented_line)
+            .collect::<Vec<String>>()
+            .join("\n")
+    );
+    println!();
+}
+
+#[allow(dead_code)]
+fn output_raw_text(pages: &[PageOfLines]) {
+    for page in pages {
+        println!();
+        println!("------------");
+        output_indented_lines(&page.lines);
+    }
+}
+
 pub fn cli_main() -> Result<()> {
     let args = HunLawArgs::parse();
     let cache = Cache::new(&"./cache");
     for issue in &args.issues {
-        info!(
-            "Processing Mk Issue {:?}. issue: {:?}",
-            issue.year, issue.issue
-        );
+        info!("Processing MK {:?}/{:?}", issue.year, issue.issue);
         let body = download_mk_issue(issue, &cache)?;
         info!("{:?} bytes", body.len());
         let crop = CropBox {
             top: 842.0 - 1.25 * 72.0,
             ..Default::default()
         };
-        let parsed = parse_pdf(&body, crop)?;
-        for page in parsed {
-            println!();
+        let pages = parse_pdf(&body, crop)?;
+        let acts = parse_mk_pages_into_acts(&pages)?;
+        println!();
+        for act in acts {
             println!("------------");
-            print!(
-                "{}",
-                page.lines
-                    .iter()
-                    .map(quick_display_indented_line)
-                    .collect::<Vec<String>>()
-                    .join("\n")
-            );
+            println!("Act ID: {} - {}", act.identifier.to_string(), act.subject);
+            println!("Pub date: {:?}", act.publication_date);
+            println!();
+            output_indented_lines(&act.body);
+            println!();
         }
     }
     Ok(())
