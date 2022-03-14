@@ -14,4 +14,5 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+pub mod date;
 pub mod indentedline;
