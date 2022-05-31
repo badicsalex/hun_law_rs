@@ -24,6 +24,7 @@ pub mod mk_downloader;
 pub mod pdf_parser;
 pub mod util;
 pub mod structure;
+pub mod reference;
 
 use cache::Cache;
 use mk_act_section_parser::parse_mk_pages_into_acts;
