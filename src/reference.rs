@@ -16,101 +16,91 @@
 
 use std::ops::RangeInclusive;
 
-pub type ActReference = ReferencePart<ArticleReference>;
-pub type ArticleReference = ReferencePart<ParagraphReference>;
-pub type ParagraphReference = ReferencePart<PointReference>;
-pub type PointReference = ReferencePart<SubpointReference>;
-pub type SubpointReference = ReferencePart<NoChildren>;
-
-#[derive(Debug, Clone)]
-pub enum ReferencePart<ChildType> {
-    Single {
-        identifier: String,
-    },
-    Range(RangeInclusive<String>),
-    WithChild {
-        identifier: String,
-        child: ChildType,
-    },
+pub struct Reference<T1, T2, T3, T4, T5> {
+    act: T1,
+    article: T2,
+    paragraph: T3,
+    point: T4,
+    subpoint: T5,
+    _dont_construct: (),
 }
 
-#[derive(Debug, Clone)]
-pub enum NoChildren {}
+pub trait RefPart: Clone {}
 
-trait ChildOf<T1> {}
-
-trait RelativeTo<Other> {
-    fn relative_to(&self, other: &Other) -> Other;
-}
-
-trait FromIdAndChild<ChildType> {
-    fn from_id_and_child(identifier: String, child: ChildType) -> Self;
-}
-
-impl<ChildType> FromIdAndChild<ChildType> for ReferencePart<ChildType> {
-    fn from_id_and_child(identifier: String, child: ChildType) -> Self {
-        Self::WithChild { identifier, child }
-    }
-}
-
-impl<T: Clone> RelativeTo<ReferencePart<ReferencePart<T>>> for ReferencePart<T> {
-    fn relative_to(
-        &self,
-        other: &ReferencePart<ReferencePart<T>>,
-    ) -> ReferencePart<ReferencePart<T>> {
-        match other {
-            ReferencePart::Single { identifier } => ReferencePart::WithChild {
-                identifier: identifier.clone(),
-                child: (*self).clone(),
-            },
-
-            ReferencePart::Range(_) => panic!(),
-            ReferencePart::WithChild { identifier, .. } => ReferencePart::WithChild {
-                identifier: identifier.clone(),
-                child: (*self).clone(),
-            },
+impl<T2: RefPart, T3: RefPart, T4: RefPart, T5: RefPart> Reference<(), T2, T3, T4, T5> {
+    pub fn relative_to<W1, W2, W3, W4, W5>(
+        self,
+        other: Reference<W1, W2, W3, W4, W5>,
+    ) -> Reference<W1, T2, T3, T4, T5> {
+        Reference {
+            act: other.act,
+            article: self.article,
+            paragraph: self.paragraph,
+            point: self.point,
+            subpoint: self.subpoint,
+            _dont_construct: (),
         }
     }
 }
 
-impl<T: Clone> RelativeTo<ReferencePart<ReferencePart<ReferencePart<T>>>> for ReferencePart<T> {
-    fn relative_to(
-        &self,
-        other: &ReferencePart<ReferencePart<ReferencePart<T>>>,
-    ) -> ReferencePart<ReferencePart<ReferencePart<T>>> {
-        match other {
-            ReferencePart::Single {.. } => panic!(),
-            ReferencePart::Range(_) => panic!(),
-            ReferencePart::WithChild { identifier, child } => ReferencePart::WithChild {
-                identifier: identifier.clone(),
-                child: self.relative_to(child),
-            },
+impl<T3: RefPart, T4: RefPart, T5: RefPart> Reference<(), (), T3, T4, T5> {
+    pub fn relative_to<W1, W2, W3, W4, W5>(
+        self,
+        other: Reference<W1, W2, W3, W4, W5>,
+    ) -> Reference<W1, W2, T3, T4, T5> {
+        Reference {
+            act: other.act,
+            article: other.article,
+            paragraph: self.paragraph,
+            point: self.point,
+            subpoint: self.subpoint,
+            _dont_construct: (),
         }
     }
 }
 
-impl<T: Clone> RelativeTo<ReferencePart<ReferencePart<ReferencePart<ReferencePart<T>>>>> for ReferencePart<T> {
-    fn relative_to(
-        &self,
-        other: &ReferencePart<ReferencePart<ReferencePart<ReferencePart<T>>>>,
-    ) -> ReferencePart<ReferencePart<ReferencePart<ReferencePart<T>>>> {
-        match other {
-            ReferencePart::Single {.. } => panic!(),
-            ReferencePart::Range(_) => panic!(),
-            ReferencePart::WithChild { identifier, child } => ReferencePart::WithChild {
-                identifier: identifier.clone(),
-                child: self.relative_to(child),
-            },
-        }
-    }
-}
+pub type RefRangePart=RangeInclusive<String>;
 
-fn tinytest() {
-    let a = ArticleReference::Single {
-        identifier: "lel".to_string(),
-    };
-    let b = SubpointReference::Single {
-        identifier: "lel".to_string(),
-    };
-    b.relative_to(&a);
+pub enum AnyReference {
+    Empty(Reference<(), (), (), (), ()>),
+    Act(Reference<String, (), (), (), ()>),
+
+    ActArticle(Reference<String, String, (), (), ()>),
+    ActParagraph(Reference<String, String, String, (), ()>),
+    ActPoint(Reference<String, String, String, String, ()>),
+    ActSubpoint(Reference<String, String, String, String, String>),
+
+    Article(Reference<(), String, (), (), ()>),
+    ArticleParagraph(Reference<(), String, String, (), ()>),
+    ArticlePoint(Reference<(), String, String, String, ()>),
+    ArticleSubpoint(Reference<(), String, String, String, String>),
+
+    Paragraph(Reference<(), (), String, (), ()>),
+    ParagraphPoint(Reference<(), (), String, String, ()>),
+    ParagraphSubpoint(Reference<(), (), String, String, String>),
+
+    Point(Reference<(), (), (), String, ()>),
+    PointSubpoint(Reference<(), (), (), String, String>),
+
+    Subpoint(Reference<(), (), (), (), String>),
+
+    ActArticleRange(Reference<String, RefRangePart, (), (), ()>),
+    ActParagraphRange(Reference<String, String, RefRangePart, (), ()>),
+    ActPointRange(Reference<String, String, String, RefRangePart, ()>),
+    ActSubpointRange(Reference<String, String, String, String, RefRangePart>),
+
+    ArticleRange(Reference<(), RefRangePart, (), (), ()>),
+    ArticleParagraphRange(Reference<(), String, RefRangePart, (), ()>),
+    ArticlePointRange(Reference<(), String, String, RefRangePart, ()>),
+    ArticleSubpointRange(Reference<(), String, String, String, RefRangePart>),
+
+    ParagraphRange(Reference<(), (), RefRangePart, (), ()>),
+    ParagraphPointRange(Reference<(), (), String, RefRangePart, ()>),
+    ParagraphSubpointRange(Reference<(), (), String, String, RefRangePart>),
+
+    PointRange(Reference<(), (), (), RefRangePart, ()>),
+    PointSubpointRange(Reference<(), (), (), String, RefRangePart>),
+
+    SubpointRange(Reference<(), (), (), (), RefRangePart>),
+
 }
