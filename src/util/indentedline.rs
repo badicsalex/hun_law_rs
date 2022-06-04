@@ -87,6 +87,10 @@ impl IndentedLine {
         self.parts.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.parts.is_empty()
+    }
+
     #[allow(dead_code)]
     fn slice(&self, from: i64, to: Option<i64>) -> IndentedLine {
         let len = self.len() as i64;
