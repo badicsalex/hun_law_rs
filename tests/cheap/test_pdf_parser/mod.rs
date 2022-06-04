@@ -55,12 +55,12 @@ impl From<&IndentedLine> for SimplifiedLine {
 }
 
 #[rstest]
-#[case("data/2010_181_part.pdf", "data/2010_181_part.json")]
-#[case("data/2015_124_part.pdf", "data/2015_124_part.json")]
-#[case("data/ptk_part.pdf", "data/ptk_part.json")]
-#[case("data/korona_part.pdf", "data/korona_part.json")]
-fn test_parsing_mk(#[case] pdf_path: &str, #[case] json_path: &str) {
-    let data = test_data_from_file!(pdf_path);
+#[case("2010_181_part")]
+#[case("2015_124_part")]
+#[case("ptk_part")]
+#[case("korona_part")]
+fn test_parsing_mk(#[case] name: &str) {
+    let data = test_data_from_file!(format!("data/{}.pdf", name));
     let crop = CropBox {
         top: 842.0 - 1.25 * 72.0,
         ..Default::default()
@@ -69,8 +69,10 @@ fn test_parsing_mk(#[case] pdf_path: &str, #[case] json_path: &str) {
     let parsed = parse_pdf(&data, crop).unwrap();
     assert_eq!(parsed.len(), 1);
     let lines: Vec<SimplifiedLine> = parsed[0].lines.iter().map(SimplifiedLine::from).collect();
-    let expected_lines: Vec<SimplifiedLine> =
-        serde_json::from_slice(&test_data_from_file!(json_path)).unwrap();
+    let expected_lines: Vec<SimplifiedLine> = serde_json::from_slice(&test_data_from_file!(
+        format!("data/{}.json", name)
+    ))
+    .unwrap();
     print!("{}", serde_json::to_string_pretty(&lines).unwrap());
     for (line, expected_line) in std::iter::zip(lines, expected_lines) {
         assert_eq!(line, expected_line);
