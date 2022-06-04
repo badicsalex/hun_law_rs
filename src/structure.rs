@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use crate::util::indentedline::IndentedLine;
+use serde::{Deserialize, Serialize};
+
+use crate::util::{date::Date, indentedline::IndentedLine, is_default};
 
 //  Main act on which all the code was based:
 //  61/2009. (XII. 14.) IRM rendelet a jogszabályszerkesztésről
@@ -68,24 +70,29 @@ use crate::util::indentedline::IndentedLine;
 //  For this reason, (and because they are so useless) we only handle structure levels,
 //  as mere bookmarks, and don't use them as a tree or similar.
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Act {
     pub identifier: String,
     pub subject: String,
     pub preamble: String,
+    pub publication_date: Date,
     pub children: Vec<ActChild>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ActChild {
     StructuralElement(StructuralElement),
     Article(Article),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StructuralElement {
     pub identifier: String,
     pub title: String,
     pub element_type: StructuralElementType,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum StructuralElementType {
     // Example: NYOLCADIK KÖNYV
     Book,
@@ -115,27 +122,36 @@ pub enum StructuralElementType {
     Subtitle,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Article {
     pub identifier: String,
-    pub title: String,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub title: Option<String>,
     pub children: Vec<Paragraph>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SubArticleElement<ChildrenType> {
+    // An empty id is only really allowable for Paragraphs, but let's not go into that for now.
+    #[serde(default, skip_serializing_if = "is_default")]
     pub identifier: String,
     pub body: SAEBody<ChildrenType>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum SAEBody<ChildrenType> {
     Text(String),
     Children {
         intro: String,
         children: ChildrenType,
+        #[serde(default, skip_serializing_if = "is_default")]
         wrap_up: String,
     },
 }
 
 pub type Paragraph = SubArticleElement<ParagraphChildren>;
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ParagraphChildren {
     AlphabeticPoint(Vec<AlphabeticPoint>),
     NumericPoint(Vec<NumericPoint>),
@@ -144,31 +160,38 @@ pub enum ParagraphChildren {
 }
 
 pub type AlphabeticPoint = SubArticleElement<AlphabeticPointChildren>;
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AlphabeticPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
     NumericSubpoint(Vec<NumericSubpoint>),
 }
 
 pub type NumericPoint = SubArticleElement<NumericPointChildren>;
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NumericPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
 }
 
 pub type AlphabeticSubpoint = SubArticleElement<AlphabeticSubpointChildren>;
 // Creating different empty enums is necessary to distinguish between this class and NumericSubpoint
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AlphabeticSubpointChildren {}
 
 pub type NumericSubpoint = SubArticleElement<NumericSubpointChildren>;
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NumericSubpointChildren {}
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct QuotedBlock {
     pub lines: Vec<IndentedLine>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct BlockAmendment {
     pub children: Vec<BlockAmendmentChild>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum BlockAmendmentChild {
     Article(Article),
     Paragraph(Paragraph),

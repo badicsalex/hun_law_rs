@@ -16,14 +16,16 @@
 
 use std::fmt::Debug;
 
-#[derive(Debug, Clone)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IndentedLinePart {
     pub dx: f64,
     pub content: char,
     pub bold: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IndentedLine {
     parts: Vec<IndentedLinePart>,
     cached_content: String,

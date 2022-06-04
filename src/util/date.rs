@@ -16,8 +16,9 @@
 
 use anyhow::{anyhow, Result};
 use regex::Regex;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Default, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Date {
     pub year: i16,
     pub month: i8,

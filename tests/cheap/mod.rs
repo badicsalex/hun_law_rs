@@ -16,3 +16,4 @@
 
 mod test_cache;
 mod test_pdf_parser;
+mod test_serialization;

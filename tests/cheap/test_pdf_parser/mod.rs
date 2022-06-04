@@ -15,16 +15,12 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use hun_law::pdf_parser::{parse_pdf, CropBox};
-use hun_law::util::indentedline::IndentedLine;
+use hun_law::util::{indentedline::IndentedLine, is_default};
 
 use crate::test_utils::test_data_from_file;
 
 use rstest::rstest;
 use serde::{Deserialize, Serialize};
-
-fn is_default<T: Default + PartialEq>(t: &T) -> bool {
-    t == &T::default()
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct SimplifiedLine {
@@ -69,10 +65,8 @@ fn test_parsing_mk(#[case] name: &str) {
     let parsed = parse_pdf(&data, crop).unwrap();
     assert_eq!(parsed.len(), 1);
     let lines: Vec<SimplifiedLine> = parsed[0].lines.iter().map(SimplifiedLine::from).collect();
-    let expected_lines: Vec<SimplifiedLine> = serde_json::from_slice(&test_data_from_file!(
-        format!("data/{}.json", name)
-    ))
-    .unwrap();
+    let expected_lines: Vec<SimplifiedLine> =
+        serde_json::from_slice(&test_data_from_file!(format!("data/{}.json", name))).unwrap();
     print!("{}", serde_json::to_string_pretty(&lines).unwrap());
     for (line, expected_line) in std::iter::zip(lines, expected_lines) {
         assert_eq!(line, expected_line);
