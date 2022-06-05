@@ -85,7 +85,7 @@ impl ActExtractor {
     }
 
     fn wait_for_header_newline(&self, line: &IndentedLine) -> ActExtractionState {
-        if *line == EMPTY_LINE {
+        if line.is_empty() {
             return WaitingForHeader;
         }
 
@@ -126,9 +126,9 @@ impl ActExtractor {
         // State to swallow the following footer:
         // "* A törvényt az Országgyűlés a 2010. november 22-i ülésnapján fogadta el."
         let body = &mut self.current_act.body;
-        if *line == EMPTY_LINE
+        if line.is_empty()
             && body.len() > 2
-            && body[body.len() - 2] == EMPTY_LINE
+            && body[body.len() - 2].is_empty()
             && body[body.len() - 1].content().starts_with('*')
         {
             body.pop(); // Pop the asterisk footer, leave the empty line
@@ -155,7 +155,7 @@ impl ActExtractor {
         // Dr. Schmitt Pál s. k.,     Dr. Kövér László s. k.,
         //  köztársasági elnök        az Országgyűlés elnöke
         if body.len() > 4
-            && body[body.len() - 3] == EMPTY_LINE
+            && body[body.len() - 3].is_empty()
             && (body.last().unwrap().content() == "köztársasági elnök az Országgyűlés elnöke"
                 || body.last().unwrap().content() == "köztársasági elnök az Országgyűlés alelnöke")
         {

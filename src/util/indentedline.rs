@@ -143,6 +143,9 @@ mod tests {
         assert_eq!(EMPTY_LINE, IndentedLine::from_parts(vec![]));
         assert_eq!(IndentedLine::from_parts(vec![]), EMPTY_LINE);
         assert_eq!(EMPTY_LINE, IndentedLine::from_multiple(&[]));
+        assert!(IndentedLine::from_parts(vec![]).is_empty());
+        assert!(IndentedLine::from_multiple(&[]).is_empty());
+        assert!(IndentedLine::from_multiple(&[&EMPTY_LINE, &EMPTY_LINE]).is_empty());
     }
 
     fn ilp(dx: f64, content: char) -> IndentedLinePart {
