@@ -14,28 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use crate::structure::ActIdentifier;
 use crate::util::date::Date;
 use crate::util::indentedline::IndentedLine;
 use crate::{pdf_parser::PageOfLines, util::indentedline::EMPTY_LINE};
 
 use anyhow::{bail, Result};
 use regex::Regex;
-
-#[derive(Debug, Default)]
-pub struct ActIdentifier {
-    pub year: i16,
-    pub number: i32,
-}
-
-impl ToString for ActIdentifier {
-    fn to_string(&self) -> String {
-        format!(
-            "{:?}. évi {}. törvény",
-            self.year,
-            roman::to(self.number).unwrap()
-        )
-    }
-}
 
 #[derive(Debug, Default)]
 pub struct ActRawText {

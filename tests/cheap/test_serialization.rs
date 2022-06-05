@@ -18,7 +18,7 @@ use hun_law::{
     structure::{
         Act, ActChild, AlphabeticPoint, AlphabeticPointChildren, AlphabeticSubpoint, Article,
         NumericPoint, Paragraph, ParagraphChildren, SAEBody, StructuralElement,
-        StructuralElementType,
+        StructuralElementType, ActIdentifier,
     },
     util::date::Date,
 };
@@ -26,7 +26,10 @@ use rstest::rstest;
 
 fn get_test_structure() -> Act {
     Act {
-        identifier: "2345. évi XD. törvény".into(),
+        identifier: ActIdentifier{
+            year: 2345,
+            number: 0xd,
+        },
         publication_date: Date {
             year: 2345,
             month: 6,
@@ -141,7 +144,9 @@ fn get_test_structure() -> Act {
 }
 
 const YAML_SERIALIZED: &str = r#"---
-identifier: 2345. évi XD. törvény
+identifier:
+  year: 2345
+  number: 13
 subject: A tesztelésről
 preamble: "A tesztelés nagyon fontos, és egyben kötelező"
 publication_date:

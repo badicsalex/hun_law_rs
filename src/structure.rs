@@ -72,11 +72,27 @@ use crate::util::{date::Date, indentedline::IndentedLine, is_default};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Act {
-    pub identifier: String,
+    pub identifier: ActIdentifier,
     pub subject: String,
     pub preamble: String,
     pub publication_date: Date,
     pub children: Vec<ActChild>,
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ActIdentifier {
+    pub year: i16,
+    pub number: i32,
+}
+
+impl ToString for ActIdentifier {
+    fn to_string(&self) -> String {
+        format!(
+            "{:?}. évi {}. törvény",
+            self.year,
+            roman::to(self.number).unwrap()
+        )
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
