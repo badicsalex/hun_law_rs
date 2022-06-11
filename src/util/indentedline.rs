@@ -117,6 +117,33 @@ impl IndentedLine {
         new_parts[0].dx += additional_indent as f64;
         Self::from_parts(new_parts.to_owned())
     }
+
+    pub fn from_test_str(s: &str) -> Self {
+        let mut parts = Vec::<IndentedLinePart>::new();
+        let mut spaces_num = 1;
+        let bold = s.contains("<BOLD>");
+        let s = s.replace("<BOLD>", "      ");
+        for c in s.chars() {
+            if c == ' ' {
+                if spaces_num == 0 {
+                    parts.push(IndentedLinePart {
+                        dx: 5.0,
+                        content: c,
+                        bold,
+                    });
+                }
+                spaces_num += 1;
+            } else {
+                parts.push(IndentedLinePart {
+                    dx: 5.0 + spaces_num as f64 * 5.0,
+                    content: c,
+                    bold,
+                });
+                spaces_num = 0
+            }
+        }
+        Self::from_parts(parts)
+    }
 }
 
 impl PartialEq for IndentedLine {
@@ -137,6 +164,7 @@ pub const EMPTY_LINE: IndentedLine = IndentedLine {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn test_empty() {
@@ -272,5 +300,32 @@ mod tests {
         assert!(!spliced.slice(0, Some(-1)).is_bold());
         assert!(spliced.slice(1, Some(-1)).is_bold());
         assert!(spliced.slice(2, Some(5)).is_bold());
+    }
+
+    #[test]
+    fn test_from_test_str() {
+        assert_eq!(
+            IndentedLine::from_test_str("    Lol ez   mi?"),
+            IndentedLine::from_parts(vec![
+                ilp(30.0, 'L'),
+                ilp(5.0, 'o'),
+                ilp(5.0, 'l'),
+                ilp(5.0, ' '),
+                ilp(5.0, 'e'),
+                ilp(5.0, 'z'),
+                ilp(5.0, ' '),
+                ilp(10.0, 'm'),
+                ilp(5.0, 'i'),
+                ilp(5.0, '?'),
+            ])
+        );
+        assert_eq!(
+            IndentedLine::from_test_str(" <BOLD> bld"),
+            IndentedLine::from_parts(vec![
+                ilpb(50.0, 'b'),
+                ilpb(5.0, 'l'),
+                ilpb(5.0, 'd'),
+            ])
+        )
     }
 }

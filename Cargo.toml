@@ -26,6 +26,7 @@ roman = "0.1"
 [dev-dependencies]
 rstest = "0.12"
 tempfile = "3"
+pretty_assertions = "1"
 
 [profile.release]
 debug = true
