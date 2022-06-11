@@ -117,6 +117,7 @@ pub enum StructuralElementType {
     Part {
         // Used for the three-part 'ÁLTALÁNOS RÉSZ', 'KÜLÖNÖS RÉSZ', 'ZÁRÓ RÉSZ' version
         // When true, identifier is a number between 1-3, and conversions have to be done on parsing and printing
+        #[serde(default, skip_serializing_if = "is_default")]
         is_special: bool,
     },
 
