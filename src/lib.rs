@@ -47,8 +47,8 @@ pub fn quick_display_indented_line(l: &IndentedLine) -> String {
     let mut s = String::new();
     let mut indent = (l.indent() * 0.2) as usize;
     if l.is_bold() {
-        s.push_str("<B>");
-        indent -= 4;
+        s.push_str("<BOLD>");
+        indent -= 6;
     }
     s.push_str(&" ".repeat(indent));
     s.push_str(l.content());
