@@ -14,4 +14,46 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use crate::test_utils::test_data_from_file;
+use hun_law::{
+    mk_act_section_parser::ActRawText,
+    structure::ActIdentifier,
+    structure_parser::parse_act_structure,
+    util::{date::Date, indentedline::IndentedLine},
+};
+use pretty_assertions::assert_eq;
+use rstest::rstest;
 
+fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
+    std::str::from_utf8(data)
+        .unwrap()
+        .split('\n')
+        .map(IndentedLine::from_test_str)
+        .collect()
+}
+
+#[rstest]
+#[case("structural_elements_1")]
+fn test_structure_parser(#[case] name: &str) {
+    let data = test_data_from_file!(format!("data/{}.txt", name));
+    let data_as_lines = to_indented_lines(&data);
+    let act = parse_act_structure(ActRawText {
+        identifier: ActIdentifier {
+            year: 2345,
+            number: 0xd,
+        },
+        subject: "A tesztelésről".to_string(),
+        publication_date: Date {
+            year: 2345,
+            month: 6,
+            day: 7,
+        },
+        body: data_as_lines,
+    })
+    .unwrap();
+    println!("{}", serde_yaml::to_string(&act).unwrap());
+
+    let expected_data = test_data_from_file!(format!("data/{}.yml", name));
+    let expected_act = serde_yaml::from_slice(&expected_data).unwrap();
+    assert_eq!(act, expected_act);
+}

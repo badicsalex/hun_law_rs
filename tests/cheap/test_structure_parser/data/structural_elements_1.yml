@@ -1,0 +1,154 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: A törvények preambulumáról megfeledkezni nem érdemes.
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - StructuralElement:
+      identifier: ELSŐ
+      title: BEVEZETŐ RENDELKEZÉSEK
+      element_type: Book
+  - Article:
+      identifier: "1:1"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "1:2"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "1:3"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "1:4"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: MÁSODIK
+      title: AZ EMBER MINT JOGALANY
+      element_type: Book
+  - StructuralElement:
+      identifier: ELSŐ
+      title: A JOGKÉPESSÉG
+      element_type:
+        Part: {}
+  - StructuralElement:
+      identifier: I
+      title: A JOGKÉPESSÉG KEZDETE ÉS MEGSZŰNÉSE
+      element_type: Title
+  - Article:
+      identifier: "2:1"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "2:2"
+      children:
+        - body: "[Dummy title] (1) Dummy paragraph. (2) Dummy paragraph."
+  - StructuralElement:
+      identifier: II
+      title: A HOLTNAK NYILVÁNÍTÁS
+      element_type: Title
+  - Article:
+      identifier: "2:3"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: MÁSODIK
+      title: A CSELEKVŐKÉPESSÉG
+      element_type:
+        Part: {}
+  - StructuralElement:
+      identifier: III
+      title: A CSELEKVŐKÉPESSÉG ÁLTALÁNOS SZABÁLYAI
+      element_type: Title
+  - Article:
+      identifier: "2:4"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: HARMADIK
+      title: A JOGI SZEMÉLY
+      element_type: Book
+  - StructuralElement:
+      identifier: ELSŐ
+      title: A JOGI SZEMÉLY ÁLTALÁNOS SZABÁLYAI
+      element_type:
+        Part: {}
+  - StructuralElement:
+      identifier: I
+      title: ÁLTALÁNOS RENDELKEZÉSEK
+      element_type: Title
+  - Article:
+      identifier: "3:1"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "3:2"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: II
+      title: A JOGI SZEMÉLY LÉTESÍTÉSE
+      element_type: Title
+  - StructuralElement:
+      identifier: I
+      title: A létesítés szabadsága
+      element_type: Chapter
+  - Article:
+      identifier: "3:3"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: II
+      title: A létesítő okirat
+      element_type: Chapter
+  - Article:
+      identifier: "3:4"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: III
+      title: A gazdasági társaság szervezete
+      element_type: Chapter
+  - StructuralElement:
+      identifier: "1"
+      title: A gazdasági társaság legfőbb szerve
+      element_type: Subtitle
+  - Article:
+      identifier: "3:5"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "2"
+      title: Ügyvezetés és képviselet
+      element_type: Subtitle
+  - Article:
+      identifier: "3:6"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: IV
+      title: Másolat a gazdasági társaság szervezetéről
+      element_type: Chapter
+  - StructuralElement:
+      identifier: "1"
+      title: Másolat a gazdasági társaság legfőbb szervéről
+      element_type: Subtitle
+  - Article:
+      identifier: "3:7"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "2"
+      title: Másolat ay ügyvezetés és képviseletről
+      element_type: Subtitle
+  - Article:
+      identifier: "3:8"
+      children:
+        - body: Dummy article blah blah.
