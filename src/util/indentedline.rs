@@ -321,11 +321,7 @@ mod tests {
         );
         assert_eq!(
             IndentedLine::from_test_str(" <BOLD> bld"),
-            IndentedLine::from_parts(vec![
-                ilpb(50.0, 'b'),
-                ilpb(5.0, 'l'),
-                ilpb(5.0, 'd'),
-            ])
+            IndentedLine::from_parts(vec![ilpb(50.0, 'b'), ilpb(5.0, 'l'), ilpb(5.0, 'd'),])
         )
     }
 }

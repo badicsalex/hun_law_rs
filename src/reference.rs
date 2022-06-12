@@ -59,7 +59,7 @@ impl<T3: RefPart, T4: RefPart, T5: RefPart> Reference<(), (), T3, T4, T5> {
     }
 }
 
-pub type RefRangePart=RangeInclusive<String>;
+pub type RefRangePart = RangeInclusive<String>;
 
 pub enum AnyReference {
     Empty(Reference<(), (), (), (), ()>),
@@ -102,5 +102,4 @@ pub enum AnyReference {
     PointSubpointRange(Reference<(), (), (), String, RefRangePart>),
 
     SubpointRange(Reference<(), (), (), (), RefRangePart>),
-
 }
