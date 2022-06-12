@@ -16,17 +16,18 @@
 
 use hun_law::{
     structure::{
-        Act, ActChild, AlphabeticPoint, AlphabeticPointChildren, AlphabeticSubpoint, Article,
-        NumericPoint, Paragraph, ParagraphChildren, SAEBody, StructuralElement,
-        StructuralElementType, ActIdentifier,
+        Act, ActChild, ActIdentifier, AlphabeticPoint, AlphabeticPointChildren, AlphabeticSubpoint,
+        Article, NumericPoint, Paragraph, ParagraphChildren, SAEBody, StructuralElement,
+        StructuralElementType, Subtitle,
     },
     util::date::Date,
 };
+use pretty_assertions::assert_eq;
 use rstest::rstest;
 
 fn get_test_structure() -> Act {
     Act {
-        identifier: ActIdentifier{
+        identifier: ActIdentifier {
             year: 2345,
             number: 0xd,
         },
@@ -39,9 +40,13 @@ fn get_test_structure() -> Act {
         preamble: "A tesztelés nagyon fontos, és egyben kötelező".into(),
         children: vec![
             ActChild::StructuralElement(StructuralElement {
-                identifier: "1".into(),
+                identifier: "1".parse().unwrap(),
                 title: "Egyszerű dolgok".into(),
                 element_type: StructuralElementType::Book,
+            }),
+            ActChild::Subtitle(Subtitle {
+                identifier: None,
+                title: "Alcim id nelkul".into(),
             }),
             ActChild::Article(Article {
                 identifier: "1:1".into(),
@@ -94,9 +99,18 @@ fn get_test_structure() -> Act {
                 ],
             }),
             ActChild::StructuralElement(StructuralElement {
-                identifier: "2".into(),
+                identifier: "2".parse().unwrap(),
                 title: "Amended stuff in english".into(),
                 element_type: StructuralElementType::Book,
+            }),
+            ActChild::StructuralElement(StructuralElement {
+                identifier: "1".parse().unwrap(),
+                title: "Az eleje".into(),
+                element_type: StructuralElementType::Part { is_special: false },
+            }),
+            ActChild::Subtitle(Subtitle {
+                identifier: Some("1".parse().unwrap()),
+                title: "Alcim id-vel".into(),
             }),
             ActChild::Article(Article {
                 identifier: "2:1".into(),
@@ -105,6 +119,15 @@ fn get_test_structure() -> Act {
                     identifier: "".into(),
                     body: SAEBody::Text("Nothing fancy yet".into()),
                 }],
+            }),
+            ActChild::StructuralElement(StructuralElement {
+                identifier: "1/A".parse().unwrap(),
+                title: "A hozzaadott".into(),
+                element_type: StructuralElementType::Part { is_special: false },
+            }),
+            ActChild::Subtitle(Subtitle {
+                identifier: Some("1/A".parse().unwrap()),
+                title: "Alcim amendelt id-vel".into(),
             }),
             ActChild::Article(Article {
                 identifier: "2:1/A".into(),
@@ -158,6 +181,8 @@ children:
       identifier: "1"
       title: Egyszerű dolgok
       element_type: Book
+  - Subtitle:
+      title: Alcim id nelkul
   - Article:
       identifier: "1:1"
       title: "Az egyetlen cikk, aminek cime van."
@@ -189,10 +214,26 @@ children:
       identifier: "2"
       title: Amended stuff in english
       element_type: Book
+  - StructuralElement:
+      identifier: "1"
+      title: Az eleje
+      element_type:
+        Part: {}
+  - Subtitle:
+      identifier: "1"
+      title: Alcim id-vel
   - Article:
       identifier: "2:1"
       children:
         - body: Nothing fancy yet
+  - StructuralElement:
+      identifier: 1a
+      title: A hozzaadott
+      element_type:
+        Part: {}
+  - Subtitle:
+      identifier: 1a
+      title: Alcim amendelt id-vel
   - Article:
       identifier: "2:1/A"
       children:

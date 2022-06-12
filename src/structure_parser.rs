@@ -19,7 +19,8 @@ use regex::Regex;
 use crate::{
     mk_act_section_parser::ActRawText,
     structure::{
-        Act, ActChild, Article, Paragraph, SAEBody, StructuralElement, StructuralElementType,
+        Act, ActChild, Article, NumericIdentifier, Paragraph, SAEBody, StructuralElement,
+        StructuralElementType, Subtitle,
     },
     util::indentedline::IndentedLine,
 };
@@ -44,8 +45,8 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
         StructuralElementParserFactory::new(StructuralElementType::Part { is_special: false }),
         StructuralElementParserFactory::new(StructuralElementType::Title),
         StructuralElementParserFactory::new(StructuralElementType::Chapter),
-        StructuralElementParserFactory::new(StructuralElementType::Subtitle),
     ];
+    let mut subtitle_parser_factory = SubtitleParserFactory::new();
     let mut article_parser_factory = ArticleParserFactory::new();
 
     let mut prev_line_is_empty = true;
@@ -53,8 +54,13 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
         let new_state = se_parser_factories
             .iter_mut()
             .find_map(|fac| {
-                fac.try_create_from_header(line, prev_line_is_empty)
+                fac.try_create_from_header(line)
                     .map(ParseState::StructuralElement)
+            })
+            .or_else(|| {
+                subtitle_parser_factory
+                    .try_create_from_header(line, prev_line_is_empty)
+                    .map(ParseState::Subtitle)
             })
             .or_else(|| {
                 article_parser_factory
@@ -68,6 +74,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
                 ParseState::StructuralElement(parser) => {
                     children.push(ActChild::StructuralElement(parser.finish()))
                 }
+                ParseState::Subtitle(parser) => children.push(ActChild::Subtitle(parser.finish())),
             }
             state = new_state;
         } else {
@@ -82,6 +89,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
                 }
                 ParseState::Article(parser) => parser.feed_line(line),
                 ParseState::StructuralElement(parser) => parser.feed_line(line),
+                ParseState::Subtitle(parser) => parser.feed_line(line),
             }
         }
         prev_line_is_empty = line.is_empty();
@@ -92,6 +100,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
         ParseState::StructuralElement(parser) => {
             children.push(ActChild::StructuralElement(parser.finish()))
         }
+        ParseState::Subtitle(parser) => children.push(ActChild::Subtitle(parser.finish())),
     }
     Ok((preamble, children))
 }
@@ -100,6 +109,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
 enum ParseState {
     Preamble,
     Article(ArticleParser),
+    Subtitle(SubtitleParser),
     StructuralElement(StructuralElementParser),
 }
 
@@ -124,59 +134,27 @@ impl StructuralElementParserFactory {
             StructuralElementType::Part { .. } => "^(.*) RÉSZ$",
             StructuralElementType::Title => "^(.*)\\. CÍM$",
             StructuralElementType::Chapter => "^(?i)(.*)\\. fejezet$",
-            StructuralElementType::Subtitle => "^([0-9]+(/[A-Z])?)\\. (.*)$",
         })
         .unwrap()
     }
 
-    fn try_create_from_header(
-        &mut self,
-        line: &IndentedLine,
-        prev_line_is_empty: bool,
-    ) -> Option<StructuralElementParser> {
-        let identifier: String;
-        let title: String;
-        if let StructuralElementType::Subtitle = self.element_type {
-            (identifier, title) =
-                self.id_and_title_from_subtitle_header(line, prev_line_is_empty)?
-        } else {
-            identifier = self
+    fn try_create_from_header(&mut self, line: &IndentedLine) -> Option<StructuralElementParser> {
+        Some(StructuralElementParser {
+            identifier: self
                 .title_regex
                 .captures(line.content())?
                 .get(1)?
                 .as_str()
-                .to_string();
-            title = String::new();
-        }
-        Some(StructuralElementParser {
-            identifier,
-            title,
+                .parse()
+                .ok()?,
+            title: String::new(),
             element_type: self.element_type.clone(),
         })
-    }
-
-    fn id_and_title_from_subtitle_header(
-        &self,
-        line: &IndentedLine,
-        prev_line_is_empty: bool,
-    ) -> Option<(String, String)> {
-        if !line.is_bold() {
-            None
-        } else if let Some(captures) = self.title_regex.captures(line.content()) {
-            Some((
-                captures.get(1).unwrap().as_str().to_string(),
-                captures.get(3).unwrap().as_str().to_string(),
-            ))
-        } else if prev_line_is_empty && line.content().chars().next()?.is_uppercase() {
-            Some((String::new(), line.content().to_string()))
-        } else {
-            None
-        }
     }
 }
 #[derive(Debug)]
 struct StructuralElementParser {
-    identifier: String,
+    identifier: NumericIdentifier,
     title: String,
     element_type: StructuralElementType,
 }
@@ -198,6 +176,61 @@ impl StructuralElementParser {
     }
 }
 
+struct SubtitleParserFactory {
+    last_id: Option<String>,
+    title_regex: Regex,
+}
+
+impl SubtitleParserFactory {
+    fn new() -> Self {
+        Self {
+            last_id: None,
+            title_regex: Regex::new("^([0-9]+(/[A-Z])?)\\. (.*)$").unwrap(),
+        }
+    }
+    fn try_create_from_header(
+        &mut self,
+        line: &IndentedLine,
+        prev_line_is_empty: bool,
+    ) -> Option<SubtitleParser> {
+        if !line.is_bold() {
+            None
+        } else if let Some(captures) = self.title_regex.captures(line.content()) {
+            Some(SubtitleParser {
+                identifier: Some(captures.get(1).unwrap().as_str().parse().ok()?),
+                title: captures.get(3).unwrap().as_str().to_string(),
+            })
+        } else if prev_line_is_empty && line.content().chars().next()?.is_uppercase() {
+            Some(SubtitleParser {
+                identifier: None,
+                title: line.content().to_string(),
+            })
+        } else {
+            None
+        }
+    }
+}
+#[derive(Debug)]
+struct SubtitleParser {
+    identifier: Option<NumericIdentifier>,
+    title: String,
+}
+impl SubtitleParser {
+    fn feed_line(&mut self, line: &IndentedLine) {
+        if !line.is_empty() {
+            if !self.title.is_empty() {
+                self.title.push(' ');
+            }
+            self.title.push_str(line.content())
+        }
+    }
+    fn finish(self) -> Subtitle {
+        Subtitle {
+            identifier: self.identifier,
+            title: self.title,
+        }
+    }
+}
 struct ArticleParserFactory {
     last_id: Option<String>,
     header_regex: Regex,

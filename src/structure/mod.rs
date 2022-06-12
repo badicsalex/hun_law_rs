@@ -84,14 +84,29 @@ pub struct Act {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ActChild {
     StructuralElement(StructuralElement),
+    Subtitle(Subtitle),
     Article(Article),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StructuralElement {
-    pub identifier: String,
+    pub identifier: NumericIdentifier,
     pub title: String,
     pub element_type: StructuralElementType,
+}
+
+// Separate type from structural elements because of the optional identifier
+// and the fact that there are some other special handling around it.
+
+// Guaranteed to start with uppercase
+// For older acts, there is no number, only a text.
+// Example:
+// 17. Az alcím
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Subtitle {
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub identifier: Option<NumericIdentifier>,
+    pub title: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -117,12 +132,6 @@ pub enum StructuralElementType {
     // IV. Fejezet
     // XXIII. fejezet  <=  not conformant, but present in e.g. PTK
     Chapter,
-
-    // Guaranteed to be uppercase
-    // For older acts, there is no number, only a text.
-    // Example:
-    // 17. Az alcím
-    Subtitle,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

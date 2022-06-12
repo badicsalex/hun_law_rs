@@ -35,7 +35,9 @@ impl Display for ActIdentifier {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(into = "String")]
+#[serde(try_from = "String")]
 pub struct NumericIdentifier {
     num: u16,
     suffix: Option<HungarianIdentifierChar>,
@@ -105,6 +107,29 @@ impl FromStr for NumericIdentifier {
                 Some(suffix_str.parse()?)
             },
         })
+    }
+}
+
+impl Display for NumericIdentifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self.suffix {
+            Some(suffix) => write!(f, "{:?}{}", self.num, suffix),
+            None => write!(f, "{:?}", self.num),
+        }
+    }
+}
+
+impl From<NumericIdentifier> for String {
+    fn from(val: NumericIdentifier) -> Self {
+        val.to_string()
+    }
+}
+
+impl TryFrom<String> for NumericIdentifier {
+    type Error = Error;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        value.parse()
     }
 }
 
@@ -207,6 +232,22 @@ impl FromStr for HungarianIdentifierChar {
                 "{} is not a valid latin or hungarian character string.",
                 value
             ),
+        }
+    }
+}
+
+impl Display for HungarianIdentifierChar {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            HungarianIdentifierChar::Latin(c) => write!(f, "{}", *c as char),
+            HungarianIdentifierChar::Cs => write!(f, "cs"),
+            HungarianIdentifierChar::Dz => write!(f, "dz"),
+            HungarianIdentifierChar::Gy => write!(f, "gy"),
+            HungarianIdentifierChar::Ly => write!(f, "ly"),
+            HungarianIdentifierChar::Ny => write!(f, "ny"),
+            HungarianIdentifierChar::Sz => write!(f, "sz"),
+            HungarianIdentifierChar::Ty => write!(f, "ty"),
+            HungarianIdentifierChar::Zs => write!(f, "zs"),
         }
     }
 }
