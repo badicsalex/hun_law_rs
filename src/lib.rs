@@ -92,7 +92,7 @@ pub fn cli_main() -> Result<()> {
         println!();
         for act in acts {
             println!("------------");
-            println!("Act ID: {} - {}", act.identifier.to_string(), act.subject);
+            println!("Act ID: {} - {}", act.identifier, act.subject);
             println!("Pub date: {:?}", act.publication_date);
             println!();
             output_indented_lines(&act.body);
