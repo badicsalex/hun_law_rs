@@ -146,6 +146,15 @@ impl TryFrom<String> for NumericIdentifier {
     }
 }
 
+impl From<u16> for NumericIdentifier {
+    fn from(val: u16) -> Self {
+        Self {
+            num: val,
+            suffix: None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum HungarianIdentifierChar {
     /// A single lowercase latin character. Range: b'a'..=b'z'

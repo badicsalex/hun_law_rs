@@ -13,12 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use regex::Regex;
 
 use crate::{
     structure::{NumericIdentifier, StructuralElement, StructuralElementType},
     util::indentedline::IndentedLine,
+    util::str_to_int_hun,
 };
 
 pub struct StructuralElementParserFactory {
@@ -60,10 +61,12 @@ impl StructuralElementParserFactory {
 
     fn parse_identifier(&self, id: &str) -> Result<NumericIdentifier> {
         match self.element_type {
-            StructuralElementType::Book => "1".parse(), // TODO: Hungarian number names
-            StructuralElementType::Part { .. } => "1".parse(), // TODO: Hungarian number names
-            StructuralElementType::Title => NumericIdentifier::from_roman(id),
-            StructuralElementType::Chapter => NumericIdentifier::from_roman(id),
+            StructuralElementType::Book | StructuralElementType::Part { .. } => str_to_int_hun(id)
+                .map(NumericIdentifier::from)
+                .ok_or_else(|| anyhow!("Invalid hungarian numeral {}", id)),
+            StructuralElementType::Title | StructuralElementType::Chapter => {
+                NumericIdentifier::from_roman(id)
+            }
         }
     }
 }

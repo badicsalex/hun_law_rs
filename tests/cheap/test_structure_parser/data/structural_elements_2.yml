@@ -1,0 +1,150 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - StructuralElement:
+      identifier: "1"
+      title: BEVEZETŐ RENDELKEZÉSEK
+      element_type: Book
+  - Article:
+      identifier: "1:1"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "1:2"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "1:3"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "1:4"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "2"
+      title: AZ EMBER MINT JOGALANY
+      element_type: Book
+  - StructuralElement:
+      identifier: "1"
+      title: A JOGKÉPESSÉG
+      element_type:
+        Part: {}
+  - StructuralElement:
+      identifier: "1"
+      title: A JOGKÉPESSÉG KEZDETE ÉS MEGSZŰNÉSE
+      element_type: Title
+  - Article:
+      identifier: "2:1"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "2:2"
+      children:
+        - body: "[Dummy title] (1) Dummy paragraph. (2) Dummy paragraph."
+  - StructuralElement:
+      identifier: "1a"
+      title: A HOLTNAK NYILVÁNÍTÁS
+      element_type: Title
+  - Article:
+      identifier: "2:3"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "2"
+      title: A CSELEKVŐKÉPESSÉG
+      element_type:
+        Part: {}
+  - StructuralElement:
+      identifier: "1b"
+      title: A CSELEKVŐKÉPESSÉG ÁLTALÁNOS SZABÁLYAI
+      element_type: Title
+  - Article:
+      identifier: "2:4"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "3"
+      title: A JOGI SZEMÉLY
+      element_type: Book
+  - StructuralElement:
+      identifier: "1"
+      title: A JOGI SZEMÉLY ÁLTALÁNOS SZABÁLYAI
+      element_type:
+        Part: {}
+  - StructuralElement:
+      identifier: "1"
+      title: ÁLTALÁNOS RENDELKEZÉSEK
+      element_type: Title
+  - Article:
+      identifier: "3:1"
+      children:
+        - body: Dummy article blah blah.
+  - Article:
+      identifier: "3:2"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "2"
+      title: A JOGI SZEMÉLY LÉTESÍTÉSE
+      element_type: Title
+  - StructuralElement:
+      identifier: "1"
+      title: A létesítés szabadsága
+      element_type: Chapter
+  - Article:
+      identifier: "3:3"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "1a"
+      title: A létesítő okirat
+      element_type: Chapter
+  - Article:
+      identifier: "3:4"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "2"
+      title: A gazdasági társaság szervezete
+      element_type: Chapter
+  - Subtitle:
+      identifier: "1"
+      title: A gazdasági társaság legfőbb szerve
+  - Article:
+      identifier: "3:5"
+      children:
+        - body: Dummy article blah blah.
+  - Subtitle:
+      identifier: "1a"
+      title: Ügyvezetés és képviselet
+  - Article:
+      identifier: "3:6"
+      children:
+        - body: Dummy article blah blah.
+  - StructuralElement:
+      identifier: "3"
+      title: Másolat a gazdasági társaság szervezetéről
+      element_type: Chapter
+  - Subtitle:
+      identifier: "1"
+      title: Másolat a gazdasági társaság legfőbb szervéről
+  - Article:
+      identifier: "3:7"
+      children:
+        - body: Dummy article blah blah.
+  - Subtitle:
+      identifier: "2"
+      title: Másolat az ügyvezetés és képviseletről
+  - Article:
+      identifier: "3:8"
+      children:
+        - body: Dummy article blah blah.
