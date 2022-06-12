@@ -19,18 +19,16 @@ use clap::Parser;
 use log::info;
 
 pub mod cache;
-pub mod mk_act_section_parser;
 pub mod mk_downloader;
-pub mod pdf_parser;
-pub mod util;
-pub mod structure;
+pub mod parser;
 pub mod reference;
-pub mod structure_parser;
+pub mod structure;
+pub mod util;
 
 use cache::Cache;
-use mk_act_section_parser::parse_mk_pages_into_acts;
 use mk_downloader::{download_mk_issue, MkIssue};
-use pdf_parser::{parse_pdf, CropBox, PageOfLines};
+use parser::mk_act_section::parse_mk_pages_into_acts;
+use parser::pdf::{parse_pdf, CropBox, PageOfLines};
 use util::indentedline::IndentedLine;
 
 #[derive(Parser, Debug)]

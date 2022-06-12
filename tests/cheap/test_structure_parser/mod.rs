@@ -16,9 +16,9 @@
 
 use crate::test_utils::test_data_from_file;
 use hun_law::{
-    mk_act_section_parser::ActRawText,
+    parser::mk_act_section::ActRawText,
+    parser::structure::parse_act_structure,
     structure::ActIdentifier,
-    structure_parser::parse_act_structure,
     util::{date::Date, indentedline::IndentedLine},
 };
 use pretty_assertions::assert_eq;

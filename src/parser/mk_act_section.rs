@@ -17,7 +17,7 @@
 use crate::structure::ActIdentifier;
 use crate::util::date::Date;
 use crate::util::indentedline::IndentedLine;
-use crate::{pdf_parser::PageOfLines, util::indentedline::EMPTY_LINE};
+use crate::{parser::pdf::PageOfLines, util::indentedline::EMPTY_LINE};
 
 use anyhow::{bail, Result};
 use regex::Regex;

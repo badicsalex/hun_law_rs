@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use hun_law::pdf_parser::{parse_pdf, CropBox};
+use hun_law::parser::pdf::{parse_pdf, CropBox};
 use hun_law::util::{indentedline::IndentedLine, is_default};
 
 use crate::test_utils::test_data_from_file;
