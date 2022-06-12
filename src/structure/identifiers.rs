@@ -18,6 +18,8 @@ use anyhow::{anyhow, bail, Error, Result};
 use serde::{Deserialize, Serialize};
 use std::{fmt::Display, str::FromStr};
 
+use crate::util::{DIGITS, ROMAN_DIGITS};
+
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ActIdentifier {
     pub year: i16,
@@ -103,9 +105,6 @@ impl NumericIdentifier {
         }
     }
 }
-
-const DIGITS: [char; 10] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-const ROMAN_DIGITS: [char; 7] = ['I', 'V', 'X', 'L', 'C', 'D', 'M'];
 
 impl FromStr for NumericIdentifier {
     type Err = Error;

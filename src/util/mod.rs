@@ -33,6 +33,9 @@ pub fn str_to_int_hun(s: &str) -> Option<u16> {
     generated::STR_TO_INT_HUN.get(s).copied()
 }
 
+pub const DIGITS: [char; 10] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+pub const ROMAN_DIGITS: [char; 7] = ['I', 'V', 'X', 'L', 'C', 'D', 'M'];
+
 #[cfg(test)]
 mod tests {
     use super::*;
