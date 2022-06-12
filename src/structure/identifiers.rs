@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{bail, Error, Result};
+use anyhow::{anyhow, bail, Error, Result};
 use serde::{Deserialize, Serialize};
 use std::{fmt::Display, str::FromStr};
 
@@ -72,40 +72,53 @@ impl NumericIdentifier {
         }
     }
 
-    fn split_suffix<'a>(s: &'a str, allowed_chars: &'static [char]) -> Result<(&'a str, &'a str)> {
+    pub fn from_roman(s: &str) -> Result<Self> {
+        let (num_str, suffix) = Self::split_suffix(s, &ROMAN_DIGITS)?;
+        let num = roman::from(num_str)
+            .ok_or_else(|| anyhow!("{} is not a valid suffixed roman numeral", s))?
+            as u16;
+        Ok(Self { num, suffix })
+    }
+
+    fn split_suffix<'a>(
+        s: &'a str,
+        allowed_chars: &'static [char],
+    ) -> Result<(&'a str, Option<HungarianIdentifierChar>)> {
         if let Some(suffix_start) = s.find(|c: char| !allowed_chars.contains(&c)) {
-            let (prefix, mut suffix) = s.split_at(suffix_start);
-            if suffix.as_bytes()[0] == b'/' {
-                suffix = &suffix[1..];
-                if suffix.is_empty() {
-                    bail!("There must be an actual suffix after '/'")
+            let (prefix, mut suffix_str) = s.split_at(suffix_start);
+            if suffix_str.as_bytes()[0] == b'/' {
+                suffix_str = &suffix_str[1..];
+                if suffix_str.is_empty() {
+                    bail!("There must be an actual suffix_str after '/'")
                 }
             }
+            let suffix = if suffix_str.is_empty() {
+                None
+            } else {
+                Some(suffix_str.parse()?)
+            };
             Ok((prefix, suffix))
         } else {
-            Ok((s, ""))
+            Ok((s, None))
         }
     }
 }
 
 const DIGITS: [char; 10] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const ROMAN_DIGITS: [char; 7] = ['I', 'V', 'X', 'L', 'C', 'D', 'M'];
 
 impl FromStr for NumericIdentifier {
     type Err = Error;
 
     /// Convert a possibly suffixed value to an identifier.
     fn from_str(value: &str) -> Result<Self, Self::Err> {
-        let (num_str, suffix_str) = Self::split_suffix(value, &DIGITS)?;
+        let (num_str, suffix) = Self::split_suffix(value, &DIGITS)?;
         if num_str.is_empty() {
             bail!("{} does not start with a number", value);
         }
         Ok(Self {
             num: num_str.parse()?,
-            suffix: if suffix_str.is_empty() {
-                None
-            } else {
-                Some(suffix_str.parse()?)
-            },
+            suffix,
         })
     }
 }
@@ -316,5 +329,51 @@ mod tests {
         assert!("12/aa".parse::<NumericIdentifier>().is_err());
         assert!("12//a".parse::<NumericIdentifier>().is_err());
         assert!("1:123".parse::<NumericIdentifier>().is_err());
+    }
+
+    #[test]
+    fn test_numeric_identifier_roman_parsing() {
+        assert_eq!(
+            NumericIdentifier::from_roman("XIV").unwrap(),
+            NumericIdentifier {
+                num: 14,
+                suffix: None
+            }
+        );
+        assert_eq!(
+            NumericIdentifier::from_roman("III/i").unwrap(),
+            NumericIdentifier {
+                num: 3,
+                suffix: Some(HungarianIdentifierChar::Latin(b'i'))
+            }
+        );
+        assert_eq!(
+            NumericIdentifier::from_roman("XCV/Z").unwrap(),
+            NumericIdentifier {
+                num: 95,
+                suffix: Some(HungarianIdentifierChar::Latin(b'z'))
+            }
+        );
+        assert_eq!(
+            NumericIdentifier::from_roman("C/C").unwrap(),
+            NumericIdentifier {
+                num: 100,
+                suffix: Some(HungarianIdentifierChar::Latin(b'c'))
+            }
+        );
+        assert_eq!(
+            NumericIdentifier::from_roman("XI/cs").unwrap(),
+            NumericIdentifier {
+                num: 11,
+                suffix: Some(HungarianIdentifierChar::Cs)
+            }
+        );
+        assert!(NumericIdentifier::from_roman("").is_err());
+        assert!(NumericIdentifier::from_roman("a").is_err());
+        assert!(NumericIdentifier::from_roman("I/").is_err());
+        assert!(NumericIdentifier::from_roman("II/").is_err());
+        assert!(NumericIdentifier::from_roman("II/aa").is_err());
+        assert!(NumericIdentifier::from_roman("II//a").is_err());
+        assert!(NumericIdentifier::from_roman("I:II").is_err());
     }
 }

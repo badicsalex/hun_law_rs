@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
+use anyhow::Result;
 use regex::Regex;
 
 use crate::{
@@ -49,17 +50,21 @@ impl StructuralElementParserFactory {
         &mut self,
         line: &IndentedLine,
     ) -> Option<StructuralElementParser> {
+        let identifier_str = self.title_regex.captures(line.content())?.get(1)?.as_str();
         Some(StructuralElementParser {
-            identifier: self
-                .title_regex
-                .captures(line.content())?
-                .get(1)?
-                .as_str()
-                .parse()
-                .ok()?,
+            identifier: self.parse_identifier(identifier_str).ok()?,
             title: String::new(),
             element_type: self.element_type.clone(),
         })
+    }
+
+    fn parse_identifier(&self, id: &str) -> Result<NumericIdentifier> {
+        match self.element_type {
+            StructuralElementType::Book => "1".parse(), // TODO: Hungarian number names
+            StructuralElementType::Part { .. } => "1".parse(), // TODO: Hungarian number names
+            StructuralElementType::Title => NumericIdentifier::from_roman(id),
+            StructuralElementType::Chapter => NumericIdentifier::from_roman(id),
+        }
     }
 }
 
