@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use serde::{Deserialize, Serialize};
+pub mod identifiers;
+pub use identifiers::*;
 
 use crate::util::{date::Date, indentedline::IndentedLine, is_default};
+use serde::{Deserialize, Serialize};
 
 //  Main act on which all the code was based:
 //  61/2009. (XII. 14.) IRM rendelet a jogszabályszerkesztésről
@@ -77,22 +79,6 @@ pub struct Act {
     pub preamble: String,
     pub publication_date: Date,
     pub children: Vec<ActChild>,
-}
-
-#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ActIdentifier {
-    pub year: i16,
-    pub number: i32,
-}
-
-impl ToString for ActIdentifier {
-    fn to_string(&self) -> String {
-        format!(
-            "{:?}. évi {}. törvény",
-            self.year,
-            roman::to(self.number).unwrap()
-        )
-    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
