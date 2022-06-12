@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, bail, Error, Result};
+use anyhow::{bail, Error, Result};
 use serde::{Deserialize, Serialize};
 use std::{fmt::Display, str::FromStr};
 
@@ -37,7 +37,7 @@ impl Display for ActIdentifier {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct NumericIdentifier {
-    num: u32,
+    num: u16,
     suffix: Option<HungarianIdentifierChar>,
 }
 
@@ -69,38 +69,42 @@ impl NumericIdentifier {
             (Some(ss), Some(so)) => self.num == other.num && ss.is_next_from(so),
         }
     }
+
+    fn split_suffix<'a>(s: &'a str, allowed_chars: &'static [char]) -> Result<(&'a str, &'a str)> {
+        if let Some(suffix_start) = s.find(|c: char| !allowed_chars.contains(&c)) {
+            let (prefix, mut suffix) = s.split_at(suffix_start);
+            if suffix.as_bytes()[0] == b'/' {
+                suffix = &suffix[1..];
+                if suffix.is_empty() {
+                    bail!("There must be an actual suffix after '/'")
+                }
+            }
+            Ok((prefix, suffix))
+        } else {
+            Ok((s, ""))
+        }
+    }
 }
+
+const DIGITS: [char; 10] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 impl FromStr for NumericIdentifier {
     type Err = Error;
 
     /// Convert a possibly suffixed value to an identifier.
     fn from_str(value: &str) -> Result<Self, Self::Err> {
-        let mut iter = value.chars().peekable();
-        let mut num = iter
-            .next()
-            .ok_or_else(|| anyhow!("Numeric identifier cannot be created from an empty string"))?
-            .to_digit(10)
-            .ok_or_else(|| anyhow!("First character was not a number during string to numeric identifier conversion"))?;
-        let mut suffix: Option<HungarianIdentifierChar> = None;
-
-        while let Some(d) = iter.peek().and_then(|c| c.to_digit(10)) {
-            num = num * 10 + d;
-            iter.next();
+        let (num_str, suffix_str) = Self::split_suffix(value, &DIGITS)?;
+        if num_str.is_empty() {
+            bail!("{} does not start with a number", value);
         }
-
-        if iter.peek() == Some(&'/') {
-            iter.next();
-            if iter.peek().is_none() {
-                bail!("Suffix cannot be empty after '/' in numeric identifiers")
-            }
-        }
-
-        let suffix_str: String = iter.collect();
-        if !suffix_str.is_empty() {
-            suffix = Some(suffix_str.parse()?);
-        }
-        Ok(Self { num, suffix })
+        Ok(Self {
+            num: num_str.parse()?,
+            suffix: if suffix_str.is_empty() {
+                None
+            } else {
+                Some(suffix_str.parse()?)
+            },
+        })
     }
 }
 
