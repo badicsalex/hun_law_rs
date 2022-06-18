@@ -48,8 +48,9 @@ children:
         - body: Dummy article blah blah.
   - Article:
       identifier: "2:2"
+      title: Dummy title
       children:
-        - body: "[Dummy title] (1) Dummy paragraph. (2) Dummy paragraph."
+        - body: "(1) Dummy paragraph. (2) Dummy paragraph."
   - StructuralElement:
       identifier: "2"
       title: A HOLTNAK NYILVÁNÍTÁS

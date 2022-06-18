@@ -72,7 +72,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
         if let Some(new_state) = new_state {
             match state {
                 ParseState::Preamble => (),
-                ParseState::Article(parser) => children.push(ActChild::Article(parser.finish())),
+                ParseState::Article(parser) => children.push(ActChild::Article(parser.finish()?)),
                 ParseState::StructuralElement(parser) => {
                     children.push(ActChild::StructuralElement(parser.finish()))
                 }
@@ -98,7 +98,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
     }
     match state {
         ParseState::Preamble => bail!("Parsing ended with preamble state"),
-        ParseState::Article(parser) => children.push(ActChild::Article(parser.finish())),
+        ParseState::Article(parser) => children.push(ActChild::Article(parser.finish()?)),
         ParseState::StructuralElement(parser) => {
             children.push(ActChild::StructuralElement(parser.finish()))
         }

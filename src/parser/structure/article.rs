@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use anyhow::{anyhow, Result};
 use regex::Regex;
 
 use crate::{
@@ -47,7 +48,7 @@ impl ArticleParserFactory {
             let contents = vec![line.slice_bytes(content_from, Some(content_to))];
             Some(ArticleParser {
                 identifier,
-                contents,
+                lines: contents,
             })
         } else {
             None
@@ -58,21 +59,22 @@ impl ArticleParserFactory {
 #[derive(Debug)]
 pub struct ArticleParser {
     identifier: String,
-    contents: Vec<IndentedLine>,
+    lines: Vec<IndentedLine>,
 }
 
 impl ArticleParser {
     pub fn feed_line(&mut self, line: &IndentedLine) {
-        self.contents.push(line.clone())
+        self.lines.push(line.clone())
     }
-    pub fn finish(self) -> Article {
-        Article {
+    pub fn finish(mut self) -> Result<Article> {
+        let title = self.extract_title()?;
+        Ok(Article {
             identifier: self.identifier,
-            title: None,
+            title,
             children: vec![Paragraph {
                 identifier: "".to_string(),
                 body: SAEBody::Text(
-                    self.contents
+                    self.lines
                         .iter()
                         .filter(|l| !l.is_empty())
                         .map(|l| l.content())
@@ -80,6 +82,23 @@ impl ArticleParser {
                         .join(" "),
                 ),
             }],
+        })
+    }
+
+    fn extract_title(&mut self) -> Result<Option<String>> {
+        if !self.lines[0].content().starts_with('[') {
+            return Ok(None);
+        };
+        let mut title = self.lines.remove(0).content()[1..].to_string();
+        while !title.ends_with(']') && !self.lines.is_empty() {
+            title.push(' ');
+            title.push_str(self.lines.remove(0).content());
+        }
+        if !title.ends_with(']') {
+            Err(anyhow!("Could not find ']' for article title matching."))
+        } else {
+            title.pop();
+            Ok(Some(title))
         }
     }
 }

@@ -1,0 +1,21 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1:1"
+      title: A törvény hatálya
+      children:
+        - body: E törvény a mellérendeltség és egyenjogúság elve szerint szabályozza a személyek alapvető vagyoni és személyi viszonyait.
+  - Article:
+      identifier: "1:2"
+      title: Értelmezési alapelv
+      children:
+        - body: (1) E törvény rendelkezéseit Magyarország alkotmányos rendjével összhangban kell értelmezni. (2) A polgári jogi viszonyokra vonatkozó jogszabályokat e törvénnyel összhangban kell értelmezni.

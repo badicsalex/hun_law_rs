@@ -35,6 +35,7 @@ fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
 #[rstest]
 #[case("structural_elements_1")]
 #[case("structural_elements_2")]
+#[case("articles_with_title")]
 fn test_structure_parser(#[case] name: &str) {
     let data = test_data_from_file!(format!("data/{}.txt", name));
     let data_as_lines = to_indented_lines(&data);
