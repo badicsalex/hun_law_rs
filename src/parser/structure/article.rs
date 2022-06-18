@@ -35,11 +35,19 @@ impl ArticleParserFactory {
     }
 
     pub fn try_create_from_header(&mut self, line: &IndentedLine) -> Option<ArticleParser> {
-        if let Some(captures) = self.header_regex.captures(line.content()) {
-            println!("{:?}", captures);
+        let line_content = line.content();
+        let mut capture_locations = self.header_regex.capture_locations();
+        let regex_match = self
+            .header_regex
+            .captures_read(&mut capture_locations, line_content);
+        if regex_match.is_some() {
+            let (identifier_from, identifier_to) = capture_locations.get(1).unwrap();
+            let identifier = line_content[identifier_from..identifier_to].to_string();
+            let (content_from, content_to) = capture_locations.get(5).unwrap();
+            let contents = vec![line.slice_bytes(content_from, Some(content_to))];
             Some(ArticleParser {
-                identifier: captures.get(1).unwrap().as_str().to_string(),
-                contents: captures.get(5).unwrap().as_str().to_string(),
+                identifier,
+                contents,
             })
         } else {
             None
@@ -50,16 +58,13 @@ impl ArticleParserFactory {
 #[derive(Debug)]
 pub struct ArticleParser {
     identifier: String,
-    contents: String,
+    contents: Vec<IndentedLine>,
 }
 
 impl ArticleParser {
     pub fn feed_line(&mut self, line: &IndentedLine) {
         if !line.is_empty() {
-            if !self.contents.is_empty() {
-                self.contents.push(' ');
-            }
-            self.contents.push_str(line.content())
+            self.contents.push(line.clone())
         }
         /* intentionally left blank */
     }
@@ -69,7 +74,13 @@ impl ArticleParser {
             title: None,
             children: vec![Paragraph {
                 identifier: "".to_string(),
-                body: SAEBody::Text(self.contents),
+                body: SAEBody::Text(
+                    self.contents
+                        .iter()
+                        .map(|l| l.content())
+                        .collect::<Vec<&str>>()
+                        .join(" "),
+                ),
             }],
         }
     }
