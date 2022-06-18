@@ -91,8 +91,7 @@ impl IndentedLine {
         self.parts.is_empty()
     }
 
-    #[allow(dead_code)]
-    fn slice(&self, from: i64, to: Option<i64>) -> IndentedLine {
+    pub fn slice(&self, from: i64, to: Option<i64>) -> IndentedLine {
         let len = self.len() as i64;
         let from = if from >= 0 { from } else { len + from };
         let from = from.clamp(0, len) as usize;
