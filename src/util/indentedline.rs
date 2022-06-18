@@ -117,6 +117,25 @@ impl IndentedLine {
         Self::from_parts(new_parts.to_owned())
     }
 
+    pub fn slice_bytes(&self, from: usize, to: Option<usize>) -> IndentedLine {
+        let chars_from = self
+            .content()
+            .char_indices()
+            .position(|(cp, _)| cp == from)
+            .unwrap() as i64;
+        let chars_to = to.map(|to_inner| {
+            if to_inner >= self.content().as_bytes().len() {
+                self.content().chars().count() as i64
+            } else {
+                self.content()
+                    .char_indices()
+                    .position(|(cp, _)| cp == to_inner)
+                    .unwrap() as i64
+            }
+        });
+        self.slice(chars_from, chars_to)
+    }
+
     pub fn from_test_str(s: &str) -> Self {
         let mut parts = Vec::<IndentedLinePart>::new();
         let mut spaces_num = 1;
@@ -322,5 +341,117 @@ mod tests {
             IndentedLine::from_test_str(" <BOLD> bld"),
             IndentedLine::from_parts(vec![ilpb(50.0, 'b'), ilpb(5.0, 'l'), ilpb(5.0, 'd'),])
         )
+    }
+
+    #[test]
+    fn test_slice_bytes() {
+        let line = IndentedLine::from_parts(vec![
+            IndentedLinePart {
+                dx: 75.0,
+                content: '2',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: ':',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: '2',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: '.',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: ' ',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 10.0,
+                content: '§',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: ' ',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 10.0,
+                content: '[',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 'D',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 'u',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 'm',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 'm',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 'y',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: ' ',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 10.0,
+                content: 't',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 'i',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 't',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 'l',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: 'e',
+                bold: false,
+            },
+            IndentedLinePart {
+                dx: 5.0,
+                content: ']',
+                bold: false,
+            },
+        ]);
+        assert_eq!(&"2:2. § [Dummy title]"[8..21], "[Dummy title]");
+        assert_eq!(line.content(), "2:2. § [Dummy title]");
+        assert_eq!(line.slice_bytes(8, Some(21)).content(), "[Dummy title]");
+        assert_eq!(line.slice_bytes(8, None).content(), "[Dummy title]");
+        assert_eq!(line.slice_bytes(8, Some(15)).content(), "[Dummy ");
+        assert_eq!(line.slice_bytes(2, Some(15)).content(), "2. § [Dummy ");
     }
 }
