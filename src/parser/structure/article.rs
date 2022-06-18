@@ -63,10 +63,7 @@ pub struct ArticleParser {
 
 impl ArticleParser {
     pub fn feed_line(&mut self, line: &IndentedLine) {
-        if !line.is_empty() {
-            self.contents.push(line.clone())
-        }
-        /* intentionally left blank */
+        self.contents.push(line.clone())
     }
     pub fn finish(self) -> Article {
         Article {
@@ -77,6 +74,7 @@ impl ArticleParser {
                 body: SAEBody::Text(
                     self.contents
                         .iter()
+                        .filter(|l| !l.is_empty())
                         .map(|l| l.content())
                         .collect::<Vec<&str>>()
                         .join(" "),
