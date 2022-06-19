@@ -42,26 +42,24 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
     let mut preamble = String::new();
     let mut children: Vec<ActChild> = Vec::new();
     let mut state = ParseState::Preamble;
-    let mut se_parser_factories = [
+    let se_parser_factories = [
         StructuralElementParserFactory::new(StructuralElementType::Book),
         StructuralElementParserFactory::new(StructuralElementType::Part { is_special: false }),
         StructuralElementParserFactory::new(StructuralElementType::Title),
         StructuralElementParserFactory::new(StructuralElementType::Chapter),
     ];
-    let mut subtitle_parser_factory = SubtitleParserFactory::new();
     let mut article_parser_factory = ArticleParserFactory::new();
 
     let mut prev_line_is_empty = true;
     for line in lines {
         let new_state = se_parser_factories
-            .iter_mut()
+            .iter()
             .find_map(|fac| {
                 fac.try_create_from_header(line)
                     .map(ParseState::StructuralElement)
             })
             .or_else(|| {
-                subtitle_parser_factory
-                    .try_create_from_header(line, prev_line_is_empty)
+                SubtitleParserFactory::try_create_from_header(line, prev_line_is_empty)
                     .map(ParseState::Subtitle)
             })
             .or_else(|| {

@@ -23,16 +23,12 @@ use crate::{
 };
 
 pub struct StructuralElementParserFactory {
-    last_id: Option<String>,
     element_type: StructuralElementType,
 }
 
 impl StructuralElementParserFactory {
     pub fn new(element_type: StructuralElementType) -> Self {
-        Self {
-            last_id: None,
-            element_type,
-        }
+        Self { element_type }
     }
 
     fn get_title_regex(&self) -> &'static Regex {
@@ -44,10 +40,7 @@ impl StructuralElementParserFactory {
         }
     }
 
-    pub fn try_create_from_header(
-        &mut self,
-        line: &IndentedLine,
-    ) -> Option<StructuralElementParser> {
+    pub fn try_create_from_header(&self, line: &IndentedLine) -> Option<StructuralElementParser> {
         let identifier_str = self
             .get_title_regex()
             .captures(line.content())?

@@ -20,16 +20,10 @@ use crate::{
     util::indentedline::IndentedLine,
 };
 
-pub struct SubtitleParserFactory {
-    last_id: Option<String>,
-}
+pub enum SubtitleParserFactory {}
 
 impl SubtitleParserFactory {
-    pub fn new() -> Self {
-        Self { last_id: None }
-    }
     pub fn try_create_from_header(
-        &mut self,
         line: &IndentedLine,
         prev_line_is_empty: bool,
     ) -> Option<SubtitleParser> {
