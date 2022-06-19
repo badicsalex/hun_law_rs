@@ -15,7 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{anyhow, Result};
-use regex::Regex;
+use lazy_regex::regex_captures;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -35,15 +35,13 @@ impl Date {
     /// ```
     pub fn from_hungarian_string(s: &str) -> Result<Self> {
         // This is not a performance critical part, so I won't bother with 'optimizing' this regex
-        let captures = Regex::new(r"^(\d{4}). ([^ ]+) (\d{1,2}).")
-            .unwrap()
-            .captures(s)
+        let (_, year, month, day) = regex_captures!(r"^(\d{4}). ([^ ]+) (\d{1,2}).", s)
             .ok_or_else(|| anyhow!("Could not parse date string {}", s))?;
 
         Ok(Date {
-            year: captures[1].parse()?,
-            month: text_to_month_hun(&captures[2])?,
-            day: captures[3].parse()?,
+            year: year.parse()?,
+            month: text_to_month_hun(month)?,
+            day: day.parse()?,
         })
     }
 }

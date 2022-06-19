@@ -15,7 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{anyhow, Result};
-use regex::Regex;
+use lazy_regex::regex;
 
 use crate::{
     structure::{Article, Paragraph, SAEBody},
@@ -24,23 +24,18 @@ use crate::{
 
 pub struct ArticleParserFactory {
     last_id: Option<String>,
-    header_regex: Regex,
 }
 
 impl ArticleParserFactory {
     pub fn new() -> Self {
-        Self {
-            last_id: None,
-            header_regex: Regex::new("^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$").unwrap(),
-        }
+        Self { last_id: None }
     }
 
     pub fn try_create_from_header(&mut self, line: &IndentedLine) -> Option<ArticleParser> {
         let line_content = line.content();
-        let mut capture_locations = self.header_regex.capture_locations();
-        let regex_match = self
-            .header_regex
-            .captures_read(&mut capture_locations, line_content);
+        let header_regex = regex!("^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$");
+        let mut capture_locations = header_regex.capture_locations();
+        let regex_match = header_regex.captures_read(&mut capture_locations, line_content);
         if regex_match.is_some() {
             let (identifier_from, identifier_to) = capture_locations.get(1).unwrap();
             let identifier = line_content[identifier_from..identifier_to].to_string();

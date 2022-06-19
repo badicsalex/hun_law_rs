@@ -20,7 +20,7 @@ use crate::util::indentedline::IndentedLine;
 use crate::{parser::pdf::PageOfLines, util::indentedline::EMPTY_LINE};
 
 use anyhow::{bail, Result};
-use regex::Regex;
+use lazy_regex::regex_captures;
 
 #[derive(Debug, Default)]
 pub struct ActRawText {
@@ -32,7 +32,6 @@ pub struct ActRawText {
 
 struct ActExtractor {
     publication_date: Date,
-    act_header_regex: Regex,
     current_act: ActRawText,
     result: Vec<ActRawText>,
     state: ActExtractionState,
@@ -53,7 +52,6 @@ impl ActExtractor {
         Self {
             current_act: Default::default(),
             state: WaitingForHeaderNewline,
-            act_header_regex: Regex::new("^([12][09][0-9][0-9]). évi ([IVXLC]+). törvény").unwrap(),
             publication_date,
             result: Vec::new(),
         }
@@ -78,9 +76,12 @@ impl ActExtractor {
     }
 
     fn wait_for_header(&mut self, line: &IndentedLine) -> ActExtractionState {
-        if let Some(captures) = self.act_header_regex.captures(line.content()) {
-            if let Ok(year) = captures[1].parse::<i16>() {
-                if let Some(number) = roman::from(&captures[2]) {
+        if let Some((_, year_str, num_str)) = regex_captures!(
+            "^([12][09][0-9][0-9]). évi ([IVXLC]+). törvény",
+            line.content()
+        ) {
+            if let Ok(year) = year_str.parse::<i16>() {
+                if let Some(number) = roman::from(num_str) {
                     self.current_act.identifier = ActIdentifier { year, number };
                     return ParsingActSubject;
                 }

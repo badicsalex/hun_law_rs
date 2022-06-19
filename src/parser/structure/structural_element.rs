@@ -7,14 +7,14 @@
 // the Free Software Foundation, version 3 of the License.
 //
 // Hun-law is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// but WITHOUT ANY Wut even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 use anyhow::{anyhow, Result};
-use regex::Regex;
+use lazy_regex::{regex, Regex};
 
 use crate::{
     structure::{NumericIdentifier, StructuralElement, StructuralElementType},
@@ -25,33 +25,34 @@ use crate::{
 pub struct StructuralElementParserFactory {
     last_id: Option<String>,
     element_type: StructuralElementType,
-    title_regex: Regex,
 }
 
 impl StructuralElementParserFactory {
     pub fn new(element_type: StructuralElementType) -> Self {
         Self {
             last_id: None,
-            element_type: element_type.clone(),
-            title_regex: Self::create_title_regex(element_type),
+            element_type,
         }
     }
 
-    fn create_title_regex(element_type: StructuralElementType) -> Regex {
-        Regex::new(match element_type {
-            StructuralElementType::Book => "^(.*) KÖNYV$",
-            StructuralElementType::Part { .. } => "^(.*) RÉSZ$",
-            StructuralElementType::Title => "^(.*)\\. CÍM$",
-            StructuralElementType::Chapter => "^(?i)(.*)\\. fejezet$",
-        })
-        .unwrap()
+    fn get_title_regex(&self) -> &'static Regex {
+        match self.element_type {
+            StructuralElementType::Book => regex!("^(.*) KÖNYV$"),
+            StructuralElementType::Part { .. } => regex!("^(.*) RÉSZ$"),
+            StructuralElementType::Title => regex!("^(.*)\\. CÍM$"),
+            StructuralElementType::Chapter => regex!("^(?i)(.*)\\. fejezet$"),
+        }
     }
 
     pub fn try_create_from_header(
         &mut self,
         line: &IndentedLine,
     ) -> Option<StructuralElementParser> {
-        let identifier_str = self.title_regex.captures(line.content())?.get(1)?.as_str();
+        let identifier_str = self
+            .get_title_regex()
+            .captures(line.content())?
+            .get(1)?
+            .as_str();
         Some(StructuralElementParser {
             identifier: self.parse_identifier(identifier_str).ok()?,
             title: String::new(),

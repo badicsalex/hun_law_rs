@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
-use regex::Regex;
+use lazy_regex::regex_captures;
 
 use crate::{
     structure::{NumericIdentifier, Subtitle},
@@ -22,15 +22,11 @@ use crate::{
 
 pub struct SubtitleParserFactory {
     last_id: Option<String>,
-    title_regex: Regex,
 }
 
 impl SubtitleParserFactory {
     pub fn new() -> Self {
-        Self {
-            last_id: None,
-            title_regex: Regex::new("^([0-9]+(/[A-Z])?)\\. (.*)$").unwrap(),
-        }
+        Self { last_id: None }
     }
     pub fn try_create_from_header(
         &mut self,
@@ -39,10 +35,12 @@ impl SubtitleParserFactory {
     ) -> Option<SubtitleParser> {
         if !line.is_bold() {
             None
-        } else if let Some(captures) = self.title_regex.captures(line.content()) {
+        } else if let Some((_, identifier, _, title)) =
+            regex_captures!("^([0-9]+(/[A-Z])?)\\. (.*)$", line.content())
+        {
             Some(SubtitleParser {
-                identifier: Some(captures.get(1).unwrap().as_str().parse().ok()?),
-                title: captures.get(3).unwrap().as_str().to_string(),
+                identifier: Some(identifier.parse().ok()?),
+                title: title.to_string(),
             })
         } else if prev_line_is_empty && line.content().chars().next()?.is_uppercase() {
             Some(SubtitleParser {
