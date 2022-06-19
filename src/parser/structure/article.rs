@@ -17,12 +17,15 @@
 use anyhow::{anyhow, Result};
 use lazy_regex::regex;
 
-use crate::{structure::Article, util::indentedline::IndentedLine};
+use crate::{
+    structure::{Article, ArticleIdentifier},
+    util::indentedline::IndentedLine,
+};
 
 use super::paragraph::ParagraphParser;
 
 pub struct ArticleParserFactory {
-    last_id: Option<String>,
+    last_id: Option<ArticleIdentifier>,
 }
 
 impl ArticleParserFactory {
@@ -34,25 +37,38 @@ impl ArticleParserFactory {
         let line_content = line.content();
         let header_regex = regex!("^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$");
         let mut capture_locations = header_regex.capture_locations();
-        let regex_match = header_regex.captures_read(&mut capture_locations, line_content);
-        if regex_match.is_some() {
-            let (identifier_from, identifier_to) = capture_locations.get(1).unwrap();
-            let identifier = line_content[identifier_from..identifier_to].to_string();
-            let (content_from, content_to) = capture_locations.get(5).unwrap();
-            let contents = vec![line.slice_bytes(content_from, Some(content_to))];
-            Some(ArticleParser {
-                identifier,
-                lines: contents,
-            })
-        } else {
-            None
+
+        // This is called for its side-effects, and the '?' is important.
+        header_regex.captures_read(&mut capture_locations, line_content)?;
+
+        let (identifier_from, identifier_to) = capture_locations.get(1).unwrap();
+        let identifier: ArticleIdentifier = line_content[identifier_from..identifier_to]
+            .to_string()
+            .parse()
+            .ok()?;
+
+        if let Some(last_id) = self.last_id {
+            if !identifier.is_next_from(last_id) {
+                return None;
+            }
+        } else if !identifier.is_first() {
+            return None;
         }
+
+        let (content_from, content_to) = capture_locations.get(5).unwrap();
+        let contents = vec![line.slice_bytes(content_from, Some(content_to))];
+
+        self.last_id = Some(identifier);
+        Some(ArticleParser {
+            identifier,
+            lines: contents,
+        })
     }
 }
 
 #[derive(Debug)]
 pub struct ArticleParser {
-    identifier: String,
+    identifier: ArticleIdentifier,
     lines: Vec<IndentedLine>,
 }
 
@@ -72,7 +88,7 @@ impl ArticleParser {
             self.lines.remove(0);
         }
         Ok(Article {
-            identifier: self.identifier.parse()?,
+            identifier: self.identifier,
             title,
             children: ParagraphParser::parse_article_body(&self.lines)?,
         })
