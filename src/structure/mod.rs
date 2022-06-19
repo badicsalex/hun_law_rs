@@ -17,7 +17,7 @@
 pub mod identifiers;
 pub use identifiers::*;
 
-use crate::util::{date::Date, indentedline::IndentedLine, is_default};
+use crate::util::{date::Date, indentedline::IndentedLine, is_default, IsDefault};
 use serde::{Deserialize, Serialize};
 
 //  Main act on which all the code was based:
@@ -143,10 +143,9 @@ pub struct Article {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct SubArticleElement<ChildrenType> {
-    // An empty id is only really allowable for Paragraphs, but let's not go into that for now.
-    #[serde(default, skip_serializing_if = "is_default")]
-    pub identifier: String,
+pub struct SubArticleElement<IdentifierType: IsDefault, ChildrenType> {
+    #[serde(skip_serializing_if = "is_default")]
+    pub identifier: IdentifierType,
     pub body: SAEBody<ChildrenType>,
 }
 
@@ -162,7 +161,7 @@ pub enum SAEBody<ChildrenType> {
     },
 }
 
-pub type Paragraph = SubArticleElement<ParagraphChildren>;
+pub type Paragraph = SubArticleElement<Option<NumericIdentifier>, ParagraphChildren>;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ParagraphChildren {
     AlphabeticPoint(Vec<AlphabeticPoint>),
@@ -171,25 +170,25 @@ pub enum ParagraphChildren {
     BlockAmendment(Vec<BlockAmendment>),
 }
 
-pub type AlphabeticPoint = SubArticleElement<AlphabeticPointChildren>;
+pub type AlphabeticPoint = SubArticleElement<String, AlphabeticPointChildren>;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AlphabeticPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
     NumericSubpoint(Vec<NumericSubpoint>),
 }
 
-pub type NumericPoint = SubArticleElement<NumericPointChildren>;
+pub type NumericPoint = SubArticleElement<NumericIdentifier, NumericPointChildren>;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NumericPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
 }
 
-pub type AlphabeticSubpoint = SubArticleElement<AlphabeticSubpointChildren>;
+pub type AlphabeticSubpoint = SubArticleElement<String, AlphabeticSubpointChildren>;
 // Creating different empty enums is necessary to distinguish between this class and NumericSubpoint
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AlphabeticSubpointChildren {}
 
-pub type NumericSubpoint = SubArticleElement<NumericSubpointChildren>;
+pub type NumericSubpoint = SubArticleElement<NumericIdentifier, NumericSubpointChildren>;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NumericSubpointChildren {}
 

@@ -18,7 +18,7 @@ use anyhow::{anyhow, bail, Error, Result};
 use serde::{Deserialize, Serialize};
 use std::{fmt::Display, str::FromStr};
 
-use crate::util::{DIGITS, ROMAN_DIGITS};
+use crate::util::{IsDefault, DIGITS, ROMAN_DIGITS};
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ActIdentifier {
@@ -151,6 +151,12 @@ impl From<u16> for NumericIdentifier {
             num: val,
             suffix: None,
         }
+    }
+}
+
+impl IsDefault for NumericIdentifier {
+    fn is_default(&self) -> bool {
+        false
     }
 }
 

@@ -17,8 +17,21 @@
 pub mod date;
 pub mod indentedline;
 
-pub fn is_default<T: Default + PartialEq>(t: &T) -> bool {
-    t == &T::default()
+pub trait IsDefault {
+    fn is_default(&self) -> bool;
+}
+
+impl<T> IsDefault for T
+where
+    T: Default + PartialEq,
+{
+    fn is_default(&self) -> bool {
+        *self == Self::default()
+    }
+}
+
+pub fn is_default<T: IsDefault>(t: &T) -> bool {
+    t.is_default()
 }
 
 mod generated {

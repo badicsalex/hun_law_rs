@@ -52,7 +52,7 @@ fn get_test_structure() -> Act {
                 identifier: "1:1".into(),
                 title: Some("Az egyetlen cikk, aminek cime van.".into()),
                 children: vec![Paragraph {
-                    identifier: "".into(),
+                    identifier: None,
                     body: SAEBody::Text("Meg szövege".into()),
                 }],
             }),
@@ -61,11 +61,11 @@ fn get_test_structure() -> Act {
                 title: None,
                 children: vec![
                     Paragraph {
-                        identifier: "1".into(),
+                        identifier: Some(1.into()),
                         body: SAEBody::Text("Valami valami".into()),
                     },
                     Paragraph {
-                        identifier: "2".into(),
+                        identifier: Some(2.into()),
                         body: SAEBody::Children {
                             intro: "Egy felsorolás legyen".into(),
                             wrap_up: "minden esetben.".into(),
@@ -116,7 +116,7 @@ fn get_test_structure() -> Act {
                 identifier: "2:1".into(),
                 title: None,
                 children: vec![Paragraph {
-                    identifier: "".into(),
+                    identifier: None,
                     body: SAEBody::Text("Nothing fancy yet".into()),
                 }],
             }),
@@ -133,7 +133,7 @@ fn get_test_structure() -> Act {
                 identifier: "2:1/A".into(),
                 title: None,
                 children: vec![Paragraph {
-                    identifier: "".into(),
+                    identifier: None,
                     body: SAEBody::Text("Added after the fact".into()),
                 }],
             }),
@@ -141,21 +141,21 @@ fn get_test_structure() -> Act {
                 identifier: "2:2".into(),
                 title: None,
                 children: vec![Paragraph {
-                    identifier: "1".into(),
+                    identifier: Some(1.into()),
                     body: SAEBody::Children {
                         intro: "This can legally be after 2:1/A. Also, ".into(),
                         wrap_up: "Can also be amended".into(),
                         children: ParagraphChildren::NumericPoint(vec![
                             NumericPoint {
-                                identifier: "1".into(),
+                                identifier: 1.into(),
                                 body: SAEBody::Text("Paragraphs".into()),
                             },
                             NumericPoint {
-                                identifier: "1a".into(),
+                                identifier: "1a".parse().unwrap(),
                                 body: SAEBody::Text("Numeric points".into()),
                             },
                             NumericPoint {
-                                identifier: "2".into(),
+                                identifier: 2.into(),
                                 body: SAEBody::Text("Alphabetic points".into()),
                             },
                         ]),
