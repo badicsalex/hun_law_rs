@@ -65,10 +65,11 @@ impl NumericIdentifier {
     /// assert!(!check_is_next_from("12a", "11"));
     /// assert!(!check_is_next_from("13", "11"));
     /// assert!(!check_is_next_from("11", "11"));
+    /// assert!(!check_is_next_from("11", "12"));
     /// ```
     pub fn is_next_from(&self, other: Self) -> bool {
         match (self.suffix, other.suffix) {
-            (None, _) => self.num - other.num == 1,
+            (None, _) => self.num.wrapping_sub(other.num) == 1,
             (Some(ss), None) => self.num == other.num && ss.is_first(),
             (Some(ss), Some(so)) => self.num == other.num && ss.is_next_from(so),
         }
