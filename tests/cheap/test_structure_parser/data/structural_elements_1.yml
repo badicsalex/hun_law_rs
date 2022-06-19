@@ -50,7 +50,10 @@ children:
       identifier: "2:2"
       title: Dummy title
       children:
-        - body: "(1) Dummy paragraph. (2) Dummy paragraph."
+        - identifier: "1"
+          body: Dummy paragraph.
+        - identifier: "2"
+          body: Dummy paragraph.
   - StructuralElement:
       identifier: "2"
       title: A HOLTNAK NYILVÁNÍTÁS

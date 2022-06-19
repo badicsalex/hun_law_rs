@@ -17,10 +17,9 @@
 use anyhow::{anyhow, Result};
 use lazy_regex::regex;
 
-use crate::{
-    structure::{Article, Paragraph, SAEBody},
-    util::indentedline::IndentedLine,
-};
+use crate::{structure::Article, util::indentedline::IndentedLine};
+
+use super::paragraph::ParagraphParser;
 
 pub struct ArticleParserFactory {
     last_id: Option<String>,
@@ -66,17 +65,7 @@ impl ArticleParser {
         Ok(Article {
             identifier: self.identifier,
             title,
-            children: vec![Paragraph {
-                identifier: "".to_string(),
-                body: SAEBody::Text(
-                    self.lines
-                        .iter()
-                        .filter(|l| !l.is_empty())
-                        .map(|l| l.content())
-                        .collect::<Vec<&str>>()
-                        .join(" "),
-                ),
-            }],
+            children: ParagraphParser::parse_article_body(&self.lines)?,
         })
     }
 

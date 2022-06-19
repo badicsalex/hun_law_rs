@@ -15,6 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 mod act;
 mod article;
+mod paragraph;
 mod structural_element;
 mod subtitle;
 
