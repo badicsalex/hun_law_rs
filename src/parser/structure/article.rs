@@ -72,7 +72,7 @@ impl ArticleParser {
             self.lines.remove(0);
         }
         Ok(Article {
-            identifier: self.identifier,
+            identifier: self.identifier.parse()?,
             title,
             children: ParagraphParser::parse_article_body(&self.lines)?,
         })

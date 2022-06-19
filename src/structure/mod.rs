@@ -136,7 +136,7 @@ pub enum StructuralElementType {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Article {
-    pub identifier: String,
+    pub identifier: ArticleIdentifier,
     #[serde(default, skip_serializing_if = "is_default")]
     pub title: Option<String>,
     pub children: Vec<Paragraph>,

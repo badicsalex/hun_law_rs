@@ -49,7 +49,7 @@ fn get_test_structure() -> Act {
                 title: "Alcim id nelkul".into(),
             }),
             ActChild::Article(Article {
-                identifier: "1:1".into(),
+                identifier: "1:1".parse().unwrap(),
                 title: Some("Az egyetlen cikk, aminek cime van.".into()),
                 children: vec![Paragraph {
                     identifier: None,
@@ -57,7 +57,7 @@ fn get_test_structure() -> Act {
                 }],
             }),
             ActChild::Article(Article {
-                identifier: "1:2".into(),
+                identifier: "1:2".parse().unwrap(),
                 title: None,
                 children: vec![
                     Paragraph {
@@ -113,7 +113,7 @@ fn get_test_structure() -> Act {
                 title: "Alcim id-vel".into(),
             }),
             ActChild::Article(Article {
-                identifier: "2:1".into(),
+                identifier: "2:1".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
                     identifier: None,
@@ -130,7 +130,7 @@ fn get_test_structure() -> Act {
                 title: "Alcim amendelt id-vel".into(),
             }),
             ActChild::Article(Article {
-                identifier: "2:1/A".into(),
+                identifier: "2:1/A".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
                     identifier: None,
@@ -138,7 +138,7 @@ fn get_test_structure() -> Act {
                 }],
             }),
             ActChild::Article(Article {
-                identifier: "2:2".into(),
+                identifier: "2:2".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
                     identifier: Some(1.into()),

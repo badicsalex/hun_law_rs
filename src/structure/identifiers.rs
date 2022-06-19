@@ -40,6 +40,111 @@ impl Display for ActIdentifier {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
+pub struct ArticleIdentifier {
+    book: Option<u8>,
+    identifier: NumericIdentifier,
+}
+
+impl ArticleIdentifier {
+    /// Can the parameter be considered the previous identifier. Handles suffix transitions.
+    ///
+    /// ```
+    /// use hun_law::structure::ArticleIdentifier;
+    /// fn check_is_next_from(s1:&str, s2:&str) -> bool{
+    ///     let i1 = s1.parse::<ArticleIdentifier>().unwrap();
+    ///     let i2 = s2.parse::<ArticleIdentifier>().unwrap();
+    ///     println!("{:?} {:?}", i1, i2);
+    ///     i1.is_next_from(i2)
+    /// };
+    /// assert!(check_is_next_from("1:123", "1:122"));
+    /// assert!(check_is_next_from("2:1", "1:123"));
+    /// assert!(check_is_next_from("13", "12c"));
+    ///
+    /// assert!(!check_is_next_from("1:1", "2:2"));
+    /// assert!(!check_is_next_from("1:1", "3:1"));
+    /// assert!(!check_is_next_from("2:1a", "1:123"));
+    ///
+    /// // Book <-> no book transitions not allowed
+    /// assert!(!check_is_next_from("1:1", "1"));
+    /// assert!(!check_is_next_from("1", "1:1"));
+    /// assert!(!check_is_next_from("1:1", "2"));
+    /// assert!(!check_is_next_from("1", "1:2"));
+    /// ```
+    pub fn is_next_from(&self, other: Self) -> bool {
+        match (self.book, other.book) {
+            (None, None) => self.identifier.is_next_from(other.identifier),
+            (Some(bs), Some(bo)) if bs == bo => self.identifier.is_next_from(other.identifier),
+            (Some(bs), Some(bo)) if bs.wrapping_sub(bo) == 1 => self.identifier.is_first(),
+            _ => false,
+        }
+    }
+
+    pub fn is_first(&self) -> bool {
+        if let Some(book) = self.book {
+            book == 1 && self.identifier.is_first()
+        } else {
+            self.identifier.is_first()
+        }
+    }
+}
+
+impl FromStr for ArticleIdentifier {
+    type Err = Error;
+
+    /// Convert a possibly suffixed value to an identifier.
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        if let Some((book_str, id_str)) = value.split_once(':') {
+            Ok(Self {
+                book: Some(book_str.parse()?),
+                identifier: id_str.parse()?,
+            })
+        } else {
+            Ok(Self {
+                book: None,
+                identifier: value.parse()?,
+            })
+        }
+    }
+}
+
+impl Display for ArticleIdentifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self.book {
+            Some(book) => {
+                write!(f, "{:?}:", book)?;
+                self.identifier.fmt_with_slash(f)
+            }
+            None => self.identifier.fmt_with_slash(f),
+        }
+    }
+}
+
+impl From<ArticleIdentifier> for String {
+    fn from(val: ArticleIdentifier) -> Self {
+        val.to_string()
+    }
+}
+
+impl TryFrom<String> for ArticleIdentifier {
+    type Error = Error;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        value.parse()
+    }
+}
+
+impl From<u16> for ArticleIdentifier {
+    fn from(val: u16) -> Self {
+        Self {
+            book: None,
+            identifier: val.into(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(into = "String")]
+#[serde(try_from = "String")]
 pub struct NumericIdentifier {
     num: u16,
     suffix: Option<HungarianIdentifierChar>,
@@ -75,6 +180,14 @@ impl NumericIdentifier {
         }
     }
 
+    pub fn is_first(&self) -> bool {
+        *self
+            == Self {
+                num: 1,
+                suffix: None,
+            }
+    }
+
     pub fn from_roman(s: &str) -> Result<Self> {
         let (num_str, suffix) = Self::split_suffix(s, &ROMAN_DIGITS)?;
         let num = roman::from(num_str)
@@ -103,6 +216,12 @@ impl NumericIdentifier {
             Ok((prefix, suffix))
         } else {
             Ok((s, None))
+        }
+    }
+    pub fn fmt_with_slash(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self.suffix {
+            Some(suffix) => write!(f, "{:?}/{}", self.num, suffix.to_uppercase()),
+            None => write!(f, "{:?}", self.num),
         }
     }
 }
@@ -225,6 +344,10 @@ impl HungarianIdentifierChar {
     pub fn is_first(&self) -> bool {
         *self == Self::Latin(b'a')
     }
+
+    pub fn to_uppercase(&self) -> UppercaseHungarianIdentifierChar {
+        UppercaseHungarianIdentifierChar(*self)
+    }
 }
 
 impl TryFrom<char> for HungarianIdentifierChar {
@@ -276,6 +399,24 @@ impl Display for HungarianIdentifierChar {
             HungarianIdentifierChar::Sz => write!(f, "sz"),
             HungarianIdentifierChar::Ty => write!(f, "ty"),
             HungarianIdentifierChar::Zs => write!(f, "zs"),
+        }
+    }
+}
+
+pub struct UppercaseHungarianIdentifierChar(HungarianIdentifierChar);
+
+impl Display for UppercaseHungarianIdentifierChar {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self.0 {
+            HungarianIdentifierChar::Latin(c) => write!(f, "{}", (c as char).to_uppercase()),
+            HungarianIdentifierChar::Cs => write!(f, "CS"),
+            HungarianIdentifierChar::Dz => write!(f, "DZ"),
+            HungarianIdentifierChar::Gy => write!(f, "GY"),
+            HungarianIdentifierChar::Ly => write!(f, "LY"),
+            HungarianIdentifierChar::Ny => write!(f, "NY"),
+            HungarianIdentifierChar::Sz => write!(f, "SZ"),
+            HungarianIdentifierChar::Ty => write!(f, "TY"),
+            HungarianIdentifierChar::Zs => write!(f, "ZS"),
         }
     }
 }
@@ -390,5 +531,29 @@ mod tests {
         assert!(NumericIdentifier::from_roman("II/aa").is_err());
         assert!(NumericIdentifier::from_roman("II//a").is_err());
         assert!(NumericIdentifier::from_roman("I:II").is_err());
+    }
+
+    #[test]
+    fn test_article_identifier_parsing() {
+        assert_eq!(
+            "123".parse::<ArticleIdentifier>().unwrap(),
+            ArticleIdentifier {
+                book: None,
+                identifier: NumericIdentifier {
+                    num: 123,
+                    suffix: None
+                }
+            }
+        );
+        assert_eq!(
+            "88:1/SZ".parse::<ArticleIdentifier>().unwrap(),
+            ArticleIdentifier {
+                book: Some(88),
+                identifier: NumericIdentifier {
+                    num: 1,
+                    suffix: Some(HungarianIdentifierChar::Sz)
+                }
+            }
+        );
     }
 }
