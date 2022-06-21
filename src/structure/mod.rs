@@ -143,7 +143,10 @@ pub struct Article {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct SubArticleElement<IdentifierType: IsDefault, ChildrenType> {
+pub struct SubArticleElement<IdentifierType, ChildrenType>
+where
+    IdentifierType: IsNextFrom + IsDefault + Sized,
+{
     #[serde(skip_serializing_if = "is_default")]
     pub identifier: IdentifierType,
     pub body: SAEBody<ChildrenType>,
@@ -211,4 +214,24 @@ pub enum BlockAmendmentChild {
     AlphabeticSubpoint(AlphabeticSubpoint),
     NumericSubpoint(NumericSubpoint),
     StructuralElement(StructuralElement),
+}
+
+// This trait is a workaround for the following limitations:
+// - No inherent associated types
+// - Generic type cannot be used as a trait bound
+pub trait SAECommon: Sized {
+    type IdentifierType: IsNextFrom + Clone;
+    type ChildrenType;
+    fn new(identifier: Self::IdentifierType, body: SAEBody<Self::ChildrenType>) -> Self;
+}
+
+impl<IdentifierType: IsDefault + IsNextFrom + Clone, ChildrenType> SAECommon
+    for SubArticleElement<IdentifierType, ChildrenType>
+{
+    type IdentifierType = IdentifierType;
+    type ChildrenType = ChildrenType;
+
+    fn new(identifier: Self::IdentifierType, body: SAEBody<Self::ChildrenType>) -> Self {
+        Self { identifier, body }
+    }
 }
