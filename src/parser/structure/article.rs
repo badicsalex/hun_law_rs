@@ -18,7 +18,7 @@ use anyhow::{anyhow, Result};
 use lazy_regex::regex;
 
 use crate::{
-    structure::{Article, ArticleIdentifier},
+    structure::{Article, ArticleIdentifier, IsNextFrom, Paragraph},
     util::indentedline::IndentedLine,
 };
 

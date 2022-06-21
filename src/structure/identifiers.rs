@@ -45,32 +45,8 @@ pub struct ArticleIdentifier {
     identifier: NumericIdentifier,
 }
 
-impl ArticleIdentifier {
-    /// Can the parameter be considered the previous identifier. Handles suffix transitions.
-    ///
-    /// ```
-    /// use hun_law::structure::ArticleIdentifier;
-    /// fn check_is_next_from(s1:&str, s2:&str) -> bool{
-    ///     let i1 = s1.parse::<ArticleIdentifier>().unwrap();
-    ///     let i2 = s2.parse::<ArticleIdentifier>().unwrap();
-    ///     println!("{:?} {:?}", i1, i2);
-    ///     i1.is_next_from(i2)
-    /// };
-    /// assert!(check_is_next_from("1:123", "1:122"));
-    /// assert!(check_is_next_from("2:1", "1:123"));
-    /// assert!(check_is_next_from("13", "12c"));
-    ///
-    /// assert!(!check_is_next_from("1:1", "2:2"));
-    /// assert!(!check_is_next_from("1:1", "3:1"));
-    /// assert!(!check_is_next_from("2:1a", "1:123"));
-    ///
-    /// // Book <-> no book transitions not allowed
-    /// assert!(!check_is_next_from("1:1", "1"));
-    /// assert!(!check_is_next_from("1", "1:1"));
-    /// assert!(!check_is_next_from("1:1", "2"));
-    /// assert!(!check_is_next_from("1", "1:2"));
-    /// ```
-    pub fn is_next_from(&self, other: Self) -> bool {
+impl IsNextFrom for ArticleIdentifier {
+    fn is_next_from(&self, other: Self) -> bool {
         match (self.book, other.book) {
             (None, None) => self.identifier.is_next_from(other.identifier),
             (Some(bs), Some(bo)) if bs == bo => self.identifier.is_next_from(other.identifier),
@@ -79,7 +55,7 @@ impl ArticleIdentifier {
         }
     }
 
-    pub fn is_first(&self) -> bool {
+    fn is_first(&self) -> bool {
         if let Some(book) = self.book {
             book == 1 && self.identifier.is_first()
         } else {
@@ -142,6 +118,23 @@ impl From<u16> for ArticleIdentifier {
     }
 }
 
+pub trait IsNextFrom {
+    fn is_first(&self) -> bool;
+
+    /// Can the parameter be considered the previous identifier. Handles suffix transitions.
+    ///
+    /// ```
+    /// use hun_law::structure::{NumericIdentifier, IsNextFrom};
+    /// let id121:NumericIdentifier = 121.into();
+    /// let id122:NumericIdentifier = 122.into();
+    /// let id123:NumericIdentifier = 123.into();
+    /// assert!(id122.is_next_from(id121));
+    /// assert!(!id123.is_next_from(id121));
+    /// assert!(!id121.is_next_from(id122));
+    /// ```
+    fn is_next_from(&self, other: Self) -> bool;
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
@@ -151,43 +144,6 @@ pub struct NumericIdentifier {
 }
 
 impl NumericIdentifier {
-    /// Can the parameter be considered the previous identifier. Handles suffix transitions.
-    ///
-    /// ```
-    /// use hun_law::structure::NumericIdentifier;
-    /// fn check_is_next_from(s1:&str, s2:&str) -> bool{
-    ///     let i1 = s1.parse::<NumericIdentifier>().unwrap();
-    ///     let i2 = s2.parse::<NumericIdentifier>().unwrap();
-    ///     println!("{:?} {:?}", i1, i2);
-    ///     i1.is_next_from(i2)
-    /// };
-    /// assert!(check_is_next_from("123", "122"));
-    /// assert!(check_is_next_from("123/A", "123"));
-    /// assert!(check_is_next_from("123zs", "123z"));
-    /// assert!(check_is_next_from("13", "12c"));
-    ///
-    /// assert!(!check_is_next_from("12b", "12"));
-    /// assert!(!check_is_next_from("12a", "11"));
-    /// assert!(!check_is_next_from("13", "11"));
-    /// assert!(!check_is_next_from("11", "11"));
-    /// assert!(!check_is_next_from("11", "12"));
-    /// ```
-    pub fn is_next_from(&self, other: Self) -> bool {
-        match (self.suffix, other.suffix) {
-            (None, _) => self.num.wrapping_sub(other.num) == 1,
-            (Some(ss), None) => self.num == other.num && ss.is_first(),
-            (Some(ss), Some(so)) => self.num == other.num && ss.is_next_from(so),
-        }
-    }
-
-    pub fn is_first(&self) -> bool {
-        *self
-            == Self {
-                num: 1,
-                suffix: None,
-            }
-    }
-
     pub fn from_roman(s: &str) -> Result<Self> {
         let (num_str, suffix) = Self::split_suffix(s, &ROMAN_DIGITS)?;
         let num = roman::from(num_str)
@@ -223,6 +179,24 @@ impl NumericIdentifier {
             Some(suffix) => write!(f, "{:?}/{}", self.num, suffix.to_uppercase()),
             None => write!(f, "{:?}", self.num),
         }
+    }
+}
+
+impl IsNextFrom for NumericIdentifier {
+    fn is_next_from(&self, other: Self) -> bool {
+        match (self.suffix, other.suffix) {
+            (None, _) => self.num.wrapping_sub(other.num) == 1,
+            (Some(ss), None) => self.num == other.num && ss.is_first(),
+            (Some(ss), Some(so)) => self.num == other.num && ss.is_next_from(so),
+        }
+    }
+
+    fn is_first(&self) -> bool {
+        *self
+            == Self {
+                num: 1,
+                suffix: None,
+            }
     }
 }
 
@@ -421,8 +395,36 @@ impl Display for UppercaseHungarianIdentifierChar {
     }
 }
 
+impl IsNextFrom for Option<NumericIdentifier> {
+    fn is_first(&self) -> bool {
+        match self {
+            Some(x) => x.is_first(),
+            None => false,
+        }
+    }
+
+    fn is_next_from(&self, other: Self) -> bool {
+        match (self, other) {
+            (Some(x), Some(o)) => x.is_next_from(o),
+            _ => false,
+        }
+    }
+}
+
+impl IsNextFrom for String {
+    fn is_first(&self) -> bool {
+        todo!()
+    }
+
+    fn is_next_from(&self, _other: Self) -> bool {
+        todo!()
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use std::fmt::Debug;
+
     use super::*;
     use pretty_assertions::assert_eq;
 
@@ -555,5 +557,46 @@ mod tests {
                 }
             }
         );
+    }
+
+    fn check_is_next_from<T>(s1: &str, s2: &str) -> bool
+    where
+        T: FromStr + IsNextFrom,
+        T::Err: Debug,
+    {
+        let i1 = s1.parse::<T>().unwrap();
+        let i2 = s2.parse::<T>().unwrap();
+        i1.is_next_from(i2)
+    }
+
+    #[test]
+    fn test_is_next_from_numeric() {
+        assert!(check_is_next_from::<NumericIdentifier>("123", "122"));
+        assert!(check_is_next_from::<NumericIdentifier>("123/A", "123"));
+        assert!(check_is_next_from::<NumericIdentifier>("123zs", "123z"));
+        assert!(check_is_next_from::<NumericIdentifier>("13", "12c"));
+
+        assert!(!check_is_next_from::<NumericIdentifier>("12b", "12"));
+        assert!(!check_is_next_from::<NumericIdentifier>("12a", "11"));
+        assert!(!check_is_next_from::<NumericIdentifier>("13", "11"));
+        assert!(!check_is_next_from::<NumericIdentifier>("11", "11"));
+        assert!(!check_is_next_from::<NumericIdentifier>("11", "12"));
+    }
+
+    #[test]
+    fn test_is_next_from_article() {
+        assert!(check_is_next_from::<ArticleIdentifier>("1:123", "1:122"));
+        assert!(check_is_next_from::<ArticleIdentifier>("2:1", "1:123"));
+        assert!(check_is_next_from::<ArticleIdentifier>("13", "12c"));
+
+        assert!(!check_is_next_from::<ArticleIdentifier>("1:1", "2:2"));
+        assert!(!check_is_next_from::<ArticleIdentifier>("1:1", "3:1"));
+        assert!(!check_is_next_from::<ArticleIdentifier>("2:1a", "1:123"));
+
+        // Book <-> no book transitions not allowed
+        assert!(!check_is_next_from::<ArticleIdentifier>("1:1", "1"));
+        assert!(!check_is_next_from::<ArticleIdentifier>("1", "1:1"));
+        assert!(!check_is_next_from::<ArticleIdentifier>("1:1", "2"));
+        assert!(!check_is_next_from::<ArticleIdentifier>("1", "1:2"));
     }
 }
