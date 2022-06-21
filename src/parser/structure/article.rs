@@ -44,18 +44,9 @@ impl ArticleParserFactory {
             }
         }
 
-        let line_content = line.content();
-        let header_regex = regex!("^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$");
-        let mut capture_locations = header_regex.capture_locations();
-
-        // This is called for its side-effects, and the '?' is important.
-        header_regex.captures_read(&mut capture_locations, line_content)?;
-
-        let (identifier_from, identifier_to) = capture_locations.get(1).unwrap();
-        let identifier: ArticleIdentifier = line_content[identifier_from..identifier_to]
-            .to_string()
-            .parse()
-            .ok()?;
+        let (identifier, rest) = line.parse_header::<ArticleIdentifier>(regex!(
+            "^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$"
+        ))?;
 
         if let Some(last_id) = self.last_id {
             if !identifier.is_next_from(last_id) {
@@ -65,14 +56,11 @@ impl ArticleParserFactory {
             return None;
         }
 
-        let (content_from, content_to) = capture_locations.get(5).unwrap();
-        let contents = vec![line.slice_bytes(content_from, Some(content_to))];
-
         self.last_id = Some(identifier);
         self.article_header_indent = Some(line.indent());
         Some(ArticleParser {
             identifier,
-            lines: contents,
+            lines: vec![rest],
         })
     }
 }

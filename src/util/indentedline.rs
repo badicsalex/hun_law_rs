@@ -14,8 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::fmt::Debug;
+use std::{fmt::Debug, str::FromStr};
 
+use lazy_regex::Regex;
 use serde::{Deserialize, Serialize};
 
 // Extremely scientific.
@@ -169,6 +170,23 @@ impl IndentedLine {
 
     pub fn indent_less_or_eq(&self, other: f64) -> bool {
         self.indent() < other + INDENT_SIMILARITY_THRESHOLD
+    }
+
+    pub fn parse_header<T: FromStr>(&self, regex: &Regex) -> Option<(T, IndentedLine)> {
+        let content = self.content();
+        let mut capture_locations = regex.capture_locations();
+        // This is called for its side-effects, and the '?' is important.
+        regex.captures_read(&mut capture_locations, content)?;
+
+        let (identifier_from, identifier_to) = capture_locations.get(1).unwrap();
+        let identifier: T = content[identifier_from..identifier_to]
+            .to_string()
+            .parse()
+            .ok()?;
+        let (content_from, content_to) =
+            capture_locations.get(capture_locations.len() - 1).unwrap();
+        let rest = self.slice_bytes(content_from, Some(content_to));
+        Some((identifier, rest))
     }
 }
 
