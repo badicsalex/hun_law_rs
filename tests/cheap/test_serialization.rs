@@ -68,7 +68,7 @@ fn get_test_structure() -> Act {
                         identifier: Some(2.into()),
                         body: SAEBody::Children {
                             intro: "Egy felsorolás legyen".into(),
-                            wrap_up: "minden esetben.".into(),
+                            wrap_up: Some("minden esetben.".into()),
                             children: ParagraphChildren::AlphabeticPoint(vec![
                                 AlphabeticPoint {
                                     identifier: "a".into(),
@@ -78,7 +78,7 @@ fn get_test_structure() -> Act {
                                     identifier: "b".into(),
                                     body: SAEBody::Children {
                                         intro: "kellően".into(),
-                                        wrap_up: "".into(),
+                                        wrap_up: None,
                                         children: AlphabeticPointChildren::AlphabeticSubpoint(
                                             vec![
                                                 AlphabeticSubpoint {
@@ -144,7 +144,7 @@ fn get_test_structure() -> Act {
                     identifier: Some(1.into()),
                     body: SAEBody::Children {
                         intro: "This can legally be after 2:1/A. Also, ".into(),
-                        wrap_up: "Can also be amended".into(),
+                        wrap_up: Some("Can also be amended".into()),
                         children: ParagraphChildren::NumericPoint(vec![
                             NumericPoint {
                                 identifier: 1.into(),

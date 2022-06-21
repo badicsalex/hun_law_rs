@@ -157,7 +157,7 @@ pub enum SAEBody<ChildrenType> {
         intro: String,
         children: ChildrenType,
         #[serde(default, skip_serializing_if = "is_default")]
-        wrap_up: String,
+        wrap_up: Option<String>,
     },
 }
 
