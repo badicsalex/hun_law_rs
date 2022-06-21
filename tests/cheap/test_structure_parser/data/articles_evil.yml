@@ -15,8 +15,8 @@ children:
         - identifier: "1"
           body: This is here to cause a misparse when the string 2. § is parsed.
         - identifier: "2"
-          body: "Also, multiple paragraphs"
+          body: "Also, multiple paragraphs, and paragraph misparsing if (3) we just do this."
   - Article:
       identifier: "2"
       children:
-        - body: Hello.
+        - body: "Hello. The next line is not a paragraph: (1) I'm here to confuse the parser."

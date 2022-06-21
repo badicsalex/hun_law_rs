@@ -27,7 +27,7 @@ pub enum ParagraphParser {}
 impl ParagraphParser {
     pub fn parse_article_body(lines: &[IndentedLine]) -> Result<Vec<Paragraph>> {
         assert!(!lines[0].is_empty());
-        let first_line_parsed = Self::parse_header(&lines[0]);
+        let first_line_parsed = Self::parse_header_string(&lines[0]);
         if first_line_parsed.is_none() {
             return Ok(vec![Paragraph {
                 identifier: None,
@@ -45,8 +45,12 @@ impl ParagraphParser {
         let mut result: Vec<Paragraph> = Vec::new();
         let (mut identifier, first_line_rest) = first_line_parsed.unwrap();
         let mut body = first_line_rest.to_string();
+        let expected_indent = lines[0].indent();
+
         for line in &lines[1..] {
-            if let Some((new_identifier, rest)) = Self::parse_header(line) {
+            if let Some((new_identifier, rest)) =
+                Self::parse_header(&identifier, expected_indent, line)
+            {
                 result.push(Paragraph {
                     identifier: Some(identifier),
                     body: SAEBody::Text(body),
@@ -66,8 +70,24 @@ impl ParagraphParser {
         Ok(result)
     }
 
-    fn parse_header(line: &IndentedLine) -> Option<(NumericIdentifier, &str)> {
+    fn parse_header_string(line: &IndentedLine) -> Option<(NumericIdentifier, &str)> {
         let (_, id, rest) = regex_captures!("^\\(([0-9]+[a-z]?)\\) +(.*$)", line.content())?;
         Some((id.parse().ok()?, rest))
+    }
+
+    fn parse_header<'a>(
+        last_identifier: &'_ NumericIdentifier,
+        expected_indent: f64,
+        line: &'a IndentedLine,
+    ) -> Option<(NumericIdentifier, &'a str)> {
+        if !line.indent_less_or_eq(expected_indent) {
+            return None;
+        }
+        let (id, rest) = Self::parse_header_string(line)?;
+        if !id.is_next_from(*last_identifier) {
+            return None;
+        }
+
+        Some((id, rest))
     }
 }
