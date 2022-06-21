@@ -18,6 +18,10 @@ use std::fmt::Debug;
 
 use serde::{Deserialize, Serialize};
 
+// Extremely scientific.
+// Value worked well for the python version for hundreds of documents
+const INDENT_SIMILARITY_THRESHOLD: f64 = 1.0;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IndentedLinePart {
     pub dx: f64,
@@ -161,6 +165,10 @@ impl IndentedLine {
             }
         }
         Self::from_parts(parts)
+    }
+
+    pub fn indent_less_or_eq(&self, other: f64) -> bool {
+        self.indent() < other + INDENT_SIMILARITY_THRESHOLD
     }
 }
 

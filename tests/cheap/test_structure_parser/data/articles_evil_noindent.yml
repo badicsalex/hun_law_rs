@@ -13,10 +13,10 @@ children:
       identifier: "1"
       children:
         - identifier: "1"
-          body: This is here to cause a misparse when the string 2. § is parsed.
+          body: This is here to cause a misparse when the string 4. § (1) is parsed.
         - identifier: "2"
-          body: "Also, multiple paragraphs"
+          body: "Also, multiple paragraphs."
   - Article:
       identifier: "2"
       children:
-        - body: Hello.
+        - body: But things are OK when numbered right.

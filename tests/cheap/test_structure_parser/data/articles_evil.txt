@@ -1,3 +1,5 @@
 
      1. § (1) This is here to cause a misparse when the string
-              4. § (1) is parsed.
+              2. § is parsed.
+          (2) Also, multiple paragraphs
+     2. §     Hello.

@@ -26,14 +26,24 @@ use super::paragraph::ParagraphParser;
 
 pub struct ArticleParserFactory {
     last_id: Option<ArticleIdentifier>,
+    article_header_indent: Option<f64>,
 }
 
 impl ArticleParserFactory {
     pub fn new() -> Self {
-        Self { last_id: None }
+        Self {
+            last_id: None,
+            article_header_indent: None,
+        }
     }
 
     pub fn try_create_from_header(&mut self, line: &IndentedLine) -> Option<ArticleParser> {
+        if let Some(expected_indent) = self.article_header_indent {
+            if !line.indent_less_or_eq(expected_indent) {
+                return None;
+            }
+        }
+
         let line_content = line.content();
         let header_regex = regex!("^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$");
         let mut capture_locations = header_regex.capture_locations();
@@ -59,6 +69,7 @@ impl ArticleParserFactory {
         let contents = vec![line.slice_bytes(content_from, Some(content_to))];
 
         self.last_id = Some(identifier);
+        self.article_header_indent = Some(line.indent());
         Some(ArticleParser {
             identifier,
             lines: contents,
