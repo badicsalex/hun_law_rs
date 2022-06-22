@@ -24,6 +24,7 @@ pub use act::ActIdentifier;
 pub use alphabetic::{AlphabeticIdentifier, HungarianIdentifierChar};
 pub use article::ArticleIdentifier;
 pub use numeric::NumericIdentifier;
+pub use prefixed_alphabetic::PrefixedAlphabeticIdentifier;
 
 pub trait IsNextFrom {
     fn is_first(&self) -> bool;
@@ -130,5 +131,30 @@ mod tests {
         assert!(!ny.is_next_from(ny));
         assert!(!n.is_next_from(ny));
         assert!(o.is_next_from(ny));
+    }
+
+    #[test]
+    fn test_is_next_from_prefixed_alphabetic() {
+        assert!(check_is_next_from::<PrefixedAlphabeticIdentifier>("b", "a"));
+        assert!(check_is_next_from::<PrefixedAlphabeticIdentifier>(
+            "ab", "aa"
+        ));
+        assert!(check_is_next_from::<PrefixedAlphabeticIdentifier>("l", "k"));
+        assert!(check_is_next_from::<PrefixedAlphabeticIdentifier>(
+            "cl", "ck"
+        ));
+
+        assert!(!check_is_next_from::<PrefixedAlphabeticIdentifier>(
+            "c", "c"
+        ));
+        assert!(!check_is_next_from::<PrefixedAlphabeticIdentifier>(
+            "ca", "db"
+        ));
+        assert!(!check_is_next_from::<PrefixedAlphabeticIdentifier>(
+            "c", "bb"
+        ));
+        assert!(!check_is_next_from::<PrefixedAlphabeticIdentifier>(
+            "cc", "b"
+        ));
     }
 }

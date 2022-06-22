@@ -173,7 +173,7 @@ pub enum ParagraphChildren {
     BlockAmendment(Vec<BlockAmendment>),
 }
 
-pub type AlphabeticPoint = SubArticleElement<String, AlphabeticPointChildren>;
+pub type AlphabeticPoint = SubArticleElement<AlphabeticIdentifier, AlphabeticPointChildren>;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AlphabeticPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
@@ -186,7 +186,8 @@ pub enum NumericPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
 }
 
-pub type AlphabeticSubpoint = SubArticleElement<String, AlphabeticSubpointChildren>;
+pub type AlphabeticSubpoint =
+    SubArticleElement<PrefixedAlphabeticIdentifier, AlphabeticSubpointChildren>;
 // Creating different empty enums is necessary to distinguish between this class and NumericSubpoint
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AlphabeticSubpointChildren {}

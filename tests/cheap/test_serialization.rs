@@ -71,22 +71,22 @@ fn get_test_structure() -> Act {
                             wrap_up: Some("minden esetben.".into()),
                             children: ParagraphChildren::AlphabeticPoint(vec![
                                 AlphabeticPoint {
-                                    identifier: "a".into(),
+                                    identifier: "a".parse().unwrap(),
                                     body: SAEBody::Text("többelemű".into()),
                                 },
                                 AlphabeticPoint {
-                                    identifier: "b".into(),
+                                    identifier: "b".parse().unwrap(),
                                     body: SAEBody::Children {
                                         intro: "kellően".into(),
                                         wrap_up: None,
                                         children: AlphabeticPointChildren::AlphabeticSubpoint(
                                             vec![
                                                 AlphabeticSubpoint {
-                                                    identifier: "ba".into(),
+                                                    identifier: "ba".parse().unwrap(),
                                                     body: SAEBody::Text("átláthatatlan".into()),
                                                 },
                                                 AlphabeticSubpoint {
-                                                    identifier: "bb".into(),
+                                                    identifier: "bb".parse().unwrap(),
                                                     body: SAEBody::Text("komplex".into()),
                                                 },
                                             ],
