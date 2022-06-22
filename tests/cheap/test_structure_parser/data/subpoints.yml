@@ -1,0 +1,65 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: Fake preamble.
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Subtitle:
+      identifier: "1"
+      title: A törvény hatálya
+  - Article:
+      identifier: "1"
+      children:
+        - body: "E törvény hatálya kiterjed a gondnokoltak, az előzetes jognyilatkozatot tett személyek és az előzetes jognyilatkozataik adatainak a nyilvántartására (a továbbiakban együtt: nyilvántartások)."
+  - Subtitle:
+      identifier: "2"
+      title: A gondnokoltak nyilvántartása
+  - Article:
+      identifier: "2"
+      children:
+        - body: "A gondnokoltak nyilvántartásában szereplő adatok kezelésének célja a gondnokság alá helyezés tényének igazolása a gondnokság alá helyezett személy jogai gyakorlásának elősegítése, illetve harmadik személyek jogainak védelme érdekében."
+  - Article:
+      identifier: "3"
+      children:
+        - identifier: "1"
+          body:
+            intro: "A gondnokoltak nyilvántartása a következő adatokat és a változás időpontjának megjelölésével az adatváltozásokat tartalmazza:"
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body:
+                    intro: a gondnokolt
+                    children:
+                      AlphabeticSubpoint:
+                        - identifier: aa
+                          body: "családi és utónevét,"
+                        - identifier: ab
+                          body: "születési családi és utónevét,"
+                        - identifier: ac
+                          body: "születési helyét és idejét,"
+                        - identifier: ad
+                          body: "anyjának születési családi és utónevét,"
+                        - identifier: ae
+                          body: "lakcímét,"
+                - identifier: b
+                  body: "a gondnokság alá helyezésről, annak módosításáról, felülvizsgálatáról, megszüntetéséről jogerős határozatot hozó bíróság megnevezését és ügyszámát,"
+                - identifier: c
+                  body: "a gondnokság alá helyezés, annak módosítása, felülvizsgálata, megszüntetése tárgyában hozott határozat jogerőre emelkedésének napját,"
+                - identifier: d
+                  body: "a gondnokság cselekvőképességet korlátozó részleges vagy teljes jellegét,"
+                - identifier: e
+                  body: "a bíróságnak a cselekvőképességet részlegesen korlátozó ítéletében meghatározott ügycsoportot vagy ügycsoportokat,"
+                - identifier: f
+                  body: a gondnokság alá helyezés kötelező felülvizsgálatának időpontját és
+                - identifier: g
+                  body: "a választójogból való kizárás tényét, ha a bíróság a gondnokság alá helyezett személyt a választójogból kizárta."
+        - identifier: "2"
+          body: A gondnokoltak nyilvántartásában fel kell tüntetni a gondnokolt halálának tényét és időpontját.
+        - identifier: "3"
+          body: Az (1) bekezdés b)–f) pontja szerinti adatokat a gondnokoltak nyilvántartása közhitelesen tartalmazza.
+

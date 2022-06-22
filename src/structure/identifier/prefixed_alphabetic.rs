@@ -30,6 +30,12 @@ pub struct PrefixedAlphabeticIdentifier {
     chr: HungarianIdentifierChar,
 }
 
+impl PrefixedAlphabeticIdentifier {
+    pub fn prefix_is(&self, prefix: Option<HungarianIdentifierChar>) -> bool {
+        self.prefix == prefix
+    }
+}
+
 impl IsNextFrom for PrefixedAlphabeticIdentifier {
     fn is_first(&self) -> bool {
         self.chr.is_first()

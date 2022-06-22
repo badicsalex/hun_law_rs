@@ -18,8 +18,9 @@ use lazy_regex::regex;
 
 use crate::{
     structure::{
-        AlphabeticPoint, AlphabeticPointChildren, AlphabeticSubpoint, IsNextFrom, NumericPoint,
-        NumericPointChildren, NumericSubpoint, Paragraph, ParagraphChildren, SAEBody, SAECommon,
+        AlphabeticPoint, AlphabeticPointChildren, AlphabeticSubpoint, HungarianIdentifierChar,
+        IsNextFrom, NumericPoint, NumericPointChildren, NumericSubpoint, Paragraph,
+        ParagraphChildren, PrefixedAlphabeticIdentifier, SAEBody, SAECommon,
     },
     util::indentedline::IndentedLine,
 };
@@ -33,6 +34,7 @@ pub trait SAEParser {
     ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)>;
     fn try_extract_children(
         &self,
+        identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)>;
 
@@ -43,7 +45,7 @@ pub trait SAEParser {
     ) -> Option<Self::SAE> {
         let mut intro = String::new();
         for i in 0..body.len() {
-            if let Some((children, wrap_up)) = self.try_extract_children(&body[i..]) {
+            if let Some((children, wrap_up)) = self.try_extract_children(&identifier, &body[i..]) {
                 return Some(<Self::SAE>::new(
                     identifier,
                     SAEBody::Children {
@@ -134,6 +136,7 @@ impl SAEParser for ParagraphParser {
 
     fn try_extract_children(
         &self,
+        _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         NumericPointParser
@@ -158,9 +161,11 @@ impl SAEParser for NumericPointParser {
 
     fn try_extract_children(
         &self,
+        _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        AlphabeticSubpointParser.extract_multiple(body, NumericPointChildren::AlphabeticSubpoint)
+        AlphabeticSubpointParser { prefix: None }
+            .extract_multiple(body, NumericPointChildren::AlphabeticSubpoint)
     }
 }
 
@@ -178,13 +183,16 @@ impl SAEParser for AlphabeticPointParser {
 
     fn try_extract_children(
         &self,
+        identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         NumericSubpointParser
             .extract_multiple(body, AlphabeticPointChildren::NumericSubpoint)
             .or_else(|| {
-                AlphabeticSubpointParser
-                    .extract_multiple(body, AlphabeticPointChildren::AlphabeticSubpoint)
+                AlphabeticSubpointParser {
+                    prefix: Some(*identifier),
+                }
+                .extract_multiple(body, AlphabeticPointChildren::AlphabeticSubpoint)
             })
     }
 }
@@ -203,6 +211,7 @@ impl SAEParser for NumericSubpointParser {
 
     fn try_extract_children(
         &self,
+        _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         _body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         /* Cannot have children :C */
@@ -210,7 +219,9 @@ impl SAEParser for NumericSubpointParser {
     }
 }
 
-pub struct AlphabeticSubpointParser;
+pub struct AlphabeticSubpointParser {
+    prefix: Option<HungarianIdentifierChar>,
+}
 
 impl SAEParser for AlphabeticSubpointParser {
     type SAE = AlphabeticSubpoint;
@@ -218,11 +229,18 @@ impl SAEParser for AlphabeticSubpointParser {
         &self,
         line: &IndentedLine,
     ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
-        line.parse_header(regex!("^([a-z]|cs|dz|gy|ly|ny|sz|ty)\\) +(.*)$"))
+        let (result, rest) =
+            line.parse_header::<PrefixedAlphabeticIdentifier>(regex!("^([a-z]?[a-z])\\) +(.*)$"))?;
+        if result.prefix_is(self.prefix) {
+            Some((result, rest))
+        } else {
+            None
+        }
     }
 
     fn try_extract_children(
         &self,
+        _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         _body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         /* Cannot have children :C */

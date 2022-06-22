@@ -1,0 +1,35 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Subtitle:
+      title: Alcim 1
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Ajj, mehet."
+  - Subtitle:
+      title: Alcim 2
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "A szamozott pontok azert meg mukodnek:"
+            children:
+              NumericPoint:
+                - identifier: "1"
+                  body: Pont
+                - identifier: "2"
+                  body: Pont
+  - Article:
+      identifier: "3"
+      children:
+        - body: "Sot, nem kell felni a felkover dolgoktol sem."
+

@@ -37,8 +37,14 @@ fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
 #[case::articles_evil("articles_evil")]
 #[case::articles_evil_noindent("articles_evil_noindent")]
 #[case::articles_with_title("articles_with_title")]
+#[case::numeric_subpoints("numeric_subpoints")]
+#[case::points("points")]
+#[case::points2("points2")]
 #[case::structural_elements_1("structural_elements_1")]
 #[case::structural_elements_2("structural_elements_2")]
+#[case::subpoints("subpoints")]
+#[case::subpoints_depending_on_indent("subpoints_depending_on_indent")]
+#[case::subpoints_mini("subpoints_mini")]
 fn test_structure_parser(#[case] name: &str) {
     let data = test_data_from_file!(format!("data/{}.txt", name));
     let data_as_lines = to_indented_lines(&data);
