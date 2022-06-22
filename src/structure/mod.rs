@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-pub mod identifiers;
-pub use identifiers::*;
+pub mod identifier;
+pub use identifier::*;
 
 use crate::util::{date::Date, indentedline::IndentedLine, is_default, IsDefault};
 use serde::{Deserialize, Serialize};
