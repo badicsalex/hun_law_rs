@@ -33,6 +33,7 @@ fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
 }
 
 #[rstest]
+#[case::ambigous_points("ambigous_points")]
 #[case::articles_evil("articles_evil")]
 #[case::articles_evil_noindent("articles_evil_noindent")]
 #[case::articles_with_title("articles_with_title")]

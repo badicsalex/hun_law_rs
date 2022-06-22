@@ -18,8 +18,8 @@ use lazy_regex::regex;
 
 use crate::{
     structure::{
-        AlphabeticPoint, AlphabeticSubpoint, IsNextFrom, NumericPoint, NumericSubpoint, Paragraph,
-        SAEBody, SAECommon,
+        AlphabeticPoint, AlphabeticPointChildren, AlphabeticSubpoint, IsNextFrom, NumericPoint,
+        NumericPointChildren, NumericSubpoint, Paragraph, ParagraphChildren, SAEBody, SAECommon,
     },
     util::indentedline::IndentedLine,
 };
@@ -92,10 +92,12 @@ pub trait SAEParser {
                 body.push(line.clone())
             }
         }
+        // TODO: Wrap-up
         result.push(self.parse(identifier, &body)?);
 
-        // TODO: Wrap-up
-        // TODO: Check if multiple were extracted
+        if result.len() < 2 {
+            return None;
+        }
         Some((postprocess(result), None))
     }
 
@@ -132,12 +134,13 @@ impl SAEParser for ParagraphParser {
 
     fn try_extract_children(
         &self,
-        _body: &[IndentedLine],
+        body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        None
-        /* TODO:
-        None.or_else(|| NumericPoint::extract_multiple(body, ParagraphChildren::NumericPoint))
-            .or_else(|| AlphabeticPoint::extract_multiple(body, ParagraphChildren::AlphabeticPoint)) */
+        NumericPointParser
+            .extract_multiple(body, ParagraphChildren::NumericPoint)
+            .or_else(|| {
+                AlphabeticPointParser.extract_multiple(body, ParagraphChildren::AlphabeticPoint)
+            })
     }
 }
 
@@ -150,14 +153,14 @@ impl SAEParser for NumericPointParser {
         &self,
         line: &IndentedLine,
     ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
-        line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\.  +(.*)$"))
+        line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\. +(.*)$"))
     }
 
     fn try_extract_children(
         &self,
-        _body: &[IndentedLine],
+        body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        None
+        AlphabeticSubpointParser.extract_multiple(body, NumericPointChildren::AlphabeticSubpoint)
     }
 }
 
@@ -175,9 +178,14 @@ impl SAEParser for AlphabeticPointParser {
 
     fn try_extract_children(
         &self,
-        _body: &[IndentedLine],
+        body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        None
+        NumericSubpointParser
+            .extract_multiple(body, AlphabeticPointChildren::NumericSubpoint)
+            .or_else(|| {
+                AlphabeticSubpointParser
+                    .extract_multiple(body, AlphabeticPointChildren::AlphabeticSubpoint)
+            })
     }
 }
 
@@ -190,13 +198,14 @@ impl SAEParser for NumericSubpointParser {
         &self,
         line: &IndentedLine,
     ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
-        line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\.  +(.*)$"))
+        line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\. +(.*)$"))
     }
 
     fn try_extract_children(
         &self,
         _body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+        /* Cannot have children :C */
         None
     }
 }
@@ -216,6 +225,7 @@ impl SAEParser for AlphabeticSubpointParser {
         &self,
         _body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+        /* Cannot have children :C */
         None
     }
 }

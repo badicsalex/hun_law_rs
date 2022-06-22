@@ -1,0 +1,75 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - identifier: "1"
+          body:
+            intro: "Don't forget"
+            children:
+              NumericPoint:
+                - identifier: "1"
+                  body: There can be numeric points.
+                - identifier: "2"
+                  body:
+                    intro: with subpoints like
+                    children:
+                      AlphabeticSubpoint:
+                        - identifier: a
+                          body: "subpoint 1,"
+                        - identifier: b
+                          body: subpoint 2.
+                - identifier: "3"
+                  body: "So there's that."
+        - identifier: "2"
+          body:
+            intro: Oh by the way
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body:
+                    intro: It can be
+                    children:
+                      NumericSubpoint:
+                        - identifier: "1"
+                          body: The other way around too
+                        - identifier: "2"
+                          body: just so you know.
+                - identifier: b
+                  body: "Man, this sucks."
+        - identifier: "3"
+          body: "By the way 2, if there is only one point reference like a) we still should not parse it as points, because it's wrong."
+        - identifier: "4"
+          body:
+            intro: This is especially true if there is a fake numeric point like 1. but then there are
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body: one real subpoint
+                - identifier: b
+                  body: two real subpoints Then it should be alphabetic subpoints. Even without indentation.
+        - identifier: "5"
+          body:
+            intro: This is especially true if there is a fake numeric point like
+            children:
+              NumericPoint:
+                - identifier: "1"
+                  body:
+                    intro: but then there are
+                    children:
+                      AlphabeticSubpoint:
+                        - identifier: a
+                          body: one real subpoint
+                        - identifier: b
+                          body: "two real subpoints However, if there is"
+                - identifier: "2"
+                  body: "another point, then we can do nothing but have numeric subpoints. Such is life."
