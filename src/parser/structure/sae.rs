@@ -28,16 +28,22 @@ use crate::{
 pub trait SAEParser {
     type SAE: Sized + SAECommon;
 
+    /// Parse the header into and identifier, and return it, along with the rest of the first line
     fn parse_header(
         &self,
         line: &IndentedLine,
     ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)>;
+
+    /// Try to extract the children of this type, assuming the first line is the header of at least
+    /// one child type, and there are multiple children. If any of this is not true, fail.
+    /// Expected to call [SAEParser::extract_multiple] for all possible children type
     fn try_extract_children(
         &self,
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)>;
 
+    /// Parse a single instance.
     fn parse(
         &self,
         identifier: <Self::SAE as SAECommon>::IdentifierType,
@@ -103,6 +109,8 @@ pub trait SAEParser {
         Some((postprocess(result), None))
     }
 
+    /// Parse the header line, and return it, along with the rest of the line.
+    /// Checks indentation and identifier correctness.
     fn parse_and_check_header(
         &self,
         last_identifier: &<Self::SAE as SAECommon>::IdentifierType,
