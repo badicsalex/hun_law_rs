@@ -45,6 +45,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
     let se_parser_factories = [
         StructuralElementParserFactory::new(StructuralElementType::Book),
         StructuralElementParserFactory::new(StructuralElementType::Part { is_special: false }),
+        StructuralElementParserFactory::new(StructuralElementType::Part { is_special: true }),
         StructuralElementParserFactory::new(StructuralElementType::Title),
         StructuralElementParserFactory::new(StructuralElementType::Chapter),
     ];
@@ -77,14 +78,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
             state = new_state;
         } else {
             match &mut state {
-                ParseState::Preamble => {
-                    if !line.is_empty() {
-                        if !preamble.is_empty() {
-                            preamble.push(' ')
-                        }
-                        preamble.push_str(line.content());
-                    }
-                }
+                ParseState::Preamble => line.append_to(&mut preamble),
                 ParseState::Article(parser) => parser.feed_line(line),
                 ParseState::StructuralElement(parser) => parser.feed_line(line),
                 ParseState::Subtitle(parser) => parser.feed_line(line),

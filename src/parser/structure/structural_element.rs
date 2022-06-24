@@ -88,12 +88,7 @@ pub struct StructuralElementParser {
 
 impl StructuralElementParser {
     pub fn feed_line(&mut self, line: &IndentedLine) {
-        if !line.is_empty() {
-            if !self.title.is_empty() {
-                self.title.push(' ');
-            }
-            self.title.push_str(line.content())
-        }
+        line.append_to(&mut self.title);
     }
     pub fn finish(self) -> StructuralElement {
         StructuralElement {

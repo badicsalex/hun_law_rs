@@ -1,0 +1,32 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: "Ebben a torvenyben sok a kotojeles-szoveg, ahol figyelni kell a space-ekre"
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - StructuralElement:
+      identifier: "1"
+      title: A KOTOJELES UNDI-SZERKEZETEK
+      element_type: Title
+  - Article:
+      identifier: "1"
+      title: Értelmezési-alapelv
+      children:
+        - body: "Ebben a torvenyben mas sok a kotojeles-szoveg, a sortores, illetve a legrosszabb, a kotojeles-sortores, ami viszont egy szo space nelkul."
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "Meg a felsorolasoknal is kulonosen-fontos, hogy"
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body: ne legyen
+                - identifier: b
+                  body: elrontva
+            wrap_up: a kotojeles-forma.

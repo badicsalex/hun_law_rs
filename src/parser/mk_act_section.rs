@@ -92,10 +92,7 @@ impl ActExtractor {
 
     fn parse_act_subject(&mut self, line: &IndentedLine) -> ActExtractionState {
         let subject = &mut self.current_act.subject;
-        if !subject.is_empty() {
-            subject.push(' ')
-        }
-        subject.push_str(line.content());
+        line.append_to(subject);
 
         // TODO: this is a huge hack, because we depend on there always being a footer about
         // when the law or amendment was enacted and by whom.

@@ -188,6 +188,14 @@ impl IndentedLine {
         let rest = self.slice_bytes(content_from, Some(content_to));
         Some((identifier, rest))
     }
+
+    /// Appends this line to the string, using a space if necessary
+    pub fn append_to(&self, s: &mut String) {
+        if !self.is_empty() && !s.is_empty() && !s.ends_with('-') {
+            s.push(' ');
+        }
+        s.push_str(self.content());
+    }
 }
 
 impl PartialEq for IndentedLine {

@@ -109,8 +109,7 @@ impl ArticleParser {
         };
         let mut title = self.lines.remove(0).content()[1..].to_string();
         while !title.ends_with(']') && !self.lines.is_empty() {
-            title.push(' ');
-            title.push_str(self.lines.remove(0).content());
+            self.lines.remove(0).append_to(&mut title)
         }
         if !title.ends_with(']') {
             Err(anyhow!("Could not find ']' for article title matching."))

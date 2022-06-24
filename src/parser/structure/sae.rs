@@ -67,12 +67,7 @@ pub trait SAEParser {
                 ));
             }
             let line = &body[i];
-            if !line.is_empty() {
-                if !intro.is_empty() {
-                    intro.push(' ');
-                }
-                intro.push_str(line.content());
-            }
+            line.append_to(&mut intro);
         }
         Some(<Self::SAE>::new(identifier, intro.into()))
     }
@@ -114,10 +109,7 @@ pub trait SAEParser {
             {
                 let wrap_up_lines = body.split_off(wrap_up_split);
                 wrap_up = Some(wrap_up_lines.into_iter().fold(String::new(), |mut s, l| {
-                    if !s.is_empty() && !l.is_empty() {
-                        s.push(' ');
-                    }
-                    s.push_str(l.content());
+                    l.append_to(&mut s);
                     s
                 }))
             }
