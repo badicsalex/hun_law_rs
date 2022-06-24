@@ -56,7 +56,8 @@ children:
                 - identifier: a
                   body: one real subpoint
                 - identifier: b
-                  body: two real subpoints Then it should be alphabetic subpoints. Even without indentation.
+                  body: two real subpoints
+            wrap_up: Then it should be alphabetic subpoints. Even without indentation.
         - identifier: "5"
           body:
             intro: This is especially true if there is a fake numeric point like
@@ -70,6 +71,8 @@ children:
                         - identifier: a
                           body: one real subpoint
                         - identifier: b
-                          body: "two real subpoints However, if there is"
+                          body: "two real subpoints"
+                    wrap_up: "However, if there is"
                 - identifier: "2"
-                  body: "another point, then we can do nothing but have numeric subpoints. Such is life."
+                  body: "another point, then we can do nothing but have"
+            wrap_up: "numeric subpoints. Such is life."

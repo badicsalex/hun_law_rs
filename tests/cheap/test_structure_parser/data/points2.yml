@@ -19,7 +19,8 @@ children:
                 - identifier: a
                   body: "38. §-a az Alaptörvény 38. cikk (1) és (2) bekezdése,"
                 - identifier: b
-                  body: 66. § (2) bekezdés a) pontja az Alaptörvény 38. cikk (1) bekezdése alapján sarkalatosnak minősül.
+                  body: 66. § (2) bekezdés a) pontja az Alaptörvény 38. cikk (1) bekezdése 
+            wrap_up: alapján sarkalatosnak minősül.
   - Article:
       identifier: "2"
       children:

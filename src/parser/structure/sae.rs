@@ -24,6 +24,12 @@ use crate::{
     util::indentedline::IndentedLine,
 };
 
+#[derive(Debug, PartialEq)]
+pub enum ParseWrapUp {
+    Yes,
+    No,
+}
+
 pub trait SAEParser {
     type SAE: Sized + SAECommon;
 
@@ -72,7 +78,11 @@ pub trait SAEParser {
     }
 
     /// Extract multiple instances from the text. Fails if the first line is not a header
-    fn extract_multiple<T>(&self, lines: &[IndentedLine]) -> Option<(T, Option<String>)>
+    fn extract_multiple<T>(
+        &self,
+        lines: &[IndentedLine],
+        parse_wrap_up: ParseWrapUp,
+    ) -> Option<(T, Option<String>)>
     where
         T: From<Vec<Self::SAE>>,
     {
@@ -82,11 +92,11 @@ pub trait SAEParser {
         };
         let mut result: Vec<Self::SAE> = Vec::new();
         let mut body: Vec<IndentedLine> = vec![first_line_rest];
-        let expected_indent = lines[0].indent();
+        let header_indent = lines[0].indent();
 
         for line in &lines[1..] {
             if let Some((new_identifier, rest)) =
-                self.parse_and_check_header(&identifier, expected_indent, line)
+                self.parse_and_check_header(&identifier, header_indent, line)
             {
                 result.push(self.parse(identifier, &body)?);
                 identifier = new_identifier;
@@ -95,13 +105,30 @@ pub trait SAEParser {
                 body.push(line.clone())
             }
         }
-        // TODO: Wrap-up
+        let mut wrap_up = None;
+        // This is a stupid heuristic: we hope line-broken points are indented, while
+        // the wrapup will be at the same level as the headers.
+        if parse_wrap_up == ParseWrapUp::Yes {
+            if let Some(wrap_up_split) =
+                body.iter().position(|l| l.indent_less_or_eq(header_indent))
+            {
+                let wrap_up_lines = body.split_off(wrap_up_split);
+                wrap_up = Some(wrap_up_lines.into_iter().fold(String::new(), |mut s, l| {
+                    if !s.is_empty() && !l.is_empty() {
+                        s.push(' ');
+                    }
+                    s.push_str(l.content());
+                    s
+                }))
+            }
+        }
+
         result.push(self.parse(identifier, &body)?);
 
         if result.len() < 2 {
             return None;
         }
-        Some((result.into(), None))
+        Some((result.into(), wrap_up))
     }
 
     /// Parse the header line, and return it, along with the rest of the line.
@@ -143,8 +170,8 @@ impl SAEParser for ParagraphParser {
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         NumericPointParser
-            .extract_multiple(body)
-            .or_else(|| AlphabeticPointParser.extract_multiple(body))
+            .extract_multiple(body, ParseWrapUp::Yes)
+            .or_else(|| AlphabeticPointParser.extract_multiple(body, ParseWrapUp::Yes))
     }
 }
 
@@ -165,7 +192,7 @@ impl SAEParser for NumericPointParser {
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        AlphabeticSubpointParser { prefix: None }.extract_multiple(body)
+        AlphabeticSubpointParser { prefix: None }.extract_multiple(body, ParseWrapUp::Yes)
     }
 }
 
@@ -186,12 +213,14 @@ impl SAEParser for AlphabeticPointParser {
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        NumericSubpointParser.extract_multiple(body).or_else(|| {
-            AlphabeticSubpointParser {
-                prefix: Some(*identifier),
-            }
-            .extract_multiple(body)
-        })
+        NumericSubpointParser
+            .extract_multiple(body, ParseWrapUp::Yes)
+            .or_else(|| {
+                AlphabeticSubpointParser {
+                    prefix: Some(*identifier),
+                }
+                .extract_multiple(body, ParseWrapUp::Yes)
+            })
     }
 }
 

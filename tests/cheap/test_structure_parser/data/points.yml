@@ -26,7 +26,9 @@ children:
                 - identifier: d
                   body: "2017-ben a 2002. január 1. és 2007. december 31. között,"
                 - identifier: e
-                  body: "2018-ban a 2008. január 1. és 2014. március 14. között elrendelt – cselekvőképességet kizáró gondnokság alá helyezésről szóló, felülvizsgálati kötelezettséget nem tartalmazó – határozatok felülvizsgálata iránt kell a bíróságon pert indítania."
+                  body: "2018-ban a 2008. január 1. és 2014. március 14. között"
+            wrap_up: "elrendelt – cselekvőképességet kizáró gondnokság alá helyezésről szóló, felülvizsgálati kötelezettséget nem tartalmazó – határozatok felülvizsgálata iránt kell a bíróságon pert indítania."
+
         - identifier: "2"
           body: "A Ptk. hatálybalépése előtt hozott, felülvizsgálati kötelezettséget tartalmazó határozatok esetében a felülvizsgálati eljárást a bírósági határozatban megjelölt időpontban, de legkésőbb a Ptk. hatálybalépésétől számított öt éven belül kell a gyámhatóságnak megindítania."
 
