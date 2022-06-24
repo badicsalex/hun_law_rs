@@ -1,0 +1,62 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: Preamble preamble.
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - StructuralElement:
+      identifier: "1"
+      title: ""
+      element_type:
+        Part:
+          is_special: true
+  - StructuralElement:
+      identifier: "1"
+      title: ALAPVETŐ RENDELKEZÉSEK
+      element_type: Chapter
+  - Subtitle:
+      title: A törvényesség elve
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Az elkövető büntetőjogi felelősségét csak olyan cselekmény miatt lehet megállapítani, amelyet – a nemzetközi jog általánosan elismert szabályai alapján büntetendő cselekmények kivételével – törvény az elkövetés idején büntetni rendelt."
+  - StructuralElement:
+      identifier: "2"
+      title: ""
+      element_type:
+        Part:
+          is_special: true
+  - StructuralElement:
+      identifier: "2"
+      title: AZ EMBERIESSÉG ELLENI BŰNCSELEKMÉNYEK
+      element_type: Chapter
+  - Subtitle:
+      title: Népirtás
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "Aki valamely nemzeti, etnikai, faji vagy vallási csoport teljes vagy részleges megsemmisítése céljából"
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body: "a csoport tagjait megöli,"
+                - identifier: b
+                  body: "a csoport tagjainak súlyos testi vagy lelki sérelmet okoz,"
+  - StructuralElement:
+      identifier: "3"
+      title: ""
+      element_type:
+        Part:
+          is_special: true
+  - Subtitle:
+      title: Értelmező rendelkezések
+  - Article:
+      identifier: "3"
+      children:
+        - body: E törvény alkalmazásában

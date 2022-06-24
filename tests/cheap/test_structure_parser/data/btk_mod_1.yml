@@ -1,0 +1,48 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "(1) A jogtalan támadást úgy kell tekinteni, mintha az a védekező életének kioltására is irányult volna, ha"
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body:
+                    intro: azt személy ellen
+                    children:
+                      AlphabeticSubpoint:
+                        - identifier: aa
+                          body: "éjjel,"
+                        - identifier: ab
+                          body: "fegyveresen,"
+                        - identifier: ac
+                          body: felfegyverkezve vagy
+                        - identifier: ad
+                          body: csoportosan
+                    wrap_up: "követik el,"
+                - identifier: b
+                  body:
+                    intro: az a lakásba
+                    children:
+                      AlphabeticSubpoint:
+                        - identifier: ba
+                          body: "éjjel,"
+                        - identifier: bb
+                          body: "fegyveresen,"
+                        - identifier: bc
+                          body: felfegyverkezve vagy
+                        - identifier: bd
+                          body: csoportosan
+                    wrap_up: "történő jogtalan behatolás, vagy"
+                - identifier: c
+                  body: az a lakáshoz tartozó bekerített helyre fegyveresen történő jogtalan behatolás.

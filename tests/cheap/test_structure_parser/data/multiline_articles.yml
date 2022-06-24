@@ -1,0 +1,31 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: Egy sorban levo szakasz.
+  - Article:
+      identifier: "2"
+      children:
+        - body: Ket sorban levo szakasz.
+  - Article:
+      identifier: "3"
+      children:
+        - body: Sortores a szakasz elott.
+  - Article:
+      identifier: "4"
+      children:
+        - body: Sortores a szakasz kozben.
+  - Article:
+      identifier: "5"
+      children:
+        - body: Vege.

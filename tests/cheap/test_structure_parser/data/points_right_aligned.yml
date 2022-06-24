@@ -1,0 +1,69 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A szamozott pontok akkor is pontok, ha"
+            children:
+              NumericPoint:
+                - identifier: "1"
+                  body: "1 pontbol,"
+                - identifier: "2"
+                  body: "2 pontbol,"
+                - identifier: "3"
+                  body: "3 pontbol,"
+                - identifier: "4"
+                  body: "4 pontbol,"
+                - identifier: "5"
+                  body: "5 pontbol,"
+                - identifier: "6"
+                  body: "6 pontbol,"
+                - identifier: "7"
+                  body: "7 pontbol,"
+                - identifier: "8"
+                  body: "8 pontbol,"
+                - identifier: "9"
+                  body: "9 pontbol, vagy"
+                - identifier: "10"
+                  body: "10 pontbol,"
+            wrap_up: allnak.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "Sot, akkor is, ha"
+            children:
+              NumericPoint:
+                - identifier: "1"
+                  body: "1 pontbol,"
+                - identifier: "2"
+                  body: "2 pontbol,"
+                - identifier: "3"
+                  body: "3 pontbol,"
+                - identifier: "4"
+                  body: "4 pontbol,"
+                - identifier: "5"
+                  body: "5 pontbol,"
+                - identifier: "6"
+                  body: "6 pontbol,"
+                - identifier: "7"
+                  body: "7 pontbol,"
+                - identifier: "8"
+                  body: "8 pontbol,"
+                - identifier: "9"
+                  body: "9 pontbol,"
+                - identifier: "10"
+                  body: "kilenc plusz egy pontbol, vagy"
+                - identifier: "11"
+                  body: "11 pontbol,"
+            wrap_up: allnak.
