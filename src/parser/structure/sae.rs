@@ -18,9 +18,8 @@ use lazy_regex::regex;
 
 use crate::{
     structure::{
-        AlphabeticPoint, AlphabeticPointChildren, AlphabeticSubpoint, HungarianIdentifierChar,
-        IsNextFrom, NumericPoint, NumericPointChildren, NumericSubpoint, Paragraph,
-        ParagraphChildren, PrefixedAlphabeticIdentifier, SAEBody, SAECommon,
+        AlphabeticPoint, AlphabeticSubpoint, HungarianIdentifierChar, IsNextFrom, NumericPoint,
+        NumericSubpoint, Paragraph, PrefixedAlphabeticIdentifier, SAEBody, SAECommon,
     },
     util::indentedline::IndentedLine,
 };
@@ -69,17 +68,13 @@ pub trait SAEParser {
                 intro.push_str(line.content());
             }
         }
-        Some(<Self::SAE>::new(identifier, SAEBody::Text(intro)))
+        Some(<Self::SAE>::new(identifier, intro.into()))
     }
 
     /// Extract multiple instances from the text. Fails if the first line is not a header
-    fn extract_multiple<T, F>(
-        &self,
-        lines: &[IndentedLine],
-        postprocess: F,
-    ) -> Option<(T, Option<String>)>
+    fn extract_multiple<T>(&self, lines: &[IndentedLine]) -> Option<(T, Option<String>)>
     where
-        F: FnOnce(Vec<Self::SAE>) -> T,
+        T: From<Vec<Self::SAE>>,
     {
         let (mut identifier, first_line_rest) = self.parse_header(&lines[0])?;
         if !identifier.is_first() {
@@ -106,7 +101,7 @@ pub trait SAEParser {
         if result.len() < 2 {
             return None;
         }
-        Some((postprocess(result), None))
+        Some((result.into(), None))
     }
 
     /// Parse the header line, and return it, along with the rest of the line.
@@ -148,10 +143,8 @@ impl SAEParser for ParagraphParser {
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         NumericPointParser
-            .extract_multiple(body, ParagraphChildren::NumericPoint)
-            .or_else(|| {
-                AlphabeticPointParser.extract_multiple(body, ParagraphChildren::AlphabeticPoint)
-            })
+            .extract_multiple(body)
+            .or_else(|| AlphabeticPointParser.extract_multiple(body))
     }
 }
 
@@ -172,8 +165,7 @@ impl SAEParser for NumericPointParser {
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        AlphabeticSubpointParser { prefix: None }
-            .extract_multiple(body, NumericPointChildren::AlphabeticSubpoint)
+        AlphabeticSubpointParser { prefix: None }.extract_multiple(body)
     }
 }
 
@@ -194,14 +186,12 @@ impl SAEParser for AlphabeticPointParser {
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
     ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        NumericSubpointParser
-            .extract_multiple(body, AlphabeticPointChildren::NumericSubpoint)
-            .or_else(|| {
-                AlphabeticSubpointParser {
-                    prefix: Some(*identifier),
-                }
-                .extract_multiple(body, AlphabeticPointChildren::AlphabeticSubpoint)
-            })
+        NumericSubpointParser.extract_multiple(body).or_else(|| {
+            AlphabeticSubpointParser {
+                prefix: Some(*identifier),
+            }
+            .extract_multiple(body)
+        })
     }
 }
 

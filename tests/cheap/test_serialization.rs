@@ -16,9 +16,8 @@
 
 use hun_law::{
     structure::{
-        Act, ActChild, ActIdentifier, AlphabeticPoint, AlphabeticPointChildren, AlphabeticSubpoint,
-        Article, NumericPoint, Paragraph, ParagraphChildren, SAEBody, StructuralElement,
-        StructuralElementType, Subtitle,
+        Act, ActIdentifier, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, Paragraph,
+        SAEBody, StructuralElement, StructuralElementType, Subtitle,
     },
     util::date::Date,
 };
@@ -39,105 +38,116 @@ fn get_test_structure() -> Act {
         subject: "A tesztelésről".into(),
         preamble: "A tesztelés nagyon fontos, és egyben kötelező".into(),
         children: vec![
-            ActChild::StructuralElement(StructuralElement {
+            StructuralElement {
                 identifier: "1".parse().unwrap(),
                 title: "Egyszerű dolgok".into(),
                 element_type: StructuralElementType::Book,
-            }),
-            ActChild::Subtitle(Subtitle {
+            }
+            .into(),
+            Subtitle {
                 identifier: None,
                 title: "Alcim id nelkul".into(),
-            }),
-            ActChild::Article(Article {
+            }
+            .into(),
+            Article {
                 identifier: "1:1".parse().unwrap(),
                 title: Some("Az egyetlen cikk, aminek cime van.".into()),
                 children: vec![Paragraph {
                     identifier: None,
-                    body: SAEBody::Text("Meg szövege".into()),
+                    body: "Meg szövege".into(),
                 }],
-            }),
-            ActChild::Article(Article {
+            }
+            .into(),
+            Article {
                 identifier: "1:2".parse().unwrap(),
                 title: None,
                 children: vec![
                     Paragraph {
                         identifier: Some(1.into()),
-                        body: SAEBody::Text("Valami valami".into()),
+                        body: "Valami valami".into(),
                     },
                     Paragraph {
                         identifier: Some(2.into()),
                         body: SAEBody::Children {
                             intro: "Egy felsorolás legyen".into(),
                             wrap_up: Some("minden esetben.".into()),
-                            children: ParagraphChildren::AlphabeticPoint(vec![
+                            children: vec![
                                 AlphabeticPoint {
                                     identifier: "a".parse().unwrap(),
-                                    body: SAEBody::Text("többelemű".into()),
+                                    body: "többelemű".into(),
                                 },
                                 AlphabeticPoint {
                                     identifier: "b".parse().unwrap(),
                                     body: SAEBody::Children {
                                         intro: "kellően".into(),
                                         wrap_up: None,
-                                        children: AlphabeticPointChildren::AlphabeticSubpoint(
-                                            vec![
-                                                AlphabeticSubpoint {
-                                                    identifier: "ba".parse().unwrap(),
-                                                    body: SAEBody::Text("átláthatatlan".into()),
-                                                },
-                                                AlphabeticSubpoint {
-                                                    identifier: "bb".parse().unwrap(),
-                                                    body: SAEBody::Text("komplex".into()),
-                                                },
-                                            ],
-                                        ),
+                                        children: vec![
+                                            AlphabeticSubpoint {
+                                                identifier: "ba".parse().unwrap(),
+                                                body: "átláthatatlan".into(),
+                                            },
+                                            AlphabeticSubpoint {
+                                                identifier: "bb".parse().unwrap(),
+                                                body: "komplex".into(),
+                                            },
+                                        ]
+                                        .into(),
                                     },
                                 },
-                            ]),
+                            ]
+                            .into(),
                         },
                     },
                 ],
-            }),
-            ActChild::StructuralElement(StructuralElement {
+            }
+            .into(),
+            StructuralElement {
                 identifier: "2".parse().unwrap(),
                 title: "Amended stuff in english".into(),
                 element_type: StructuralElementType::Book,
-            }),
-            ActChild::StructuralElement(StructuralElement {
+            }
+            .into(),
+            StructuralElement {
                 identifier: "1".parse().unwrap(),
                 title: "Az eleje".into(),
                 element_type: StructuralElementType::Part { is_special: false },
-            }),
-            ActChild::Subtitle(Subtitle {
+            }
+            .into(),
+            Subtitle {
                 identifier: Some("1".parse().unwrap()),
                 title: "Alcim id-vel".into(),
-            }),
-            ActChild::Article(Article {
+            }
+            .into(),
+            Article {
                 identifier: "2:1".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
                     identifier: None,
-                    body: SAEBody::Text("Nothing fancy yet".into()),
+                    body: "Nothing fancy yet".into(),
                 }],
-            }),
-            ActChild::StructuralElement(StructuralElement {
+            }
+            .into(),
+            StructuralElement {
                 identifier: "1/A".parse().unwrap(),
                 title: "A hozzaadott".into(),
                 element_type: StructuralElementType::Part { is_special: false },
-            }),
-            ActChild::Subtitle(Subtitle {
+            }
+            .into(),
+            Subtitle {
                 identifier: Some("1/A".parse().unwrap()),
                 title: "Alcim amendelt id-vel".into(),
-            }),
-            ActChild::Article(Article {
+            }
+            .into(),
+            Article {
                 identifier: "2:1/A".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
                     identifier: None,
-                    body: SAEBody::Text("Added after the fact".into()),
+                    body: "Added after the fact".into(),
                 }],
-            }),
-            ActChild::Article(Article {
+            }
+            .into(),
+            Article {
                 identifier: "2:2".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
@@ -145,23 +155,25 @@ fn get_test_structure() -> Act {
                     body: SAEBody::Children {
                         intro: "This can legally be after 2:1/A. Also, ".into(),
                         wrap_up: Some("Can also be amended".into()),
-                        children: ParagraphChildren::NumericPoint(vec![
+                        children: vec![
                             NumericPoint {
                                 identifier: 1.into(),
-                                body: SAEBody::Text("Paragraphs".into()),
+                                body: "Paragraphs".into(),
                             },
                             NumericPoint {
                                 identifier: "1a".parse().unwrap(),
-                                body: SAEBody::Text("Numeric points".into()),
+                                body: "Numeric points".into(),
                             },
                             NumericPoint {
                                 identifier: 2.into(),
-                                body: SAEBody::Text("Alphabetic points".into()),
+                                body: "Alphabetic points".into(),
                             },
-                        ]),
+                        ]
+                        .into(),
                     },
                 }],
-            }),
+            }
+            .into(),
         ],
     }
 }

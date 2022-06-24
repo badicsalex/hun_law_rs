@@ -18,6 +18,7 @@ pub mod identifier;
 pub use identifier::*;
 
 use crate::util::{date::Date, indentedline::IndentedLine, is_default, IsDefault};
+use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
 //  Main act on which all the code was based:
@@ -81,7 +82,7 @@ pub struct Act {
     pub children: Vec<ActChild>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum ActChild {
     StructuralElement(StructuralElement),
     Subtitle(Subtitle),
@@ -164,8 +165,20 @@ pub enum SAEBody<ChildrenType> {
     },
 }
 
+impl<T> From<&str> for SAEBody<T> {
+    fn from(s: &str) -> Self {
+        SAEBody::Text(s.to_owned())
+    }
+}
+
+impl<T> From<String> for SAEBody<T> {
+    fn from(s: String) -> Self {
+        SAEBody::Text(s)
+    }
+}
+
 pub type Paragraph = SubArticleElement<Option<NumericIdentifier>, ParagraphChildren>;
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum ParagraphChildren {
     AlphabeticPoint(Vec<AlphabeticPoint>),
     NumericPoint(Vec<NumericPoint>),
@@ -174,14 +187,14 @@ pub enum ParagraphChildren {
 }
 
 pub type AlphabeticPoint = SubArticleElement<AlphabeticIdentifier, AlphabeticPointChildren>;
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum AlphabeticPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
     NumericSubpoint(Vec<NumericSubpoint>),
 }
 
 pub type NumericPoint = SubArticleElement<NumericIdentifier, NumericPointChildren>;
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum NumericPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
 }
@@ -206,7 +219,7 @@ pub struct BlockAmendment {
     pub children: Vec<BlockAmendmentChild>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum BlockAmendmentChild {
     Article(Article),
     Paragraph(Paragraph),

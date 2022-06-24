@@ -14,6 +14,7 @@ clap = {version = "3.1", features = ["derive"]}
 env_logger = "0.9.0"
 flate2 = "1.0"
 fn-error-context = "0.2"
+from_variants = "1.0"
 lazy-regex = "2.3"
 log = "0.4.14"
 pdf-extract-fhl = { path="../pdf-extract-fhl" }
