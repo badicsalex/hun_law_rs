@@ -55,12 +55,26 @@ impl StructuralElementParserFactory {
 
     fn parse_identifier(&self, id: &str) -> Result<NumericIdentifier> {
         match self.element_type {
-            StructuralElementType::Book | StructuralElementType::Part { .. } => str_to_int_hun(id)
-                .map(NumericIdentifier::from)
-                .ok_or_else(|| anyhow!("Invalid hungarian numeral {}", id)),
+            StructuralElementType::Part { is_special: true } => {
+                Self::parse_special_part_identifier(id)
+            }
+            StructuralElementType::Book | StructuralElementType::Part { is_special: false } => {
+                str_to_int_hun(id)
+                    .map(NumericIdentifier::from)
+                    .ok_or_else(|| anyhow!("Invalid hungarian numeral {}", id))
+            }
             StructuralElementType::Title | StructuralElementType::Chapter => {
                 NumericIdentifier::from_roman(id)
             }
+        }
+    }
+
+    fn parse_special_part_identifier(id: &str) -> Result<NumericIdentifier> {
+        match id {
+            "ÁLTALÁNOS" => Ok(1.into()),
+            "KÜLÖNÖS" => Ok(2.into()),
+            "ZÁRÓ" => Ok(3.into()),
+            _ => Err(anyhow!("{} is not a special part", id)),
         }
     }
 }

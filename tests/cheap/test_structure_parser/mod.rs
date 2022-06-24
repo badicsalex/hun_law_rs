@@ -40,6 +40,7 @@ fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
 #[case::numeric_subpoints("numeric_subpoints")]
 #[case::points("points")]
 #[case::points2("points2")]
+#[case::special_parts("special_parts")]
 #[case::structural_elements_1("structural_elements_1")]
 #[case::structural_elements_2("structural_elements_2")]
 #[case::subpoints("subpoints")]
