@@ -1,0 +1,46 @@
+1. § Az Önkéntes Kölcsönös Biztosító Pénztárakról szóló 1993. évi XCVI. törvény 40/A. § (1) bekezdésében
+az „a Ptk. 2:47. § (1) bekezdésében” szövegrész helyébe az „az üzleti titok védelméről szóló 2018. évi LIV. törvény
+1. § (1) bekezdésében” szöveg lép.
+2. § A második szakasz viszont mar
+„Csodalatos quote-olt blokk”
+meghozzá szöveggel utána
+3. § A harmadik szakasz pedig
+„Többet is tartalmaz”
+„Egyes idezett szövegeket
+több sorban is
+akár”
+
+“Kihagyott sorokkal, „nestelt
+
+idezetekkel” es egyeb
+finomsagokkal”
+meg persze idezojelen kivuli
+befejezessel.
+
+4. § [Elso soros dolgok]
+(1) Alelem parsingnal is fontos, hogy a „
+(2) jellegu szoveg
+(3) extra szivassal ”
+is helyes legyen
+(2) Valodi masodik, de itt meg az alpontok
+a) vannak  „direkt
+b) rosszul
+c) extra rosszul”
+b) valodi b)
+es wrap_up
+
+5. § [Masodik soros dolgok]
+(1) Alelem parsingnal is fontos,
+hogy a „
+(2) jellegu szoveg
+(3) extra
+szivassal ”
+is helyes legyen
+(2) Valodi masodik, de itt meg az alpontok
+a) vannak
+„direkt
+b) rosszul
+c) extra
+rosszul”
+b) valodi b)
+es wrap_up

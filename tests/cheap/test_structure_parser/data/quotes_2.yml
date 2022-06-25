@@ -1,0 +1,19 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: A földgázellátásról szóló 2008. évi XL. törvény 48. § (4) bekezdésében az „a villamos energiáról szóló 2007. évi LXXXVI. törvény szerinti átviteli rendszerirányítóra” szövegrész helyébe az „a rendszerirányítást végző szállítási rendszerüzemeltetőre és a villamos energiáról szóló 2007. évi LXXXVI. törvény szerinti átviteli rendszerirányítóra” szöveg lép.
+  - Article:
+      identifier: "2"
+      children:
+        - body: Ez a törvény a kihirdetését követő 15. napon lép hatályba.

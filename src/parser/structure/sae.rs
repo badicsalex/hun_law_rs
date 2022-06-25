@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use anyhow::{anyhow, bail, Result};
 use lazy_regex::regex;
 
 use crate::{
@@ -21,7 +22,7 @@ use crate::{
         AlphabeticPoint, AlphabeticSubpoint, HungarianIdentifierChar, IsNextFrom, NumericPoint,
         NumericSubpoint, Paragraph, PrefixedAlphabeticIdentifier, SAEBody, SAECommon,
     },
-    util::indentedline::IndentedLine,
+    util::{indentedline::IndentedLine, QuoteCheck},
 };
 
 #[derive(Debug, PartialEq)]
@@ -46,30 +47,36 @@ pub trait SAEParser {
         &self,
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
-    ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)>;
+    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)>;
 
     /// Parse a single instance.
     fn parse(
         &self,
         identifier: <Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
-    ) -> Option<Self::SAE> {
+    ) -> Result<Self::SAE> {
         let mut intro = String::new();
+        let mut quote_checker = QuoteCheck::default();
         for i in 0..body.len() {
-            if let Some((children, wrap_up)) = self.try_extract_children(&identifier, &body[i..]) {
-                return Some(<Self::SAE>::new(
-                    identifier,
-                    SAEBody::Children {
-                        intro,
-                        children,
-                        wrap_up,
-                    },
-                ));
+            quote_checker.update(&body[i])?;
+            if !quote_checker.beginning_is_quoted {
+                if let Ok((children, wrap_up)) = self.try_extract_children(&identifier, &body[i..])
+                {
+                    return Ok(<Self::SAE>::new(
+                        identifier,
+                        SAEBody::Children {
+                            intro,
+                            children,
+                            wrap_up,
+                        },
+                    ));
+                }
             }
             let line = &body[i];
             line.append_to(&mut intro);
         }
-        Some(<Self::SAE>::new(identifier, intro.into()))
+        quote_checker.check_end()?;
+        Ok(<Self::SAE>::new(identifier, intro.into()))
     }
 
     /// Extract multiple instances from the text. Fails if the first line is not a header
@@ -77,22 +84,30 @@ pub trait SAEParser {
         &self,
         lines: &[IndentedLine],
         parse_wrap_up: ParseWrapUp,
-    ) -> Option<(T, Option<String>)>
+    ) -> Result<(T, Option<String>)>
     where
         T: From<Vec<Self::SAE>>,
     {
-        let (mut identifier, first_line_rest) = self.parse_header(&lines[0])?;
+        let (mut identifier, first_line_rest) = self
+            .parse_header(&lines[0])
+            .ok_or(anyhow!("Invalid header"))?;
         if !identifier.is_first() {
-            return None;
+            bail!("Parsed identifier was not first: {:?}", identifier);
         };
+        let mut quote_checker = QuoteCheck::default();
+        quote_checker.update(&first_line_rest)?;
         let mut result: Vec<Self::SAE> = Vec::new();
         let mut body: Vec<IndentedLine> = vec![first_line_rest];
         let header_indent = lines[0].indent();
 
         for line in &lines[1..] {
-            if let Some((new_identifier, rest)) =
+            quote_checker.update(line)?;
+            let new_header = if !quote_checker.beginning_is_quoted {
                 self.parse_and_check_header(&identifier, header_indent, line)
-            {
+            } else {
+                None
+            };
+            if let Some((new_identifier, rest)) = new_header {
                 result.push(self.parse(identifier, &body)?);
                 identifier = new_identifier;
                 body = vec![rest];
@@ -100,6 +115,7 @@ pub trait SAEParser {
                 body.push(line.clone())
             }
         }
+        quote_checker.check_end()?;
         let mut wrap_up = None;
         // This is a stupid heuristic: we hope line-broken points are indented, while
         // the wrapup will be at the same level as the headers.
@@ -118,9 +134,9 @@ pub trait SAEParser {
         result.push(self.parse(identifier, &body)?);
 
         if result.len() < 2 {
-            return None;
+            bail!("Not enough children could be parsed");
         }
-        Some((result.into(), wrap_up))
+        Ok((result.into(), wrap_up))
     }
 
     /// Parse the header line, and return it, along with the rest of the line.
@@ -160,10 +176,10 @@ impl SAEParser for ParagraphParser {
         &self,
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
-    ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         NumericPointParser
             .extract_multiple(body, ParseWrapUp::Yes)
-            .or_else(|| AlphabeticPointParser.extract_multiple(body, ParseWrapUp::Yes))
+            .or_else(|_| AlphabeticPointParser.extract_multiple(body, ParseWrapUp::Yes))
     }
 }
 
@@ -183,7 +199,7 @@ impl SAEParser for NumericPointParser {
         &self,
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
-    ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         AlphabeticSubpointParser { prefix: None }.extract_multiple(body, ParseWrapUp::Yes)
     }
 }
@@ -204,10 +220,10 @@ impl SAEParser for AlphabeticPointParser {
         &self,
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
-    ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         NumericSubpointParser
             .extract_multiple(body, ParseWrapUp::Yes)
-            .or_else(|| {
+            .or_else(|_| {
                 AlphabeticSubpointParser {
                     prefix: Some(*identifier),
                 }
@@ -232,9 +248,8 @@ impl SAEParser for NumericSubpointParser {
         &self,
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         _body: &[IndentedLine],
-    ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        /* Cannot have children :C */
-        None
+    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+        Err(anyhow!("Subpoints can't have children"))
     }
 }
 
@@ -261,8 +276,7 @@ impl SAEParser for AlphabeticSubpointParser {
         &self,
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         _body: &[IndentedLine],
-    ) -> Option<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
-        /* Cannot have children :C */
-        None
+    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+        Err(anyhow!("Subpoints can't have children"))
     }
 }

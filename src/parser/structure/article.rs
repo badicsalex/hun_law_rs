@@ -86,15 +86,13 @@ impl ArticleParser {
         if self.lines[0].is_empty() {
             self.lines.remove(0);
         }
-        let children: Vec<Paragraph> = if let Some((extracted, wrap_up)) =
+        let children: Vec<Paragraph> = if let Ok((extracted, wrap_up)) =
             ParagraphParser.extract_multiple(&self.lines, ParseWrapUp::No)
         {
             assert!(wrap_up.is_none());
             extracted
         } else {
-            vec![ParagraphParser
-                .parse(None, &self.lines)
-                .ok_or_else(|| anyhow!("Could not parse single paragraph for article"))?]
+            vec![ParagraphParser.parse(None, &self.lines)?]
         };
         Ok(Article {
             identifier: self.identifier,

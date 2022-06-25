@@ -18,7 +18,7 @@ use anyhow::{bail, Result};
 use crate::{
     parser::mk_act_section::ActRawText,
     structure::{Act, ActChild, StructuralElementType},
-    util::indentedline::IndentedLine,
+    util::{indentedline::IndentedLine, QuoteCheck},
 };
 
 use super::{
@@ -50,24 +50,29 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
         StructuralElementParserFactory::new(StructuralElementType::Chapter),
     ];
     let mut article_parser_factory = ArticleParserFactory::new();
-
+    let mut quote_checker = QuoteCheck::default();
     let mut prev_line_is_empty = true;
     for line in lines {
-        let new_state = se_parser_factories
-            .iter()
-            .find_map(|fac| {
-                fac.try_create_from_header(line)
-                    .map(ParseState::StructuralElement)
-            })
-            .or_else(|| {
-                SubtitleParserFactory::try_create_from_header(line, prev_line_is_empty)
-                    .map(ParseState::Subtitle)
-            })
-            .or_else(|| {
-                article_parser_factory
-                    .try_create_from_header(line)
-                    .map(ParseState::Article)
-            });
+        quote_checker.update(line)?;
+        let new_state = if !quote_checker.beginning_is_quoted {
+            se_parser_factories
+                .iter()
+                .find_map(|fac| {
+                    fac.try_create_from_header(line)
+                        .map(ParseState::StructuralElement)
+                })
+                .or_else(|| {
+                    SubtitleParserFactory::try_create_from_header(line, prev_line_is_empty)
+                        .map(ParseState::Subtitle)
+                })
+                .or_else(|| {
+                    article_parser_factory
+                        .try_create_from_header(line)
+                        .map(ParseState::Article)
+                })
+        } else {
+            None
+        };
         if let Some(new_state) = new_state {
             match state {
                 ParseState::Preamble => (),
@@ -86,6 +91,8 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
         }
         prev_line_is_empty = line.is_empty();
     }
+    quote_checker.check_end()?;
+
     match state {
         ParseState::Preamble => bail!("Parsing ended with preamble state"),
         ParseState::Article(parser) => children.push(parser.finish()?.into()),

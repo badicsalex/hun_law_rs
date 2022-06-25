@@ -45,6 +45,8 @@ fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
 #[case::points("points")]
 #[case::points2("points2")]
 #[case::points_right_aligned("points_right_aligned")]
+#[case::quotes_1("quotes_1")]
+#[case::quotes_2("quotes_2")]
 #[case::simple("simple")]
 #[case::special_parts("special_parts")]
 #[case::structural_elements_1("structural_elements_1")]

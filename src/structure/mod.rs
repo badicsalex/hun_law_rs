@@ -15,6 +15,8 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 pub mod identifier;
+use std::fmt::Debug;
+
 pub use identifier::*;
 
 use crate::util::{date::Date, indentedline::IndentedLine, is_default, IsDefault};
@@ -234,12 +236,12 @@ pub enum BlockAmendmentChild {
 // - No inherent associated types
 // - Generic type cannot be used as a trait bound
 pub trait SAECommon: Sized {
-    type IdentifierType: IsNextFrom + Clone;
+    type IdentifierType: IsNextFrom + Clone + Debug;
     type ChildrenType;
     fn new(identifier: Self::IdentifierType, body: SAEBody<Self::ChildrenType>) -> Self;
 }
 
-impl<IdentifierType: IsDefault + IsNextFrom + Clone, ChildrenType> SAECommon
+impl<IdentifierType: IsDefault + IsNextFrom + Clone + Debug, ChildrenType> SAECommon
     for SubArticleElement<IdentifierType, ChildrenType>
 {
     type IdentifierType = IdentifierType;

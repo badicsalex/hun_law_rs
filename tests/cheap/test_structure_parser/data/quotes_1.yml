@@ -1,0 +1,55 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Az Önkéntes Kölcsönös Biztosító Pénztárakról szóló 1993. évi XCVI. törvény 40/A. § (1) bekezdésében az „a Ptk. 2:47. § (1) bekezdésében” szövegrész helyébe az „az üzleti titok védelméről szóló 2018. évi LIV. törvény 1. § (1) bekezdésében” szöveg lép."
+  - Article:
+      identifier: "2"
+      children:
+        - body: A második szakasz viszont mar „Csodalatos quote-olt blokk” meghozzá szöveggel utána
+  - Article:
+      identifier: "3"
+      children:
+        - body: "A harmadik szakasz pedig „Többet is tartalmaz” „Egyes idezett szövegeket több sorban is akár” “Kihagyott sorokkal, „nestelt idezetekkel” es egyeb finomsagokkal” meg persze idezojelen kivuli befejezessel."
+  - Article:
+      identifier: "4"
+      title: Elso soros dolgok
+      children:
+        - identifier: "1"
+          body: "Alelem parsingnal is fontos, hogy a „ (2) jellegu szoveg (3) extra szivassal ” is helyes legyen"
+        - identifier: "2"
+          body:
+            intro: "Valodi masodik, de itt meg az alpontok"
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body: vannak „direkt b) rosszul c) extra rosszul”
+                - identifier: b
+                  body: valodi b)
+            wrap_up: es wrap_up
+  - Article:
+      identifier: "5"
+      title: Masodik soros dolgok
+      children:
+        - identifier: "1"
+          body: "Alelem parsingnal is fontos, hogy a „ (2) jellegu szoveg (3) extra szivassal ” is helyes legyen"
+        - identifier: "2"
+          body:
+            intro: "Valodi masodik, de itt meg az alpontok"
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body: vannak „direkt b) rosszul c) extra rosszul”
+                - identifier: b
+                  body: valodi b)
+            wrap_up: es wrap_up
