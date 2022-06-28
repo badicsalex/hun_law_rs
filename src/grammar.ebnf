@@ -1,0 +1,352 @@
+# Copyright 2018 Alex Badics <admin@stickman.hu>
+#
+# This file is part of Hun-Law.
+#
+# Hun-Law is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Hun-Law is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Hun-Law.  If not, see <https://www.gnu.org/licenses/>.
+
+@@namechars :: 'éáőúöüóíűÉÁŐÚÖÜÓÍŰ'
+@@grammar :: ActGrammar
+
+# ============ STARTING TOKENS ============
+start_default =
+    | block_amendment $
+    | block_amendment_with_subtitle $
+    | block_amendment_structural $
+    | text_amendment $
+    | article_title_amendment $
+    | enforcement_date $
+    | repeal $
+    | structural_repeal $
+    | {any_simple_expression}+ $;
+
+# ============ STRUCTURE PARSING ============
+
+any_simple_expression =
+    | quote
+    | compound_reference
+    | abbreviation
+    | any_token
+    ;
+
+compound_reference::CompoundReference = (act_reference:act_reference {references+:reference [list_separator [az]]}*) | references+:reference;
+
+ref_with_subpoint = (subpoint:alphabetic_subpoint_reference | subpoint:numeric_subpoint_reference);
+ref_with_point =  (point:alphabetic_point_reference | point:numeric_point_reference) [>ref_with_subpoint];
+ref_with_paragraph = paragraph:paragraph_reference [>ref_with_point];
+
+ref_with_article_with_paragraph = article:article_reference >ref_with_paragraph;
+ref_with_article_no_paragraph = article:article_reference [>ref_with_point];
+
+reference::Reference =
+    | >ref_with_article_with_paragraph
+    | >ref_with_article_no_paragraph
+    | >ref_with_paragraph
+    | >ref_with_point
+    | >ref_with_subpoint
+    ;
+
+
+act_reference::ActReference = abbreviation:abbreviation | (act_id:act_id [from_now_on:from_now_on | from_now_on_long] );
+from_now_on = "(" "a" "továbbiakban" [":"] abbreviation:abbreviation ["törvény"] ")" ;
+from_now_on_long = "(" "a" "továbbiakban" [":"] ( act_id | {word}+ ) ")" ;
+act_id::ActId = year:number "." "évi" number:roman "." act_suffix;
+act_suffix = "törvény" | /törvén[a-zéáőúöüóíű]+/ | "tv.";
+
+article_reference::ArticleReferencePart::ReferencePart
+    = {(ranges+:article_range | singles+:article_single) [list_separator [az]]}+ article_suffix ;
+article_range = start:article_id ["." article_suffix] dash end:article_id "." ;
+article_single = id:article_id ".";
+article_id = id:([number ":" ] number ["/" /[A-Z]/]);
+article_suffix = /§-[a-zéáőúöüóíű]+/ | "§" ;
+
+single_article_reference::SingleArticleReference =
+    >article_id "." article_suffix
+    ;
+
+paragraph_reference::ParagraphReferencePart::ReferencePart
+    = {(ranges+:paragraph_range | singles+:paragraph_single) [list_separator [az]]}+ paragraph_suffix ;
+paragraph_range = "(" start:paragraph_id ")" dash "(" end:paragraph_id ")" ;
+paragraph_single = "(" id:paragraph_id ")";
+paragraph_id = id:(number [/[a-z]/]);
+paragraph_suffix = /bekezdés[a-zéáőúöüóíű]+/ | "bekezdés" ;
+
+alphabetic_point_reference::AlphabeticPointReferencePart::ReferencePart
+    = {(ranges+:alphabetic_point_range | singles+:alphabetic_point_single) [list_separator [az]]}+ alphabetic_point_suffix ;
+alphabetic_point_range = start:alphabetic_point_id [")"] dash end:alphabetic_point_id ")" ;
+alphabetic_point_single = id:alphabetic_point_id ")";
+alphabetic_point_id = id:("ny" | "sz" | /[a-z]/);
+alphabetic_point_suffix = /pont[a-zéáőúöüóíű]+/ | "pont" ;
+
+numeric_point_reference::NumericPointReferencePart::ReferencePart
+    = {(ranges+:numeric_point_range | singles+:numeric_point_single) [list_separator [az]]}+ numeric_point_suffix ;
+numeric_point_range = start:numeric_point_id dash end:numeric_point_id "." ;
+numeric_point_single = id:numeric_point_id ".";
+numeric_point_id = id:(number [["/"] /[a-z]/]);
+numeric_point_suffix = /pont[a-zéáőúöüóíű]+/ | "pont" ;
+
+alphabetic_subpoint_reference::AlphabeticSubpointReferencePart::ReferencePart
+    = {(ranges+:alphabetic_subpoint_range | singles+:alphabetic_subpoint_single) [list_separator [az]]}+ alphabetic_subpoint_suffix ;
+alphabetic_subpoint_range = start:alphabetic_subpoint_id ")" dash end:alphabetic_subpoint_id ")" ;
+alphabetic_subpoint_single = id:alphabetic_subpoint_id ")";
+alphabetic_subpoint_id = id:(/[a-z][a-z]?/);
+alphabetic_subpoint_suffix = /alpont[a-zéáőúöüóíű]+/ | "alpont" ;
+
+numeric_subpoint_reference::NumericSubpointReferencePart::ReferencePart
+    = {(ranges+:numeric_subpoint_range | singles+:numeric_subpoint_single) [list_separator [az]]}+ numeric_subpoint_suffix ;
+numeric_subpoint_range = start:numeric_subpoint_id  dash end:numeric_subpoint_id "." ;
+numeric_subpoint_single = id:numeric_subpoint_id ".";
+numeric_subpoint_id = id:number ;
+numeric_subpoint_suffix = /alpont[a-zéáőúöüóíű]+/ | "alpont" ;
+
+abbreviation::Abbreviation = s:/[A-ZÉÁŐÚÖÜÓÍŰ][a-zéáőúöüóíű]+\.? ?(tv\.|vhr\.)/ | s:/[A-ZÉÁŐÚÖÜÓÍŰ][a-zéáőúöüóíű]+\./ ;
+
+quote = "„" /[^„”]*/ { quote /[^„”]*/ }* "”" ;
+
+list_separator = (["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," | ";";
+
+# ============= STRUCTURAL REFERENCES =============
+
+after_article::AfterArticle::StructuralReference = [az] >article_id "." article_suffix ("követően" | "követő" );
+before_article::BeforeArticle::StructuralReference = [az] >article_id "." article_suffix ("megelőzően" | "megelőző" );
+subtitle_title::SubtitleTitle::StructuralReference = (quoted_title:quote | raw_title:{!"alcíme" !"című" any_token}) ["című"] "alcíme";
+
+subtitle_number::SubtitleNumber::StructuralReference =
+    id:(number [["/"] /[A-Z]/])  "." subtitle_suffix;
+subtitle_suffix = /alcím[a-zéáőúöüóíű]+/ | "alcím";
+
+chapter_number::ChapterNumber::StructuralReference =
+    id:(roman [["/"] /[A-Z]/])  "." chapter_suffix;
+chapter_suffix = /Fejezet[a-zéáőúöüóíű]+/ | "Fejezet";
+
+part_number::PartNumber::StructuralReference =
+    [book_id:hungarian_ordinal_capital "Könyv"]
+    id:hungarian_ordinal_capital part_suffix;
+part_suffix = /Rész[a-zéáőúöüóíű]+/ | "Rész";
+
+title_number::TitleNumber::StructuralReference =
+    [book_id:hungarian_ordinal_capital "Könyv"]
+    id:(roman [["/"] /[A-Z]/]) "." title_suffix;
+title_suffix = /Cím[a-zéáőúöüóíű]+/ | "Cím";
+
+any_structural_reference =
+    | subtitle_number
+    | subtitle_title
+    | chapter_number
+    | part_number
+    | title_number
+    ;
+
+
+# ============ BLOCK AMENDMENT PARSING ============
+
+insertion_token = "a következő";
+
+insertion_reference::Reference =
+    | insertion_token article:article_reference [paragraph:paragraph_reference]
+    | [[az] article:article_reference | "a §"] insertion_token paragraph:paragraph_reference
+    | [[az] article:article_reference [paragraph:paragraph_reference] | "a §" | "a bekezdés"] insertion_token (point:alphabetic_point_reference | point:numeric_point_reference)
+    | [az] article:article_reference [paragraph:paragraph_reference] (point:alphabetic_point_reference | point:numeric_point_reference) insertion_token (subpoint:alphabetic_subpoint_reference | subpoint:numeric_subpoint_reference)
+    ;
+
+title_insertion_with_book::TitleNumber::StructuralReference =
+    book_id:hungarian_ordinal_capital "Könyve"
+    insertion_token
+    id:(roman [["/"] /[A-Z]/]) "." title_suffix;
+
+subtitle_token = ("alcímmel" | "alcímekkel" | "alcím-megjelölése" | "alcím-megjelölés" |  "alcíme" | "alcím" [/ *cím[a-zéáőúöüóíű]*/]);
+
+reference_with_subtitle::ReferenceWithSubtitle::Reference =
+    | subtitle_token "és" article:article_reference
+    | article:article_reference "és" az ["azt" | "azokat"] "megelőző" subtitle_token
+    | subtitle_token
+    ;
+
+amendment_suffix =
+    | "helyébe a következő" ("rendelkezés lép" | "rendelkezések lépnek")
+    | "a következő szöveggel lép hatályba"
+    ;
+
+amendment_suffix_with_subtitle =
+    "helyébe a következő" ["rendelkezés és"] "alcím" ["és rendelkezés"] ("lép" | "lépnek")
+    ;
+
+amendment_suffix_with_structural =
+    "helyébe a következő" ["cím" | "fejezet" | "rész"] "lép"
+    ;
+
+insertion_suffix =
+    | "egészül ki"
+    | "kiegészülve lép hatályba"
+    ;
+
+structural_position_reference =
+    | [chapter_number] structural_reference:after_article
+    | [chapter_number] structural_reference:before_article
+    | structural_reference:(>any_structural_reference)
+    ;
+
+# This rule means: skip everything until an act_reference,
+# except if the found reference continues with "hatálybalépésével összefüggő"
+# in that case, jsut continue skipping
+act_title =
+    { !(act_reference !"hatálybalépésével összefüggő") any_token }*
+    ;
+
+block_amendment::BlockAmendment
+    = /[Aa]z?/ act_title act_reference:act_reference [>structural_position_reference]
+    (
+        # non-subtitle cases
+        amended_reference:reference amendment_suffix ":" |
+        inserted_reference:insertion_reference insertion_suffix ":" |
+        amended_reference:reference amendment_suffix [","] ("és" | "valamint" | "egyidejűleg") inserted_reference:insertion_reference insertion_suffix ":"
+    );
+
+block_amendment_with_subtitle::BlockAmendmentWithSubtitle
+    = /[Aa]z?/ act_title act_reference:act_reference [>structural_position_reference]
+    (
+        amended_reference:reference_with_subtitle amendment_suffix ":" |
+        amended_reference:reference_with_subtitle amendment_suffix_with_subtitle ":" |
+        insertion_token inserted_reference:reference_with_subtitle insertion_suffix ":"
+    );
+
+block_amendment_structural::BlockAmendmentStructural
+    = /[Aa]z?/ act_title act_reference:act_reference
+    (
+        # structural cases
+        amended_reference:any_structural_reference amendment_suffix ":" |
+        amended_reference:any_structural_reference amendment_suffix_with_structural ":" |
+        insertion_token inserted_reference:any_structural_reference insertion_suffix ":" |
+        inserted_reference:title_insertion_with_book insertion_suffix ":"
+    );
+
+
+# ============ ENFORCEMENT DATE PARSING ============
+
+after_publication::AfterPublication =
+    ["a" | "e törvény"]
+    ("kihirdetését"| "kihirdetést") "követő"
+    [as_text:hungarian_ordinal | as_number:number_with_dot]
+    "napon"
+    ;
+
+day_in_month::DayInMonth =
+    ["a" | "e törvény"]
+    ("kihirdetését"| "kihirdetést") "követő"
+    [month:hungarian_ordinal]
+    "hónap"
+    (day_as_text:hungarian_ordinal | day_as_number:number_with_dot)
+    "napján"
+    ;
+
+inline_repeal::InlineRepeal =
+    ", és"
+    [("e" | "ez a") "törvény"]
+    date:date
+    ["a"] "hatályát veszti"
+    ;
+
+enforcement_date::EnforcementDate =
+    (
+        (("E" | "Ez a") "törvény") |
+        /[A]z?/
+    )
+    [ dash "a" exception_references+:reference ("foglalt"|"foglaltak"|"meghatározott") ("kivétellel"|"kivételével"|"kivételekkel") dash ]
+    { references+:reference [list_separator [az]] }*
+    (
+        exact_date:date |
+        after_publication:after_publication |
+        day_in_month:day_in_month
+    )
+    "lép hatályba"
+    [inline_repeal:inline_repeal]
+    "."
+    ;
+
+# ============ TEXT AMENDMENT PARSING ==============
+
+text_amendment::TextAmendment =
+    /[Aa]z?/ act_title act_reference:act_reference
+    { references+:reference [list_separator [az]] }+
+    { parts+:text_amendment_part [list_separator [az]] }+
+    "lép" ["hatályba"] "."
+    ;
+
+text_amendment_part::TextAmendmentPart =
+    [az] original_text:quote
+    ("szövegrészek"| "szövegrész") ("helyébe" | "helyett")
+    [az] replacement_text:quote
+    (&list_separator | "szöveggel"| "szöveg" | "szövegrész")
+    ;
+# ============ ARTICLE TITLE AMENDMENT PARSING ==============
+article_title_token = /cím[a-zéáőúöüóíű]+/;
+article_title_amendment::ArticleTitleAmendment =
+    /[Aa]z?/ act_title act_reference:act_reference
+    article:single_article_reference
+    article_title_token
+    [az] original_text:quote
+    ("szövegrészek"| "szövegrész") ("helyébe" | "helyett")
+    [az] replacement_text:quote
+    ("szöveggel"| "szöveg" | "szövegrész")
+    "lép" ["hatályba"] "."
+    ;
+
+# ============ REPEAL PARSING ==============
+
+repeal::SimpleRepeal::Repeal =
+    ("Nem lép hatályba" | "Hatályát veszti")
+    az act_title act_reference:act_reference
+    { references+:reference [list_separator [az]] }+
+    { [az] texts+:quote ["szövegrész"] [list_separator [az]]}*
+    "."
+    ;
+
+structural_repeal::StructuralRepeal::Repeal =
+    ("Nem lép hatályba" | "Hatályát veszti")
+    az act_title act_reference:act_reference
+    >structural_position_reference [subtitle_token]
+    "."
+    ;
+
+
+# ============ SIMPLE TOKENS ============
+
+any_token = word | number | /./;
+
+az = /az? /;
+number_with_dot = number "." ;
+roman_with_dot = roman "." ;
+number = /[0-9]+/ ;
+word = /[a-zéáőúöüóíűA-ZÉÁŐÚÖÜÓÍŰ\-]+/ ;
+roman = /[IVXLCDM]+/ ; # TODO = actual grammar for this.
+
+date::Date =
+        year:number "." month:month day:number ("-án" | "-jén" | "-én" | ". napján")
+    ;
+
+month = "január" | "február" | "március" | "április" | "május" | "június" |
+    "július" | "augusztus" | "szeptember" | "október" | "november" | "december";
+
+hungarian_ordinal = "első" | "második" | "harmadik" | "negyedik" | "ötödik" |
+    "hatodik" | "hetedik"| "nyolcadik" | "kilencedik" | "tizedik" |
+    "tizenegyedik" | "tizenkettedik" | "tizenharmadik" | "tizennegyedik" | "tizenötödik" |
+    "tizenhatodik" | "tizenhetedik" | "tizennyolcadik" | "tizenkilencedik" |
+    "huszadik" | "harmincadik" | "negyvenedik" | "ötvenedik" |
+    "hatvanadik" | "hetvenedik" | "nyolcvanadik" | "kilencvenedik";
+
+hungarian_ordinal_capital = "Első" | "Második" | "Harmadik" | "Negyedik" | "Ötödik" |
+    "Hatodik" | "Hetedik"| "Nyolcadik" | "Kilencedik" | "Tizedik" |
+    "Tizenegyedik" | "Tizenkettedik" | "Tizenharmadik" | "Tizennegyedik" | "Tizenötödik" |
+    "Tizenhatodik" | "Tizenhetedik" | "Tizennyolcadik" | "Tizenkilencedik";
+
+dash = "−" | "–" | "-" ;
