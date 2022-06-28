@@ -325,9 +325,7 @@ TextAmendmentPart =
     ("szövegrészek"| "szövegrész") ("helyébe" | "helyett")
     [Az] replacement_text:Quote
     (
-        # TODO: Forward lookahead in peginator
-        # &ListSeparator |
-        "szöveggel"| "szöveg" | "szövegrész"
+        &ListSeparator | "szöveggel"| "szöveg" | "szövegrész"
     )
     ;
 # ============ ARTICLE TITLE AMENDMENT PARSING ==============
