@@ -18,6 +18,7 @@ from_variants = "1.0"
 lazy-regex = "2.3"
 log = "0.4.14"
 pdf-extract-fhl = { path="../pdf-extract-fhl" }
+peginator = { path = "../peginator" }
 phf = "0.10"
 regex = "1"
 roman = "0.1"
@@ -32,6 +33,7 @@ rstest = "0.12"
 tempfile = "3"
 
 [build-dependencies]
+peginator = { path = "../peginator" }
 phf_codegen = "0.10"
 
 [profile.release]

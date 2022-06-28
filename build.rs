@@ -83,8 +83,7 @@ fn generate_hun_strs() -> Vec<String> {
     result
 }
 
-fn main() {
-    println!("cargo:rerun-if-changed=build.rs");
+fn regen_phf() {
     let path = Path::new(&env::var("OUT_DIR").unwrap()).join("phf_generated.rs");
     let mut file = BufWriter::new(File::create(&path).unwrap());
 
@@ -114,4 +113,21 @@ fn main() {
             .collect::<String>()
     )
     .unwrap();
+}
+
+fn regen_grammar() {
+    peginator::buildscript::Compile::file("src/grammar.ebnf")
+        .destination(format!(
+            "{}/grammar_generated.rs",
+            std::env::var("OUT_DIR").unwrap()
+        ))
+        .format()
+        .run_exit_on_error();
+    println!("cargo:rerun-if-changed=src/grammar.ebnf");
+}
+
+fn main() {
+    println!("cargo:rerun-if-changed=build.rs");
+    regen_phf();
+    regen_grammar();
 }
