@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::path::Path;
+
 use hun_law::parser::pdf::{parse_pdf, CropBox};
 use hun_law::util::{indentedline::IndentedLine, is_default};
 
-use crate::test_utils::test_data_from_file;
+use crate::test_utils::read_all;
 
-use rstest::rstest;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -50,25 +51,19 @@ impl From<&IndentedLine> for SimplifiedLine {
     }
 }
 
-#[rstest]
-#[case("2010_181_part")]
-#[case("2015_124_part")]
-#[case("ptk_part")]
-#[case("korona_part")]
-fn test_parsing_mk(#[case] name: &str) {
-    let data = test_data_from_file!(format!("data/{}.pdf", name));
+pub fn test_pdf_parser(path: &Path) -> datatest_stable::Result<()> {
     let crop = CropBox {
         top: 842.0 - 1.25 * 72.0,
         ..Default::default()
     };
 
-    let parsed = parse_pdf(&data, crop).unwrap();
+    let parsed = parse_pdf(&read_all(path)?, crop)?;
     assert_eq!(parsed.len(), 1);
     let lines: Vec<SimplifiedLine> = parsed[0].lines.iter().map(SimplifiedLine::from).collect();
     let expected_lines: Vec<SimplifiedLine> =
-        serde_json::from_slice(&test_data_from_file!(format!("data/{}.json", name))).unwrap();
-    print!("{}", serde_json::to_string_pretty(&lines).unwrap());
+        serde_json::from_slice(&read_all(path.with_extension("json"))?)?;
     for (line, expected_line) in std::iter::zip(lines, expected_lines) {
         assert_eq!(line, expected_line);
     }
+    Ok(())
 }

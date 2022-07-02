@@ -28,6 +28,7 @@ serde_yaml = "0.8"
 ureq = "2.4"
 
 [dev-dependencies]
+datatest-stable = "0.1.2"
 pretty_assertions = "1"
 rstest = "0.12"
 tempfile = "3"
@@ -40,4 +41,8 @@ phf_codegen = "0.10"
 debug = true
 
 [[test]]
-name = "tests"
+name = "run_simple_tests"
+
+[[test]]
+harness = false
+name = "run_datatests"

@@ -14,5 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-mod cheap;
-pub mod test_utils;
+mod test_cache;
+mod test_grammar;
+mod test_serialization;

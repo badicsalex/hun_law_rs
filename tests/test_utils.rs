@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::{
+    fs::File,
+    io::{self, Read},
+    path::Path,
+};
+
 use hun_law::cache::Cache;
 use rstest::fixture;
 
@@ -43,26 +49,8 @@ pub fn cache_in_tempdir(tempdir: TempDir) -> CacheInTempDir {
     }
 }
 
-#[allow(unused_macros)]
-macro_rules! test_data_from_file {
-    ($file_path:expr) => {{
-        use std::fs::File;
-        use std::io::Read;
-        use std::path::{Path, PathBuf};
-        let mut fname = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        fname.push(
-            Path::new(file!())
-                .parent()
-                .expect("No parent of calling module"),
-        );
-        fname.push($file_path);
-        let mut f =
-            File::open(&fname).unwrap_or_else(|_| panic!("Opening {:?} unsuccessful", fname));
-        let mut buffer = Vec::<u8>::new();
-        f.read_to_end(&mut buffer).expect("Cannot read file");
-        buffer
-    }};
+pub fn read_all(path: impl AsRef<Path>) -> io::Result<Vec<u8>> {
+    let mut result = Vec::new();
+    File::open(path)?.read_to_end(&mut result)?;
+    Ok(result)
 }
-// Hack to export the macro
-#[allow(unused_imports)]
-pub(crate) use test_data_from_file;

@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use crate::test_utils::test_data_from_file;
+use std::path::Path;
+
 use hun_law::{
     parser::mk_act_section::ActRawText,
     parser::structure::parse_act_structure,
@@ -22,7 +23,8 @@ use hun_law::{
     util::{date::Date, indentedline::IndentedLine},
 };
 use pretty_assertions::assert_eq;
-use rstest::rstest;
+
+use crate::test_utils::read_all;
 
 fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
     std::str::from_utf8(data)
@@ -32,32 +34,8 @@ fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
         .collect()
 }
 
-#[rstest]
-#[case::ambigous_points("ambigous_points")]
-#[case::articles_evil("articles_evil")]
-#[case::articles_evil_noindent("articles_evil_noindent")]
-#[case::articles_with_title("articles_with_title")]
-#[case::btk_mod_1("btk_mod_1")]
-#[case::dashes("dashes")]
-#[case::multiline_articles("multiline_articles")]
-#[case::numeric_subpoints("numeric_subpoints")]
-#[case::parts("parts")]
-#[case::points("points")]
-#[case::points2("points2")]
-#[case::points_right_aligned("points_right_aligned")]
-#[case::quotes_1("quotes_1")]
-#[case::quotes_2("quotes_2")]
-#[case::simple("simple")]
-#[case::special_parts("special_parts")]
-#[case::structural_elements_1("structural_elements_1")]
-#[case::structural_elements_2("structural_elements_2")]
-#[case::structural_elements_noindent("structural_elements_noindent")]
-#[case::subpoints("subpoints")]
-#[case::subpoints_depending_on_indent("subpoints_depending_on_indent")]
-#[case::subpoints_mini("subpoints_mini")]
-fn test_structure_parser(#[case] name: &str) {
-    let data = test_data_from_file!(format!("data/{}.txt", name));
-    let data_as_lines = to_indented_lines(&data);
+pub fn test_structure_parser(path: &Path) -> datatest_stable::Result<()> {
+    let data_as_lines = to_indented_lines(&read_all(path)?);
     let act = parse_act_structure(ActRawText {
         identifier: ActIdentifier {
             year: 2345,
@@ -70,11 +48,9 @@ fn test_structure_parser(#[case] name: &str) {
             day: 7,
         },
         body: data_as_lines,
-    })
-    .unwrap();
-    println!("{}", serde_yaml::to_string(&act).unwrap());
+    })?;
 
-    let expected_data = test_data_from_file!(format!("data/{}.yml", name));
-    let expected_act = serde_yaml::from_slice(&expected_data).unwrap();
+    let expected_act = serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
     assert_eq!(act, expected_act);
+    Ok(())
 }
