@@ -153,8 +153,11 @@ NumericSubpointSuffix = "alpont" {HunLower};
 @no_skip_ws
 Abbreviation = HunUpper {HunLower}+ (['.'] [' '] ("tv." | "vhr.") | '.');
 
+# No "@no_skip_ws" here or below, because we actually do want to trim the string
+Quote = "„" @:QuoteInner '”' ;
+
 @string
-Quote = "„" {!('„' | '”') char} { Quote {!('„' | '”') char} } '”' ;
+QuoteInner = {!('„' | '”') char} { "„" QuoteInner  '”' {!('„' | '”') char} };
 
 ListSeparator = (["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," | ";";
 
