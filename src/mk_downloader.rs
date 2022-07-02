@@ -21,7 +21,7 @@ use crate::cache::Cache;
 use anyhow::{ensure, Result};
 use log::info;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct MkIssue {
     pub year: i64,
     pub issue: i64,

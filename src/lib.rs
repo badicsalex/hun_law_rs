@@ -36,7 +36,7 @@ use util::indentedline::IndentedLine;
 ///
 /// Downloads Magyar Közlöny issues as PDFs and converts the Acts in them to machine-parseable formats.
 struct HunLawArgs {
-    #[clap(required = true, name = "issue")]
+    #[clap(value_parser, required = true, name = "issue")]
     ///The  Magyar Közlöny issue to download in YEAR/ISSUE format. Example: '2013/31'
     issues: Vec<MkIssue>,
 }
