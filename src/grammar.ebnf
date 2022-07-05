@@ -161,15 +161,17 @@ NumericSubpointRange = start:NumericSubpointId  Dash end:NumericSubpointId "." ;
 NumericSubpointSingle = id:NumericSubpointId ".";
 @string
 @no_skip_ws
-NumericSubpointId = id:Number ;
+NumericSubpointId = Number ;
 @no_skip_ws
 NumericSubpointSuffix = "alpont" {HunLower};
 
 
 @position
+Abbreviation = content:AbbreviationContent;
 @string
 @no_skip_ws
-Abbreviation = HunUpper {HunLower}+ (['.'] [' '] ("tv." | "vhr.") | '.');
+AbbreviationContent = HunUpper {HunLower}+ (['.'] [' '] ("tv." | "vhr.") | '.');
+
 
 # No "@no_skip_ws" here or below, because we actually do want to trim the string
 Quote = "„" @:QuoteInner '”' ;
@@ -397,14 +399,16 @@ AzUpper = 'A' ['z'] ' ';
 @no_skip_ws
 AzAny = Az | AzUpper;
 
-NumberWithDot = Number "." ;
-
+NumberWithDot = @:Number "." ;
+@string
 @no_skip_ws
 Number = {'0'..'9'}+ ;
-@no_skip_ws
-Word = {HunLower | HunUpper | '-'}+ ;
+@string
 @no_skip_ws
 Roman = {'I' | 'V' | 'X' | 'L' | 'C' | 'D' | 'M'}+ ; # TODO: actual grammar for this.
+
+@no_skip_ws
+Word = {HunLower | HunUpper | '-'}+ ;
 
 Date = year:Number "." month:Month day:Number ("-án" | "-jén" | "-én" | ". napján");
 
