@@ -117,10 +117,7 @@ fn regen_phf() {
 
 fn regen_grammar() {
     peginator::buildscript::Compile::file("src/grammar.ebnf")
-        .destination(format!(
-            "{}/grammar_generated.rs",
-            std::env::var("OUT_DIR").unwrap()
-        ))
+        .destination("src/parser/grammar_generated.rs")
         .format()
         .run_exit_on_error();
     println!("cargo:rerun-if-changed=src/grammar.ebnf");

@@ -14,6 +14,4 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-mod generated {
-    include!(concat!(env!("OUT_DIR"), "/grammar_generated.rs"));
-}
+use super::grammar_generated::*;
