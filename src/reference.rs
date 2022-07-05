@@ -14,92 +14,140 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::ops::RangeInclusive;
+use anyhow::Result;
+use from_variants::FromVariants;
 
-pub struct Reference<T1, T2, T3, T4, T5> {
-    act: T1,
-    article: T2,
-    paragraph: T3,
-    point: T4,
-    subpoint: T5,
-    _dont_construct: (),
+use crate::structure::{
+    ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
+    PrefixedAlphabeticIdentifier,
+};
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct IdentifierRange<T> {
+    pub start: T,
+    pub end: T,
 }
 
-pub trait RefPart: Clone {}
+pub type RefPartArticle = IdentifierRange<ArticleIdentifier>;
+pub type RefPartParagraph = IdentifierRange<NumericIdentifier>;
 
-impl<T2: RefPart, T3: RefPart, T4: RefPart, T5: RefPart> Reference<(), T2, T3, T4, T5> {
-    pub fn relative_to<W1, W2, W3, W4, W5>(
-        self,
-        other: Reference<W1, W2, W3, W4, W5>,
-    ) -> Reference<W1, T2, T3, T4, T5> {
-        Reference {
-            act: other.act,
-            article: self.article,
-            paragraph: self.paragraph,
-            point: self.point,
-            subpoint: self.subpoint,
-            _dont_construct: (),
-        }
+#[derive(Debug, Clone, PartialEq, Eq, FromVariants)]
+pub enum RefPartPoint {
+    Numeric(IdentifierRange<NumericIdentifier>),
+    Alphabetic(IdentifierRange<AlphabeticIdentifier>),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, FromVariants)]
+pub enum RefPartSubpoint {
+    Numeric(IdentifierRange<NumericIdentifier>),
+    Alphabetic(IdentifierRange<PrefixedAlphabeticIdentifier>),
+}
+
+pub trait RefPartFrom<T: Clone>: Sized {
+    fn from_single(id: T) -> Self {
+        Self::from_range(id.clone(), id)
+    }
+
+    fn from_range(start: T, end: T) -> Self;
+}
+
+impl RefPartFrom<ArticleIdentifier> for RefPartArticle {
+    fn from_range(start: ArticleIdentifier, end: ArticleIdentifier) -> Self {
+        Self { start, end }
+    }
+}
+impl RefPartFrom<NumericIdentifier> for RefPartParagraph {
+    fn from_range(start: NumericIdentifier, end: NumericIdentifier) -> Self {
+        Self { start, end }
+    }
+}
+impl RefPartFrom<NumericIdentifier> for RefPartPoint {
+    fn from_range(start: NumericIdentifier, end: NumericIdentifier) -> Self {
+        Self::Numeric(IdentifierRange { start, end })
+    }
+}
+impl RefPartFrom<AlphabeticIdentifier> for RefPartPoint {
+    fn from_range(start: AlphabeticIdentifier, end: AlphabeticIdentifier) -> Self {
+        Self::Alphabetic(IdentifierRange { start, end })
+    }
+}
+impl RefPartFrom<NumericIdentifier> for RefPartSubpoint {
+    fn from_range(start: NumericIdentifier, end: NumericIdentifier) -> Self {
+        Self::Numeric(IdentifierRange { start, end })
+    }
+}
+impl RefPartFrom<PrefixedAlphabeticIdentifier> for RefPartSubpoint {
+    fn from_range(start: PrefixedAlphabeticIdentifier, end: PrefixedAlphabeticIdentifier) -> Self {
+        Self::Alphabetic(IdentifierRange { start, end })
     }
 }
 
-impl<T3: RefPart, T4: RefPart, T5: RefPart> Reference<(), (), T3, T4, T5> {
-    pub fn relative_to<W1, W2, W3, W4, W5>(
-        self,
-        other: Reference<W1, W2, W3, W4, W5>,
-    ) -> Reference<W1, W2, T3, T4, T5> {
-        Reference {
-            act: other.act,
-            article: other.article,
-            paragraph: self.paragraph,
-            point: self.point,
-            subpoint: self.subpoint,
-            _dont_construct: (),
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Reference {
+    act: Option<ActIdentifier>,
+    article: Option<RefPartArticle>,
+    paragraph: Option<RefPartParagraph>,
+    point: Option<RefPartPoint>,
+    subpoint: Option<RefPartSubpoint>,
+}
+
+impl Reference {}
+
+#[derive(Debug, Clone)]
+pub struct ReferenceBuilder {
+    r: Reference,
+}
+
+impl ReferenceBuilder {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            r: Reference {
+                act: None,
+                article: None,
+                paragraph: None,
+                point: None,
+                subpoint: None,
+            },
         }
+    }
+
+    pub fn get_reference(&self) -> Result<Reference> {
+        // TODO: check the built reference
+        Ok(self.r.clone())
     }
 }
 
-pub type RefRangePart = RangeInclusive<String>;
+pub trait ReferenceBuilderSetPart<T> {
+    fn set_part(&mut self, val: T);
+}
 
-pub enum AnyReference {
-    Empty(Reference<(), (), (), (), ()>),
-    Act(Reference<String, (), (), (), ()>),
+impl ReferenceBuilderSetPart<ActIdentifier> for ReferenceBuilder {
+    fn set_part(&mut self, val: ActIdentifier) {
+        self.r.act = Some(val);
+    }
+}
 
-    ActArticle(Reference<String, String, (), (), ()>),
-    ActParagraph(Reference<String, String, String, (), ()>),
-    ActPoint(Reference<String, String, String, String, ()>),
-    ActSubpoint(Reference<String, String, String, String, String>),
+impl ReferenceBuilderSetPart<RefPartArticle> for ReferenceBuilder {
+    fn set_part(&mut self, val: RefPartArticle) {
+        self.r.article = Some(val);
+    }
+}
 
-    Article(Reference<(), String, (), (), ()>),
-    ArticleParagraph(Reference<(), String, String, (), ()>),
-    ArticlePoint(Reference<(), String, String, String, ()>),
-    ArticleSubpoint(Reference<(), String, String, String, String>),
+impl ReferenceBuilderSetPart<RefPartParagraph> for ReferenceBuilder {
+    fn set_part(&mut self, val: RefPartParagraph) {
+        self.r.paragraph = Some(val);
+    }
+}
 
-    Paragraph(Reference<(), (), String, (), ()>),
-    ParagraphPoint(Reference<(), (), String, String, ()>),
-    ParagraphSubpoint(Reference<(), (), String, String, String>),
+impl ReferenceBuilderSetPart<RefPartPoint> for ReferenceBuilder {
+    fn set_part(&mut self, val: RefPartPoint) {
+        self.r.point = Some(val);
+    }
+}
 
-    Point(Reference<(), (), (), String, ()>),
-    PointSubpoint(Reference<(), (), (), String, String>),
-
-    Subpoint(Reference<(), (), (), (), String>),
-
-    ActArticleRange(Reference<String, RefRangePart, (), (), ()>),
-    ActParagraphRange(Reference<String, String, RefRangePart, (), ()>),
-    ActPointRange(Reference<String, String, String, RefRangePart, ()>),
-    ActSubpointRange(Reference<String, String, String, String, RefRangePart>),
-
-    ArticleRange(Reference<(), RefRangePart, (), (), ()>),
-    ArticleParagraphRange(Reference<(), String, RefRangePart, (), ()>),
-    ArticlePointRange(Reference<(), String, String, RefRangePart, ()>),
-    ArticleSubpointRange(Reference<(), String, String, String, RefRangePart>),
-
-    ParagraphRange(Reference<(), (), RefRangePart, (), ()>),
-    ParagraphPointRange(Reference<(), (), String, RefRangePart, ()>),
-    ParagraphSubpointRange(Reference<(), (), String, String, RefRangePart>),
-
-    PointRange(Reference<(), (), (), RefRangePart, ()>),
-    PointSubpointRange(Reference<(), (), (), String, RefRangePart>),
-
-    SubpointRange(Reference<(), (), (), (), RefRangePart>),
+impl ReferenceBuilderSetPart<RefPartSubpoint> for ReferenceBuilder {
+    fn set_part(&mut self, val: RefPartSubpoint) {
+        self.r.subpoint = Some(val);
+    }
 }
