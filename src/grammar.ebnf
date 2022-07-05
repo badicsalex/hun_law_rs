@@ -61,7 +61,11 @@ Reference =
         alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference
     ;
 
-ActReference = abbreviation:Abbreviation | (act_id:ActId [from_now_on:FromNowOn | FromNowOnLong] );
+ActReference =
+    @:Abbreviation |
+    @:ActIdWithFromNowOn ;
+ActIdWithFromNowOn = act_id:ActId [from_now_on:FromNowOn | FromNowOnLong];
+
 FromNowOn = "(" "a" "továbbiakban" [":"] abbreviation:Abbreviation ["törvény"] ")" ;
 FromNowOnLong = "(" "a" "továbbiakban" [":"] ( ActId | {Word}+ ) ")" ;
 @position
