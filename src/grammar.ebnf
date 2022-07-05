@@ -75,7 +75,7 @@ ActSuffix = "törvény" {HunLower} | "tv.";
 
 
 ArticleReference = {
-        (ranges:ArticleRange | singles:ArticleSingle)
+        (parts:ArticleRange | parts:ArticleSingle)
         [ListSeparator [Az]]
     }+ ArticleSuffix;
 @position
@@ -92,7 +92,7 @@ SingleArticleReference = @:ArticleId "." ArticleSuffix;
 
 
 ParagraphReference = {
-        (ranges:ParagraphRange | singles:ParagraphSingle)
+        (parts:ParagraphRange | parts:ParagraphSingle)
         [ListSeparator [Az]]
     }+ ParagraphSuffix;
 @position
@@ -107,7 +107,7 @@ ParagraphSuffix = "bekezdés" {HunLower};
 
 
 AlphabeticPointReference = {
-        (ranges:AlphabeticPointRange | singles:AlphabeticPointSingle)
+        (parts:AlphabeticPointRange | parts:AlphabeticPointSingle)
         [ListSeparator [Az]]
     }+ AlphabeticPointSuffix;
 @position
@@ -122,7 +122,7 @@ AlphabeticPointSuffix = "pont" {HunLower};
 
 
 NumericPointReference= {
-        (ranges:NumericPointRange | singles:NumericPointSingle)
+        (parts:NumericPointRange | parts:NumericPointSingle)
         [ListSeparator [Az]]
     }+ NumericPointSuffix;
 @position
@@ -137,7 +137,7 @@ NumericPointSuffix = "pont" {HunLower};
 
 
 AlphabeticSubpointReference = {
-        (ranges:AlphabeticSubpointRange | singles:AlphabeticSubpointSingle)
+        (parts:AlphabeticSubpointRange | parts:AlphabeticSubpointSingle)
         [ListSeparator [Az]]
     }+ AlphabeticSubpointSuffix;
 @position
@@ -152,7 +152,7 @@ AlphabeticSubpointSuffix = "alpont" {HunLower};
 
 
 NumericSubpointReference = {
-        (ranges:NumericSubpointRange | singles:NumericSubpointSingle)
+        (parts:NumericSubpointRange | parts:NumericSubpointSingle)
         [ListSeparator [Az]]
     }+ NumericSubpointSuffix;
 @position
