@@ -45,20 +45,20 @@ Reference =
         article:ArticleReference
         [paragraph:ParagraphReference]
         [
-            point:AlphabeticPointReference | point:NumericPointReference
-            [subpoint:AlphabeticSubpointReference | subpoint:NumericSubpointReference]
+            alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference
+            [alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference]
         ]
     |
         paragraph:ParagraphReference
         [
-            point:AlphabeticPointReference | point:NumericPointReference
-            [subpoint:AlphabeticSubpointReference | subpoint:NumericSubpointReference]
+            alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference
+            [alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference]
         ]
     |
-        point:AlphabeticPointReference | point:NumericPointReference
-        [subpoint:AlphabeticSubpointReference | subpoint:NumericSubpointReference]
+        alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference
+        [alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference]
     |
-        subpoint:AlphabeticSubpointReference | subpoint:NumericSubpointReference
+        alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference
     ;
 
 ActReference = abbreviation:Abbreviation | (act_id:ActId [from_now_on:FromNowOn | FromNowOnLong] );
