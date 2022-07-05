@@ -64,6 +64,7 @@ Reference =
 ActReference = abbreviation:Abbreviation | (act_id:ActId [from_now_on:FromNowOn | FromNowOnLong] );
 FromNowOn = "(" "a" "továbbiakban" [":"] abbreviation:Abbreviation ["törvény"] ")" ;
 FromNowOnLong = "(" "a" "továbbiakban" [":"] ( ActId | {Word}+ ) ")" ;
+@position
 ActId = year:Number "." "évi" number:Roman "." ActSuffix;
 @no_skip_ws
 ActSuffix = "törvény" {HunLower} | "tv.";
@@ -73,7 +74,9 @@ ArticleReference = {
         (ranges:ArticleRange | singles:ArticleSingle)
         [ListSeparator [Az]]
     }+ ArticleSuffix;
+@position
 ArticleRange = start:ArticleId ["." ArticleSuffix] Dash end:ArticleId "." ;
+@position
 ArticleSingle = id:ArticleId ".";
 @string
 @no_skip_ws
@@ -88,7 +91,9 @@ ParagraphReference = {
         (ranges:ParagraphRange | singles:ParagraphSingle)
         [ListSeparator [Az]]
     }+ ParagraphSuffix;
+@position
 ParagraphRange = "(" start:ParagraphId ")" Dash "(" end:ParagraphId ")" ;
+@position
 ParagraphSingle = "(" id:ParagraphId ")";
 @string
 @no_skip_ws
@@ -101,7 +106,9 @@ AlphabeticPointReference = {
         (ranges:AlphabeticPointRange | singles:AlphabeticPointSingle)
         [ListSeparator [Az]]
     }+ AlphabeticPointSuffix;
+@position
 AlphabeticPointRange = start:AlphabeticPointId [")"] Dash end:AlphabeticPointId ")" ;
+@position
 AlphabeticPointSingle = id:AlphabeticPointId ")";
 @string
 @no_skip_ws
@@ -114,7 +121,9 @@ NumericPointReference= {
         (ranges:NumericPointRange | singles:NumericPointSingle)
         [ListSeparator [Az]]
     }+ NumericPointSuffix;
+@position
 NumericPointRange = start:NumericPointId Dash end:NumericPointId "." ;
+@position
 NumericPointSingle = id:NumericPointId ".";
 @string
 @no_skip_ws
@@ -127,7 +136,9 @@ AlphabeticSubpointReference = {
         (ranges:AlphabeticSubpointRange | singles:AlphabeticSubpointSingle)
         [ListSeparator [Az]]
     }+ AlphabeticSubpointSuffix;
+@position
 AlphabeticSubpointRange = start:AlphabeticSubpointId ")" Dash end:AlphabeticSubpointId ")" ;
+@position
 AlphabeticSubpointSingle = id:AlphabeticSubpointId ")";
 @string
 @no_skip_ws
@@ -140,7 +151,9 @@ NumericSubpointReference = {
         (ranges:NumericSubpointRange | singles:NumericSubpointSingle)
         [ListSeparator [Az]]
     }+ NumericSubpointSuffix;
+@position
 NumericSubpointRange = start:NumericSubpointId  Dash end:NumericSubpointId "." ;
+@position
 NumericSubpointSingle = id:NumericSubpointId ".";
 @string
 @no_skip_ws
@@ -149,6 +162,7 @@ NumericSubpointId = id:Number ;
 NumericSubpointSuffix = "alpont" {HunLower};
 
 
+@position
 @string
 @no_skip_ws
 Abbreviation = HunUpper {HunLower}+ (['.'] [' '] ("tv." | "vhr.") | '.');
