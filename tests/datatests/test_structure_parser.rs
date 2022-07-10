@@ -34,7 +34,10 @@ fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
         .collect()
 }
 
-pub fn test_structure_parser(path: &Path) -> datatest_stable::Result<()> {
+use crate::declare_test;
+declare_test!(dir = "data_structure_parser", pattern = r"\.txt");
+
+pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let data_as_lines = to_indented_lines(&read_all(path)?);
     let act = parse_act_structure(ActRawText {
         identifier: ActIdentifier {

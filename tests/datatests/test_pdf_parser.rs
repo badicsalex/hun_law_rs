@@ -51,7 +51,10 @@ impl From<&IndentedLine> for SimplifiedLine {
     }
 }
 
-pub fn test_pdf_parser(path: &Path) -> datatest_stable::Result<()> {
+use crate::declare_test;
+declare_test!(dir = "data_pdf_parser", pattern = r"\.pdf");
+
+pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let crop = CropBox {
         top: 842.0 - 1.25 * 72.0,
         ..Default::default()

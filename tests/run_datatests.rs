@@ -17,11 +17,32 @@
 mod datatests;
 pub mod test_utils;
 
-datatest_stable::harness!(
-    datatests::test_pdf_parser::test_pdf_parser,
-    "tests/datatests/data_pdf_parser",
-    r"\.pdf",
-    datatests::test_structure_parser::test_structure_parser,
-    "tests/datatests/data_structure_parser",
-    r"\.txt",
-);
+#[allow(unused_macros)]
+macro_rules! declare_test {
+    (dir = $dir:expr, pattern = $pattern:expr) => {
+        pub fn test_dir() -> &'static str {
+            std::path::Path::new(file!())
+                .parent()
+                .expect("No parent of calling module")
+                .to_str()
+                .expect("Path was not unicode somehow")
+        }
+
+        pub const FILE_PATTERN: &str = $pattern;
+    };
+}
+
+pub(crate) use declare_test;
+
+macro_rules! generate_harness{
+    ($($test:ident),*) => {
+        datatest_stable::harness!(
+            $(
+                datatests::$test::run_test,
+                datatests::$test::test_dir(),
+                datatests::$test::FILE_PATTERN,
+            )*
+        );
+    }
+}
+generate_harness!(test_pdf_parser, test_structure_parser);
