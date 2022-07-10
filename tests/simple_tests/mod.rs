@@ -15,5 +15,4 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 mod test_cache;
-mod test_grammar;
 mod test_serialization;
