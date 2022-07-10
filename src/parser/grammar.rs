@@ -77,7 +77,7 @@ impl CompoundReference {
             result.push(InTextReference {
                 start: pos.start,
                 end: pos.end,
-                reference: ref_builder.get_reference()?,
+                reference: ref_builder.build()?,
             });
         }
         for reference in &self.references {
@@ -106,7 +106,7 @@ impl Reference {
                             result.push(InTextReference {
                                 start,
                                 end,
-                                reference: ref_builder.get_reference()?,
+                                reference: ref_builder.build()?,
                             });
                         }
                         if num > 0 || start == 0 {
@@ -129,7 +129,7 @@ impl Reference {
         result.push(InTextReference {
             start,
             end,
-            reference: ref_builder.get_reference()?,
+            reference: ref_builder.build()?,
         });
         Ok(result)
     }

@@ -112,42 +112,47 @@ impl ReferenceBuilder {
         }
     }
 
-    pub fn get_reference(&self) -> Result<Reference> {
+    pub fn build(&self) -> Result<Reference> {
         // TODO: check the built reference
         Ok(self.r.clone())
     }
 }
 
 pub trait ReferenceBuilderSetPart<T> {
-    fn set_part(&mut self, val: T);
+    fn set_part(&mut self, val: T) -> &mut Self;
 }
 
 impl ReferenceBuilderSetPart<ActIdentifier> for ReferenceBuilder {
-    fn set_part(&mut self, val: ActIdentifier) {
+    fn set_part(&mut self, val: ActIdentifier) -> &mut Self {
         self.r.act = Some(val);
+        self
     }
 }
 
 impl ReferenceBuilderSetPart<RefPartArticle> for ReferenceBuilder {
-    fn set_part(&mut self, val: RefPartArticle) {
+    fn set_part(&mut self, val: RefPartArticle) -> &mut Self {
         self.r.article = Some(val);
+        self
     }
 }
 
 impl ReferenceBuilderSetPart<RefPartParagraph> for ReferenceBuilder {
-    fn set_part(&mut self, val: RefPartParagraph) {
+    fn set_part(&mut self, val: RefPartParagraph) -> &mut Self {
         self.r.paragraph = Some(val);
+        self
     }
 }
 
 impl ReferenceBuilderSetPart<RefPartPoint> for ReferenceBuilder {
-    fn set_part(&mut self, val: RefPartPoint) {
+    fn set_part(&mut self, val: RefPartPoint) -> &mut Self {
         self.r.point = Some(val);
+        self
     }
 }
 
 impl ReferenceBuilderSetPart<RefPartSubpoint> for ReferenceBuilder {
-    fn set_part(&mut self, val: RefPartSubpoint) {
+    fn set_part(&mut self, val: RefPartSubpoint) -> &mut Self {
         self.r.subpoint = Some(val);
+        self
     }
 }
