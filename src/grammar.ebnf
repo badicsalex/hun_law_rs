@@ -41,6 +41,7 @@ AnySimpleExpression =
 
 CompoundReference = (act_reference:ActReference {references:Reference [ListSeparator [Az]]}) | references:Reference;
 
+@position
 Reference =
         article:ArticleReference
         [paragraph:ParagraphReference]

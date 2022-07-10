@@ -128,7 +128,7 @@ impl Reference {
 
         result.push(InTextReference {
             start,
-            end,
+            end: self.position.end,
             reference: ref_builder.build()?,
         });
         Ok(result)
