@@ -16,28 +16,68 @@
 
 use anyhow::Result;
 use from_variants::FromVariants;
+use serde::{Deserialize, Serialize};
 
 use crate::structure::{
     ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
     PrefixedAlphabeticIdentifier,
 };
+use crate::util::is_default;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct IdentifierRange<T> {
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(from = "IdentifierRangeSerdeHelper<T>")]
+#[serde(into = "IdentifierRangeSerdeHelper<T>")]
+pub struct IdentifierRange<T: Clone + Eq> {
     pub start: T,
     pub end: T,
+}
+
+// I tried manually implementing Serialize and Deserialize for IdentifierRange,
+// But it was some 200 lines of very error-prone code. This little trick is
+// too cute for my taste, but it had to be done.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+enum IdentifierRangeSerdeHelper<T> {
+    Single(T),
+    Range { start: T, end: T },
+}
+
+impl<T: Clone + Eq> From<IdentifierRangeSerdeHelper<T>> for IdentifierRange<T> {
+    fn from(helper: IdentifierRangeSerdeHelper<T>) -> Self {
+        match helper {
+            IdentifierRangeSerdeHelper::Single(val) => Self {
+                start: val.clone(),
+                end: val,
+            },
+            IdentifierRangeSerdeHelper::Range { start, end } => Self { start, end },
+        }
+    }
+}
+impl<T: Clone + Eq> From<IdentifierRange<T>> for IdentifierRangeSerdeHelper<T> {
+    fn from(val: IdentifierRange<T>) -> Self {
+        if val.start == val.end {
+            Self::Single(val.start)
+        } else {
+            Self::Range {
+                start: val.start,
+                end: val.end,
+            }
+        }
+    }
 }
 
 pub type RefPartArticle = IdentifierRange<ArticleIdentifier>;
 pub type RefPartParagraph = IdentifierRange<NumericIdentifier>;
 
-#[derive(Debug, Clone, PartialEq, Eq, FromVariants)]
+#[derive(Debug, Clone, PartialEq, Eq, FromVariants, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum RefPartPoint {
     Numeric(IdentifierRange<NumericIdentifier>),
     Alphabetic(IdentifierRange<AlphabeticIdentifier>),
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, FromVariants)]
+#[derive(Debug, Clone, PartialEq, Eq, FromVariants, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum RefPartSubpoint {
     Numeric(IdentifierRange<NumericIdentifier>),
     Alphabetic(IdentifierRange<PrefixedAlphabeticIdentifier>),
@@ -82,12 +122,17 @@ impl RefPartFrom<PrefixedAlphabeticIdentifier> for RefPartSubpoint {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Reference {
+    #[serde(default, skip_serializing_if = "is_default")]
     act: Option<ActIdentifier>,
+    #[serde(default, skip_serializing_if = "is_default")]
     article: Option<RefPartArticle>,
+    #[serde(default, skip_serializing_if = "is_default")]
     paragraph: Option<RefPartParagraph>,
+    #[serde(default, skip_serializing_if = "is_default")]
     point: Option<RefPartPoint>,
+    #[serde(default, skip_serializing_if = "is_default")]
     subpoint: Option<RefPartSubpoint>,
 }
 

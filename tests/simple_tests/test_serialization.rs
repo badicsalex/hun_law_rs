@@ -14,17 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::str::FromStr;
+
 use hun_law::{
+    reference::{
+        RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint, Reference,
+        ReferenceBuilder, ReferenceBuilderSetPart,
+    },
     structure::{
-        Act, ActIdentifier, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, Paragraph,
-        SAEBody, StructuralElement, StructuralElementType, Subtitle,
+        Act, ActIdentifier, AlphabeticIdentifier, AlphabeticPoint, AlphabeticSubpoint, Article,
+        NumericIdentifier, NumericPoint, Paragraph, PrefixedAlphabeticIdentifier, SAEBody,
+        StructuralElement, StructuralElementType, Subtitle,
     },
     util::date::Date,
 };
 use pretty_assertions::assert_eq;
-use rstest::rstest;
 
-fn get_test_structure() -> Act {
+fn get_test_act() -> Act {
     Act {
         identifier: ActIdentifier {
             year: 2345,
@@ -178,7 +184,7 @@ fn get_test_structure() -> Act {
     }
 }
 
-const YAML_SERIALIZED: &str = r#"---
+const YAML_SERIALIZED_ACT: &str = r#"---
 identifier:
   year: 2345
   number: 13
@@ -267,19 +273,137 @@ children:
             wrap_up: Can also be amended
 "#;
 
-#[rstest]
-fn test_yaml_serialization() {
-    let act = get_test_structure();
+#[test]
+fn test_act_yaml_serialization() {
+    let act = get_test_act();
     let yaml = serde_yaml::to_string(&act).unwrap();
     let roundtrip: Act = serde_yaml::from_str(&yaml).unwrap();
     assert_eq!(act, roundtrip);
-    assert_eq!(yaml, YAML_SERIALIZED);
+    assert_eq!(yaml, YAML_SERIALIZED_ACT);
 }
 
-#[rstest]
-fn test_json_serialization() {
-    let act = get_test_structure();
+#[test]
+fn test_act_json_serialization() {
+    let act = get_test_act();
     let json = serde_json::to_string(&act).unwrap();
     let roundtrip: Act = serde_json::from_str(&json).unwrap();
     assert_eq!(act, roundtrip);
+}
+
+#[test]
+fn test_reference_serialization() {
+    let references = vec![
+        ReferenceBuilder::new()
+            .set_part(ActIdentifier {
+                year: 2012,
+                number: 123,
+            })
+            .set_part(RefPartArticle::from_single("1:23/B".parse().unwrap()))
+            .set_part(RefPartParagraph::from_single("2b".parse().unwrap()))
+            .set_part(RefPartPoint::from_single(
+                NumericIdentifier::from_str("1").unwrap(),
+            ))
+            .set_part(RefPartSubpoint::from_single(
+                PrefixedAlphabeticIdentifier::from_str("a").unwrap(),
+            ))
+            .build()
+            .unwrap(),
+        ReferenceBuilder::new()
+            .set_part(RefPartPoint::from_single(
+                AlphabeticIdentifier::from_str("sz").unwrap(),
+            ))
+            .set_part(RefPartSubpoint::from_single(
+                NumericIdentifier::from_str("12").unwrap(),
+            ))
+            .build()
+            .unwrap(),
+        ReferenceBuilder::new()
+            .set_part(RefPartArticle::from_range(
+                "1".parse().unwrap(),
+                "2".parse().unwrap(),
+            ))
+            .build()
+            .unwrap(),
+        ReferenceBuilder::new()
+            .set_part(ActIdentifier {
+                year: 2012,
+                number: 123,
+            })
+            .build()
+            .unwrap(),
+        ReferenceBuilder::new()
+            .set_part(RefPartParagraph::from_range(
+                "1".parse().unwrap(),
+                "5".parse().unwrap(),
+            ))
+            .build()
+            .unwrap(),
+        ReferenceBuilder::new()
+            .set_part(RefPartPoint::from_range(
+                NumericIdentifier::from_str("1").unwrap(),
+                NumericIdentifier::from_str("5").unwrap(),
+            ))
+            .build()
+            .unwrap(),
+        ReferenceBuilder::new()
+            .set_part(RefPartPoint::from_range(
+                AlphabeticIdentifier::from_str("a").unwrap(),
+                AlphabeticIdentifier::from_str("c").unwrap(),
+            ))
+            .build()
+            .unwrap(),
+        ReferenceBuilder::new()
+            .set_part(RefPartSubpoint::from_range(
+                NumericIdentifier::from_str("1").unwrap(),
+                NumericIdentifier::from_str("5").unwrap(),
+            ))
+            .build()
+            .unwrap(),
+        ReferenceBuilder::new()
+            .set_part(RefPartSubpoint::from_range(
+                PrefixedAlphabeticIdentifier::from_str("ca").unwrap(),
+                PrefixedAlphabeticIdentifier::from_str("cc").unwrap(),
+            ))
+            .build()
+            .unwrap(),
+    ];
+    let expected_yaml = r#"---
+- act:
+    year: 2012
+    number: 123
+  article: "1:23/B"
+  paragraph: 2b
+  point: "1"
+  subpoint: a
+- point: sz
+  subpoint: "12"
+- article:
+    start: "1"
+    end: "2"
+- act:
+    year: 2012
+    number: 123
+- paragraph:
+    start: "1"
+    end: "5"
+- point:
+    start: "1"
+    end: "5"
+- point:
+    start: a
+    end: c
+- subpoint:
+    start: "1"
+    end: "5"
+- subpoint:
+    start: ca
+    end: cc
+"#;
+    let yaml = serde_yaml::to_string(&references).unwrap();
+    let roundtrip: Vec<Reference> = serde_yaml::from_str(&yaml).unwrap();
+    assert_eq!(references, roundtrip);
+    assert_eq!(yaml, expected_yaml);
+    let json = serde_json::to_string(&references).unwrap();
+    let roundtrip: Vec<Reference> = serde_json::from_str(&json).unwrap();
+    assert_eq!(references, roundtrip);
 }
