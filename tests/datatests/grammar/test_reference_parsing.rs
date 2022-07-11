@@ -44,17 +44,17 @@ pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let mut parsed_refs = Vec::new();
     let mut parsed_positions = vec![b' '; test_case.positions.len()];
 
-    for itr in parsed.get_in_text_references(&test_case.abbreviations) {
-        parsed_refs.push(itr.reference.clone());
+    for outgoing_reference in parsed.get_outgoing_references(&test_case.abbreviations) {
+        parsed_refs.push(outgoing_reference.reference.clone());
         let start_char_index = test_case
             .text
             .char_indices()
-            .position(|(cp, _)| cp == itr.start)
+            .position(|(cp, _)| cp == outgoing_reference.start)
             .unwrap();
         let end_char_index = test_case
             .text
             .char_indices()
-            .position(|(cp, _)| cp == itr.end)
+            .position(|(cp, _)| cp == outgoing_reference.end)
             .unwrap();
         parsed_positions[start_char_index] = b'<';
         parsed_positions[end_char_index - 1] = b'>';

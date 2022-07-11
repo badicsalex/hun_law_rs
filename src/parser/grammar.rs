@@ -31,7 +31,7 @@ use crate::{
 use super::grammar_generated::*;
 
 #[derive(Debug, Clone)]
-pub struct InTextReference {
+pub struct OutgoingReference {
     pub start: usize,
     pub end: usize,
     pub reference: reference::Reference,
@@ -40,12 +40,12 @@ pub struct InTextReference {
 pub type Abbreviations = HashMap<String, ActIdentifier>;
 
 impl ListOfSimpleExpressions {
-    pub fn get_in_text_references(&self, abbreviations: &Abbreviations) -> Vec<InTextReference> {
+    pub fn get_outgoing_references(&self, abbreviations: &Abbreviations) -> Vec<OutgoingReference> {
         self.contents
             .iter()
             .filter_map(|item| {
                 if let AnySimpleExpression::CompoundReference(reference) = item {
-                    reference.get_in_text_references(abbreviations).ok()
+                    reference.get_outgoing_references(abbreviations).ok()
                 } else {
                     None
                 }
@@ -56,82 +56,133 @@ impl ListOfSimpleExpressions {
 }
 
 impl CompoundReference {
-    pub fn get_in_text_references(
+    pub fn get_outgoing_references(
         &self,
         abbreviations: &Abbreviations,
-    ) -> Result<Vec<InTextReference>> {
-        let mut ref_builder = ReferenceBuilder::new();
-        let mut result = Vec::new();
-        if let Some(act_ref) = &self.act_reference {
-            let (pos, act_id_maybe) = match act_ref {
-                ActReference::Abbreviation(abbrev) => {
-                    (&abbrev.position, abbrev.resolve(abbreviations))
-                }
-                ActReference::ActIdWithFromNowOn(act_id_fno) => (
-                    &act_id_fno.act_id.position,
-                    act_id_fno.act_id.clone().try_into(),
-                ),
-            };
-            println!("Act ID: {:?}...", act_id_maybe);
-            ref_builder.set_part(act_id_maybe?);
-            result.push(InTextReference {
-                start: pos.start,
-                end: pos.end,
-                reference: ref_builder.build()?,
-            });
-        }
+    ) -> Result<Vec<OutgoingReference>> {
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviations);
+        ref_builder.feed(&self.act_reference)?;
         for reference in &self.references {
-            result.append(&mut reference.get_in_text_references(&mut ref_builder.clone())?)
+            ref_builder.feed(reference)?;
         }
-        Ok(result)
+        Ok(ref_builder.get_result())
     }
 }
 
-impl Reference {
-    pub fn get_in_text_references(
-        &self,
-        ref_builder: &mut ReferenceBuilder,
-    ) -> Result<Vec<InTextReference>> {
-        let mut result = Vec::new();
-        let mut start = 0;
-        let mut end = 0;
+#[derive(Debug)]
+struct OutgoingReferenceBuilder<'a> {
+    ref_builder: ReferenceBuilder,
+    abbreviations: &'a Abbreviations,
+    result: Vec<OutgoingReference>,
+    start: Option<usize>,
+    end: usize,
+}
 
-        // XXX: This is absolutely horrifying.
-        // I tried doing it with trait-based generics, but it was even worse.
-        macro_rules! process {
-            ($part_name:ident) => {
-                if let Some($part_name) = &self.$part_name {
-                    for (num, part) in $part_name.parts.iter().enumerate() {
-                        if num > 0 {
-                            result.push(InTextReference {
-                                start,
-                                end,
-                                reference: ref_builder.build()?,
-                            });
-                        }
-                        if num > 0 || start == 0 {
-                            start = part.start();
-                        }
-                        ref_builder.set_part(part.to_ref_part()?);
-                        end = part.end();
-                    }
-                }
-            };
+impl<'a> OutgoingReferenceBuilder<'a> {
+    pub fn new(abbreviations: &'a Abbreviations) -> Self {
+        Self {
+            ref_builder: ReferenceBuilder::new(),
+            abbreviations,
+            result: Vec::new(),
+            start: None,
+            end: 0,
         }
+    }
 
-        process!(article);
-        process!(paragraph);
-        process!(numeric_point);
-        process!(alphabetic_point);
-        process!(numeric_subpoint);
-        process!(alphabetic_subpoint);
-
-        result.push(InTextReference {
-            start,
-            end: self.position.end,
-            reference: ref_builder.build()?,
+    fn record_one(&mut self) -> Result<()> {
+        self.result.push(OutgoingReference {
+            start: self.start.ok_or_else(|| {
+                anyhow!("Trying to build an OutgoingReference before supplying any parts")
+            })?,
+            end: self.end,
+            reference: self.ref_builder.build()?,
         });
-        Ok(result)
+        self.start = None;
+        Ok(())
+    }
+
+    fn set_part<T>(&mut self, start: usize, end: usize, part: T)
+    where
+        ReferenceBuilder: ReferenceBuilderSetPart<T>,
+    {
+        if self.start.is_none() {
+            self.start = Some(start)
+        }
+        self.end = end;
+        self.ref_builder.set_part(part);
+    }
+
+    pub fn get_result(self) -> Vec<OutgoingReference> {
+        self.result
+    }
+}
+
+trait FeedReferenceBuilder<T> {
+    fn feed(&mut self, element: &T) -> Result<()>;
+}
+
+impl FeedReferenceBuilder<ActReference> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &ActReference) -> Result<()> {
+        match element {
+            ActReference::Abbreviation(abbrev) => {
+                self.set_part(
+                    abbrev.position.start,
+                    abbrev.position.end,
+                    abbrev.resolve(self.abbreviations)?,
+                );
+            }
+            ActReference::ActIdWithFromNowOn(ActIdWithFromNowOn { act_id, .. }) => {
+                self.set_part(
+                    act_id.position.start,
+                    act_id.position.end,
+                    ActIdentifier::try_from(act_id.clone())?,
+                );
+            }
+        }
+        self.record_one()?;
+        Ok(())
+    }
+}
+
+impl<'a, T> FeedReferenceBuilder<Option<T>> for OutgoingReferenceBuilder<'a>
+where
+    OutgoingReferenceBuilder<'a>: FeedReferenceBuilder<T>,
+{
+    fn feed(&mut self, element: &Option<T>) -> Result<()> {
+        if let Some(val) = element {
+            self.feed(val)
+        } else {
+            Ok(())
+        }
+    }
+}
+
+impl<'a, T> FeedReferenceBuilder<Vec<T>> for OutgoingReferenceBuilder<'a>
+where
+    OutgoingReferenceBuilder<'a>: FeedReferenceBuilder<T>,
+{
+    fn feed(&mut self, element: &Vec<T>) -> Result<()> {
+        for (num, part) in element.iter().enumerate() {
+            if num > 0 {
+                self.record_one()?;
+            }
+            self.feed(part)?;
+        }
+        Ok(())
+    }
+}
+
+impl FeedReferenceBuilder<Reference> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &Reference) -> Result<()> {
+        self.feed(&element.article)?;
+        self.feed(&element.paragraph)?;
+        self.feed(&element.numeric_point)?;
+        self.feed(&element.alphabetic_point)?;
+        self.feed(&element.numeric_subpoint)?;
+        self.feed(&element.alphabetic_subpoint)?;
+        self.end = element.position.end;
+        self.record_one()?;
+        Ok(())
     }
 }
 
@@ -143,53 +194,51 @@ trait ReferenceComponentPart {
 }
 
 macro_rules! impl_rcp {
-    ($T:ident, $RefPart:ident, $IdType:ident, $Range:ident, $Single:ident) => {
-        impl ReferenceComponentPart for $T {
-            type RefPart = $RefPart;
-
-            fn to_ref_part(&self) -> Result<Self::RefPart> {
-                Ok(match self {
-                    Self::$Range(x) => {
-                        $RefPart::from_range(x.start.parse::<$IdType>()?, x.end.parse::<$IdType>()?)
+    ($T:ident, $PartsT:ident, $RefPart:ident, $IdType:ident, $Range:ident, $Single:ident) => {
+        impl FeedReferenceBuilder<$T> for OutgoingReferenceBuilder<'_> {
+            fn feed(&mut self, element: &$T) -> Result<()> {
+                self.feed(&element.parts)
+            }
+        }
+        impl FeedReferenceBuilder<$PartsT> for OutgoingReferenceBuilder<'_> {
+            fn feed(&mut self, element: &$PartsT) -> Result<()> {
+                match element {
+                    $PartsT::$Range(x) => {
+                        let part = $RefPart::from_range(
+                            x.start.parse::<$IdType>()?,
+                            x.end.parse::<$IdType>()?,
+                        );
+                        self.set_part(x.position.start, x.position.end, part);
                     }
-                    Self::$Single(x) => $RefPart::from_single(x.id.parse::<$IdType>()?),
-                })
-            }
-
-            fn start(&self) -> usize {
-                match self {
-                    Self::$Range(x) => x.position.start,
-                    Self::$Single(x) => x.position.start,
+                    $PartsT::$Single(x) => {
+                        let part = $RefPart::from_single(x.id.parse::<$IdType>()?);
+                        self.set_part(x.position.start, x.position.end, part);
+                    }
                 }
-            }
-
-            fn end(&self) -> usize {
-                match self {
-                    Self::$Range(x) => x.position.end,
-                    Self::$Single(x) => x.position.end,
-                }
+                Ok(())
             }
         }
     };
 }
 
 impl_rcp!(
+    ArticleReference,
     ArticleReference_parts,
     RefPartArticle,
     ArticleIdentifier,
     ArticleRange,
     ArticleSingle
 );
-
 impl_rcp!(
+    ParagraphReference,
     ParagraphReference_parts,
     RefPartParagraph,
     NumericIdentifier,
     ParagraphRange,
     ParagraphSingle
 );
-
 impl_rcp!(
+    NumericPointReference,
     NumericPointReference_parts,
     RefPartPoint,
     NumericIdentifier,
@@ -197,6 +246,7 @@ impl_rcp!(
     NumericPointSingle
 );
 impl_rcp!(
+    AlphabeticPointReference,
     AlphabeticPointReference_parts,
     RefPartPoint,
     AlphabeticIdentifier,
@@ -204,6 +254,7 @@ impl_rcp!(
     AlphabeticPointSingle
 );
 impl_rcp!(
+    NumericSubpointReference,
     NumericSubpointReference_parts,
     RefPartSubpoint,
     NumericIdentifier,
@@ -211,6 +262,7 @@ impl_rcp!(
     NumericSubpointSingle
 );
 impl_rcp!(
+    AlphabeticSubpointReference,
     AlphabeticSubpointReference_parts,
     RefPartSubpoint,
     PrefixedAlphabeticIdentifier,
