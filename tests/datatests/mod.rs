@@ -15,7 +15,6 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 pub mod grammar;
-pub use grammar::*;
 
 pub mod test_pdf_parser;
 pub mod test_structure_parser;

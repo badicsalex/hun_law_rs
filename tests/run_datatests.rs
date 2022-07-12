@@ -17,8 +17,6 @@
 mod datatests;
 pub mod test_utils;
 
-use datatests::*;
-
 #[allow(unused_macros)]
 macro_rules! declare_test {
     (dir = $dir:expr, pattern = $pattern:expr) => {
@@ -37,12 +35,12 @@ macro_rules! declare_test {
 pub(crate) use declare_test;
 
 macro_rules! generate_harness{
-    ($($test:ident),*) => {
+    ($($id_first:ident$(::$id_rest:ident)*),*) => {
         datatest_stable::harness!(
             $(
-                $test::run_test,
-                $test::test_dir(),
-                $test::FILE_PATTERN,
+                datatests::$id_first$(::$id_rest)*::run_test,
+                datatests::$id_first$(::$id_rest)*::test_dir(),
+                datatests::$id_first$(::$id_rest)*::FILE_PATTERN,
             )*
         );
     }
@@ -51,5 +49,5 @@ macro_rules! generate_harness{
 generate_harness!(
     test_pdf_parser,
     test_structure_parser,
-    test_reference_parsing
+    grammar::test_reference_parsing
 );
