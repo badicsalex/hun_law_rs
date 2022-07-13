@@ -75,14 +75,9 @@ ActId = year:Number "." "évi" number:Roman "." ActSuffix;
 ActSuffix = "törvény" {HunLower} | "tv.";
 
 
-ArticleReference = {
-        (parts:ArticleRange | parts:ArticleSingle)
-        [ListSeparator]
-    }+ ArticleSuffix;
+ArticleReference = { @:ArticleReferencePart [ListSeparator] }+ ArticleSuffix;
 @position
-ArticleRange = start:ArticleId ["." ArticleSuffix] Dash end:ArticleId "." ;
-@position
-ArticleSingle = id:ArticleId ".";
+ArticleReferencePart = start:ArticleId ["." ArticleSuffix] Dash end:ArticleId "." | id:ArticleId ".";
 @string
 @no_skip_ws
 ArticleId = ([Number ":" ] Number ["/" 'A'..'Z']);
@@ -92,14 +87,9 @@ ArticleSuffix = "§-" {HunLower}+ | "§" ;
 SingleArticleReference = @:ArticleId "." ArticleSuffix;
 
 
-ParagraphReference = {
-        (parts:ParagraphRange | parts:ParagraphSingle)
-        [ListSeparator]
-    }+ ParagraphSuffix;
+ParagraphReference = { @:ParagraphReferencePart [ListSeparator] }+ ParagraphSuffix;
 @position
-ParagraphRange = "(" start:ParagraphId ")" Dash "(" end:ParagraphId ")" ;
-@position
-ParagraphSingle = "(" id:ParagraphId ")";
+ParagraphReferencePart = "(" start:ParagraphId ")" Dash "(" end:ParagraphId ")" | "(" id:ParagraphId ")";
 @string
 @no_skip_ws
 ParagraphId = Number ['a'..'z'];
@@ -107,14 +97,9 @@ ParagraphId = Number ['a'..'z'];
 ParagraphSuffix = "bekezdés" {HunLower};
 
 
-AlphabeticPointReference = {
-        (parts:AlphabeticPointRange | parts:AlphabeticPointSingle)
-        [ListSeparator]
-    }+ AlphabeticPointSuffix;
+AlphabeticPointReference = { @:AlphabeticPointReferencePart [ListSeparator] }+ AlphabeticPointSuffix;
 @position
-AlphabeticPointRange = start:AlphabeticPointId [")"] Dash end:AlphabeticPointId ")" ;
-@position
-AlphabeticPointSingle = id:AlphabeticPointId ")";
+AlphabeticPointReferencePart = start:AlphabeticPointId [")"] Dash end:AlphabeticPointId ")" | id:AlphabeticPointId ")";
 @string
 @no_skip_ws
 AlphabeticPointId = "ny" | "sz" | 'a'..'z';
@@ -122,14 +107,9 @@ AlphabeticPointId = "ny" | "sz" | 'a'..'z';
 AlphabeticPointSuffix = "pont" {HunLower};
 
 
-NumericPointReference= {
-        (parts:NumericPointRange | parts:NumericPointSingle)
-        [ListSeparator]
-    }+ NumericPointSuffix;
+NumericPointReference= { @:NumericPointReferencePart [ListSeparator] }+ NumericPointSuffix;
 @position
-NumericPointRange = start:NumericPointId Dash end:NumericPointId "." ;
-@position
-NumericPointSingle = id:NumericPointId ".";
+NumericPointReferencePart = start:NumericPointId Dash end:NumericPointId "." | id:NumericPointId "." ;
 @string
 @no_skip_ws
 NumericPointId = Number [["/"] 'a'..'z'];
@@ -137,14 +117,9 @@ NumericPointId = Number [["/"] 'a'..'z'];
 NumericPointSuffix = "pont" {HunLower};
 
 
-AlphabeticSubpointReference = {
-        (parts:AlphabeticSubpointRange | parts:AlphabeticSubpointSingle)
-        [ListSeparator]
-    }+ AlphabeticSubpointSuffix;
+AlphabeticSubpointReference = { @:AlphabeticSubpointReferencePart [ListSeparator] }+ AlphabeticSubpointSuffix;
 @position
-AlphabeticSubpointRange = start:AlphabeticSubpointId ")" Dash end:AlphabeticSubpointId ")" ;
-@position
-AlphabeticSubpointSingle = id:AlphabeticSubpointId ")";
+AlphabeticSubpointReferencePart = start:AlphabeticSubpointId ")" Dash end:AlphabeticSubpointId ")" | id:AlphabeticSubpointId ")" ;
 @string
 @no_skip_ws
 AlphabeticSubpointId = 'a'..'z' ['a'..'z'];
@@ -152,14 +127,9 @@ AlphabeticSubpointId = 'a'..'z' ['a'..'z'];
 AlphabeticSubpointSuffix = "alpont" {HunLower};
 
 
-NumericSubpointReference = {
-        (parts:NumericSubpointRange | parts:NumericSubpointSingle)
-        [ListSeparator]
-    }+ NumericSubpointSuffix;
+NumericSubpointReference = { @:NumericSubpointReferencePart [ListSeparator] }+ NumericSubpointSuffix;
 @position
-NumericSubpointRange = start:NumericSubpointId  Dash end:NumericSubpointId "." ;
-@position
-NumericSubpointSingle = id:NumericSubpointId ".";
+NumericSubpointReferencePart = start:NumericSubpointId  Dash end:NumericSubpointId "." | id:NumericSubpointId ".";
 @string
 @no_skip_ws
 NumericSubpointId = Number ;

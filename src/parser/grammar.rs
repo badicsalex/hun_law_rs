@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, bail, Result};
 use std::collections::HashMap;
 
 use crate::{
@@ -195,34 +195,19 @@ impl FeedReferenceBuilder<Reference> for OutgoingReferenceBuilder<'_> {
     }
 }
 
-trait ReferenceComponentPart {
-    type RefPart;
-    fn to_ref_part(&self) -> Result<Self::RefPart>;
-    fn start(&self) -> usize;
-    fn end(&self) -> usize;
-}
-
 macro_rules! impl_rcp {
-    ($T:ident, $PartsT:ident, $RefPart:ident, $IdType:ident, $Range:ident, $Single:ident) => {
-        impl FeedReferenceBuilder<$T> for OutgoingReferenceBuilder<'_> {
-            fn feed(&mut self, element: &$T) -> Result<()> {
-                self.feed(&element.parts)
-            }
-        }
+    ($PartsT:ident, $RefPart:ident, $IdType:ident $(,)?) => {
         impl FeedReferenceBuilder<$PartsT> for OutgoingReferenceBuilder<'_> {
             fn feed(&mut self, element: &$PartsT) -> Result<()> {
-                match element {
-                    $PartsT::$Range(x) => {
-                        let part = $RefPart::from_range(
-                            x.start.parse::<$IdType>()?,
-                            x.end.parse::<$IdType>()?,
-                        );
-                        self.set_part(x.position.start, x.position.end, part);
-                    }
-                    $PartsT::$Single(x) => {
-                        let part = $RefPart::from_single(x.id.parse::<$IdType>()?);
-                        self.set_part(x.position.start, x.position.end, part);
-                    }
+                if let Some(id) = &element.id {
+                    let part = $RefPart::from_single(id.parse::<$IdType>()?);
+                    self.set_part(element.position.start, element.position.end, part);
+                } else if let (Some(start), Some(end)) = (&element.start, &element.end) {
+                    let part =
+                        $RefPart::from_range(start.parse::<$IdType>()?, end.parse::<$IdType>()?);
+                    self.set_part(element.position.start, element.position.end, part);
+                } else {
+                    bail!("Grammar somehow produced an invalid combination")
                 }
                 Ok(())
             }
@@ -230,53 +215,23 @@ macro_rules! impl_rcp {
     };
 }
 
+impl_rcp!(ArticleReferencePart, RefPartArticle, ArticleIdentifier);
+impl_rcp!(ParagraphReferencePart, RefPartParagraph, NumericIdentifier);
+impl_rcp!(NumericPointReferencePart, RefPartPoint, NumericIdentifier);
 impl_rcp!(
-    ArticleReference,
-    ArticleReference_parts,
-    RefPartArticle,
-    ArticleIdentifier,
-    ArticleRange,
-    ArticleSingle
-);
-impl_rcp!(
-    ParagraphReference,
-    ParagraphReference_parts,
-    RefPartParagraph,
-    NumericIdentifier,
-    ParagraphRange,
-    ParagraphSingle
-);
-impl_rcp!(
-    NumericPointReference,
-    NumericPointReference_parts,
-    RefPartPoint,
-    NumericIdentifier,
-    NumericPointRange,
-    NumericPointSingle
-);
-impl_rcp!(
-    AlphabeticPointReference,
-    AlphabeticPointReference_parts,
+    AlphabeticPointReferencePart,
     RefPartPoint,
     AlphabeticIdentifier,
-    AlphabeticPointRange,
-    AlphabeticPointSingle
 );
 impl_rcp!(
-    NumericSubpointReference,
-    NumericSubpointReference_parts,
+    NumericSubpointReferencePart,
     RefPartSubpoint,
     NumericIdentifier,
-    NumericSubpointRange,
-    NumericSubpointSingle
 );
 impl_rcp!(
-    AlphabeticSubpointReference,
-    AlphabeticSubpointReference_parts,
+    AlphabeticSubpointReferencePart,
     RefPartSubpoint,
     PrefixedAlphabeticIdentifier,
-    AlphabeticSubpointRange,
-    AlphabeticSubpointSingle
 );
 
 trait ResolveAbbreviations {
