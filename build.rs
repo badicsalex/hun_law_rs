@@ -115,16 +115,7 @@ fn regen_phf() {
     .unwrap();
 }
 
-fn regen_grammar() {
-    peginator::buildscript::Compile::file("src/grammar.ebnf")
-        .destination("src/parser/grammar_generated.rs")
-        .format()
-        .run_exit_on_error();
-    println!("cargo:rerun-if-changed=src/grammar.ebnf");
-}
-
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     regen_phf();
-    regen_grammar();
 }

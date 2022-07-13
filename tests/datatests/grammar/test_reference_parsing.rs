@@ -15,10 +15,9 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use hun_law::{
-    parser::grammar_generated::ListOfSimpleExpressions, reference::Reference,
-    structure::ActIdentifier,
+    parser::grammar::GetOutgoingReferences, reference::Reference, structure::ActIdentifier,
 };
-use peginator::PegParser;
+use hun_law_grammar::{ListOfSimpleExpressions, PegParser};
 
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
@@ -44,7 +43,7 @@ pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let mut parsed_refs = Vec::new();
     let mut parsed_positions = vec![b' '; test_case.positions.len()];
 
-    for outgoing_reference in parsed.get_outgoing_references(&test_case.abbreviations) {
+    for outgoing_reference in parsed.get_outgoing_references(&test_case.abbreviations)? {
         parsed_refs.push(outgoing_reference.reference.clone());
         let start_char_index = test_case
             .text

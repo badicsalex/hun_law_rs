@@ -27,8 +27,7 @@ use crate::{
         PrefixedAlphabeticIdentifier,
     },
 };
-
-use super::grammar_generated::*;
+use hun_law_grammar::*;
 
 #[derive(Debug, Clone)]
 pub struct OutgoingReference {
@@ -39,9 +38,19 @@ pub struct OutgoingReference {
 
 pub type Abbreviations = HashMap<String, ActIdentifier>;
 
-impl ListOfSimpleExpressions {
-    pub fn get_outgoing_references(&self, abbreviations: &Abbreviations) -> Vec<OutgoingReference> {
-        self.contents
+pub trait GetOutgoingReferences {
+    fn get_outgoing_references(
+        &self,
+        abbreviations: &Abbreviations,
+    ) -> Result<Vec<OutgoingReference>>;
+}
+impl GetOutgoingReferences for ListOfSimpleExpressions {
+    fn get_outgoing_references(
+        &self,
+        abbreviations: &Abbreviations,
+    ) -> Result<Vec<OutgoingReference>> {
+        Ok(self
+            .contents
             .iter()
             .filter_map(|item| {
                 if let AnySimpleExpression::CompoundReference(reference) = item {
@@ -51,12 +60,12 @@ impl ListOfSimpleExpressions {
                 }
             })
             .flatten()
-            .collect()
+            .collect())
     }
 }
 
-impl CompoundReference {
-    pub fn get_outgoing_references(
+impl GetOutgoingReferences for CompoundReference {
+    fn get_outgoing_references(
         &self,
         abbreviations: &Abbreviations,
     ) -> Result<Vec<OutgoingReference>> {
@@ -270,8 +279,12 @@ impl_rcp!(
     AlphabeticSubpointSingle
 );
 
-impl Abbreviation {
-    pub fn resolve(&self, abbreviations: &Abbreviations) -> Result<ActIdentifier> {
+trait ResolveAbbreviations {
+    fn resolve(&self, abbreviations: &Abbreviations) -> Result<ActIdentifier>;
+}
+
+impl ResolveAbbreviations for Abbreviation {
+    fn resolve(&self, abbreviations: &Abbreviations) -> Result<ActIdentifier> {
         abbreviations
             .get(&self.content)
             .ok_or_else(|| anyhow!("{} not found in abbreviations", self.content))

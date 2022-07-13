@@ -1,0 +1,13 @@
+[package]
+name = "hun_law_grammar"
+version = "0.1.0"
+edition = "2021"
+
+authors = ["Alex Badics <admin@stickman.hu>"]
+license = "GPL-3.0-only"
+
+[dependencies]
+peginator = { path = "../../peginator" }
+
+[build-dependencies]
+peginator = { path = "../../peginator" }

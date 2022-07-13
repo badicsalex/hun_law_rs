@@ -1,4 +1,4 @@
 /target
 /cache
-/src/parser/grammar_generated.rs
+/hun_law_grammar/src/grammar_generated.rs
 Cargo.lock

@@ -14,7 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-pub mod grammar;
-pub mod mk_act_section;
-pub mod pdf;
-pub mod structure;
+fn regen_grammar() {
+    peginator::buildscript::Compile::file("grammar.ebnf")
+        .destination("src/grammar_generated.rs")
+        .format()
+        .run_exit_on_error();
+    println!("cargo:rerun-if-changed=grammar.ebnf");
+}
+
+fn main() {
+    println!("cargo:rerun-if-changed=build.rs");
+    regen_grammar();
+}

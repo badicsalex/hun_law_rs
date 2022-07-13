@@ -14,7 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-pub mod grammar;
-pub mod mk_act_section;
-pub mod pdf;
-pub mod structure;
+#[allow(clippy::all)]
+mod grammar_generated;
+
+pub use grammar_generated::*;
+pub use peginator::PegParser;
