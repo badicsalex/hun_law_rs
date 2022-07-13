@@ -39,7 +39,7 @@ AnySimpleExpression =
     @:Abbreviation |
     @:AnyToken ;
 
-CompoundReference = (act_reference:ActReference {references:Reference [ListSeparator [Az]]}) | references:Reference;
+CompoundReference = [act_reference:ActReference] {references:Reference [ListSeparator [Az]]}+ | act_reference:ActReference;
 
 @position
 Reference =

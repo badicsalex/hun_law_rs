@@ -161,6 +161,23 @@ impl ReferenceBuilder {
         // TODO: check the built reference
         Ok(self.r.clone())
     }
+
+    pub fn reset_article(&mut self) -> &mut Self {
+        self.r.article = None;
+        self.reset_paragraph()
+    }
+    pub fn reset_paragraph(&mut self) -> &mut Self {
+        self.r.paragraph = None;
+        self.reset_point()
+    }
+    pub fn reset_point(&mut self) -> &mut Self {
+        self.r.point = None;
+        self.reset_subpoint()
+    }
+    pub fn reset_subpoint(&mut self) -> &mut Self {
+        self.r.subpoint = None;
+        self
+    }
 }
 
 pub trait ReferenceBuilderSetPart<T> {
@@ -170,28 +187,28 @@ pub trait ReferenceBuilderSetPart<T> {
 impl ReferenceBuilderSetPart<ActIdentifier> for ReferenceBuilder {
     fn set_part(&mut self, val: ActIdentifier) -> &mut Self {
         self.r.act = Some(val);
-        self
+        self.reset_article()
     }
 }
 
 impl ReferenceBuilderSetPart<RefPartArticle> for ReferenceBuilder {
     fn set_part(&mut self, val: RefPartArticle) -> &mut Self {
         self.r.article = Some(val);
-        self
+        self.reset_paragraph()
     }
 }
 
 impl ReferenceBuilderSetPart<RefPartParagraph> for ReferenceBuilder {
     fn set_part(&mut self, val: RefPartParagraph) -> &mut Self {
         self.r.paragraph = Some(val);
-        self
+        self.reset_point()
     }
 }
 
 impl ReferenceBuilderSetPart<RefPartPoint> for ReferenceBuilder {
     fn set_part(&mut self, val: RefPartPoint) -> &mut Self {
         self.r.point = Some(val);
-        self
+        self.reset_subpoint()
     }
 }
 
