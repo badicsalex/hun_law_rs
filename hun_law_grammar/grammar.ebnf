@@ -39,7 +39,7 @@ AnySimpleExpression =
     @:Abbreviation |
     @:AnyToken ;
 
-CompoundReference = [act_reference:ActReference] {references:Reference [ListSeparator [Az]]}+ | act_reference:ActReference;
+CompoundReference = [act_reference:ActReference] {references:Reference [ListSeparator]}+ | act_reference:ActReference;
 
 @position
 Reference =
@@ -77,7 +77,7 @@ ActSuffix = "törvény" {HunLower} | "tv.";
 
 ArticleReference = {
         (parts:ArticleRange | parts:ArticleSingle)
-        [ListSeparator [Az]]
+        [ListSeparator]
     }+ ArticleSuffix;
 @position
 ArticleRange = start:ArticleId ["." ArticleSuffix] Dash end:ArticleId "." ;
@@ -94,7 +94,7 @@ SingleArticleReference = @:ArticleId "." ArticleSuffix;
 
 ParagraphReference = {
         (parts:ParagraphRange | parts:ParagraphSingle)
-        [ListSeparator [Az]]
+        [ListSeparator]
     }+ ParagraphSuffix;
 @position
 ParagraphRange = "(" start:ParagraphId ")" Dash "(" end:ParagraphId ")" ;
@@ -109,7 +109,7 @@ ParagraphSuffix = "bekezdés" {HunLower};
 
 AlphabeticPointReference = {
         (parts:AlphabeticPointRange | parts:AlphabeticPointSingle)
-        [ListSeparator [Az]]
+        [ListSeparator]
     }+ AlphabeticPointSuffix;
 @position
 AlphabeticPointRange = start:AlphabeticPointId [")"] Dash end:AlphabeticPointId ")" ;
@@ -124,7 +124,7 @@ AlphabeticPointSuffix = "pont" {HunLower};
 
 NumericPointReference= {
         (parts:NumericPointRange | parts:NumericPointSingle)
-        [ListSeparator [Az]]
+        [ListSeparator]
     }+ NumericPointSuffix;
 @position
 NumericPointRange = start:NumericPointId Dash end:NumericPointId "." ;
@@ -139,7 +139,7 @@ NumericPointSuffix = "pont" {HunLower};
 
 AlphabeticSubpointReference = {
         (parts:AlphabeticSubpointRange | parts:AlphabeticSubpointSingle)
-        [ListSeparator [Az]]
+        [ListSeparator]
     }+ AlphabeticSubpointSuffix;
 @position
 AlphabeticSubpointRange = start:AlphabeticSubpointId ")" Dash end:AlphabeticSubpointId ")" ;
@@ -154,7 +154,7 @@ AlphabeticSubpointSuffix = "alpont" {HunLower};
 
 NumericSubpointReference = {
         (parts:NumericSubpointRange | parts:NumericSubpointSingle)
-        [ListSeparator [Az]]
+        [ListSeparator]
     }+ NumericSubpointSuffix;
 @position
 NumericSubpointRange = start:NumericSubpointId  Dash end:NumericSubpointId "." ;
@@ -180,7 +180,7 @@ Quote = "„" @:QuoteInner '”' ;
 @string
 QuoteInner = {!('„' | '”') char} { "„" QuoteInner  '”' {!('„' | '”') char} };
 
-ListSeparator = (["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," | ";";
+ListSeparator = ((["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," | ";") [Az];
 
 # ============= STRUCTURAL REFERENCES =============
 
@@ -324,7 +324,7 @@ EnforcementDate =
         AzUpper
     )
     [ Dash "a" exception_references:Reference ("foglalt"|"foglaltak"|"meghatározott") ("kivétellel"|"kivételével"|"kivételekkel") Dash ]
-    { references:Reference [ListSeparator [Az]] }
+    { references:Reference [ListSeparator] }
     (
         date:Date |
         date:AfterPublication |
@@ -339,8 +339,8 @@ EnforcementDate =
 
 TextAmendment =
     AzAny ActTitle act_reference:ActReference
-    { references:Reference [ListSeparator [Az]] }+
-    { parts:TextAmendmentPart [ListSeparator [Az]] }+
+    { references:Reference [ListSeparator] }+
+    { parts:TextAmendmentPart [ListSeparator] }+
     "lép" ["hatályba"] "."
     ;
 
@@ -371,8 +371,8 @@ ArticleTitleAmendment =
 Repeal =
     ("Nem lép hatályba" | "Hatályát veszti")
     Az ActTitle act_reference:ActReference
-    { references:Reference [ListSeparator [Az]] }+
-    { [Az] texts:Quote ["szövegrész"] [ListSeparator [Az]]}
+    { references:Reference [ListSeparator] }+
+    { [Az] texts:Quote ["szövegrész"] [ListSeparator]}
     "."
     ;
 
