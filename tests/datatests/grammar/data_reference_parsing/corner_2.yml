@@ -1,0 +1,10 @@
+---
+# Note that there is no "." after 25.
+# This caused a weird exception with a broken grammar in the past
+# TODO: Do we want to parse this?
+text:      "A 2006. évi X. törvény 25 §-a."
+positions: "  <                  >        "
+expected:
+  - act:
+      year: 2006
+      number: 10

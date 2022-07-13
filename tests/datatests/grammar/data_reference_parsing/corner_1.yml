@@ -1,0 +1,7 @@
+---
+# TODO: Fix the position in "this article" parsing. I just can't be bothered TBH.
+text:      "E § (2) bekezdés d) pontjában foglaltaktól eltérni tilos."
+positions: "    <                       >                            "
+expected:
+  - paragraph: "2"
+    point: "d"

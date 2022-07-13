@@ -1,0 +1,17 @@
+---
+text:      "Amely a Tbj. 4. § k) pont 2. alpontja alapján járulékalapot képez."
+positions: "        <  > <                      >                             "
+abbreviations:
+  "Tbj.":
+    year: 2019
+    number: 122
+expected:
+  - act:
+      year: 2019
+      number: 122
+  - act:
+      year: 2019
+      number: 122
+    article: "4"
+    point: "k"
+    subpoint: "2"

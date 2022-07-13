@@ -1,0 +1,21 @@
+---
+text:      "A Btk. 283. § (2) és (2a) bekezdése helyébe"
+positions: "  <  > <        >    <            >        "
+abbreviations:
+  "Btk.":
+    year: 2012
+    number: 100
+expected:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: "283"
+    paragraph: "2"
+  - act:
+      year: 2012
+      number: 100
+    article: "283"
+    paragraph: "2a"

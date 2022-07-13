@@ -1,0 +1,8 @@
+---
+        # Multiple sentences
+text:      "A tesztekről szóló 2337. évi I. törvény nem létezik. Egy második mondattól meg parse-olni sem lehet."
+positions: "                   <                  >                                                             "
+expected:
+  - act:
+      year: 2337
+      number: 1

@@ -1,0 +1,11 @@
+---
+# Note: The python version collapsed adjacent pairs into ranges. We don't do that here.
+text:      "Ha létrejött adás-vételi szerződést a 23. § (4) bekezdésének a) vagy b) pontjában foglalt esetek fennállása alapján jóváhagyja."
+positions: "                                      <                       >      <          >                                              "
+expected:
+  - article: "23"
+    paragraph: "4"
+    point: "a"
+  - article: "23"
+    paragraph: "4"
+    point: "b"

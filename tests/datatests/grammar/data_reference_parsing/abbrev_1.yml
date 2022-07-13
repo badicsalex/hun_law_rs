@@ -1,0 +1,16 @@
+---
+text:      "A Gyvt. 5. § ny) pontja alapján..."
+positions: "  <   > <             >           "
+abbreviations:
+  "Gyvt.":
+    year: 1997
+    number: 31
+expected:
+  - act:
+      year: 1997
+      number: 31
+  - act:
+      year: 1997
+      number: 31
+    article: "5"
+    point: "ny"
