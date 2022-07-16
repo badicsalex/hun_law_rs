@@ -19,22 +19,15 @@ use std::collections::HashMap;
 
 use crate::{
     reference::{
-        self, RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint,
+        RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint,
         ReferenceBuilder, ReferenceBuilderSetPart,
     },
     structure::{
         ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
-        PrefixedAlphabeticIdentifier,
+        PrefixedAlphabeticIdentifier, semantic_info::OutgoingReference,
     },
 };
 use hun_law_grammar::*;
-
-#[derive(Debug, Clone)]
-pub struct OutgoingReference {
-    pub start: usize,
-    pub end: usize,
-    pub reference: reference::Reference,
-}
 
 pub type Abbreviations = HashMap<String, ActIdentifier>;
 

@@ -15,6 +15,8 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 pub mod identifier;
+pub mod semantic_info;
+
 use std::fmt::Debug;
 
 pub use identifier::*;
