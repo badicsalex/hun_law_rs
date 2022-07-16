@@ -407,3 +407,25 @@ fn test_reference_serialization() {
     let roundtrip: Vec<Reference> = serde_json::from_str(&json).unwrap();
     assert_eq!(references, roundtrip);
 }
+
+#[test]
+fn test_invalid_reference_deserialization() {
+    assert!(serde_yaml::from_str::<Reference>(
+        r#"---
+        paragraph:
+            start: "1"
+            end: "5"
+        point:
+            start: "1"
+            end: "5"
+    "#
+    )
+    .is_err());
+    assert!(serde_yaml::from_str::<Reference>(
+        r#"---
+        article: "1"
+        subpoint: "a"
+    "#
+    )
+    .is_err());
+}
