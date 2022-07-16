@@ -23,12 +23,35 @@ pub trait IsDefault {
     fn is_default(&self) -> bool;
 }
 
-impl<T> IsDefault for T
-where
-    T: Default + PartialEq,
+impl<T> IsDefault for Vec<T>
 {
     fn is_default(&self) -> bool {
-        *self == Self::default()
+        self.is_empty()
+    }
+}
+
+impl<T> IsDefault for Option<T>
+{
+    fn is_default(&self) -> bool {
+        self.is_none()
+    }
+}
+
+impl IsDefault for bool {
+    fn is_default(&self) -> bool {
+        self == &false
+    }
+}
+
+impl IsDefault for String {
+    fn is_default(&self) -> bool {
+        self.is_empty()
+    }
+}
+
+impl IsDefault for f64 {
+    fn is_default(&self) -> bool {
+        self == &0f64
     }
 }
 
