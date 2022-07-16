@@ -65,10 +65,18 @@ Reference =
 ActReference =
     @:Abbreviation |
     @:ActIdWithFromNowOn ;
-ActIdWithFromNowOn = act_id:ActId [from_now_on:FromNowOn | FromNowOnLong];
+ActIdWithFromNowOn =
+    act_id:ActId
+    [
+        "(" "a" "továbbiakban" [":"]
+        (
+            abbreviation:Abbreviation ["törvény"] |
+            ActId |
+            {Word}+
+        )
+        ")"
+    ];
 
-FromNowOn = "(" "a" "továbbiakban" [":"] abbreviation:Abbreviation ["törvény"] ")" ;
-FromNowOnLong = "(" "a" "továbbiakban" [":"] ( ActId | {Word}+ ) ")" ;
 @position
 ActId = year:Number "." "évi" number:Roman "." ActSuffix;
 @no_skip_ws
