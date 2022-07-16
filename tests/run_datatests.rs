@@ -49,5 +49,5 @@ macro_rules! generate_harness{
 generate_harness!(
     test_pdf_parser,
     test_structure_parser,
-    grammar::test_reference_parsing
+    semantic_info::test_reference_parsing
 );

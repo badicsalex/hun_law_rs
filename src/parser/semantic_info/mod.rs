@@ -14,7 +14,5 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-pub mod semantic_info;
-
-pub mod test_pdf_parser;
-pub mod test_structure_parser;
+pub mod abbreviation;
+pub mod reference;

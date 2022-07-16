@@ -23,15 +23,13 @@ pub trait IsDefault {
     fn is_default(&self) -> bool;
 }
 
-impl<T> IsDefault for Vec<T>
-{
+impl<T> IsDefault for Vec<T> {
     fn is_default(&self) -> bool {
         self.is_empty()
     }
 }
 
-impl<T> IsDefault for Option<T>
-{
+impl<T> IsDefault for Option<T> {
     fn is_default(&self) -> bool {
         self.is_none()
     }

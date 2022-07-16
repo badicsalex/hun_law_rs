@@ -15,39 +15,38 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{anyhow, bail, Result};
-use std::collections::HashMap;
 
+use super::abbreviation::AbbreviationCache;
 use crate::{
     reference::{
         RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint,
         ReferenceBuilder, ReferenceBuilderSetPart,
     },
     structure::{
-        ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
-        PrefixedAlphabeticIdentifier, semantic_info::OutgoingReference,
+        semantic_info::OutgoingReference, ActIdentifier, AlphabeticIdentifier, ArticleIdentifier,
+        NumericIdentifier, PrefixedAlphabeticIdentifier,
     },
 };
 use hun_law_grammar::*;
 
-pub type Abbreviations = HashMap<String, ActIdentifier>;
-
 pub trait GetOutgoingReferences {
     fn get_outgoing_references(
         &self,
-        abbreviations: &Abbreviations,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>>;
 }
+
 impl GetOutgoingReferences for ListOfSimpleExpressions {
     fn get_outgoing_references(
         &self,
-        abbreviations: &Abbreviations,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
         Ok(self
             .contents
             .iter()
             .filter_map(|item| {
                 if let AnySimpleExpression::CompoundReference(reference) = item {
-                    reference.get_outgoing_references(abbreviations).ok()
+                    reference.get_outgoing_references(abbreviation_cache).ok()
                 } else {
                     None
                 }
@@ -60,9 +59,9 @@ impl GetOutgoingReferences for ListOfSimpleExpressions {
 impl GetOutgoingReferences for CompoundReference {
     fn get_outgoing_references(
         &self,
-        abbreviations: &Abbreviations,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
-        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviations);
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
         ref_builder.feed(&self.act_reference)?;
         for reference in &self.references {
             ref_builder.feed(reference)?;
@@ -74,17 +73,17 @@ impl GetOutgoingReferences for CompoundReference {
 #[derive(Debug)]
 struct OutgoingReferenceBuilder<'a> {
     ref_builder: ReferenceBuilder,
-    abbreviations: &'a Abbreviations,
+    abbreviation_cache: &'a AbbreviationCache,
     result: Vec<OutgoingReference>,
     start: Option<usize>,
     end: usize,
 }
 
 impl<'a> OutgoingReferenceBuilder<'a> {
-    pub fn new(abbreviations: &'a Abbreviations) -> Self {
+    pub fn new(abbreviation_cache: &'a AbbreviationCache) -> Self {
         Self {
             ref_builder: ReferenceBuilder::new(),
-            abbreviations,
+            abbreviation_cache,
             result: Vec::new(),
             start: None,
             end: 0,
@@ -130,7 +129,7 @@ impl FeedReferenceBuilder<ActReference> for OutgoingReferenceBuilder<'_> {
                 self.set_part(
                     abbrev.position.start,
                     abbrev.position.end,
-                    abbrev.resolve(self.abbreviations)?,
+                    self.abbreviation_cache.resolve(&abbrev.content)?,
                 );
             }
             ActReference::ActIdWithFromNowOn(ActIdWithFromNowOn { act_id, .. }) => {
@@ -226,19 +225,6 @@ impl_rcp!(
     RefPartSubpoint,
     PrefixedAlphabeticIdentifier,
 );
-
-trait ResolveAbbreviations {
-    fn resolve(&self, abbreviations: &Abbreviations) -> Result<ActIdentifier>;
-}
-
-impl ResolveAbbreviations for Abbreviation {
-    fn resolve(&self, abbreviations: &Abbreviations) -> Result<ActIdentifier> {
-        abbreviations
-            .get(&self.content)
-            .ok_or_else(|| anyhow!("{} not found in abbreviations", self.content))
-            .cloned()
-    }
-}
 
 impl TryFrom<ActId> for ActIdentifier {
     type Error = anyhow::Error;

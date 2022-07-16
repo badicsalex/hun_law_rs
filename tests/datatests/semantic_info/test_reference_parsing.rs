@@ -15,7 +15,9 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use hun_law::{
-    parser::grammar::GetOutgoingReferences, reference::Reference, structure::ActIdentifier,
+    parser::semantic_info::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences},
+    reference::Reference,
+    structure::ActIdentifier,
 };
 use hun_law_grammar::{ListOfSimpleExpressions, PegParser};
 
@@ -43,7 +45,9 @@ pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let mut parsed_refs = Vec::new();
     let mut parsed_positions = vec![b' '; test_case.positions.len()];
 
-    for outgoing_reference in parsed.get_outgoing_references(&test_case.abbreviations)? {
+    let abbreviation_cache = AbbreviationCache::from(test_case.abbreviations);
+
+    for outgoing_reference in parsed.get_outgoing_references(&abbreviation_cache)? {
         parsed_refs.push(outgoing_reference.reference.clone());
         let start_char_index = test_case
             .text
