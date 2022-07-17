@@ -1,0 +1,15 @@
+---
+text:      "A hegyközségekről szóló 2012. évi CCXIX. törvény (a továbbiakban: Hktv.) 28. §-a helyébe a következő rendelkezés lép:"
+positions: "                        <                      >                         <     >                                     "
+expected_new_abbreviations:
+  "Hktv.":
+    year: 2012
+    number: 219
+expected_references:
+  - act:
+      year: 2012
+      number: 219
+  - act:
+      year: 2012
+      number: 219
+    article: "28"

@@ -1,0 +1,11 @@
+---
+text:      "E törvény rendelkezéseit a Polgári Törvénykönyvről szóló 2013. évi V. törvénnyel (a továbbiakban: Ptk.) együtt kell alkalmazni."
+positions: "                                                         <                     >                                               "
+expected_new_abbreviations:
+  "Ptk.":
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5

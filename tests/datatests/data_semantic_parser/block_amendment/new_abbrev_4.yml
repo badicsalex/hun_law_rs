@@ -1,0 +1,15 @@
+---
+text:      "Az európai részvénytársaságról szóló 2004. évi XLV. törvény (a továbbiakban: Eurt.tv.) 2. §-a helyébe a következő rendelkezés lép:"
+positions: "                                     <                    >                            <    >                                     "
+expected_new_abbreviations:
+  "Eurt.tv.":
+    year: 2004
+    number: 45
+expected_references:
+  - act:
+      year: 2004
+      number: 45
+  - act:
+      year: 2004
+      number: 45
+    article: "2"

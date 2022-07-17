@@ -1,0 +1,13 @@
+---
+text:      "A Büntető Törvénykönyvről szóló 1978. évi IV. törvény (a továbbiakban: 1978. évi IV. törvény) 316. § (4) bekezdése a következő c) ponttal egészül ki:"
+positions: "                                <                   >                                         <                                         >            "
+expected_references:
+  - act:
+      year: 1978
+      number: 4
+  - act:
+      year: 1978
+      number: 4
+    article: "316"
+    paragraph: "4"
+    point: "c"

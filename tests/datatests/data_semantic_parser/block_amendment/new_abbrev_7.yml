@@ -1,0 +1,17 @@
+---
+text:      "A szabálysértésekről és egyebekről szóló 2012. évi I. törvény (a továbbiakban: Szabs. tv.) 29. § (2) bekezdés e) pontja helyébe a következő rendelkezés lép:"
+positions: "                                         <                  >                              <                          >                                     "
+expected_new_abbreviations:
+  "Szabs. tv.":
+    year: 2012
+    number: 1
+expected_references:
+  - act:
+      year: 2012
+      number: 1
+  - act:
+      year: 2012
+      number: 1
+    article: "29"
+    paragraph: "2"
+    point: "e"

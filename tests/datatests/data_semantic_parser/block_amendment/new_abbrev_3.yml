@@ -1,0 +1,16 @@
+---
+text:      "A víziközmű-szolgáltatásról szóló 2011. évi CCIX. törvény (a továbbiakban: Víziközmű tv.) 2. §-a a következő 31. ponttal egészül ki:"
+positions: "                                  <                     >                                 <                            >            "
+expected_new_abbreviations:
+  "Víziközmű tv.":
+    year: 2011
+    number: 209
+expected_references:
+  - act:
+      year: 2011
+      number: 209
+  - act:
+      year: 2011
+      number: 209
+    article: "2"
+    point: "31"

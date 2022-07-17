@@ -1,0 +1,14 @@
+---
+text:      "Nem kell módosítani, ha a szövetkezetekről szóló 2006. évi X. törvény (a továbbiakban: Sztv.) rendelkezéseire utal. Amennyiben azonban az alapszabály egyéb okból módosul, a szövetkezet köteles az Sztv.-re utalást is módosítani."
+positions: "                                                 <                  >                                                                                                                               <   >                          "
+expected_new_abbreviations:
+  "Sztv.":
+    year: 2006
+    number: 10
+expected_references:
+  - act:
+      year: 2006
+      number: 10
+  - act:
+      year: 2006
+      number: 10

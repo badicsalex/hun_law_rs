@@ -1,0 +1,12 @@
+---
+# no colon after 'a továbbiakban'
+text:      "A fogyasztóvédelmi hatósága fogyasztóvédelemrõl szóló 1997. évi CLV. törvény (a továbbiakban Fgytv.) szabályai szerint jár el."
+positions: "                                                      <                    >                                                  "
+expected_new_abbreviations:
+  "Fgytv.":
+    year: 1997
+    number: 155
+expected_references:
+  - act:
+      year: 1997
+      number: 155
