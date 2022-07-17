@@ -15,11 +15,10 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use hun_law::{
-    parser::semantic_info::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences},
+    parser::semantic_info::{abbreviation::AbbreviationCache, extract_semantic_info},
     reference::Reference,
     structure::ActIdentifier,
 };
-use hun_law_grammar::{ListOfSimpleExpressions, PegParser};
 
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
@@ -41,13 +40,13 @@ use crate::declare_test;
 declare_test!(dir = "data_reference_parsing", pattern = r"\.yml");
 pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let test_case: TestCase = serde_yaml::from_slice(&read_all(path)?)?;
-    let parsed = ListOfSimpleExpressions::parse(&test_case.text)?;
+    let mut abbreviation_cache = AbbreviationCache::from(test_case.abbreviations);
+    let semantic_info = extract_semantic_info(&test_case.text, &mut abbreviation_cache)?;
+
     let mut parsed_refs = Vec::new();
     let mut parsed_positions = vec![b' '; test_case.positions.len()];
 
-    let abbreviation_cache = AbbreviationCache::from(test_case.abbreviations);
-
-    for outgoing_reference in parsed.get_outgoing_references(&abbreviation_cache)? {
+    for outgoing_reference in semantic_info.outgoing_references {
         parsed_refs.push(outgoing_reference.reference.clone());
         let start_char_index = test_case
             .text

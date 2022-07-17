@@ -36,6 +36,82 @@ pub trait GetOutgoingReferences {
     ) -> Result<Vec<OutgoingReference>>;
 }
 
+impl GetOutgoingReferences for Root {
+    fn get_outgoing_references(
+        &self,
+        abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        match &self.content {
+            Root_content::ArticleTitleAmendment(c) => c.get_outgoing_references(abbreviation_cache),
+            Root_content::BlockAmendment(c) => c.get_outgoing_references(abbreviation_cache),
+            Root_content::BlockAmendmentStructural(c) => {
+                c.get_outgoing_references(abbreviation_cache)
+            }
+            Root_content::BlockAmendmentWithSubtitle(c) => {
+                c.get_outgoing_references(abbreviation_cache)
+            }
+            Root_content::EnforcementDate(c) => c.get_outgoing_references(abbreviation_cache),
+            Root_content::ListOfSimpleExpressions(c) => {
+                c.get_outgoing_references(abbreviation_cache)
+            }
+            Root_content::Repeal(c) => c.get_outgoing_references(abbreviation_cache),
+            Root_content::StructuralRepeal(c) => c.get_outgoing_references(abbreviation_cache),
+            Root_content::TextAmendment(c) => c.get_outgoing_references(abbreviation_cache),
+        }
+    }
+}
+
+impl GetOutgoingReferences for ArticleTitleAmendment {
+    fn get_outgoing_references(
+        &self,
+        _abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        // TODO
+        Err(anyhow!("Not implemented"))
+    }
+}
+
+impl GetOutgoingReferences for BlockAmendment {
+    fn get_outgoing_references(
+        &self,
+        _abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        // TODO
+        Err(anyhow!("Not implemented"))
+    }
+}
+
+impl GetOutgoingReferences for BlockAmendmentStructural {
+    fn get_outgoing_references(
+        &self,
+        _abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        // TODO
+        Err(anyhow!("Not implemented"))
+    }
+}
+
+impl GetOutgoingReferences for BlockAmendmentWithSubtitle {
+    fn get_outgoing_references(
+        &self,
+        _abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        // TODO
+        Err(anyhow!("Not implemented"))
+    }
+}
+
+impl GetOutgoingReferences for EnforcementDate {
+    fn get_outgoing_references(
+        &self,
+        abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.references)?;
+        Ok(ref_builder.get_result())
+    }
+}
+
 impl GetOutgoingReferences for ListOfSimpleExpressions {
     fn get_outgoing_references(
         &self,
@@ -56,6 +132,38 @@ impl GetOutgoingReferences for ListOfSimpleExpressions {
     }
 }
 
+impl GetOutgoingReferences for Repeal {
+    fn get_outgoing_references(
+        &self,
+        _abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        // TODO
+        Err(anyhow!("Not implemented"))
+    }
+}
+
+impl GetOutgoingReferences for StructuralRepeal {
+    fn get_outgoing_references(
+        &self,
+        _abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        // TODO
+        Err(anyhow!("Not implemented"))
+    }
+}
+
+impl GetOutgoingReferences for TextAmendment {
+    fn get_outgoing_references(
+        &self,
+        abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.act_reference)?;
+        ref_builder.feed(&self.references)?;
+        Ok(ref_builder.get_result())
+    }
+}
+
 impl GetOutgoingReferences for CompoundReference {
     fn get_outgoing_references(
         &self,
@@ -63,9 +171,7 @@ impl GetOutgoingReferences for CompoundReference {
     ) -> Result<Vec<OutgoingReference>> {
         let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
         ref_builder.feed(&self.act_reference)?;
-        for reference in &self.references {
-            ref_builder.feed(reference)?;
-        }
+        ref_builder.feed(&self.references)?;
         Ok(ref_builder.get_result())
     }
 }
@@ -122,6 +228,15 @@ trait FeedReferenceBuilder<T> {
     fn feed(&mut self, element: &T) -> Result<()>;
 }
 
+impl FeedReferenceBuilder<Vec<Reference>> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &Vec<Reference>) -> Result<()> {
+        for reference in element {
+            self.feed(reference)?;
+        }
+        Ok(())
+    }
+}
+
 impl FeedReferenceBuilder<ActReference> for OutgoingReferenceBuilder<'_> {
     fn feed(&mut self, element: &ActReference) -> Result<()> {
         match element {
@@ -161,6 +276,7 @@ where
 impl<'a, T> FeedReferenceBuilder<Vec<T>> for OutgoingReferenceBuilder<'a>
 where
     OutgoingReferenceBuilder<'a>: FeedReferenceBuilder<T>,
+    T: RefPartInGrammar,
 {
     fn feed(&mut self, element: &Vec<T>) -> Result<()> {
         for (num, part) in element.iter().enumerate() {
@@ -187,6 +303,8 @@ impl FeedReferenceBuilder<Reference> for OutgoingReferenceBuilder<'_> {
     }
 }
 
+trait RefPartInGrammar {}
+
 macro_rules! impl_rcp {
     ($PartsT:ident, $RefPart:ident, $IdType:ident $(,)?) => {
         impl FeedReferenceBuilder<$PartsT> for OutgoingReferenceBuilder<'_> {
@@ -204,6 +322,8 @@ macro_rules! impl_rcp {
                 Ok(())
             }
         }
+
+        impl RefPartInGrammar for $PartsT {}
     };
 }
 
