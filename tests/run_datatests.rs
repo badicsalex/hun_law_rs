@@ -20,12 +20,14 @@ pub mod test_utils;
 #[allow(unused_macros)]
 macro_rules! declare_test {
     (dir = $dir:expr, pattern = $pattern:expr) => {
-        pub fn test_dir() -> &'static str {
+        pub fn test_dir() -> String {
             std::path::Path::new(file!())
                 .parent()
                 .expect("No parent of calling module")
+                .join($dir)
                 .to_str()
                 .expect("Path was not unicode somehow")
+                .to_owned()
         }
 
         pub const FILE_PATTERN: &str = $pattern;
