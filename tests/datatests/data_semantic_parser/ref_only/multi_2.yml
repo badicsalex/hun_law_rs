@@ -2,6 +2,6 @@
 # Note: The python version collapsed adjacent pairs into ranges. We don't do that here.
 text:      "Ha az (1) és a (2) bekezdésben meghatározott előzetes."
 positions: "      < >      <             >                        "
-expected:
+expected_references:
   - paragraph: "1"
   - paragraph: "2"

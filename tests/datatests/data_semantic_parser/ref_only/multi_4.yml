@@ -1,7 +1,7 @@
 ---
 text:      "A (6) bekezdés szerinti adóalap csökkenti a mezőgazdasági őstermelőként az 1. § (1) és (5) bekezdés f)–g) pont szerint fennálló adókötelezettség alapját."
 positions: "  <          >                                                             <      >    <                     >                                           "
-expected:
+expected_references:
   - paragraph: "6"
   - article: "1"
     paragraph: "1"

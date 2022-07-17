@@ -1,7 +1,7 @@
 ---
 text:      "Általános területen az (1) bekezdés b) pont bb) alpontban meghatározott esetben a tilos a hasznosítás."
 positions: "                       <                                >                                             "
-expected:
+expected_references:
   - paragraph: "1"
     point: "b"
     subpoint: "bb"

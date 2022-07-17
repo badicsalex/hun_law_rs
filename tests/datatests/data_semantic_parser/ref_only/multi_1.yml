@@ -1,7 +1,7 @@
 ---
 text:      "A (2) bekezdés szerinti hitelezõkkel szemben a kényszerértékesítési kvótára vonatkozó szabályok (6–8. §) és a (2) bekezdés megsértése esetén:"
 positions: "  <          >                                                                                   <    >       <          >                   "
-expected:
+expected_references:
   - paragraph: "2"
   - article:
       start: "6"

@@ -2,7 +2,7 @@
 # Test that quoted references are not parsed
 text:      "A 30. § (1) bekezdés a) pontjában az „a 25. § (1) bekezdésének c)–d) pontjában” szövegrész helyébe az „a 25. § (1) bekezdésének d) pontjában” szöveg lépne ha ez egy módosítás lenne."
 positions: "  <                             >                                                                                                                                                    "
-expected:
+expected_references:
   - article: "30"
     paragraph: "1"
     point: "a"

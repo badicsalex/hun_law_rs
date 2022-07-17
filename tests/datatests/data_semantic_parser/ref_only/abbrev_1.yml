@@ -5,7 +5,7 @@ abbreviations:
   "Gyvt.":
     year: 1997
     number: 31
-expected:
+expected_references:
   - act:
       year: 1997
       number: 31

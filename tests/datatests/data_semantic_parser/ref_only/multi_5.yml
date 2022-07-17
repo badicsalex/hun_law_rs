@@ -1,7 +1,7 @@
 ---
 text:      "A 229. §, a 231. §, a 233. § (1) bekezdés a) és c) pontja, (2) bekezdés d) és f) pontja, a 256. §, a 314. § és a 318. § direkt nem egy hatályba helyező mondat."
 positions: "  <    >    <    >    <                    >    <       >  <             >    <       >    <    >    <    >      <    >                                        "
-expected:
+expected_references:
   - article: "229"
   - article: "231"
   - article: "233"

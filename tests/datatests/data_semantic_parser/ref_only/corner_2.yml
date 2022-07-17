@@ -4,7 +4,7 @@
 # TODO: Do we want to parse this?
 text:      "A 2006. évi X. törvény 25 §-a."
 positions: "  <                  >        "
-expected:
+expected_references:
   - act:
       year: 2006
       number: 10

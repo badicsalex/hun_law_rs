@@ -1,7 +1,7 @@
 ---
 text:       "A 228. §, a 230. §, a 232. §, a 233. § (1) bekezdés b) pontja és (2) bekezdés a)–c) és e) pontja, a 235–255. §, a 257–260. §, a 261. § (2)–(5) bekezdése és (6) bekezdés b)–d) pontja, a 262–290. §, a 291. § (1), (2), és (4)–(10) bekezdése, a 292–313. § és a 315–317. § sem hatálybahelyező mondat."
 positions:  "  <    >    <    >    <    >    <                           >    <                >    <       >    <        >    <        >    <                      >    <                       >    <        >    <        >  < >     <                >    <        >      <        >                            "
-expected:
+expected_references:
   - article: "228"
   - article: "230"
   - article: "232"

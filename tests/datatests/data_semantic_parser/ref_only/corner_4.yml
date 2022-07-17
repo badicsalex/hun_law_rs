@@ -1,7 +1,7 @@
 ---
 text:      "A Büntető Törvénykönyvről szóló 1978. évi IV. törvény (a továbbiakban: 1978. évi IV. törvény) 316. § (4) bekezdése csak úgy."
 positions: "                                <                   >                                         <                  >          "
-expected:
+expected_references:
   - act:
       year: 1978
       number: 4

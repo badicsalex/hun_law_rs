@@ -1,6 +1,6 @@
 ---
 text:      "A minimálbér után a 2. § (1) bekezdés szerinti adómérték 50 százalékával megállapított összeggel a foglalkoztatás harmadik évében (a továbbiakban e § alkalmazásában: érvényesítési időszak)."
 positions: "                    <               >                                                                                                                                                        "
-expected:
+expected_references:
   - article: "2"
     paragraph: "1"

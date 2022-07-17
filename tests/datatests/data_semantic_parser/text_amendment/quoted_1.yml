@@ -6,7 +6,7 @@ abbreviations:
   "Flt.":
     year: 1991
     number: 4
-expected:
+expected_references:
   - act:
       year: 1991
       number: 4
