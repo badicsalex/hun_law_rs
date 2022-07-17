@@ -20,7 +20,7 @@ use super::ActIdentifier;
 use crate::reference::Reference;
 use crate::util::is_default;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct SemanticInfo {
     #[serde(default, skip_serializing_if = "is_default")]
     pub outgoing_references: Vec<OutgoingReference>,
@@ -30,20 +30,20 @@ pub struct SemanticInfo {
     pub special_phrase: Option<SpecialPhrase>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct OutgoingReference {
     pub start: usize,
     pub end: usize,
     pub reference: Reference,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ActIdAbbreviation {
     pub act_id: ActIdentifier,
     pub abbreviation: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum SpecialPhrase {
     ArticleTitleAmendment,
     BlockAmendment,
