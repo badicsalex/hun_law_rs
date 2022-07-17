@@ -92,7 +92,8 @@ ArticleId = ([Number ":" ] Number ["/" 'A'..'Z']);
 @no_skip_ws
 ArticleSuffix = "§-" {HunLower}+ | "§" ;
 
-SingleArticleReference = @:ArticleId "." ArticleSuffix;
+@position
+SingleArticleReference = id:ArticleId "." ArticleSuffix;
 
 
 ParagraphReference = { @:ParagraphReferencePart [ListSeparator] }+ ParagraphSuffix;

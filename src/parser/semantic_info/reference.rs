@@ -64,40 +64,49 @@ impl GetOutgoingReferences for Root {
 impl GetOutgoingReferences for ArticleTitleAmendment {
     fn get_outgoing_references(
         &self,
-        _abbreviation_cache: &AbbreviationCache,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
-        // TODO
-        Err(anyhow!("Not implemented"))
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.act_reference)?;
+        ref_builder.feed(&self.article)?;
+        Ok(ref_builder.get_result())
     }
 }
 
 impl GetOutgoingReferences for BlockAmendment {
     fn get_outgoing_references(
         &self,
-        _abbreviation_cache: &AbbreviationCache,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
-        // TODO
-        Err(anyhow!("Not implemented"))
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.act_reference)?;
+        ref_builder.feed(&self.amended_reference)?;
+        ref_builder.feed(&self.inserted_reference)?;
+        Ok(ref_builder.get_result())
     }
 }
 
 impl GetOutgoingReferences for BlockAmendmentStructural {
     fn get_outgoing_references(
         &self,
-        _abbreviation_cache: &AbbreviationCache,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
-        // TODO
-        Err(anyhow!("Not implemented"))
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.act_reference)?;
+        // TODO: the structural part, but it may not be worthwhile
+        Ok(ref_builder.get_result())
     }
 }
 
 impl GetOutgoingReferences for BlockAmendmentWithSubtitle {
     fn get_outgoing_references(
         &self,
-        _abbreviation_cache: &AbbreviationCache,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
-        // TODO
-        Err(anyhow!("Not implemented"))
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.act_reference)?;
+        // TODO: the structural part, but it may not be worthwhile
+        Ok(ref_builder.get_result())
     }
 }
 
@@ -122,6 +131,7 @@ impl GetOutgoingReferences for ListOfSimpleExpressions {
             .iter()
             .filter_map(|item| {
                 if let AnySimpleExpression::CompoundReference(reference) = item {
+                    // TODO: Errors are swallowed here. Maybe log it?
                     reference.get_outgoing_references(abbreviation_cache).ok()
                 } else {
                     None
@@ -135,20 +145,24 @@ impl GetOutgoingReferences for ListOfSimpleExpressions {
 impl GetOutgoingReferences for Repeal {
     fn get_outgoing_references(
         &self,
-        _abbreviation_cache: &AbbreviationCache,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
-        // TODO
-        Err(anyhow!("Not implemented"))
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.act_reference)?;
+        ref_builder.feed(&self.references)?;
+        Ok(ref_builder.get_result())
     }
 }
 
 impl GetOutgoingReferences for StructuralRepeal {
     fn get_outgoing_references(
         &self,
-        _abbreviation_cache: &AbbreviationCache,
+        abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
-        // TODO
-        Err(anyhow!("Not implemented"))
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.act_reference)?;
+        // TODO: the structural part, but it may not be worthwhile
+        Ok(ref_builder.get_result())
     }
 }
 
@@ -251,7 +265,7 @@ impl FeedReferenceBuilder<ActReference> for OutgoingReferenceBuilder<'_> {
                 self.set_part(
                     act_id.position.start,
                     act_id.position.end,
-                    ActIdentifier::try_from(act_id.clone())?,
+                    ActIdentifier::try_from(act_id)?,
                 );
             }
         }
@@ -291,6 +305,20 @@ where
 
 impl FeedReferenceBuilder<Reference> for OutgoingReferenceBuilder<'_> {
     fn feed(&mut self, element: &Reference) -> Result<()> {
+        self.feed(&element.article)?;
+        self.feed(&element.paragraph)?;
+        self.feed(&element.numeric_point)?;
+        self.feed(&element.alphabetic_point)?;
+        self.feed(&element.numeric_subpoint)?;
+        self.feed(&element.alphabetic_subpoint)?;
+        self.end = element.position.end;
+        self.record_one()?;
+        Ok(())
+    }
+}
+
+impl FeedReferenceBuilder<InsertionReference> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &InsertionReference) -> Result<()> {
         self.feed(&element.article)?;
         self.feed(&element.paragraph)?;
         self.feed(&element.numeric_point)?;
@@ -346,10 +374,19 @@ impl_rcp!(
     PrefixedAlphabeticIdentifier,
 );
 
-impl TryFrom<ActId> for ActIdentifier {
+impl FeedReferenceBuilder<SingleArticleReference> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &SingleArticleReference) -> Result<()> {
+        let part = RefPartArticle::from_single(element.id.parse()?);
+        self.set_part(element.position.start, element.position.end, part);
+        self.record_one()?;
+        Ok(())
+    }
+}
+
+impl TryFrom<&ActId> for ActIdentifier {
     type Error = anyhow::Error;
 
-    fn try_from(act_id: ActId) -> Result<Self, Self::Error> {
+    fn try_from(act_id: &ActId) -> Result<Self, Self::Error> {
         Ok(ActIdentifier {
             year: act_id.year.parse()?,
             number: roman::from(&act_id.number).ok_or_else(|| {
