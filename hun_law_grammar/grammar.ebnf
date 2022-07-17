@@ -80,7 +80,7 @@ ActIdWithFromNowOn =
 @position
 ActId = year:Number "." "évi" number:Roman "." ActSuffix;
 @no_skip_ws
-ActSuffix = "törvény" {HunLower} | "tv.";
+ActSuffix = "törvén" {HunLower}+ | "tv.";
 
 
 ArticleReference = { @:ArticleReferencePart [ListSeparator] }+ ArticleSuffix;
