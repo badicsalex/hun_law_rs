@@ -202,11 +202,23 @@ AnyStructuralReference =
 
 InsertionToken = "a következő";
 
+@position
 InsertionReference =
-    InsertionToken article:ArticleReference [paragraph:ParagraphReference] |
-    [[Az] article:ArticleReference | "a §"] InsertionToken paragraph:ParagraphReference |
-    [[Az] article:ArticleReference [paragraph:ParagraphReference] | "a §" | "a bekezdés"] InsertionToken (point:AlphabeticPointReference | point:NumericPointReference) |
-    [Az] article:ArticleReference [paragraph:ParagraphReference] (point:AlphabeticPointReference | point:NumericPointReference) InsertionToken (subpoint:AlphabeticSubpointReference | subpoint:NumericSubpointReference) ;
+        InsertionToken article:ArticleReference [paragraph:ParagraphReference]
+    |
+        [[Az] article:ArticleReference | "a §"]
+        InsertionToken
+        paragraph:ParagraphReference
+    |
+        [[Az] article:ArticleReference [paragraph:ParagraphReference] | "a §" | "a bekezdés"]
+        InsertionToken
+        (alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference)
+    |
+        [Az] article:ArticleReference [paragraph:ParagraphReference]
+        (alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference)
+        InsertionToken
+        (alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference)
+    ;
 
 TitleInsertionWithBook =
     book_id:HungarianOrdinalCapital "Könyve"
