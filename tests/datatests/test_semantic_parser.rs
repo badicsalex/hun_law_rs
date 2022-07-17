@@ -37,7 +37,7 @@ struct TestCase {
 }
 
 use crate::declare_test;
-declare_test!(dir = "data_reference_parsing", pattern = r"\.yml");
+declare_test!(dir = "data_semantic_parser", pattern = r"\.yml");
 pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let test_case: TestCase = serde_yaml::from_slice(&read_all(path)?)?;
     let mut abbreviation_cache = AbbreviationCache::from(test_case.abbreviations);

@@ -48,8 +48,4 @@ macro_rules! generate_harness{
     }
 }
 
-generate_harness!(
-    test_pdf_parser,
-    test_structure_parser,
-    semantic_info::test_reference_parsing
-);
+generate_harness!(test_pdf_parser, test_structure_parser, test_semantic_parser);
