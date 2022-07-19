@@ -18,10 +18,8 @@ use anyhow::Result;
 use hun_law_grammar::PegParser;
 
 use crate::structure::semantic_info::SemanticInfo;
-use abbreviation::AbbreviationCache;
+use abbreviation::{get_new_abbreviations, AbbreviationCache};
 use reference::GetOutgoingReferences;
-
-use self::abbreviation::GetNewAbbreviations;
 
 pub mod abbreviation;
 pub mod reference;
@@ -31,7 +29,7 @@ pub fn extract_semantic_info(
     abbreviation_cache: &mut AbbreviationCache,
 ) -> Result<SemanticInfo> {
     let parsed = hun_law_grammar::Root::parse(s)?;
-    let new_abbreviations = parsed.get_new_abbreviations()?;
+    let new_abbreviations = get_new_abbreviations(&parsed)?;
     abbreviation_cache.add_multiple(&new_abbreviations);
     let outgoing_references = parsed.get_outgoing_references(abbreviation_cache)?;
     let special_phrase = None;
