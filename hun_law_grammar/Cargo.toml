@@ -7,6 +7,7 @@ authors = ["Alex Badics <admin@stickman.hu>"]
 license = "GPL-3.0-only"
 
 [dependencies]
+derive-visitor = { version = "0.2.1", features = ["std-types-drive"] }
 peginator = { path = "../../peginator" }
 
 [build-dependencies]
