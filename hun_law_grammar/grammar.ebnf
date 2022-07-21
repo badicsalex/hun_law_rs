@@ -314,7 +314,7 @@ EnforcementDate =
         (("E" | "Ez a") "törvény") |
         AzUpper
     )
-    [ Dash "a" exception_references:Reference ("foglalt"|"foglaltak"|"meghatározott") ("kivétellel"|"kivételével"|"kivételekkel") Dash ]
+    [ Dash "a" exception_references:Reference ("foglaltak"|"foglalt"|"meghatározott") ("kivétellel"|"kivételével"|"kivételekkel") Dash ]
     { references:Reference [ListSeparator] }
     (
         date:Date |
@@ -340,7 +340,7 @@ TextAmendmentPart =
     ("szövegrészek"| "szövegrész") ("helyébe" | "helyett")
     [Az] replacement_text:Quote
     (
-        &ListSeparator | "szöveggel"| "szöveg" | "szövegrész"
+        &ListSeparator | "szöveggel" | "szövegrész" | "szöveg"
     )
     ;
 # ============ ARTICLE TITLE AMENDMENT PARSING ==============
@@ -353,7 +353,7 @@ ArticleTitleAmendment =
     [Az] original_text:Quote
     ("szövegrészek"| "szövegrész") ("helyébe" | "helyett")
     [Az] replacement_text:Quote
-    ("szöveggel"| "szöveg" | "szövegrész")
+    ("szöveggel" | "szövegrész" | "szöveg")
     "lép" ["hatályba"] "."
     ;
 
