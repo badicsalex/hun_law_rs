@@ -163,6 +163,12 @@ pub struct Reference {
     subpoint: Option<RefPartSubpoint>,
 }
 
+impl Reference {
+    pub fn is_act_only(&self) -> bool {
+        self.article.is_none()
+    }
+}
+
 /// Helper to create Reference isntances from parts.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct UncheckedReference {

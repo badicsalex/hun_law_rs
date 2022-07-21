@@ -1,0 +1,27 @@
+---
+text:      "A Ptk. 7:43. § (3) bekezdése a „Semmis” szövegrész helyett az „Érvénytelen” szöveggel lép hatályba."
+positions: "  <  > <                   >                                                                       "
+abbreviations:
+  "Ptk.":
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "7:43"
+    paragraph: "3"
+expected_special_phrase:
+  TextAmendment:
+    positions:
+      - act:
+          year: 2013
+          number: 5
+        article: "7:43"
+        paragraph: "3"
+    replacements:
+      - from: "Semmis"
+        to: "Érvénytelen"

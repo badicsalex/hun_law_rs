@@ -1,0 +1,23 @@
+---
+text:      "A Polgári Törvénykönyvről szóló 2013. évi V. törvény  3:331. § (3) bekezdésében a „jogtanácsosa” szövegrészek helyébe a „kamarai jogtanácsosa” szöveg lép."
+positions: "                                <                  >  <                       >                                                                           "
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "3:331"
+    paragraph: "3"
+expected_special_phrase:
+  TextAmendment:
+    positions:
+      - act:
+          year: 2013
+          number: 5
+        article: "3:331"
+        paragraph: "3"
+    replacements:
+      - from: "jogtanácsosa"
+        to: "kamarai jogtanácsosa"

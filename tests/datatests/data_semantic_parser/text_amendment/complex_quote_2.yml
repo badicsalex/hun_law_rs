@@ -1,0 +1,25 @@
+---
+text:      "A Teszt tv. 29. §-ában az „idézőjelek„ idéző„j”elekben ”jellegű” szövegrész helyébe a  „ „na ne”” szövegrész lép."
+positions: "  <       > <        >                                                                                           "
+abbreviations:
+  "Teszt tv.":
+    year: 2069
+    number: 420
+expected_references:
+  - act:
+      year: 2069
+      number: 420
+  - act:
+      year: 2069
+      number: 420
+    article: "29"
+expected_special_phrase:
+  TextAmendment:
+    positions:
+      - act:
+          year: 2069
+          number: 420
+        article: "29"
+    replacements:
+      - from: "idézőjelek„ idéző„j”elekben ”jellegű"
+        to: "„na ne”"

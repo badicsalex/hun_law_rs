@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
 use super::ActIdentifier;
@@ -37,17 +38,41 @@ pub struct OutgoingReference {
     pub reference: Reference,
 }
 
+impl From<OutgoingReference> for Reference {
+    fn from(oref: OutgoingReference) -> Self {
+        oref.reference
+    }
+}
+
+impl<'a> From<&'a OutgoingReference> for &'a Reference {
+    fn from(oref: &'a OutgoingReference) -> Self {
+        &oref.reference
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ActIdAbbreviation {
     pub act_id: ActIdentifier,
     pub abbreviation: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, FromVariants)]
 pub enum SpecialPhrase {
     ArticleTitleAmendment,
     BlockAmendment,
     EnforcementDate,
     Repeal,
-    TextAmendment,
+    TextAmendment(TextAmendment),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct TextAmendment {
+    pub positions: Vec<Reference>,
+    pub replacements: Vec<TextAmendmentReplacement>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct TextAmendmentReplacement {
+    pub from: String,
+    pub to: String,
 }

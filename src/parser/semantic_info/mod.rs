@@ -17,12 +17,16 @@
 use anyhow::Result;
 use hun_law_grammar::PegParser;
 
-use crate::structure::semantic_info::SemanticInfo;
-use abbreviation::{get_new_abbreviations, AbbreviationCache};
-use reference::GetOutgoingReferences;
+use self::{
+    abbreviation::{get_new_abbreviations, AbbreviationCache},
+    reference::GetOutgoingReferences,
+    text_amendment::convert_text_amendment,
+};
+use crate::structure::semantic_info::{SemanticInfo, SpecialPhrase};
 
 pub mod abbreviation;
 pub mod reference;
+pub mod text_amendment;
 
 pub fn extract_semantic_info(
     s: &str,
@@ -32,10 +36,29 @@ pub fn extract_semantic_info(
     let new_abbreviations = get_new_abbreviations(&parsed)?;
     abbreviation_cache.add_multiple(&new_abbreviations);
     let outgoing_references = parsed.get_outgoing_references(abbreviation_cache)?;
-    let special_phrase = None;
+    let special_phrase = extract_special_phrase(abbreviation_cache, &parsed)?;
     Ok(SemanticInfo {
         outgoing_references,
         new_abbreviations,
         special_phrase,
+    })
+}
+
+pub fn extract_special_phrase(
+    abbreviation_cache: &AbbreviationCache,
+    root: &hun_law_grammar::Root,
+) -> Result<Option<SpecialPhrase>> {
+    Ok(match &root.content {
+        hun_law_grammar::Root_content::ArticleTitleAmendment(_) => None, // TODO
+        hun_law_grammar::Root_content::BlockAmendment(_) => None,        // TODO
+        hun_law_grammar::Root_content::BlockAmendmentStructural(_) => None, // TODO
+        hun_law_grammar::Root_content::BlockAmendmentWithSubtitle(_) => None, // TODO
+        hun_law_grammar::Root_content::EnforcementDate(_) => None,       // TODO
+        hun_law_grammar::Root_content::ListOfSimpleExpressions(_) => None, // TODO
+        hun_law_grammar::Root_content::Repeal(_) => None,                // TODO
+        hun_law_grammar::Root_content::StructuralRepeal(_) => None,      // TODO
+        hun_law_grammar::Root_content::TextAmendment(x) => {
+            Some(convert_text_amendment(abbreviation_cache, x)?.into())
+        }
     })
 }

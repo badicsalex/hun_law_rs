@@ -18,7 +18,7 @@ use hun_law::{
     parser::semantic_info::{abbreviation::AbbreviationCache, extract_semantic_info},
     reference::Reference,
     structure::{
-        semantic_info::{ActIdAbbreviation, OutgoingReference},
+        semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
         ActIdentifier,
     },
 };
@@ -28,6 +28,20 @@ use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 
 use crate::test_utils::read_all;
+
+macro_rules! ensure_eq {
+    ($left: expr, $right: expr, $message: expr) => {
+        if ($left) != ($right) {
+            return Err(format!(
+                "{}\n {}\n!=\n{}",
+                $message,
+                serde_yaml::to_string(&$left).unwrap(),
+                serde_yaml::to_string(&$right).unwrap()
+            )
+            .into());
+        };
+    };
+}
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -40,6 +54,8 @@ struct TestCase {
     pub expected_new_abbreviations: HashMap<String, ActIdentifier>,
     #[serde(default)]
     pub expected_references: Vec<Reference>,
+    #[serde(default)]
+    pub expected_special_phrase: Option<SpecialPhrase>,
 }
 
 use crate::declare_test;
@@ -59,15 +75,12 @@ pub fn run_test(path: &Path) -> Result<()> {
         &semantic_info.new_abbreviations,
         &test_case.expected_new_abbreviations,
     )?;
+    ensure_eq!(
+        semantic_info.special_phrase,
+        test_case.expected_special_phrase,
+        "Special phrase was not correct"
+    );
     Ok(())
-}
-
-macro_rules! ensure_eq {
-    ($left: expr, $right: expr, $message: expr) => {
-        if ($left) != ($right) {
-            return Err(format!("{}\n {:#?}\n!=\n{:#?}", $message, $left, $right).into());
-        };
-    };
 }
 
 fn check_references(

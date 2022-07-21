@@ -1,0 +1,39 @@
+---
+text:      "A Btk. 294. § (1) bekezdésében és 296. § (1) bekezdésében az „előnyt kér, az előnyt” szövegrész helyébe a „jogtalan előnyt kér, a jogtalan előnyt”, az „előny kérőjével” szövegrész helyébe a „jogtalan előny kérőjével” szöveg lép."
+positions: "  <  > <                     >    <                     >                                                                                                                                                                           "
+abbreviations:
+  "Btk.":
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: "294"
+    paragraph: "1"
+  - act:
+      year: 2012
+      number: 100
+    article: "296"
+    paragraph: "1"
+expected_special_phrase:
+  TextAmendment:
+    positions:
+      - act:
+          year: 2012
+          number: 100
+        article: "294"
+        paragraph: "1"
+      - act:
+          year: 2012
+          number: 100
+        article: "296"
+        paragraph: "1"
+    replacements:
+      - from: "előnyt kér, az előnyt"
+        to: "jogtalan előnyt kér, a jogtalan előnyt"
+      - from: "előny kérőjével"
+        to: "jogtalan előny kérőjével"

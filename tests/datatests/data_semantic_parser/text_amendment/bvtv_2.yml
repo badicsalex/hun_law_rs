@@ -1,0 +1,29 @@
+---
+text:      "A Bv. tv. 12. § (8) bekezdésében a „(3)–(5a) bekezdés” szövegrész helyébe a „(3)–(5a) és (5c) bekezdés” szöveg, valamint a „(4)–(5a) bekezdés” szövegrészek helyébe a „(4)–(5a) és (5c) bekezdés” szöveg lép."
+positions: "  <     > <                    >                                                                                                                                                                             "
+abbreviations:
+  "Bv. tv.":
+    year: 2013
+    number: 240
+expected_references:
+  - act:
+      year: 2013
+      number: 240
+  - act:
+      year: 2013
+      number: 240
+    article: "12"
+    paragraph: "8"
+expected_special_phrase:
+  TextAmendment:
+    positions:
+      - act:
+          year: 2013
+          number: 240
+        article: "12"
+        paragraph: "8"
+    replacements:
+      - from: "(3)–(5a) bekezdés"
+        to: "(3)–(5a) és (5c) bekezdés"
+      - from: "(4)–(5a) bekezdés"
+        to: "(4)–(5a) és (5c) bekezdés"
