@@ -26,12 +26,12 @@ pub fn get_new_abbreviations(root: &Root) -> Result<Vec<ActIdAbbreviation>> {
     let mut result: Vec<Result<ActIdAbbreviation>> = Vec::new();
     let act_id_visitor = |abbrev: &ActIdWithFromNowOn| {
         if let Some(abbrev_elem) = &abbrev.abbreviation {
-            result.push(ActIdentifier::try_from(&abbrev.act_id).map(|act_id| {
-                ActIdAbbreviation {
+            result.push(
+                ActIdentifier::try_from(&abbrev.act_id).map(|act_id| ActIdAbbreviation {
                     act_id,
                     abbreviation: abbrev_elem.content.clone(),
-                }
-            }))
+                }),
+            )
         }
     };
     // Find and process all ActIdWithFromNowOn-s
