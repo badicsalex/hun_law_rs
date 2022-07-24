@@ -1,0 +1,9 @@
+text:      "E törvény 2013. július 1-jén lép hatályba."
+positions: "                                          "
+expected_special_phrase:
+  EnforcementDate:
+    date:
+      Date:
+        year: 2013
+        month: 7
+        day: 1

@@ -1,0 +1,41 @@
+text:      "A 33. §, a 47. §, az 50. § j–k) és n) pontja, a 74. § (2) bekezdése, a 78. § c) pontja, a 97. § és a 110. § b) pontja 2020. január 1-jén lép hatályba."
+positions: "  <   >    <   >     <        >    <       >    <                 >    <             >    <   >      <              >                                 "
+expected_references:
+  - article: "33"
+  - article: "47"
+  - article: "50"
+    point:
+      start: j
+      end: k
+  - article: "50"
+    point: n
+  - article: "74"
+    paragraph: "2"
+  - article: "78"
+    point: c
+  - article: "97"
+  - article: "110"
+    point: b
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+      - article: "33"
+      - article: "47"
+      - article: "50"
+        point:
+          start: j
+          end: k
+      - article: "50"
+        point: n
+      - article: "74"
+        paragraph: "2"
+      - article: "78"
+        point: c
+      - article: "97"
+      - article: "110"
+        point: b
+    date:
+      Date:
+        year: 2020
+        month: 1
+        day: 1

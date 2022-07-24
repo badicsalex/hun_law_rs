@@ -1,0 +1,13 @@
+text:      "Ez a törvény – a (2)–(9) bekezdésben meghatározott kivétellel – 2014. január 1-jén lép hatályba, és 2015. december 31-én hatályát veszti."
+positions: "                                                                                                                                         "
+expected_special_phrase:
+  EnforcementDate:
+    date:
+      Date:
+        year: 2014
+        month: 1
+        day: 1
+    inline_repeal:
+      year: 2015
+      month: 12
+      day: 31

@@ -1,0 +1,7 @@
+text:      "Ez a törvény a kihirdetését követő hónap első napján lép hatályba."
+positions: "                                                                  "
+expected_special_phrase:
+  EnforcementDate:
+    date:
+      DayInMonthAfterPublication:
+        day: 1

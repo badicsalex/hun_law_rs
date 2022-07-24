@@ -1,0 +1,71 @@
+text:      "A 36. §, a 197. § (3) bekezdése, a 200. § (4) bekezdése, a 205. §, a 218–219. §, a 221. §, a 225–227. §, a 229. §, a 231. §, a 233. § (1) bekezdés a) és c) pontja, (2) bekezdés d) és f) pontja, a 256. §, a 314. § és a 318. § 2013. február 1-jén lép hatályba."
+positions: "  <   >    <                  >    <                  >    <    >    <        >    <    >    <        >    <    >    <    >    <                    >    <       >  <             >    <       >    <    >    <    >      <    >                                  "
+expected_references:
+  - article: "36"
+  - article: "197"
+    paragraph: "3"
+  - article: "200"
+    paragraph: "4"
+  - article: "205"
+  - article:
+      start: "218"
+      end: "219"
+  - article: "221"
+  - article:
+      start: "225"
+      end: "227"
+  - article: "229"
+  - article: "231"
+  - article: "233"
+    paragraph: "1"
+    point: a
+  - article: "233"
+    paragraph: "1"
+    point: c
+  - article: "233"
+    paragraph: "2"
+    point: d
+  - article: "233"
+    paragraph: "2"
+    point: f
+  - article: "256"
+  - article: "314"
+  - article: "318"
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+      - article: "36"
+      - article: "197"
+        paragraph: "3"
+      - article: "200"
+        paragraph: "4"
+      - article: "205"
+      - article:
+          start: "218"
+          end: "219"
+      - article: "221"
+      - article:
+          start: "225"
+          end: "227"
+      - article: "229"
+      - article: "231"
+      - article: "233"
+        paragraph: "1"
+        point: a
+      - article: "233"
+        paragraph: "1"
+        point: c
+      - article: "233"
+        paragraph: "2"
+        point: d
+      - article: "233"
+        paragraph: "2"
+        point: f
+      - article: "256"
+      - article: "314"
+      - article: "318"
+    date:
+      Date:
+        year: 2013
+        month: 2
+        day: 1

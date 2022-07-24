@@ -1,0 +1,16 @@
+text:      "A 39–41. § a kihirdetést követő második hónap ötödik napján lép hatályba."
+positions: "  <      >                                                               "
+expected_references:
+  - article:
+      start: "39"
+      end: "41"
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+      - article:
+          start: "39"
+          end: "41"
+    date:
+      DayInMonthAfterPublication:
+        month: 2
+        day: 5

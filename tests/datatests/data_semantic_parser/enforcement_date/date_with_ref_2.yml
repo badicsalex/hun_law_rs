@@ -1,0 +1,41 @@
+text:      "A 112. § (4), (10), (32), (44), (48) és (51) bekezdése, (54) bekezdésének 30. pontja 2014. július 1-jén lép hatályba."
+positions: "  <        >  <  >  <  >  <  >  <  >    <            >  <                          >                                 "
+expected_references:
+  - article: "112"
+    paragraph: "4"
+  - article: "112"
+    paragraph: "10"
+  - article: "112"
+    paragraph: "32"
+  - article: "112"
+    paragraph: "44"
+  - article: "112"
+    paragraph: "48"
+  - article: "112"
+    paragraph: "51"
+  - article: "112"
+    paragraph: "54"
+    point: "30"
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+      - article: "112"
+        paragraph: "4"
+      - article: "112"
+        paragraph: "10"
+      - article: "112"
+        paragraph: "32"
+      - article: "112"
+        paragraph: "44"
+      - article: "112"
+        paragraph: "48"
+      - article: "112"
+        paragraph: "51"
+      - article: "112"
+        paragraph: "54"
+        point: "30"
+    date:
+      Date:
+        year: 2014
+        month: 7
+        day: 1

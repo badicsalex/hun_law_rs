@@ -20,9 +20,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Date {
-    pub year: i16,
-    pub month: i8,
-    pub day: i8,
+    pub year: u16,
+    pub month: u8,
+    pub day: u8,
 }
 
 impl Date {
@@ -46,7 +46,7 @@ impl Date {
     }
 }
 
-fn text_to_month_hun(s: &str) -> Result<i8> {
+pub fn text_to_month_hun(s: &str) -> Result<u8> {
     match s {
         "január" => Ok(1),
         "február" => Ok(2),

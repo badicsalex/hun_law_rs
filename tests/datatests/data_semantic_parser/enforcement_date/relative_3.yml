@@ -1,0 +1,6 @@
+text:      "Ez a törvény a kihirdetését követő nyolcadik napon lép hatályba."
+positions: "                                                                "
+expected_special_phrase:
+  EnforcementDate:
+    date:
+      DaysAfterPublication: 8

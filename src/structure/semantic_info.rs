@@ -19,6 +19,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ActIdentifier;
 use crate::reference::Reference;
+use crate::util::date::Date;
 use crate::util::is_default;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -60,7 +61,7 @@ pub struct ActIdAbbreviation {
 pub enum SpecialPhrase {
     ArticleTitleAmendment,
     BlockAmendment,
-    EnforcementDate,
+    EnforcementDate(EnforcementDate),
     Repeal,
     TextAmendment(TextAmendment),
 }
@@ -75,4 +76,25 @@ pub struct TextAmendment {
 pub struct TextAmendmentReplacement {
     pub from: String,
     pub to: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct EnforcementDate {
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub positions: Vec<Reference>,
+    pub date: EnforcementDateType,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub inline_repeal: Option<Date>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum EnforcementDateType {
+    Date(Date),
+    DaysAfterPublication(u16),
+    DayInMonthAfterPublication {
+        #[serde(default, skip_serializing_if = "is_default")]
+        month: Option<u8>,
+        day: u16,
+    },
+    Special(String),
 }

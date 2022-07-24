@@ -1,0 +1,104 @@
+---
+text:       "A 228. §, a 230. §, a 232. §, a 233. § (1) bekezdés b) pontja és (2) bekezdés a)–c) és e) pontja, a 235–255. §, a 257–260. §, a 261. § (2)–(5) bekezdése és (6) bekezdés b)–d) pontja, a 262–290. §, a 291. § (1), (2), és (4)–(10) bekezdése, a 292–313. § és a 315–317. § 2013. július 1-jén lép hatályba."
+positions:  "  <    >    <    >    <    >    <                           >    <                >    <       >    <        >    <        >    <                      >    <                       >    <        >    <        >  < >     <                >    <        >      <        >                                 "
+expected_references:
+  - article: "228"
+  - article: "230"
+  - article: "232"
+  - article: "233"
+    paragraph: "1"
+    point: "b"
+  - article: "233"
+    paragraph: "2"
+    point: 
+      start: "a"
+      end: "c"
+  - article: "233"
+    paragraph: "2"
+    point: "e"
+  - article: 
+      start: "235"
+      end: "255"
+  - article: 
+      start: "257"
+      end: "260"
+  - article: "261"
+    paragraph: 
+      start: "2"
+      end: "5"
+  - article: "261"
+    paragraph: "6"
+    point: 
+      start: "b"
+      end: "d"
+  - article: 
+      start: "262"
+      end: "290"
+  - article: "291"
+    paragraph: "1"
+  - article: "291"
+    paragraph: "2"
+  - article: "291"
+    paragraph: 
+      start: "4"
+      end: "10"
+  - article: 
+      start: "292"
+      end: "313"
+  - article: 
+      start: "315"
+      end: "317"
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+      - article: "228"
+      - article: "230"
+      - article: "232"
+      - article: "233"
+        paragraph: "1"
+        point: b
+      - article: "233"
+        paragraph: "2"
+        point:
+          start: a
+          end: c
+      - article: "233"
+        paragraph: "2"
+        point: e
+      - article:
+          start: "235"
+          end: "255"
+      - article:
+          start: "257"
+          end: "260"
+      - article: "261"
+        paragraph:
+          start: "2"
+          end: "5"
+      - article: "261"
+        paragraph: "6"
+        point:
+          start: b
+          end: d
+      - article:
+          start: "262"
+          end: "290"
+      - article: "291"
+        paragraph: "1"
+      - article: "291"
+        paragraph: "2"
+      - article: "291"
+        paragraph:
+          start: "4"
+          end: "10"
+      - article:
+          start: "292"
+          end: "313"
+      - article:
+          start: "315"
+          end: "317"
+    date:
+      Date:
+        year: 2013
+        month: 7
+        day: 1

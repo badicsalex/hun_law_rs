@@ -1,0 +1,17 @@
+text:      "A 180. § (1) bekezdés a) pontja 2013. január 2-án lép hatályba."
+positions: "  <                           >                                "
+expected_references:
+  - article: "180"
+    paragraph: "1"
+    point: "a"
+expected_special_phrase:
+  EnforcementDate:
+    date:
+      Date:
+        year: 2013
+        month: 1
+        day: 2
+    positions:
+      - article: "180"
+        paragraph: "1"
+        point: "a"

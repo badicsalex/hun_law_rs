@@ -191,7 +191,7 @@ impl GetOutgoingReferences for CompoundReference {
 }
 
 #[derive(Debug)]
-struct OutgoingReferenceBuilder<'a> {
+pub struct OutgoingReferenceBuilder<'a> {
     ref_builder: ReferenceBuilder,
     abbreviation_cache: &'a AbbreviationCache,
     result: Vec<OutgoingReference>,
@@ -238,7 +238,7 @@ impl<'a> OutgoingReferenceBuilder<'a> {
     }
 }
 
-trait FeedReferenceBuilder<T> {
+pub trait FeedReferenceBuilder<T> {
     fn feed(&mut self, element: &T) -> Result<()>;
 }
 

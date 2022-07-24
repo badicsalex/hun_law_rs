@@ -1,0 +1,31 @@
+text:      "Az 55–66. §, a 70. § és a 72. § a) pontja, a 73. § a) és b) pontja 2019. szeptember 1-jén lép hatályba."
+positions: "   <      >    <   >      <             >    <      >    <       >                                     "
+expected_references:
+  - article:
+      start: "55"
+      end: "66"
+  - article: "70"
+  - article: "72"
+    point: a
+  - article: "73"
+    point: a
+  - article: "73"
+    point: b
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+      - article:
+          start: "55"
+          end: "66"
+      - article: "70"
+      - article: "72"
+        point: a
+      - article: "73"
+        point: a
+      - article: "73"
+        point: b
+    date:
+      Date:
+        year: 2019
+        month: 9
+        day: 1

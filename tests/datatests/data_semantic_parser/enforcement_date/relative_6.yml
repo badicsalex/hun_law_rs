@@ -1,0 +1,7 @@
+# Exceptions are not parsed on purpose right now
+text:      "Ez a törvény – a (2)–(8) bekezdésben foglalt kivétellel – a kihirdetést követő 8. napon lép hatályba."
+positions: "                                                                                                     "
+expected_special_phrase:
+  EnforcementDate:
+    date:
+      DaysAfterPublication: 8

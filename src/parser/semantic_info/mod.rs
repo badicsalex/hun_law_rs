@@ -19,12 +19,14 @@ use hun_law_grammar::PegParser;
 
 use self::{
     abbreviation::{get_new_abbreviations, AbbreviationCache},
+    enforcement_date::convert_enforcement_date,
     reference::GetOutgoingReferences,
     text_amendment::convert_text_amendment,
 };
 use crate::structure::semantic_info::{SemanticInfo, SpecialPhrase};
 
 pub mod abbreviation;
+pub mod enforcement_date;
 pub mod reference;
 pub mod text_amendment;
 
@@ -53,10 +55,12 @@ pub fn extract_special_phrase(
         hun_law_grammar::Root_content::BlockAmendment(_) => None,        // TODO
         hun_law_grammar::Root_content::BlockAmendmentStructural(_) => None, // TODO
         hun_law_grammar::Root_content::BlockAmendmentWithSubtitle(_) => None, // TODO
-        hun_law_grammar::Root_content::EnforcementDate(_) => None,       // TODO
+        hun_law_grammar::Root_content::EnforcementDate(x) => {
+            Some(convert_enforcement_date(abbreviation_cache, x)?.into())
+        }
         hun_law_grammar::Root_content::ListOfSimpleExpressions(_) => None, // TODO
-        hun_law_grammar::Root_content::Repeal(_) => None,                // TODO
-        hun_law_grammar::Root_content::StructuralRepeal(_) => None,      // TODO
+        hun_law_grammar::Root_content::Repeal(_) => None,                  // TODO
+        hun_law_grammar::Root_content::StructuralRepeal(_) => None,        // TODO
         hun_law_grammar::Root_content::TextAmendment(x) => {
             Some(convert_text_amendment(abbreviation_cache, x)?.into())
         }

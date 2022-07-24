@@ -1,0 +1,78 @@
+text:      "A 35. §, a 41–46. §, a 48. §, az 50. § a–i) pontja, az 50. § l–m) pontja, az 51. §, a 74. § (1) bekezdése, a 75–77. §, a 78. § a) és b) pontja, a 79–86. §, a 87. §, a 99–109. §, a 110. § a) pontja és a 146–148. § a kihirdetést követő 16. napon lép hatályba."
+positions: "  <   >    <      >    <   >     <               >     <               >     <   >    <                 >    <      >    <      >    <       >    <      >    <   >    <       >    <              >      <        >                                             "
+expected_references:
+  - article: "35"
+  - article:
+      start: "41"
+      end: "46"
+  - article: "48"
+  - article: "50"
+    point:
+      start: a
+      end: i
+  - article: "50"
+    point:
+      start: l
+      end: m
+  - article: "51"
+  - article: "74"
+    paragraph: "1"
+  - article:
+      start: "75"
+      end: "77"
+  - article: "78"
+    point: a
+  - article: "78"
+    point: b
+  - article:
+      start: "79"
+      end: "86"
+  - article: "87"
+  - article:
+      start: "99"
+      end: "109"
+  - article: "110"
+    point: a
+  - article:
+      start: "146"
+      end: "148"
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+      - article: "35"
+      - article:
+          start: "41"
+          end: "46"
+      - article: "48"
+      - article: "50"
+        point:
+          start: a
+          end: i
+      - article: "50"
+        point:
+          start: l
+          end: m
+      - article: "51"
+      - article: "74"
+        paragraph: "1"
+      - article:
+          start: "75"
+          end: "77"
+      - article: "78"
+        point: a
+      - article: "78"
+        point: b
+      - article:
+          start: "79"
+          end: "86"
+      - article: "87"
+      - article:
+          start: "99"
+          end: "109"
+      - article: "110"
+        point: a
+      - article:
+          start: "146"
+          end: "148"
+    date:
+      DaysAfterPublication: 16
