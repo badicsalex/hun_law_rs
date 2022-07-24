@@ -404,9 +404,11 @@ Word = {HunLower | HunUpper | '-'}+ ;
 
 Date = year:Number "." month:Month day:Number ("-án" | "-jén" | "-én" | ". napján");
 
+@string
 Month = "január" | "február" | "március" | "április" | "május" | "június" |
     "július" | "augusztus" | "szeptember" | "október" | "november" | "december";
 
+@string
 HungarianOrdinal = "első" | "második" | "harmadik" | "negyedik" | "ötödik" |
     "hatodik" | "hetedik"| "nyolcadik" | "kilencedik" | "tizedik" |
     "tizenegyedik" | "tizenkettedik" | "tizenharmadik" | "tizennegyedik" | "tizenötödik" |
@@ -414,6 +416,7 @@ HungarianOrdinal = "első" | "második" | "harmadik" | "negyedik" | "ötödik" |
     "huszadik" | "harmincadik" | "negyvenedik" | "ötvenedik" |
     "hatvanadik" | "hetvenedik" | "nyolcvanadik" | "kilencvenedik";
 
+@string
 HungarianOrdinalCapital = "Első" | "Második" | "Harmadik" | "Negyedik" | "Ötödik" |
     "Hatodik" | "Hetedik"| "Nyolcadik" | "Kilencedik" | "Tizedik" |
     "Tizenegyedik" | "Tizenkettedik" | "Tizenharmadik" | "Tizennegyedik" | "Tizenötödik" |
