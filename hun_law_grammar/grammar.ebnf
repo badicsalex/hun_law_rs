@@ -304,14 +304,14 @@ DayInMonth =
 
 InlineRepeal =
     ", és"
-    [("e" | "ez a") "törvény"]
-    date:Date
+    [("ez a" | "e") "törvény"]
+    @:Date
     ["a"] "hatályát veszti"
     ;
 
 EnforcementDate =
     (
-        (("E" | "Ez a") "törvény") |
+        (("Ez a" | "E") "törvény") |
         AzUpper
     )
     [ Dash "a" exception_references:Reference ("foglaltak"|"foglalt"|"meghatározott") ("kivétellel"|"kivételével"|"kivételekkel") Dash ]
