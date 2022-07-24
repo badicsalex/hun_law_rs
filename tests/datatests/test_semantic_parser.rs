@@ -90,7 +90,7 @@ fn check_references(
     expected_positions: &str,
 ) -> Result<()> {
     let mut parsed_refs = Vec::new();
-    let mut parsed_positions = vec![b' '; expected_positions.len()];
+    let mut parsed_positions = vec![b' '; text.chars().count()];
 
     for outgoing_reference in outgoing_references {
         parsed_refs.push(outgoing_reference.reference.clone());
