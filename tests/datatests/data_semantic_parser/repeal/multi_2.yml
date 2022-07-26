@@ -1,0 +1,54 @@
+---
+text:      "Hatályát veszti a Ptk. 8:6. § a), l), n) és p) pontja."
+positions: "                  <  > <       >  <>  <>    <       > "
+abbreviations:
+  "Ptk.":
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "8:6"
+    point: a
+  - act:
+      year: 2013
+      number: 5
+    article: "8:6"
+    point: l
+  - act:
+      year: 2013
+      number: 5
+    article: "8:6"
+    point: n
+  - act:
+      year: 2013
+      number: 5
+    article: "8:6"
+    point: p
+expected_special_phrase:
+  Repeal:
+    positions:
+      - act:
+          year: 2013
+          number: 5
+        article: "8:6"
+        point: a
+      - act:
+          year: 2013
+          number: 5
+        article: "8:6"
+        point: l
+      - act:
+          year: 2013
+          number: 5
+        article: "8:6"
+        point: n
+      - act:
+          year: 2013
+          number: 5
+        article: "8:6"
+        point: p

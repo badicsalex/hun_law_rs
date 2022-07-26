@@ -1,0 +1,26 @@
+---
+text:      "Hatályát veszti a Jöt. 116/B. § (1) bekezdésében a „, jogi személyiség nélküli gazdasági társaság” szövegrész."
+positions: "                  <  > <                       >                                                              "
+abbreviations:
+  "Jöt.":
+    year: 2016
+    number: 68
+expected_references:
+  - act:
+      year: 2016
+      number: 68
+  - act:
+      year: 2016
+      number: 68
+    article: 116/B
+    paragraph: "1"
+expected_special_phrase:
+  Repeal:
+    positions:
+      - act:
+          year: 2016
+          number: 68
+        article: 116/B
+        paragraph: "1"
+    texts:
+      - ", jogi személyiség nélküli gazdasági társaság"

@@ -1,0 +1,29 @@
+---
+text:      "Hatályát veszti az Flt. 39. § (3) bekezdés a) pontjában az „a pályakezdők munkanélküli segélye, az előnyugdíj”, valamint az „az álláskeresést ösztönző juttatás” szövegrész."
+positions: "                   <  > <                             >                                                                                                                     "
+abbreviations:
+  "Flt.":
+    year: 1991
+    number: 4
+expected_references:
+  - act:
+      year: 1991
+      number: 4
+  - act:
+      year: 1991
+      number: 4
+    article: "39"
+    paragraph: "3"
+    point: a
+expected_special_phrase:
+  Repeal:
+    positions:
+      - act:
+          year: 1991
+          number: 4
+        article: "39"
+        paragraph: "3"
+        point: a
+    texts:
+      - "a pályakezdők munkanélküli segélye, az előnyugdíj"
+      - az álláskeresést ösztönző juttatás

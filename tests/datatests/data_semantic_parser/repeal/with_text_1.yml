@@ -1,0 +1,26 @@
+---
+text:      "Nem lép hatályba a Ptk. 5:96. § (3) bekezdésében az „A zálogjogosulti bizományos kérheti, hogy az ingatlan-nyilvántartás, a lajstrom vagy a hitelbiztosítéki nyilvántartás zálogjogosultként feltüntesse.” szövegrész."
+positions: "                   <  > <                      >                                                                                                                                                                      "
+abbreviations:
+  "Ptk.":
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "5:96"
+    paragraph: "3"
+expected_special_phrase:
+  Repeal:
+    positions:
+      - act:
+          year: 2013
+          number: 5
+        article: "5:96"
+        paragraph: "3"
+    texts:
+      - "A zálogjogosulti bizományos kérheti, hogy az ingatlan-nyilvántartás, a lajstrom vagy a hitelbiztosítéki nyilvántartás zálogjogosultként feltüntesse."

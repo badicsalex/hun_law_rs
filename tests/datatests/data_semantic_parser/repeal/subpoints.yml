@@ -1,0 +1,38 @@
+---
+text:      "Hatályát veszti a Büntető Törvénykönyvről szóló 2012. évi C. törvény 388. § (4) bekezdés a) pont ag) és ah) alpontja."
+positions: "                                                <                  > <                             >    <          > "
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: "388"
+    paragraph: "4"
+    point: a
+    subpoint: ag
+  - act:
+      year: 2012
+      number: 100
+    article: "388"
+    paragraph: "4"
+    point: a
+    subpoint: ah
+expected_special_phrase:
+  Repeal:
+    positions:
+      - act:
+          year: 2012
+          number: 100
+        article: "388"
+        paragraph: "4"
+        point: a
+        subpoint: ag
+      - act:
+          year: 2012
+          number: 100
+        article: "388"
+        paragraph: "4"
+        point: a
+        subpoint: ah

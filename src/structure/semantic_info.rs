@@ -62,7 +62,7 @@ pub enum SpecialPhrase {
     ArticleTitleAmendment,
     BlockAmendment,
     EnforcementDate(EnforcementDate),
-    Repeal,
+    Repeal(Repeal),
     TextAmendment(TextAmendment),
 }
 
@@ -97,4 +97,11 @@ pub enum EnforcementDateType {
         day: u16,
     },
     Special(String),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct Repeal {
+    pub positions: Vec<Reference>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub texts: Vec<String>,
 }

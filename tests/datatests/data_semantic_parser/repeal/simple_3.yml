@@ -1,0 +1,24 @@
+---
+text:      "Nem lép hatályba az Iktv. 116. § f) pontja."
+positions: "                    <   > <              > "
+abbreviations:
+  "Iktv.":
+    year: 2012
+    number: 142
+expected_references:
+  - act:
+      year: 2012
+      number: 142
+  - act:
+      year: 2012
+      number: 142
+    article: "116"
+    point: f
+expected_special_phrase:
+  Repeal:
+    positions:
+      - act:
+          year: 2012
+          number: 142
+        article: "116"
+        point: f

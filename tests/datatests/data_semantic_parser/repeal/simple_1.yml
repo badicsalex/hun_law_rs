@@ -1,0 +1,24 @@
+---
+text:      "Nem lép hatályba a Ptk. 3:329. § (3) bekezdése."
+positions: "                   <  > <                    > "
+abbreviations:
+  "Ptk.":
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "3:329"
+    paragraph: "3"
+expected_special_phrase:
+  Repeal:
+    positions:
+      - act:
+          year: 2013
+          number: 5
+        article: "3:329"
+        paragraph: "3"

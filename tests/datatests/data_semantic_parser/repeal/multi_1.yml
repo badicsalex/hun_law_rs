@@ -1,0 +1,110 @@
+---
+text:      "Hatályát veszti az Eva tv. 2. § (3) bekezdés a) és e) pontjában, 11. § (4) bekezdésében, 18. § (5) és(10) bekezdésében, 19. § (1) és(2) bekezdésében, 22. § (4) és(10) bekezdésében az „, a jogi személyiség nélküli gazdasági társaság” szövegrész."
+positions: "                   <     > <                  >    <          >  <                    >  <       >   <               >  <       >   <              >  <       >   <               >                                                                 "
+abbreviations:
+  "Eva tv.":
+    year: 2002
+    number: 43
+expected_references:
+  - act:
+      year: 2002
+      number: 43
+  - act:
+      year: 2002
+      number: 43
+    article: "2"
+    paragraph: "3"
+    point: a
+  - act:
+      year: 2002
+      number: 43
+    article: "2"
+    paragraph: "3"
+    point: e
+  - act:
+      year: 2002
+      number: 43
+    article: "11"
+    paragraph: "4"
+  - act:
+      year: 2002
+      number: 43
+    article: "18"
+    paragraph: "5"
+  - act:
+      year: 2002
+      number: 43
+    article: "18"
+    paragraph: "10"
+  - act:
+      year: 2002
+      number: 43
+    article: "19"
+    paragraph: "1"
+  - act:
+      year: 2002
+      number: 43
+    article: "19"
+    paragraph: "2"
+  - act:
+      year: 2002
+      number: 43
+    article: "22"
+    paragraph: "4"
+  - act:
+      year: 2002
+      number: 43
+    article: "22"
+    paragraph: "10"
+expected_special_phrase:
+  Repeal:
+    positions:
+      - act:
+          year: 2002
+          number: 43
+        article: "2"
+        paragraph: "3"
+        point: a
+      - act:
+          year: 2002
+          number: 43
+        article: "2"
+        paragraph: "3"
+        point: e
+      - act:
+          year: 2002
+          number: 43
+        article: "11"
+        paragraph: "4"
+      - act:
+          year: 2002
+          number: 43
+        article: "18"
+        paragraph: "5"
+      - act:
+          year: 2002
+          number: 43
+        article: "18"
+        paragraph: "10"
+      - act:
+          year: 2002
+          number: 43
+        article: "19"
+        paragraph: "1"
+      - act:
+          year: 2002
+          number: 43
+        article: "19"
+        paragraph: "2"
+      - act:
+          year: 2002
+          number: 43
+        article: "22"
+        paragraph: "4"
+      - act:
+          year: 2002
+          number: 43
+        article: "22"
+        paragraph: "10"
+    texts:
+      - ", a jogi személyiség nélküli gazdasági társaság"
