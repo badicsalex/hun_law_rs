@@ -175,6 +175,117 @@ impl Reference {
     pub fn is_act_only(&self) -> bool {
         self.article.is_none()
     }
+
+    pub fn make_range(start: &Self, end: &Self) -> Result<Self> {
+        let mut builder = ReferenceBuilder::new();
+        if start.act != end.act {
+            bail!("Reference ranges between acts are not allowed")
+        }
+        if let Some(act) = start.act {
+            builder.set_part(act);
+        }
+
+        // --- article ---
+        if start.article != end.article {
+            if start.paragraph.is_some()
+                || end.paragraph.is_some()
+                || start.point.is_some()
+                || end.point.is_some()
+                || start.subpoint.is_some()
+                || end.subpoint.is_some()
+            {
+                bail!("Trying to create a ref range where not only the last component differs (article)")
+            }
+            if let (Some(start_article), Some(end_article)) = (&start.article, &end.article) {
+                builder.set_part(RefPartArticle::from_range(
+                    start_article.first_in_range(),
+                    end_article.last_in_range(),
+                ));
+                return builder.build();
+            }
+            bail!("Trying to create a ref range between different levels (article)")
+        }
+
+        if let Some(article) = &start.article {
+            builder.set_part(article.clone());
+        }
+
+        // --- paragraph ---
+        if start.paragraph != end.paragraph {
+            if start.point.is_some()
+                || end.point.is_some()
+                || start.subpoint.is_some()
+                || end.subpoint.is_some()
+            {
+                bail!("Trying to create a ref range where not only the last component differs (paragraph)")
+            }
+            if let (Some(start_paragraph), Some(end_paragraph)) = (&start.paragraph, &end.paragraph)
+            {
+                builder.set_part(RefPartParagraph::from_range(
+                    start_paragraph.first_in_range(),
+                    end_paragraph.last_in_range(),
+                ));
+                return builder.build();
+            }
+            bail!("Trying to create a ref range between different levels (paragraph)")
+        }
+
+        if let Some(paragraph) = &start.paragraph {
+            builder.set_part(paragraph.clone());
+        }
+
+        // --- point ---
+        if start.point != end.point {
+            if start.subpoint.is_some() || end.subpoint.is_some() {
+                bail!("Trying to create a ref range where not only the last component differs (point)")
+            }
+            if let (Some(start_point), Some(end_point)) = (&start.point, &end.point) {
+                match (start_point, end_point) {
+                    (RefPartPoint::Numeric(sp), RefPartPoint::Numeric(ep)) => builder.set_part(
+                        RefPartPoint::from_range(sp.first_in_range(), ep.last_in_range()),
+                    ),
+                    (RefPartPoint::Alphabetic(sp), RefPartPoint::Alphabetic(ep)) => builder
+                        .set_part(RefPartPoint::from_range(
+                            sp.first_in_range(),
+                            ep.last_in_range(),
+                        )),
+                    _ => bail!("Point id types are different when creating a range."),
+                };
+                return builder.build();
+            }
+            bail!("Trying to create a ref range between different levels (point)")
+        }
+
+        if let Some(point) = &start.point {
+            builder.set_part(point.clone());
+        }
+
+        // --- subpoint ---
+        if start.subpoint != end.subpoint {
+            if let (Some(start_subpoint), Some(end_subpoint)) = (&start.subpoint, &end.subpoint) {
+                match (start_subpoint, end_subpoint) {
+                    (RefPartSubpoint::Numeric(sp), RefPartSubpoint::Numeric(ep)) => builder
+                        .set_part(RefPartSubpoint::from_range(
+                            sp.first_in_range(),
+                            ep.last_in_range(),
+                        )),
+                    (RefPartSubpoint::Alphabetic(sp), RefPartSubpoint::Alphabetic(ep)) => builder
+                        .set_part(RefPartSubpoint::from_range(
+                            sp.first_in_range(),
+                            ep.last_in_range(),
+                        )),
+                    _ => bail!("subpoint id types are different when creating a range."),
+                };
+                return builder.build();
+            }
+            bail!("Trying to create a ref range between different levels (subpoint)")
+        }
+
+        if let Some(subpoint) = &start.subpoint {
+            builder.set_part(subpoint.clone());
+        }
+        builder.build()
+    }
 }
 
 /// Helper to create Reference isntances from parts.
@@ -351,7 +462,7 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     #[test]
-    fn test_happy_cases() {
+    fn test_builder_happy_cases() {
         let mut builder = ReferenceBuilder::new();
         builder.set_part(ActIdentifier {
             year: 2001,
@@ -442,7 +553,7 @@ mod tests {
     }
 
     #[test]
-    fn test_unhappy_cases() {
+    fn test_builder_unhappy_cases() {
         assert!(
             ReferenceBuilder::new()
                 .set_part(RefPartParagraph::from_single("20".parse().unwrap()))
@@ -483,5 +594,208 @@ mod tests {
                 .is_err(),
             "The range can only be the last part."
         );
+    }
+
+    #[test]
+    fn test_make_range() {
+        let mut builder = ReferenceBuilder::new();
+        builder.set_part(ActIdentifier {
+            year: 2001,
+            number: 420,
+        });
+        let ref_act = builder.build().unwrap();
+
+        builder.set_part(RefPartArticle::from_range(
+            "4:20".parse().unwrap(),
+            "4:80".parse().unwrap(),
+        ));
+        let ref_articler = builder.build().unwrap();
+        builder.set_part(RefPartArticle::from_single("4:20".parse().unwrap()));
+        let ref_article1 = builder.build().unwrap();
+        builder.set_part(RefPartArticle::from_single("4:80".parse().unwrap()));
+        let ref_article2 = builder.build().unwrap();
+
+        builder.set_part(RefPartParagraph::from_range(
+            "20".parse().unwrap(),
+            "80".parse().unwrap(),
+        ));
+        let ref_paragraphr = builder.build().unwrap();
+        builder.set_part(RefPartParagraph::from_single("20".parse().unwrap()));
+        let ref_paragraph1 = builder.build().unwrap();
+        builder.set_part(RefPartParagraph::from_single("80".parse().unwrap()));
+        let ref_paragraph2 = builder.build().unwrap();
+
+        builder.set_part(RefPartPoint::from_range(
+            NumericIdentifier::from_str("20").unwrap(),
+            NumericIdentifier::from_str("22").unwrap(),
+        ));
+        let ref_point_numr = builder.build().unwrap();
+        builder.set_part(RefPartPoint::from_single(
+            NumericIdentifier::from_str("20").unwrap(),
+        ));
+        let ref_point_num1 = builder.build().unwrap();
+        builder.set_part(RefPartPoint::from_single(
+            NumericIdentifier::from_str("22").unwrap(),
+        ));
+        let ref_point_num2 = builder.build().unwrap();
+
+        builder.set_part(RefPartPoint::from_range(
+            AlphabeticIdentifier::from_str("a").unwrap(),
+            AlphabeticIdentifier::from_str("b").unwrap(),
+        ));
+        let ref_point_alphar = builder.build().unwrap();
+        builder.set_part(RefPartPoint::from_single(
+            AlphabeticIdentifier::from_str("a").unwrap(),
+        ));
+        let ref_point_alpha1 = builder.build().unwrap();
+        builder.set_part(RefPartPoint::from_single(
+            AlphabeticIdentifier::from_str("b").unwrap(),
+        ));
+        let ref_point_alpha2 = builder.build().unwrap();
+
+        builder.set_part(RefPartSubpoint::from_range(
+            NumericIdentifier::from_str("20").unwrap(),
+            NumericIdentifier::from_str("22").unwrap(),
+        ));
+        let ref_subpoint_numr = builder.build().unwrap();
+        builder.set_part(RefPartSubpoint::from_single(
+            NumericIdentifier::from_str("20").unwrap(),
+        ));
+        let ref_subpoint_num1 = builder.build().unwrap();
+        builder.set_part(RefPartSubpoint::from_single(
+            NumericIdentifier::from_str("22").unwrap(),
+        ));
+        let ref_subpoint_num2 = builder.build().unwrap();
+
+        builder.set_part(RefPartSubpoint::from_range(
+            PrefixedAlphabeticIdentifier::from_str("ba").unwrap(),
+            PrefixedAlphabeticIdentifier::from_str("bc").unwrap(),
+        ));
+        let ref_subpoint_alphar = builder.build().unwrap();
+        builder.set_part(RefPartSubpoint::from_single(
+            PrefixedAlphabeticIdentifier::from_str("ba").unwrap(),
+        ));
+        let ref_subpoint_alpha1 = builder.build().unwrap();
+        builder.set_part(RefPartSubpoint::from_single(
+            PrefixedAlphabeticIdentifier::from_str("bc").unwrap(),
+        ));
+        let ref_subpoint_alpha2 = builder.build().unwrap();
+
+        // --- Idempotence ---
+        assert_eq!(Reference::make_range(&ref_act, &ref_act).unwrap(), ref_act);
+        assert_eq!(
+            Reference::make_range(&ref_article1, &ref_article1).unwrap(),
+            ref_article1
+        );
+        assert_eq!(
+            Reference::make_range(&ref_paragraph1, &ref_paragraph1).unwrap(),
+            ref_paragraph1
+        );
+        assert_eq!(
+            Reference::make_range(&ref_point_num1, &ref_point_num1).unwrap(),
+            ref_point_num1
+        );
+        assert_eq!(
+            Reference::make_range(&ref_point_alpha1, &ref_point_alpha1).unwrap(),
+            ref_point_alpha1
+        );
+        assert_eq!(
+            Reference::make_range(&ref_subpoint_num1, &ref_subpoint_num1).unwrap(),
+            ref_subpoint_num1
+        );
+        assert_eq!(
+            Reference::make_range(&ref_subpoint_alpha1, &ref_subpoint_alpha1).unwrap(),
+            ref_subpoint_alpha1
+        );
+
+        // --- Idempotence: range edition ---
+        assert_eq!(Reference::make_range(&ref_act, &ref_act).unwrap(), ref_act);
+        assert_eq!(
+            Reference::make_range(&ref_articler, &ref_articler).unwrap(),
+            ref_articler
+        );
+        assert_eq!(
+            Reference::make_range(&ref_paragraphr, &ref_paragraphr).unwrap(),
+            ref_paragraphr
+        );
+        assert_eq!(
+            Reference::make_range(&ref_point_numr, &ref_point_numr).unwrap(),
+            ref_point_numr
+        );
+        assert_eq!(
+            Reference::make_range(&ref_point_alphar, &ref_point_alphar).unwrap(),
+            ref_point_alphar
+        );
+        assert_eq!(
+            Reference::make_range(&ref_subpoint_numr, &ref_subpoint_numr).unwrap(),
+            ref_subpoint_numr
+        );
+        assert_eq!(
+            Reference::make_range(&ref_subpoint_alphar, &ref_subpoint_alphar).unwrap(),
+            ref_subpoint_alphar
+        );
+
+        // --- Actual range making ---
+
+        assert_eq!(
+            Reference::make_range(&ref_article1, &ref_article2).unwrap(),
+            ref_articler
+        );
+        assert_eq!(
+            Reference::make_range(&ref_paragraph1, &ref_paragraph2).unwrap(),
+            ref_paragraphr
+        );
+        assert_eq!(
+            Reference::make_range(&ref_point_num1, &ref_point_num2).unwrap(),
+            ref_point_numr
+        );
+        assert_eq!(
+            Reference::make_range(&ref_point_alpha1, &ref_point_alpha2).unwrap(),
+            ref_point_alphar
+        );
+        assert_eq!(
+            Reference::make_range(&ref_subpoint_num1, &ref_subpoint_num2).unwrap(),
+            ref_subpoint_numr
+        );
+        assert_eq!(
+            Reference::make_range(&ref_subpoint_alpha1, &ref_subpoint_alpha2).unwrap(),
+            ref_subpoint_alphar
+        );
+
+        // --- Some Relative refs ---
+        builder = ReferenceBuilder::new();
+
+        builder.set_part(RefPartParagraph::from_single("80".parse().unwrap()));
+        builder.set_part(RefPartPoint::from_range(
+            AlphabeticIdentifier::from_str("a").unwrap(),
+            AlphabeticIdentifier::from_str("b").unwrap(),
+        ));
+        let relative_1 = builder.build().unwrap();
+        builder.set_part(RefPartPoint::from_range(
+            AlphabeticIdentifier::from_str("f").unwrap(),
+            AlphabeticIdentifier::from_str("g").unwrap(),
+        ));
+        let relative_2 = builder.build().unwrap();
+        builder.set_part(RefPartPoint::from_range(
+            AlphabeticIdentifier::from_str("a").unwrap(),
+            AlphabeticIdentifier::from_str("g").unwrap(),
+        ));
+        let relative_expected = builder.build().unwrap();
+        assert_eq!(
+            Reference::make_range(&relative_1, &relative_2).unwrap(),
+            relative_expected
+        );
+
+        // --- Some error cases ---
+
+        assert!(Reference::make_range(&ref_article1, &ref_paragraph2).is_err());
+        assert!(Reference::make_range(&ref_article2, &ref_paragraph2).is_err());
+        assert!(Reference::make_range(&ref_point_num1, &ref_subpoint_num2).is_err());
+        assert!(Reference::make_range(&ref_point_num2, &ref_subpoint_num2).is_err());
+
+        assert!(Reference::make_range(&ref_point_num1, &ref_point_alpha1).is_err());
+        assert!(Reference::make_range(&ref_subpoint_num1, &ref_subpoint_alpha1).is_err());
+
+        assert!(Reference::make_range(&ref_point_alpha1, &relative_1).is_err());
     }
 }
