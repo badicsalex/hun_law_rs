@@ -33,12 +33,16 @@ pub fn convert_block_amendment(
         .collect();
 
     let first = all_positions
-        .first()
+        .iter()
+        .map(|r| r.first_in_range())
+        .min()
         .ok_or_else(|| anyhow!("No references found in block amendment"))?;
     let last = all_positions
-        .last()
+        .iter()
+        .map(|r| r.last_in_range())
+        .max()
         .ok_or_else(|| anyhow!("No references found in block amendment"))?;
-    let position = reference::Reference::make_range(first, last)?;
+    let position = reference::Reference::make_range(&first, &last)?;
 
     Ok(semantic_info::BlockAmendment {
         position,

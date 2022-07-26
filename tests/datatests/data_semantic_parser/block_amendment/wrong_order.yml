@@ -1,0 +1,37 @@
+---
+text:      "A Ht. 42. § (1) és (2) bekezdése helyébe a következő rendelkezések lépnek, és a § a következő (1a) bekezdéssel egészül ki:"
+positions: "  < > <       >    <           >                                                              <              >            "
+abbreviations:
+  Ht.:
+    year: 2012
+    number: 185
+expected_references:
+  - act:
+      year: 2012
+      number: 185
+  - act:
+      year: 2012
+      number: 185
+    article: "42"
+    paragraph: "1"
+  - act:
+      year: 2012
+      number: 185
+    article: "42"
+    paragraph: "2"
+  - act:
+      year: 2012
+      number: 185
+    article: "42"
+    paragraph: 1a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 185
+      article: "42"
+      paragraph:
+        start: "1"
+        end: "2"
+    pure_insertion: false

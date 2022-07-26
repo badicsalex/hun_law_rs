@@ -176,6 +176,50 @@ impl Reference {
         self.article.is_none()
     }
 
+    pub fn first_in_range(&self) -> Self {
+        Self {
+            act: self.act,
+            article: self
+                .article
+                .clone()
+                .map(|x| RefPartFrom::from_single(x.first_in_range())),
+            paragraph: self
+                .paragraph
+                .clone()
+                .map(|x| RefPartFrom::from_single(x.first_in_range())),
+            point: self.point.clone().map(|x| match x {
+                RefPartPoint::Numeric(n) => RefPartFrom::from_single(n.first_in_range()),
+                RefPartPoint::Alphabetic(a) => RefPartFrom::from_single(a.first_in_range()),
+            }),
+            subpoint: self.subpoint.clone().map(|x| match x {
+                RefPartSubpoint::Numeric(n) => RefPartFrom::from_single(n.first_in_range()),
+                RefPartSubpoint::Alphabetic(a) => RefPartFrom::from_single(a.first_in_range()),
+            }),
+        }
+    }
+
+    pub fn last_in_range(&self) -> Self {
+        Self {
+            act: self.act,
+            article: self
+                .article
+                .clone()
+                .map(|x| RefPartFrom::from_single(x.last_in_range())),
+            paragraph: self
+                .paragraph
+                .clone()
+                .map(|x| RefPartFrom::from_single(x.last_in_range())),
+            point: self.point.clone().map(|x| match x {
+                RefPartPoint::Numeric(n) => RefPartFrom::from_single(n.last_in_range()),
+                RefPartPoint::Alphabetic(a) => RefPartFrom::from_single(a.last_in_range()),
+            }),
+            subpoint: self.subpoint.clone().map(|x| match x {
+                RefPartSubpoint::Numeric(n) => RefPartFrom::from_single(n.last_in_range()),
+                RefPartSubpoint::Alphabetic(a) => RefPartFrom::from_single(a.last_in_range()),
+            }),
+        }
+    }
+
     pub fn make_range(start: &Self, end: &Self) -> Result<Self> {
         let mut builder = ReferenceBuilder::new();
         if start.act != end.act {
