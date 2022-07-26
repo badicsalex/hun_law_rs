@@ -1,0 +1,35 @@
+---
+text:      "A Kkt. 49. § (2) bekezdés i) pontja helyébe a következő rendelkezés lép, és a bekezdés a következő j) ponttal egészül ki:"
+positions: "  <  > <                          >                                                                <        >            "
+abbreviations:
+  Kkt.:
+    year: 1988
+    number: 1
+expected_references:
+  - act:
+      year: 1988
+      number: 1
+  - act:
+      year: 1988
+      number: 1
+    article: "49"
+    paragraph: "2"
+    point: i
+  - act:
+      year: 1988
+      number: 1
+    article: "49"
+    paragraph: "2"
+    point: j
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 1988
+        number: 1
+      article: "49"
+      paragraph: "2"
+      point:
+        start: i
+        end: j
+    pure_insertion: false

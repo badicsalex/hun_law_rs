@@ -1,0 +1,31 @@
+---
+text:      "A Batv. 1. § (2) bekezdés b)–f) pontja helyébe a következő rendelkezés lép:"
+positions: "  <   > <                            >                                     "
+abbreviations:
+  Batv.:
+    year: 2011
+    number: 193
+expected_references:
+  - act:
+      year: 2011
+      number: 193
+  - act:
+      year: 2011
+      number: 193
+    article: "1"
+    paragraph: "2"
+    point:
+      start: b
+      end: f
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 193
+      article: "1"
+      paragraph: "2"
+      point:
+        start: b
+        end: f
+    pure_insertion: false

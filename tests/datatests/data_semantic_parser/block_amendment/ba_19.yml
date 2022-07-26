@@ -1,0 +1,41 @@
+---
+text:      "A Tv. 16. § (1) bekezdés f) pontja helyébe a következő rendelkezés lép, és a § a következő g) és h) pontokkal egészül ki:"
+positions: "  < > <                          >                                                         <>    <          >            "
+abbreviations:
+  Tv.:
+    year: 2042
+    number: 69
+expected_references:
+  - act:
+      year: 2042
+      number: 69
+  - act:
+      year: 2042
+      number: 69
+    article: "16"
+    paragraph: "1"
+    point: f
+  - act:
+      year: 2042
+      number: 69
+    article: "16"
+    paragraph: "1"
+    point: g
+  - act:
+      year: 2042
+      number: 69
+    article: "16"
+    paragraph: "1"
+    point: h
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2042
+        number: 69
+      article: "16"
+      paragraph: "1"
+      point:
+        start: f
+        end: h
+    pure_insertion: false

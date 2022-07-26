@@ -1,0 +1,29 @@
+---
+text:      "Az alpontok rendjéről szóló 2111. évi LXXV. törvény (a továbbiakban: Tv.) 1. § (1) bekezdés 1. pont c) alpontja helyébe a következő rendelkezés lép:"
+positions: "                            <                     >                       <                                   >                                     "
+expected_new_abbreviations:
+  Tv.:
+    year: 2111
+    number: 75
+expected_references:
+  - act:
+      year: 2111
+      number: 75
+  - act:
+      year: 2111
+      number: 75
+    article: "1"
+    paragraph: "1"
+    point: "1"
+    subpoint: c
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2111
+        number: 75
+      article: "1"
+      paragraph: "1"
+      point: "1"
+      subpoint: c
+    pure_insertion: false

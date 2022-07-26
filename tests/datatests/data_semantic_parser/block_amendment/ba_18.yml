@@ -1,0 +1,32 @@
+---
+text:      "A Ptk. 8:6. § r) pontja helyébe a következő rendelkezés lép, és a § a következő s) ponttal egészül ki:"
+positions: "  <  > <              >                                                         <        >            "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "8:6"
+    point: r
+  - act:
+      year: 2013
+      number: 5
+    article: "8:6"
+    point: s
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      article: "8:6"
+      point:
+        start: r
+        end: s
+    pure_insertion: false

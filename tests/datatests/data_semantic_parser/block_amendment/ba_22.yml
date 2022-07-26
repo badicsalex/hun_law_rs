@@ -1,0 +1,35 @@
+---
+text:      "A Btk. 459. § (1) bekezdés 24. pontja helyébe a következő rendelkezés lép, valamint a 459. § (1) bekezdése a következő 24a. ponttal egészül ki:"
+positions: "  <  > <                            >                                                 <                                           >            "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: "459"
+    paragraph: "1"
+    point: "24"
+  - act:
+      year: 2012
+      number: 100
+    article: "459"
+    paragraph: "1"
+    point: 24a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      article: "459"
+      paragraph: "1"
+      point:
+        start: "24"
+        end: 24a
+    pure_insertion: false

@@ -1,0 +1,39 @@
+---
+text:      "A Ket. 172. § p) és q) pontja helyébe a következő rendelkezések lépnek, és a § a következő r)–t) ponttal egészül ki:"
+positions: "  <  > <       >    <       >                                                              <           >            "
+abbreviations:
+  Ket.:
+    year: 2004
+    number: 115
+expected_references:
+  - act:
+      year: 2004
+      number: 115
+  - act:
+      year: 2004
+      number: 115
+    article: "172"
+    point: p
+  - act:
+      year: 2004
+      number: 115
+    article: "172"
+    point: q
+  - act:
+      year: 2004
+      number: 115
+    article: "172"
+    point:
+      start: r
+      end: t
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2004
+        number: 115
+      article: "172"
+      point:
+        start: p
+        end: t
+    pure_insertion: false

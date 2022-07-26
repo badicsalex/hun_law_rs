@@ -1,0 +1,32 @@
+---
+text:      "Az Elszámolási tv. 35. § (4) bekezdése helyébe a következő rendelkezés lép, és a § a következő (5) bekezdéssel egészül ki:"
+positions: "   <             > <                 >                                                         <             >            "
+abbreviations:
+  Elszámolási tv.:
+    year: 2014
+    number: 40
+expected_references:
+  - act:
+      year: 2014
+      number: 40
+  - act:
+      year: 2014
+      number: 40
+    article: "35"
+    paragraph: "4"
+  - act:
+      year: 2014
+      number: 40
+    article: "35"
+    paragraph: "5"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2014
+        number: 40
+      article: "35"
+      paragraph:
+        start: "4"
+        end: "5"
+    pure_insertion: false

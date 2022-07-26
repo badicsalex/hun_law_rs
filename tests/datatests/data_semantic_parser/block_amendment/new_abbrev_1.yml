@@ -13,3 +13,11 @@ expected_references:
       year: 2012
       number: 219
     article: "28"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 219
+      article: "28"
+    pure_insertion: false

@@ -1,0 +1,25 @@
+---
+text:      "A Ptk. 3:391. §-a a következő (3) bekezdéssel kiegészülve lép hatályba:"
+positions: "  <  > <                                    >                          "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "3:391"
+    paragraph: "3"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      article: "3:391"
+      paragraph: "3"
+    pure_insertion: true

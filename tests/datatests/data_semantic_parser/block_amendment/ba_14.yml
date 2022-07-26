@@ -1,0 +1,32 @@
+---
+text:      "A Ptk. 3:261. § (4) és (5) bekezdése a következő szöveggel lép hatályba:"
+positions: "  <  > <          >    <           >                                    "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "3:261"
+    paragraph: "4"
+  - act:
+      year: 2013
+      number: 5
+    article: "3:261"
+    paragraph: "5"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      article: "3:261"
+      paragraph:
+        start: "4"
+        end: "5"
+    pure_insertion: false

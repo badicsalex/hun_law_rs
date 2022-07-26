@@ -1,0 +1,23 @@
+---
+text:      "A Ptk. 6:130. §-a a következő szöveggel lép hatályba:"
+positions: "  <  > <        >                                    "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "6:130"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      article: "6:130"
+    pure_insertion: false

@@ -1,0 +1,41 @@
+---
+text:      "A számvitelről szóló 2000. évi C. törvény (a továbbiakban: Szt.) 3. § (2) bekezdés 4. és 5. pontja helyébe a következő rendelkezések lépnek és a bekezdés a következő 5a. ponttal egészül ki:"
+positions: "                     <                  >                        <                  >    <       >                                                                    <         >            "
+expected_new_abbreviations:
+  Szt.:
+    year: 2000
+    number: 100
+expected_references:
+  - act:
+      year: 2000
+      number: 100
+  - act:
+      year: 2000
+      number: 100
+    article: "3"
+    paragraph: "2"
+    point: "4"
+  - act:
+      year: 2000
+      number: 100
+    article: "3"
+    paragraph: "2"
+    point: "5"
+  - act:
+      year: 2000
+      number: 100
+    article: "3"
+    paragraph: "2"
+    point: 5a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2000
+        number: 100
+      article: "3"
+      paragraph: "2"
+      point:
+        start: "4"
+        end: 5a
+    pure_insertion: false

@@ -1,0 +1,32 @@
+---
+text:      "A Btk. 279. § (1) és (2) bekezdése helyébe a következő rendelkezések lépnek:"
+positions: "  <  > <        >    <           >                                          "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: "279"
+    paragraph: "1"
+  - act:
+      year: 2012
+      number: 100
+    article: "279"
+    paragraph: "2"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      article: "279"
+      paragraph:
+        start: "1"
+        end: "2"
+    pure_insertion: false

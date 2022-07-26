@@ -1,0 +1,29 @@
+---
+text:      "A Víziközmű tv. 63. §-a a következő (5)–(7) bekezdéssel egészül ki:"
+positions: "  <           > <                                     >            "
+abbreviations:
+  Víziközmű tv.:
+    year: 2011
+    number: 209
+expected_references:
+  - act:
+      year: 2011
+      number: 209
+  - act:
+      year: 2011
+      number: 209
+    article: "63"
+    paragraph:
+      start: "5"
+      end: "7"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 209
+      article: "63"
+      paragraph:
+        start: "5"
+        end: "7"
+    pure_insertion: true

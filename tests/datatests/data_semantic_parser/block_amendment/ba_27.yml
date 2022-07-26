@@ -1,0 +1,23 @@
+---
+text:      "A Btk. Terrorcselekmény alcíme a következő 316/A. §-sal egészül ki:"
+positions: "  <  >                                     <          >            "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: 316/A
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      article: 316/A
+    pure_insertion: true

@@ -60,10 +60,16 @@ pub struct ActIdAbbreviation {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, FromVariants)]
 pub enum SpecialPhrase {
     ArticleTitleAmendment,
-    BlockAmendment,
+    BlockAmendment(BlockAmendment),
     EnforcementDate(EnforcementDate),
     Repeal(Repeal),
     TextAmendment(TextAmendment),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct BlockAmendment {
+    pub position: Reference,
+    pub pure_insertion: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

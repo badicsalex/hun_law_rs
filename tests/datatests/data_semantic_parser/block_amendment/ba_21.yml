@@ -1,0 +1,34 @@
+---
+text:      "Az Evt. 108. § (4) bekezdése helyébe a következő rendelkezés lép, valamint a következő (5)–(10) bekezdéssel egészül ki:"
+positions: "   <  > <                  >                                                           <                  >            "
+abbreviations:
+  Evt.:
+    year: 2009
+    number: 37
+expected_references:
+  - act:
+      year: 2009
+      number: 37
+  - act:
+      year: 2009
+      number: 37
+    article: "108"
+    paragraph: "4"
+  - act:
+      year: 2009
+      number: 37
+    article: "108"
+    paragraph:
+      start: "5"
+      end: "10"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2009
+        number: 37
+      article: "108"
+      paragraph:
+        start: "4"
+        end: "10"
+    pure_insertion: false

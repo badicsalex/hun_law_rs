@@ -15,3 +15,13 @@ expected_references:
     article: "29"
     paragraph: "2"
     point: "e"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 1
+      article: "29"
+      paragraph: "2"
+      point: e
+    pure_insertion: false

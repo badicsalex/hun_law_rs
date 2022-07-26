@@ -1,0 +1,32 @@
+---
+text:      "A Gyvt. 69/D. §-a a következő (1a) és (1b) bekezdéssel egészül ki:"
+positions: "  <   > <                        >    <              >            "
+abbreviations:
+  Gyvt.:
+    year: 1997
+    number: 31
+expected_references:
+  - act:
+      year: 1997
+      number: 31
+  - act:
+      year: 1997
+      number: 31
+    article: 69/D
+    paragraph: 1a
+  - act:
+      year: 1997
+      number: 31
+    article: 69/D
+    paragraph: 1b
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 1997
+        number: 31
+      article: 69/D
+      paragraph:
+        start: 1a
+        end: 1b
+    pure_insertion: true

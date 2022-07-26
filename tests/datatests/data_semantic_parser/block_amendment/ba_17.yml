@@ -1,0 +1,37 @@
+---
+text:      "A Ptk. 3:268. § (2) és (3) bekezdése helyébe a következő rendelkezések lépnek, és a § a következő (4) bekezdéssel egészül ki:"
+positions: "  <  > <          >    <           >                                                              <             >            "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "3:268"
+    paragraph: "2"
+  - act:
+      year: 2013
+      number: 5
+    article: "3:268"
+    paragraph: "3"
+  - act:
+      year: 2013
+      number: 5
+    article: "3:268"
+    paragraph: "4"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      article: "3:268"
+      paragraph:
+        start: "2"
+        end: "4"
+    pure_insertion: false

@@ -1,0 +1,31 @@
+---
+text:      "A társadalombiztosítási nyugellátásról szóló 1997. évi LXXXI. törvény 96. § (2) bekezdés h) pontja helyébe a következő rendelkezés lép, egyidejűleg a bekezdés a következő i) ponttal egészül ki:"
+positions: "                                             <                      > <                          >                                                                         <        >            "
+expected_references:
+  - act:
+      year: 1997
+      number: 81
+  - act:
+      year: 1997
+      number: 81
+    article: "96"
+    paragraph: "2"
+    point: h
+  - act:
+      year: 1997
+      number: 81
+    article: "96"
+    paragraph: "2"
+    point: i
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 1997
+        number: 81
+      article: "96"
+      paragraph: "2"
+      point:
+        start: h
+        end: i
+    pure_insertion: false

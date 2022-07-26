@@ -1,0 +1,25 @@
+---
+text:      "Az Eht. 188. §-a a következő 31/a. ponttal egészül ki:"
+positions: "   <  > <                                >            "
+abbreviations:
+  Eht.:
+    year: 2003
+    number: 100
+expected_references:
+  - act:
+      year: 2003
+      number: 100
+  - act:
+      year: 2003
+      number: 100
+    article: "188"
+    point: 31a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2003
+        number: 100
+      article: "188"
+      point: 31a
+    pure_insertion: true

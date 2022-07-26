@@ -1,0 +1,34 @@
+---
+text:      "Az Tv. 5/A. § (2a) bekezdése helyébe a következő rendelkezés lép, és a § a következő (2b)–(2f) bekezdéssel egészül ki:"
+positions: "   < > <                   >                                                         <                   >            "
+abbreviations:
+  Tv.:
+    year: 2042
+    number: 69
+expected_references:
+  - act:
+      year: 2042
+      number: 69
+  - act:
+      year: 2042
+      number: 69
+    article: 5/A
+    paragraph: 2a
+  - act:
+      year: 2042
+      number: 69
+    article: 5/A
+    paragraph:
+      start: 2b
+      end: 2f
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2042
+        number: 69
+      article: 5/A
+      paragraph:
+        start: 2a
+        end: 2f
+    pure_insertion: false

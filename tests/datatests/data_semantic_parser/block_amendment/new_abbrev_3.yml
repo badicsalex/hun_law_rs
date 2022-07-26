@@ -14,3 +14,12 @@ expected_references:
       number: 209
     article: "2"
     point: "31"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 209
+      article: "2"
+      point: "31"
+    pure_insertion: true

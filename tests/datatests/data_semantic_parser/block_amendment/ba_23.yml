@@ -1,0 +1,25 @@
+---
+text:      "Az egyszerűsített foglalkoztatásról szóló 2010. évi LXXV. törvény (a továbbiakban: Efotv.) a következő 1. § (1a) bekezdéssel egészül ki:"
+positions: "                                          <                     >                                      <                   >            "
+expected_new_abbreviations:
+  Efotv.:
+    year: 2010
+    number: 75
+expected_references:
+  - act:
+      year: 2010
+      number: 75
+  - act:
+      year: 2010
+      number: 75
+    article: "1"
+    paragraph: 1a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2010
+        number: 75
+      article: "1"
+      paragraph: 1a
+    pure_insertion: true

@@ -1,0 +1,19 @@
+---
+text:      "A Polgári Törvénykönyvről szóló 2013. évi V. törvény hatálybalépésével összefüggő átmeneti és felhatalmazó rendelkezésekről szóló 2013. évi CLXXVII. törvény 5. alcíme a következő 12/A. §-sal egészül ki:"
+positions: "                                                                                                                                  <                        >                       <         >            "
+expected_references:
+  - act:
+      year: 2013
+      number: 177
+  - act:
+      year: 2013
+      number: 177
+    article: 12/A
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 177
+      article: 12/A
+    pure_insertion: true

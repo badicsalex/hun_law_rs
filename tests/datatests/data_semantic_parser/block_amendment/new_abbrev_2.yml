@@ -14,3 +14,12 @@ expected_references:
       number: 116
     article: "7"
     paragraph: "1"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 116
+      article: "7"
+      paragraph: "1"
+    pure_insertion: false

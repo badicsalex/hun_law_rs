@@ -1,0 +1,21 @@
+---
+text:      "A légiközlekedésről szóló 1995. évi XCVII. törvény 71. §-a a következő 3a. ponttal egészül ki:"
+positions: "                          <                      > <                             >            "
+expected_references:
+  - act:
+      year: 1995
+      number: 97
+  - act:
+      year: 1995
+      number: 97
+    article: "71"
+    point: 3a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 1995
+        number: 97
+      article: "71"
+      point: 3a
+    pure_insertion: true

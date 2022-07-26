@@ -13,3 +13,11 @@ expected_references:
       year: 2004
       number: 45
     article: "2"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2004
+        number: 45
+      article: "2"
+    pure_insertion: false

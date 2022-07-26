@@ -11,3 +11,13 @@ expected_references:
     article: "316"
     paragraph: "4"
     point: "c"
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 1978
+        number: 4
+      article: "316"
+      paragraph: "4"
+      point: c
+    pure_insertion: true
