@@ -28,13 +28,21 @@ use crate::util::is_default;
 #[serde(from = "IdentifierRangeSerdeHelper<T>")]
 #[serde(into = "IdentifierRangeSerdeHelper<T>")]
 pub struct IdentifierRange<T: Clone + Eq> {
-    pub start: T,
-    pub end: T,
+    start: T,
+    end: T,
 }
 
 impl<T: Clone + Eq> IdentifierRange<T> {
     pub fn is_range(&self) -> bool {
         self.start != self.end
+    }
+
+    pub fn first_in_range(&self) -> T {
+        self.start.clone()
+    }
+
+    pub fn last_in_range(&self) -> T {
+        self.end.clone()
     }
 }
 
