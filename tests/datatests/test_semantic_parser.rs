@@ -27,21 +27,7 @@ use datatest_stable::Result;
 use serde::Deserialize;
 use std::{collections::HashMap, path::Path};
 
-use crate::test_utils::read_all;
-
-macro_rules! ensure_eq {
-    ($left: expr, $right: expr, $message: expr) => {
-        if ($left) != ($right) {
-            return Err(format!(
-                "{}\n {}\n!=\n{}",
-                $message,
-                serde_yaml::to_string(&$left).unwrap(),
-                serde_yaml::to_string(&$right).unwrap()
-            )
-            .into());
-        };
-    };
-}
+use crate::test_utils::{ensure_eq, read_all};
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -75,11 +61,11 @@ pub fn run_test(path: &Path) -> Result<()> {
         &semantic_info.new_abbreviations,
         &test_case.expected_new_abbreviations,
     )?;
-    ensure_eq!(
-        semantic_info.special_phrase,
-        test_case.expected_special_phrase,
-        "Special phrase was not correct"
-    );
+    ensure_eq(
+        &semantic_info.special_phrase,
+        &test_case.expected_special_phrase,
+        "Special phrase was not correct",
+    )?;
     Ok(())
 }
 
@@ -107,12 +93,12 @@ fn check_references(
     }
 
     let parsed_positions = String::from_utf8(parsed_positions).unwrap();
-    ensure_eq!(&parsed_refs, expected, "References were not the same");
-    ensure_eq!(
+    ensure_eq(&parsed_refs, expected, "References were not the same")?;
+    ensure_eq(
         &parsed_positions,
-        &expected_positions,
-        "Reference positions were not the same"
-    );
+        expected_positions,
+        "Reference positions were not the same",
+    )?;
     Ok(())
 }
 
@@ -127,10 +113,10 @@ fn check_abbreviations(
             abbreviation: k.clone(),
         })
         .collect();
-    ensure_eq!(
+    ensure_eq(
         new_abbreviations,
         &expected_abbreviations,
-        "Abbreviations were not the same"
-    );
+        "Abbreviations were not the same",
+    )?;
     Ok(())
 }

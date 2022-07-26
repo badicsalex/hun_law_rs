@@ -34,6 +34,7 @@ ureq = "2.4"
 [dev-dependencies]
 datatest-stable = "0.1.2"
 pretty_assertions = "1"
+colored-diff = "= 0.2.2" # Version 0.2.3 broke the pretty display: https://github.com/CAD97/colored-diff/issues/8
 rstest = "0.12"
 tempfile = "3"
 

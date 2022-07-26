@@ -23,6 +23,7 @@ use std::{
 use hun_law::cache::Cache;
 use rstest::fixture;
 
+use serde::Serialize;
 pub use tempfile::TempDir;
 
 #[fixture]
@@ -53,4 +54,26 @@ pub fn read_all(path: impl AsRef<Path>) -> io::Result<Vec<u8>> {
     let mut result = Vec::new();
     File::open(path)?.read_to_end(&mut result)?;
     Ok(result)
+}
+
+pub fn ensure_eq<T, U>(expected: &T, actual: &U, message: &str) -> datatest_stable::Result<()>
+where
+    T: Serialize + ?Sized + PartialEq<U>,
+    U: Serialize + ?Sized,
+{
+    // This is duplicated from ensure_eq, but that's because the structures may be 'equal' even
+    // when ther YML form is not.
+    if expected != actual {
+        Err(format!(
+            "{}\n{}",
+            message,
+            colored_diff::PrettyDifference {
+                expected: &serde_yaml::to_string(expected).unwrap(),
+                actual: &serde_yaml::to_string(actual).unwrap()
+            }
+        )
+        .into())
+    } else {
+        Ok(())
+    }
 }

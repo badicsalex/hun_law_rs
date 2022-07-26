@@ -19,12 +19,11 @@ use std::path::Path;
 use hun_law::{
     parser::mk_act_section::ActRawText,
     parser::structure::parse_act_structure,
-    structure::ActIdentifier,
+    structure::{Act, ActIdentifier},
     util::{date::Date, indentedline::IndentedLine},
 };
-use pretty_assertions::assert_eq;
 
-use crate::test_utils::read_all;
+use crate::test_utils::{ensure_eq, read_all};
 
 fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
     std::str::from_utf8(data)
@@ -53,7 +52,7 @@ pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
         body: data_as_lines,
     })?;
 
-    let expected_act = serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
-    assert_eq!(act, expected_act);
+    let expected_act: Act = serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
+    ensure_eq(&expected_act, &act, "Wrong act contents")?;
     Ok(())
 }
