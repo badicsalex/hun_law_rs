@@ -24,7 +24,7 @@ use crate::structure::{
 };
 use crate::util::is_default;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(from = "IdentifierRangeSerdeHelper<T>")]
 #[serde(into = "IdentifierRangeSerdeHelper<T>")]
 pub struct IdentifierRange<T: Clone + Eq> {
@@ -83,7 +83,7 @@ impl<T: Clone + Eq> From<IdentifierRange<T>> for IdentifierRangeSerdeHelper<T> {
 pub type RefPartArticle = IdentifierRange<ArticleIdentifier>;
 pub type RefPartParagraph = IdentifierRange<NumericIdentifier>;
 
-#[derive(Debug, Clone, PartialEq, Eq, FromVariants, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, FromVariants, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum RefPartPoint {
     Numeric(IdentifierRange<NumericIdentifier>),
@@ -99,7 +99,7 @@ impl RefPartPoint {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, FromVariants, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, FromVariants, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum RefPartSubpoint {
     Numeric(IdentifierRange<NumericIdentifier>),
@@ -160,7 +160,7 @@ impl RefPartFrom<PrefixedAlphabeticIdentifier> for RefPartSubpoint {
 /// - There are no 'gaps' in the parts, apart from a potentially missing paragraph
 ///   (in that case, it means the 'default paragraph' of the article
 /// - It might be a range, but the range part is always the last part of the reference
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(try_from = "UncheckedReference")]
 #[serde(into = "UncheckedReference")]
 pub struct Reference {
@@ -797,5 +797,90 @@ mod tests {
         assert!(Reference::make_range(&ref_subpoint_num1, &ref_subpoint_alpha1).is_err());
 
         assert!(Reference::make_range(&ref_point_alpha1, &relative_1).is_err());
+    }
+
+    #[test]
+    fn test_ordering() {
+        assert!(
+            Reference {
+                act: None,
+                article: Some(RefPartArticle {
+                    start: "2".parse().unwrap(),
+                    end: "2".parse().unwrap()
+                }),
+                paragraph: None,
+                point: None,
+                subpoint: None,
+            } > Reference {
+                act: None,
+                article: Some(RefPartArticle {
+                    start: "1".parse().unwrap(),
+                    end: "1".parse().unwrap()
+                }),
+                paragraph: None,
+                point: Some(RefPartPoint::Alphabetic(IdentifierRange {
+                    start: "a".parse().unwrap(),
+                    end: "x".parse().unwrap()
+                })),
+                subpoint: None,
+            }
+        );
+        assert!(
+            Reference {
+                act: Some(ActIdentifier {
+                    year: 2000,
+                    number: 1
+                }),
+                article: None,
+                paragraph: None,
+                point: None,
+                subpoint: None,
+            } > Reference {
+                act: None,
+                article: Some(RefPartArticle {
+                    start: "1".parse().unwrap(),
+                    end: "1".parse().unwrap()
+                }),
+                paragraph: None,
+                point: Some(RefPartPoint::Alphabetic(IdentifierRange {
+                    start: "a".parse().unwrap(),
+                    end: "x".parse().unwrap()
+                })),
+                subpoint: None,
+            }
+        );
+        assert!(
+            Reference {
+                act: None,
+                article: Some(RefPartArticle {
+                    start: "1".parse().unwrap(),
+                    end: "1".parse().unwrap()
+                }),
+                paragraph: None,
+                point: Some(RefPartPoint::Alphabetic(IdentifierRange {
+                    start: "a".parse().unwrap(),
+                    end: "a".parse().unwrap()
+                })),
+                subpoint: Some(RefPartSubpoint::Numeric(IdentifierRange {
+                    start: "1".parse().unwrap(),
+                    end: "2".parse().unwrap()
+                }))
+            } < Reference {
+                act: None,
+                article: Some(RefPartArticle {
+                    start: "1".parse().unwrap(),
+                    end: "1".parse().unwrap()
+                }),
+                paragraph: None,
+                point: Some(RefPartPoint::Alphabetic(IdentifierRange {
+                    start: "a".parse().unwrap(),
+                    end: "a".parse().unwrap()
+                })),
+                subpoint: Some(RefPartSubpoint::Numeric(IdentifierRange {
+                    start: "3".parse().unwrap(),
+                    end: "4".parse().unwrap()
+                }))
+            }
+        );
     }
 }

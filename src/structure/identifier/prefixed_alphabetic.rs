@@ -22,7 +22,7 @@ use crate::util::IsDefault;
 
 use super::{HungarianIdentifierChar, IsNextFrom};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
 pub struct PrefixedAlphabeticIdentifier {
@@ -130,6 +130,22 @@ mod tests {
                 prefix: Some(HungarianIdentifierChar::Latin(b's')),
                 chr: HungarianIdentifierChar::Latin(b'z'),
             }
+        );
+    }
+
+    #[test]
+    fn test_ordering() {
+        assert!(
+            PrefixedAlphabeticIdentifier::from_str("x").unwrap()
+                > PrefixedAlphabeticIdentifier::from_str("a").unwrap()
+        );
+        assert!(
+            PrefixedAlphabeticIdentifier::from_str("xa").unwrap()
+                < PrefixedAlphabeticIdentifier::from_str("xb").unwrap()
+        );
+        assert!(
+            PrefixedAlphabeticIdentifier::from_str("cc").unwrap()
+                < PrefixedAlphabeticIdentifier::from_str("dc").unwrap()
         );
     }
 }

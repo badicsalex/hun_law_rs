@@ -20,7 +20,7 @@ use std::{fmt::Display, str::FromStr};
 
 use super::{IsNextFrom, NumericIdentifier};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
 pub struct ArticleIdentifier {
@@ -121,6 +121,21 @@ mod tests {
                 book: Some(88),
                 identifier: "1/SZ".parse().unwrap()
             }
+        );
+    }
+
+    #[test]
+    fn test_ordering() {
+        assert!(
+            ArticleIdentifier::from_str("9").unwrap() > ArticleIdentifier::from_str("6/C").unwrap()
+        );
+        assert!(
+            ArticleIdentifier::from_str("2:12").unwrap()
+                < ArticleIdentifier::from_str("3:1").unwrap()
+        );
+        assert!(
+            ArticleIdentifier::from_str("3:12/X").unwrap()
+                < ArticleIdentifier::from_str("3:15/B").unwrap()
         );
     }
 }

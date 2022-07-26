@@ -21,7 +21,7 @@ use std::{fmt::Display, str::FromStr};
 use super::{HungarianIdentifierChar, IsNextFrom};
 use crate::util::{IsDefault, DIGITS, ROMAN_DIGITS};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
 pub struct NumericIdentifier {
@@ -250,5 +250,27 @@ mod tests {
         assert!(NumericIdentifier::from_roman("II/aa").is_err());
         assert!(NumericIdentifier::from_roman("II//a").is_err());
         assert!(NumericIdentifier::from_roman("I:II").is_err());
+    }
+
+    #[test]
+    fn test_ordering() {
+        assert!(
+            NumericIdentifier::from_str("5").unwrap() > NumericIdentifier::from_str("2").unwrap()
+        );
+        assert!(
+            NumericIdentifier::from_str("2").unwrap() < NumericIdentifier::from_str("5").unwrap()
+        );
+        assert!(
+            NumericIdentifier::from_str("5b").unwrap() > NumericIdentifier::from_str("2").unwrap()
+        );
+        assert!(
+            NumericIdentifier::from_str("2b").unwrap() < NumericIdentifier::from_str("5").unwrap()
+        );
+        assert!(
+            NumericIdentifier::from_str("2b").unwrap() < NumericIdentifier::from_str("2c").unwrap()
+        );
+        assert!(
+            NumericIdentifier::from_str("3").unwrap() > NumericIdentifier::from_str("2c").unwrap()
+        );
     }
 }

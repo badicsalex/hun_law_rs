@@ -50,6 +50,32 @@ impl HungarianIdentifierChar {
     pub fn to_uppercase(&self) -> UppercaseHungarianIdentifierChar {
         UppercaseHungarianIdentifierChar(*self)
     }
+
+    fn ord_helper(&self) -> u16 {
+        match self {
+            HungarianIdentifierChar::Latin(x) => (*x as u16) * 2,
+            HungarianIdentifierChar::Cs => (b'c' as u16) * 2 + 1,
+            HungarianIdentifierChar::Dz => (b'd' as u16) * 2 + 1,
+            HungarianIdentifierChar::Gy => (b'g' as u16) * 2 + 1,
+            HungarianIdentifierChar::Ly => (b'l' as u16) * 2 + 1,
+            HungarianIdentifierChar::Ny => (b'n' as u16) * 2 + 1,
+            HungarianIdentifierChar::Sz => (b's' as u16) * 2 + 1,
+            HungarianIdentifierChar::Ty => (b't' as u16) * 2 + 1,
+            HungarianIdentifierChar::Zs => (b'z' as u16) * 2 + 1,
+        }
+    }
+}
+
+impl Ord for HungarianIdentifierChar {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.ord_helper().cmp(&other.ord_helper())
+    }
+}
+
+impl PartialOrd for HungarianIdentifierChar {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl IsNextFrom for HungarianIdentifierChar {
@@ -168,5 +194,26 @@ impl Display for UppercaseHungarianIdentifierChar {
             HungarianIdentifierChar::Ty => write!(f, "TY"),
             HungarianIdentifierChar::Zs => write!(f, "ZS"),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_ordering() {
+        assert!(
+            HungarianIdentifierChar::from_str("ny").unwrap()
+                > HungarianIdentifierChar::from_str("n").unwrap()
+        );
+        assert!(
+            HungarianIdentifierChar::from_str("sz").unwrap()
+                < HungarianIdentifierChar::from_str("zs").unwrap()
+        );
+        assert!(
+            HungarianIdentifierChar::from_str("a").unwrap()
+                < HungarianIdentifierChar::from_str("f").unwrap()
+        );
     }
 }
