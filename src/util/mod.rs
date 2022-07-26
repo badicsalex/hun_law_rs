@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 // Copyright (C) 2022, Alex Badics
 //
 // This file is part of Hun-Law.
@@ -24,6 +26,12 @@ pub trait IsDefault {
 }
 
 impl<T> IsDefault for Vec<T> {
+    fn is_default(&self) -> bool {
+        self.is_empty()
+    }
+}
+
+impl<TK, TV> IsDefault for HashMap<TK, TV> {
     fn is_default(&self) -> bool {
         self.is_empty()
     }

@@ -21,26 +21,27 @@ use hun_law::{
         semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
         ActIdentifier,
     },
+    util::is_default,
 };
 
 use datatest_stable::Result;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, path::Path};
 
 use crate::test_utils::{ensure_eq, read_all};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct TestCase {
     pub text: String,
     pub positions: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub abbreviations: HashMap<String, ActIdentifier>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub expected_new_abbreviations: HashMap<String, ActIdentifier>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub expected_references: Vec<Reference>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub expected_special_phrase: Option<SpecialPhrase>,
 }
 
@@ -48,33 +49,29 @@ use crate::declare_test;
 declare_test!(dir = "data_semantic_parser", pattern = r"\.yml");
 pub fn run_test(path: &Path) -> Result<()> {
     let test_case: TestCase = serde_yaml::from_slice(&read_all(path)?)?;
-    let mut abbreviation_cache = AbbreviationCache::from(test_case.abbreviations);
+    let mut abbreviation_cache = AbbreviationCache::from(test_case.abbreviations.clone());
     let semantic_info = extract_semantic_info(&test_case.text, &mut abbreviation_cache)?;
 
-    check_references(
-        &semantic_info.outgoing_references,
-        &test_case.expected_references,
-        &test_case.text,
-        &test_case.positions,
-    )?;
-    check_abbreviations(
-        &semantic_info.new_abbreviations,
-        &test_case.expected_new_abbreviations,
-    )?;
-    ensure_eq(
-        &semantic_info.special_phrase,
-        &test_case.expected_special_phrase,
-        "Special phrase was not correct",
-    )?;
+    let (expected_references, positions) =
+        convert_references(&semantic_info.outgoing_references, &test_case.text);
+    let expected_new_abbreviations = convert_abbreviations(&semantic_info.new_abbreviations);
+
+    let result = TestCase {
+        text: test_case.text.clone(),
+        positions,
+        abbreviations: test_case.abbreviations.clone(),
+        expected_new_abbreviations,
+        expected_references,
+        expected_special_phrase: semantic_info.special_phrase,
+    };
+    ensure_eq(&test_case, &result, "Semantic info incorrect")?;
     Ok(())
 }
 
-fn check_references(
+fn convert_references(
     outgoing_references: &[OutgoingReference],
-    expected: &[Reference],
     text: &str,
-    expected_positions: &str,
-) -> Result<()> {
+) -> (Vec<Reference>, String) {
     let mut parsed_refs = Vec::new();
     let mut parsed_positions = vec![b' '; text.chars().count()];
 
@@ -93,30 +90,14 @@ fn check_references(
     }
 
     let parsed_positions = String::from_utf8(parsed_positions).unwrap();
-    ensure_eq(&parsed_refs, expected, "References were not the same")?;
-    ensure_eq(
-        &parsed_positions,
-        expected_positions,
-        "Reference positions were not the same",
-    )?;
-    Ok(())
+    (parsed_refs, parsed_positions)
 }
 
-fn check_abbreviations(
+fn convert_abbreviations(
     new_abbreviations: &[ActIdAbbreviation],
-    expected_abbreviations: &HashMap<String, ActIdentifier>,
-) -> Result<()> {
-    let expected_abbreviations: Vec<_> = expected_abbreviations
+) -> HashMap<String, ActIdentifier> {
+    new_abbreviations
         .iter()
-        .map(|(k, v)| ActIdAbbreviation {
-            act_id: *v,
-            abbreviation: k.clone(),
-        })
-        .collect();
-    ensure_eq(
-        new_abbreviations,
-        &expected_abbreviations,
-        "Abbreviations were not the same",
-    )?;
-    Ok(())
+        .map(|a| (a.abbreviation.clone(), a.act_id))
+        .collect()
 }
