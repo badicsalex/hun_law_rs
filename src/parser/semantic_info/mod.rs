@@ -19,6 +19,7 @@ use hun_law_grammar::PegParser;
 
 use self::{
     abbreviation::{get_new_abbreviations, AbbreviationCache},
+    article_title_amendment::convert_article_title_amendment,
     block_amendment::convert_block_amendment,
     enforcement_date::convert_enforcement_date,
     reference::GetOutgoingReferences,
@@ -28,6 +29,7 @@ use self::{
 use crate::structure::semantic_info::{SemanticInfo, SpecialPhrase};
 
 pub mod abbreviation;
+pub mod article_title_amendment;
 pub mod block_amendment;
 pub mod enforcement_date;
 pub mod reference;
@@ -55,7 +57,9 @@ pub fn extract_special_phrase(
     root: &hun_law_grammar::Root,
 ) -> Result<Option<SpecialPhrase>> {
     Ok(match &root.content {
-        hun_law_grammar::Root_content::ArticleTitleAmendment(_) => None, // TODO
+        hun_law_grammar::Root_content::ArticleTitleAmendment(x) => {
+            Some(convert_article_title_amendment(abbreviation_cache, x)?.into())
+        }
         hun_law_grammar::Root_content::BlockAmendment(x) => {
             Some(convert_block_amendment(abbreviation_cache, x)?.into())
         }

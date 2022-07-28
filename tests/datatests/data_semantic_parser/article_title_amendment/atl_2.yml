@@ -1,0 +1,26 @@
+---
+text:      "A Ptk. 5:99. § címében az „átruházása” szövegrész helyébe az „átruházása és megterhelése” szöveg lép."
+positions: "  <  > <     >                                                                                       "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+  - act:
+      year: 2013
+      number: 5
+    article: "5:99"
+expected_special_phrase:
+  ArticleTitleAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      article: "5:99"
+    replacement:
+      from: átruházása
+      to: átruházása és megterhelése
+
