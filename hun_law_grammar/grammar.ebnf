@@ -165,7 +165,7 @@ ListSeparator = ((["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," |
 
 AfterArticle = [Az] article:SingleArticleReference ("követően" | "követő" );
 BeforeArticle = [Az] article:SingleArticleReference ("megelőzően" | "megelőző" );
-SubtitleTitle = quoted_title:Quote | title:RawTitle ["című"] "alcíme";
+SubtitleTitle = ( quoted_title:Quote | title:RawTitle ) ["című"] "alcíme";
 @string
 RawTitle = {!"alcíme" !"című" AnyToken};
 
