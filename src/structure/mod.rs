@@ -21,7 +21,8 @@ use std::fmt::Debug;
 
 pub use identifier::*;
 
-use crate::util::{date::Date, indentedline::IndentedLine, is_default, IsDefault};
+use crate::util::{date::Date, indentedline::IndentedLine, is_default, str_to_int_hun, IsDefault};
+use anyhow::{anyhow, Result};
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
@@ -137,6 +138,33 @@ pub enum StructuralElementType {
     // IV. Fejezet
     // XXIII. fejezet  <=  not conformant, but present in e.g. PTK
     Chapter,
+}
+
+impl StructuralElementType {
+    pub fn parse_identifier(&self, id: &str) -> Result<NumericIdentifier> {
+        match self {
+            StructuralElementType::Part { is_special: true } => {
+                Self::parse_special_part_identifier(id)
+            }
+            StructuralElementType::Book | StructuralElementType::Part { is_special: false } => {
+                str_to_int_hun(id)
+                    .map(NumericIdentifier::from)
+                    .ok_or_else(|| anyhow!("Invalid hungarian numeral {}", id))
+            }
+            StructuralElementType::Title | StructuralElementType::Chapter => {
+                NumericIdentifier::from_roman(id)
+            }
+        }
+    }
+
+    fn parse_special_part_identifier(id: &str) -> Result<NumericIdentifier> {
+        match id {
+            "ÁLTALÁNOS" => Ok(1.into()),
+            "KÜLÖNÖS" => Ok(2.into()),
+            "ZÁRÓ" => Ok(3.into()),
+            _ => Err(anyhow!("{} is not a special part", id)),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
