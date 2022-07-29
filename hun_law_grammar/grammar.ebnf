@@ -165,15 +165,18 @@ ListSeparator = ((["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," |
 
 AfterArticle = [Az] article:SingleArticleReference ("követően" | "követő" );
 BeforeArticle = [Az] article:SingleArticleReference ("megelőzően" | "megelőző" );
-SubtitleTitle = ( quoted_title:Quote | title:RawTitle ) ["című"] "alcíme";
+SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffixPossessive;
 @string
-RawTitle = {!"alcíme" !"című" AnyToken};
+RawTitle = {!(["című"] SubtitleSuffixPossessive) AnyToken};
 
 @string
 SubtitleId = Number [["/"] 'A'..'Z'];
 SubtitleReference = id:SubtitleId  "." SubtitleSuffix;
 @no_skip_ws
 SubtitleSuffix = "alcím" {HunLower};
+# !HunLower is there to prevent "alcímekkel" from matching
+@no_skip_ws
+SubtitleSuffixPossessive = "alcíme" !HunLower;
 
 @string
 ChapterId = Roman [["/"] 'A'..'Z'];
