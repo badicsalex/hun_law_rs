@@ -26,7 +26,7 @@ use self::{
     },
     enforcement_date::convert_enforcement_date,
     reference::GetOutgoingReferences,
-    repeal::convert_repeal,
+    repeal::{convert_repeal, convert_structural_repeal},
     text_amendment::convert_text_amendment,
 };
 use crate::structure::semantic_info::{SemanticInfo, SpecialPhrase};
@@ -61,6 +61,8 @@ pub fn extract_special_phrase(
     root: &hun_law_grammar::Root,
 ) -> Result<Option<SpecialPhrase>> {
     Ok(match &root.content {
+        hun_law_grammar::Root_content::ListOfSimpleExpressions(_) => None,
+
         hun_law_grammar::Root_content::ArticleTitleAmendment(x) => {
             Some(convert_article_title_amendment(abbreviation_cache, x)?.into())
         }
@@ -76,11 +78,12 @@ pub fn extract_special_phrase(
         hun_law_grammar::Root_content::EnforcementDate(x) => {
             Some(convert_enforcement_date(abbreviation_cache, x)?.into())
         }
-        hun_law_grammar::Root_content::ListOfSimpleExpressions(_) => None,
         hun_law_grammar::Root_content::Repeal(x) => {
             Some(convert_repeal(abbreviation_cache, x)?.into())
         }
-        hun_law_grammar::Root_content::StructuralRepeal(_) => None, // TODO
+        hun_law_grammar::Root_content::StructuralRepeal(x) => {
+            Some(convert_structural_repeal(abbreviation_cache, x)?.into())
+        }
         hun_law_grammar::Root_content::TextAmendment(x) => {
             Some(convert_text_amendment(abbreviation_cache, x)?.into())
         }

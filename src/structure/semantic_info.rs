@@ -65,6 +65,7 @@ pub enum SpecialPhrase {
     Repeal(Repeal),
     TextAmendment(TextAmendment),
     StructuralBlockAmendment(StructuralBlockAmendment),
+    StructuralRepeal(StructuralRepeal),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -123,4 +124,9 @@ pub struct Repeal {
 pub struct StructuralBlockAmendment {
     pub position: StructuralReference,
     pub pure_insertion: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct StructuralRepeal {
+    pub position: StructuralReference,
 }

@@ -125,3 +125,22 @@ impl TryFrom<&SubtitleTitle> for StructuralReference {
         })
     }
 }
+
+impl TryFrom<&StructuralPositionReference> for StructuralReferenceElement {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &StructuralPositionReference) -> Result<Self, Self::Error> {
+        Ok(match value {
+            StructuralPositionReference::AfterArticle(article) => {
+                StructuralReferenceElement::SubtitleAfterArticle(article.try_into()?)
+            }
+            StructuralPositionReference::BeforeArticle(article) => {
+                StructuralReferenceElement::SubtitleBeforeArticle(article.try_into()?)
+            }
+            StructuralPositionReference::AnyStructuralReference(asr) => {
+                // TODO: Book is dropped here
+                StructuralReference::try_from(asr)?.structural_element
+            }
+        })
+    }
+}

@@ -374,7 +374,7 @@ Repeal =
 StructuralRepeal =
     ("Nem lép hatályba" | "Hatályát veszti")
     Az ActTitle act_reference:ActReference
-    position:StructuralPositionReference [SubtitleToken]
+    reference:StructuralPositionReference [SubtitleToken]
     "."
     ;
 

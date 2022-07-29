@@ -16,8 +16,9 @@
 
 use anyhow::Result;
 
+use super::reference::convert_act_reference;
 use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
-use crate::reference;
+use crate::reference::{self, StructuralReference};
 use crate::structure::semantic_info;
 use hun_law_grammar::*;
 
@@ -36,4 +37,19 @@ pub fn convert_repeal(
         positions,
         texts: elem.texts.clone(),
     })
+}
+
+pub fn convert_structural_repeal(
+    abbreviation_cache: &AbbreviationCache,
+    elem: &StructuralRepeal,
+) -> Result<semantic_info::StructuralRepeal> {
+    let position = StructuralReference {
+        act: Some(convert_act_reference(
+            abbreviation_cache,
+            &elem.act_reference,
+        )?),
+        book: None,
+        structural_element: (&elem.reference).try_into()?,
+    };
+    Ok(semantic_info::StructuralRepeal { position })
 }

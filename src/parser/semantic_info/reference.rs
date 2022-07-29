@@ -162,7 +162,7 @@ impl GetOutgoingReferences for StructuralRepeal {
     ) -> Result<Vec<OutgoingReference>> {
         let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
         ref_builder.feed(&self.act_reference)?;
-        // TODO: the structural part, but it may not be worthwhile
+        ref_builder.feed(&self.reference)?;
         Ok(ref_builder.get_result())
     }
 }
@@ -435,5 +435,17 @@ impl TryFrom<&ActId> for ActIdentifier {
                 anyhow!("{} is not a valid suffixed roman numeral", act_id.number)
             })?,
         })
+    }
+}
+
+pub fn convert_act_reference(
+    abbreviation_cache: &AbbreviationCache,
+    elem: &ActReference,
+) -> Result<ActIdentifier> {
+    match elem {
+        ActReference::Abbreviation(abbrev) => abbreviation_cache.resolve(&abbrev.content),
+        ActReference::ActIdWithFromNowOn(ActIdWithFromNowOn { act_id, .. }) => {
+            ActIdentifier::try_from(act_id)
+        }
     }
 }
