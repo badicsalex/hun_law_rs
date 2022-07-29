@@ -163,9 +163,10 @@ ListSeparator = ((["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," |
 
 # ============= STRUCTURAL REFERENCES =============
 
-AfterArticle = [Az] article:SingleArticleReference ("követően" | "követő" );
-BeforeArticle = [Az] article:SingleArticleReference ("megelőzően" | "megelőző" );
+AfterArticle = [Az] @:SingleArticleReference ("követően" | "követő" );
+BeforeArticle = [Az] @:SingleArticleReference ("megelőzően" | "megelőző" );
 SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffixPossessive;
+
 @string
 RawTitle = {!(["című"] SubtitleSuffixPossessive) AnyToken};
 
@@ -233,8 +234,8 @@ TitleInsertionWithBook =
 SubtitleToken = "alcímmel" | "alcímekkel" | "alcím-megjelölése" | "alcím-megjelölés" |  "alcíme" | "alcím" [" cím" {HunLower}];
 
 ReferenceWithSubtitle =
-    SubtitleToken "és" article:ArticleReference |
-    article:ArticleReference "és" Az ["azt" | "azokat"] "megelőző" SubtitleToken |
+    SubtitleToken "és" article:SingleArticleReference |
+    article:SingleArticleReference "és" Az ["azt" | "azokat"] "megelőző" SubtitleToken |
     SubtitleToken ;
 
 AmendmentSuffix =
@@ -272,18 +273,18 @@ BlockAmendment = AzAny ActTitle act_reference:ActReference [position:StructuralP
 
 BlockAmendmentWithSubtitle = AzAny ActTitle act_reference:ActReference [position:StructuralPositionReference]
     (
-        amended_reference:ReferenceWithSubtitle AmendmentSuffix ":" |
-        amended_reference:ReferenceWithSubtitle AmendmentSuffixWithSubtitle ":" |
-        InsertionToken inserted_reference:ReferenceWithSubtitle InsertionSuffix ":"
+        reference:ReferenceWithSubtitle AmendmentSuffix ":" |
+        reference:ReferenceWithSubtitle AmendmentSuffixWithSubtitle ":" |
+        InsertionToken reference:ReferenceWithSubtitle is_insertion:InsertionSuffix ":"
     );
 
 BlockAmendmentStructural = AzAny ActTitle act_reference:ActReference
     (
         # structural cases
-        amended_reference:AnyStructuralReference AmendmentSuffix ":" |
-        amended_reference:AnyStructuralReference AmendmentSuffixWithStructural ":" |
-        InsertionToken inserted_reference:AnyStructuralReference InsertionSuffix ":" |
-        inserted_reference:TitleInsertionWithBook InsertionSuffix ":"
+        reference:AnyStructuralReference AmendmentSuffix ":" |
+        reference:AnyStructuralReference AmendmentSuffixWithStructural ":" |
+        InsertionToken reference:AnyStructuralReference is_insertion:InsertionSuffix ":" |
+        reference:TitleInsertionWithBook is_insertion:InsertionSuffix ":"
     );
 
 
