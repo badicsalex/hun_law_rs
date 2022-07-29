@@ -105,7 +105,8 @@ impl GetOutgoingReferences for BlockAmendmentWithSubtitle {
     ) -> Result<Vec<OutgoingReference>> {
         let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
         ref_builder.feed(&self.act_reference)?;
-        // TODO: the structural part, but it may not be worthwhile
+        ref_builder.feed(&self.position)?;
+        ref_builder.feed(&self.reference)?;
         Ok(ref_builder.get_result())
     }
 }
@@ -374,12 +375,53 @@ impl_rcp!(
     PrefixedAlphabeticIdentifier,
 );
 
+impl FeedReferenceBuilder<StructuralPositionReference> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &StructuralPositionReference) -> Result<()> {
+        match element {
+            StructuralPositionReference::AfterArticle(x) => self.feed(x),
+            StructuralPositionReference::BeforeArticle(x) => self.feed(x),
+            StructuralPositionReference::AnyStructuralReference(_) => Ok(()),
+        }
+    }
+}
+
 impl FeedReferenceBuilder<SingleArticleReference> for OutgoingReferenceBuilder<'_> {
     fn feed(&mut self, element: &SingleArticleReference) -> Result<()> {
-        let part = RefPartArticle::from_single(element.id.parse()?);
-        self.set_part(element.position.start, element.position.end, part);
+        if let Some(id) = &element.part.id {
+            let part = RefPartArticle::from_single(id.parse()?);
+            self.set_part(element.position.start, element.position.end, part);
+        } else if let (Some(start), Some(end)) = (&element.part.start, &element.part.end) {
+            let part = RefPartArticle::from_range(start.parse()?, end.parse()?);
+            self.set_part(element.position.start, element.position.end, part);
+        } else {
+            bail!("Grammar somehow produced an invalid combination")
+        }
         self.record_one()?;
         Ok(())
+    }
+}
+
+impl FeedReferenceBuilder<ReferenceWithSubtitle> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &ReferenceWithSubtitle) -> Result<()> {
+        self.feed(&element.article)
+    }
+}
+
+impl TryFrom<&SingleArticleReference> for ArticleIdentifier {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &SingleArticleReference) -> Result<Self, Self::Error> {
+        // Only the first part of the range is parsed, as it's more of an insertion point
+        // Maybe TODO?
+        let id = value
+            .part
+            .id
+            .as_ref()
+            .or(value.part.start.as_ref())
+            .ok_or_else(|| {
+                anyhow!("Grammar somehow produced a single article reference with no id or start")
+            })?;
+        id.parse()
     }
 }
 
