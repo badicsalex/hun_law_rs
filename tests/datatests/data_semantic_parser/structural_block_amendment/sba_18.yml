@@ -1,0 +1,21 @@
+---
+text:      "A Ptk. Harmadik Könyve a következő VIII. Címmel egészül ki:"
+positions: "  <  >                                                     "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      book: "3"
+      structural_element:
+        Title: "8"
+    pure_insertion: true

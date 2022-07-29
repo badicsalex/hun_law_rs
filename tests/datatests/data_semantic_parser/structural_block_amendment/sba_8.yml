@@ -1,0 +1,26 @@
+---
+text:      "A Btk. a következő 352/A–352/C. §-sal és az azokat megelőző alcímekkel egészül ki:"
+positions: "  <  >             <                >                                             "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article:
+      start: 352/A
+      end: 352/C
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleBeforeArticleInclusive: 352/A
+    pure_insertion: true

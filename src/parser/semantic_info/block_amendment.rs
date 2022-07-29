@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, bail, Result};
 
 use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
-use crate::reference;
-use crate::structure::semantic_info;
+use crate::reference::{self, StructuralReference, StructuralReferenceElement};
+use crate::structure::{semantic_info, ActIdentifier};
 use hun_law_grammar::*;
 
 pub fn convert_block_amendment(
@@ -48,4 +48,81 @@ pub fn convert_block_amendment(
         position,
         pure_insertion: elem.amended_reference.is_none(),
     })
+}
+
+pub fn convert_structural_block_amendment(
+    abbreviation_cache: &AbbreviationCache,
+    elem: &BlockAmendmentStructural,
+) -> Result<semantic_info::StructuralBlockAmendment> {
+    let position = StructuralReference {
+        act: Some(convert_act_reference(
+            abbreviation_cache,
+            &elem.act_reference,
+        )?),
+        ..(&elem.reference).try_into()?
+    };
+    Ok(semantic_info::StructuralBlockAmendment {
+        position,
+        pure_insertion: elem.is_insertion.is_some(),
+    })
+}
+
+pub fn convert_subtitle_block_amendment(
+    abbreviation_cache: &AbbreviationCache,
+    elem: &BlockAmendmentWithSubtitle,
+) -> Result<semantic_info::StructuralBlockAmendment> {
+    let structural_element = if let Some(article) = &elem.reference.article {
+        StructuralReferenceElement::SubtitleBeforeArticleInclusive(article.try_into()?)
+    } else if let Some(spr) = &elem.position {
+        match spr {
+            StructuralPositionReference::AfterArticle(article) => {
+                StructuralReferenceElement::SubtitleAfterArticle(article.try_into()?)
+            }
+            StructuralPositionReference::BeforeArticle(article) => {
+                StructuralReferenceElement::SubtitleBeforeArticle(article.try_into()?)
+            }
+            StructuralPositionReference::AnyStructuralReference(asr) => {
+                // TODO: Book is dropped here
+                StructuralReference::try_from(asr)?.structural_element
+            }
+        }
+    } else {
+        bail!("No article found at all for BlockAmendmentWithSubtitle")
+    };
+
+    let position = StructuralReference {
+        act: Some(convert_act_reference(
+            abbreviation_cache,
+            &elem.act_reference,
+        )?),
+        book: None,
+        structural_element,
+    };
+    Ok(semantic_info::StructuralBlockAmendment {
+        position,
+        pure_insertion: elem.is_insertion.is_some(),
+    })
+}
+
+fn convert_act_reference(
+    abbreviation_cache: &AbbreviationCache,
+    elem: &ActReference,
+) -> Result<ActIdentifier> {
+    match elem {
+        ActReference::Abbreviation(abbrev) => abbreviation_cache.resolve(&abbrev.content),
+        ActReference::ActIdWithFromNowOn(ActIdWithFromNowOn { act_id, .. }) => {
+            ActIdentifier::try_from(act_id)
+        }
+    }
+}
+
+impl TryFrom<&BlockAmendmentStructural_reference> for StructuralReference {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &BlockAmendmentStructural_reference) -> Result<Self, Self::Error> {
+        match value {
+            BlockAmendmentStructural_reference::AnyStructuralReference(x) => x.try_into(),
+            BlockAmendmentStructural_reference::TitleInsertionWithBook(x) => x.try_into(),
+        }
+    }
 }

@@ -1,0 +1,24 @@
+---
+text:      "Az elektronikus információszabadságról szóló 2005. évi XC. törvény (a továbbiakban: Einfotv.) 12. §-át megelőző alcíme helyébe a következő alcím lép:"
+positions: "                                             <                   >                            <      >                                               "
+expected_new_abbreviations:
+  Einfotv.:
+    year: 2005
+    number: 90
+expected_references:
+  - act:
+      year: 2005
+      number: 90
+  - act:
+      year: 2005
+      number: 90
+    article: "12"
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2005
+        number: 90
+      structural_element:
+        SubtitleBeforeArticle: "12"
+    pure_insertion: false

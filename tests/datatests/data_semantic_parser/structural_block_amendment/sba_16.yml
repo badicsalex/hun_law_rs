@@ -1,0 +1,21 @@
+---
+text:      "A Ptk. Hatodik Könyv Ötödik Része helyébe a következő rész lép:"
+positions: "  <  >                                                         "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+  - act:
+      year: 2013
+      number: 5
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      book: "6"
+      structural_element:
+        Part: "5"
+    pure_insertion: false

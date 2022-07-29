@@ -1,0 +1,24 @@
+---
+text:      "A Btk. IX. Fejezete a 92/A. §-t követően a következő alcímmel egészül ki:"
+positions: "  <  >                <       >                                          "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: 92/A
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleAfterArticle: 92/A
+    pure_insertion: true

@@ -1,0 +1,24 @@
+---
+text:      "A Btk. 388/A. §-a és az azt megelőző alcím helyébe a következő alcím és rendelkezés lép:"
+positions: "  <  > <        >                                                                       "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: 388/A
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleBeforeArticleInclusive: 388/A
+    pure_insertion: false

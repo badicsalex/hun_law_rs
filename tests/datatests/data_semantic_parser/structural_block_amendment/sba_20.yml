@@ -1,0 +1,20 @@
+---
+text:      "A Btk. XXIV. Fejezete helyébe a következő fejezet lép:"
+positions: "  <  >                                                "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        Chapter: "24"
+    pure_insertion: false

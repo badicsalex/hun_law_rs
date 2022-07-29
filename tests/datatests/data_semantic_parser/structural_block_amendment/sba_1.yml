@@ -1,0 +1,24 @@
+---
+text:      "A Btk. 349. §-a és a megelőző alcím helyébe a következő rendelkezés és alcím lép:"
+positions: "  <  > <      >                                                                  "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: "349"
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleBeforeArticleInclusive: "349"
+    pure_insertion: false

@@ -1,0 +1,24 @@
+---
+text:      "A Btk. a következő 226/A. §-sal és az azt megelőző alcímmel egészül ki:"
+positions: "  <  >             <          >                                        "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: 226/A
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleBeforeArticleInclusive: 226/A
+    pure_insertion: true

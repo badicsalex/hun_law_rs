@@ -1,0 +1,20 @@
+---
+text:      "Az Nkt. 11/A. alcíme helyébe a következő rendelkezés lép:"
+positions: "   <  >                                                  "
+abbreviations:
+  Nkt.:
+    year: 2011
+    number: 190
+expected_references:
+  - act:
+      year: 2011
+      number: 190
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 190
+      structural_element:
+        SubtitleId: 11a
+    pure_insertion: false

@@ -1,0 +1,20 @@
+---
+text:      "A Btk. Terrorizmus finanszírozása alcíme helyébe a következő rendelkezés lép:"
+positions: "  <  >                                                                       "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleTitle: Terrorizmus finanszírozása
+    pure_insertion: false

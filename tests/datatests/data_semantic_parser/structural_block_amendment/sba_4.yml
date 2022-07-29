@@ -1,0 +1,28 @@
+---
+text:      "A Btk. a 404. §-t követően a következő alcímmel és 404/A. §-sal kiegészülve lép hatályba:"
+positions: "  <  >   <      >                                  <          >                          "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: "404"
+  - act:
+      year: 2012
+      number: 100
+    article: 404/A
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleBeforeArticleInclusive: 404/A
+    pure_insertion: true

@@ -18,7 +18,7 @@ use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
 use super::ActIdentifier;
-use crate::reference::Reference;
+use crate::reference::{Reference, StructuralReference};
 use crate::util::date::Date;
 use crate::util::is_default;
 
@@ -64,6 +64,7 @@ pub enum SpecialPhrase {
     EnforcementDate(EnforcementDate),
     Repeal(Repeal),
     TextAmendment(TextAmendment),
+    StructuralBlockAmendment(StructuralBlockAmendment),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -116,4 +117,10 @@ pub struct Repeal {
     pub positions: Vec<Reference>,
     #[serde(default, skip_serializing_if = "is_default")]
     pub texts: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct StructuralBlockAmendment {
+    pub position: StructuralReference,
+    pub pure_insertion: bool,
 }

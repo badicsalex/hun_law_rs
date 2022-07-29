@@ -1,0 +1,24 @@
+---
+text:      "A Btk. a következő alcímmel és 410/A. §-sal egészül ki:"
+positions: "  <  >                         <          >            "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: 410/A
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleBeforeArticleInclusive: 410/A
+    pure_insertion: true

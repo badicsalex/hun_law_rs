@@ -1,0 +1,28 @@
+---
+text:      "A Btk. a 124. §-t követően a következő alcímmel és 124/A. §-sal egészül ki:"
+positions: "  <  >   <      >                                  <          >            "
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+  - act:
+      year: 2012
+      number: 100
+    article: "124"
+  - act:
+      year: 2012
+      number: 100
+    article: 124/A
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleBeforeArticleInclusive: 124/A
+    pure_insertion: true

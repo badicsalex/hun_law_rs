@@ -1,0 +1,20 @@
+---
+text:      "A Büntető Törvénykönyvről szóló 2012. évi C. törvény (a továbbiakban: Btk.) „Emberkereskedelem” című alcíme helyébe a következő rendelkezés lép:"
+positions: "                                <                  >                                                                                            "
+expected_new_abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+  - act:
+      year: 2012
+      number: 100
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleTitle: Emberkereskedelem
+    pure_insertion: false
