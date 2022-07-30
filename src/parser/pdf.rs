@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use crate::util::indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE};
 use anyhow::Result;
 use log::warn;
 use pdf_extract_fhl as pdf_extract;
+
+use crate::util::indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE};
 
 const SAME_LINE_EPSILON: f64 = 0.2;
 const ADDITIONAL_EMPTY_LINE_THRESHOLD: f64 = 16.0;

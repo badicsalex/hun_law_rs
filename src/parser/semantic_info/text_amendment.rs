@@ -15,11 +15,11 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::Result;
+use hun_law_grammar::*;
 
 use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
 use crate::reference;
 use crate::semantic_info;
-use hun_law_grammar::*;
 
 pub fn convert_text_amendment(
     abbreviation_cache: &AbbreviationCache,

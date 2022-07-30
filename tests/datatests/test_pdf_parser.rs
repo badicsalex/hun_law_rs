@@ -18,10 +18,9 @@ use std::path::Path;
 
 use hun_law::parser::pdf::{parse_pdf, CropBox};
 use hun_law::util::{indentedline::IndentedLine, is_default};
+use serde::{Deserialize, Serialize};
 
 use crate::test_utils::{ensure_eq, read_all};
-
-use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct SimplifiedLine {

@@ -15,10 +15,10 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::Result;
+use hun_law_grammar::*;
 
 use crate::reference::{StructuralReference, StructuralReferenceElement};
 use crate::structure::StructuralElementType;
-use hun_law_grammar::*;
 
 impl TryFrom<&AnyStructuralReference> for StructuralReference {
     type Error = anyhow::Error;

@@ -15,6 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{anyhow, bail, Result};
+use hun_law_grammar::*;
 
 use super::abbreviation::AbbreviationCache;
 use crate::{
@@ -28,7 +29,6 @@ use crate::{
     },
     semantic_info::OutgoingReference,
 };
-use hun_law_grammar::*;
 
 pub trait GetOutgoingReferences {
     fn get_outgoing_references(

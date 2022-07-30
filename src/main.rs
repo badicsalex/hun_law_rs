@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::io::Write;
+
 use anyhow::Result;
 use hun_law::cli_main;
-use std::io::Write;
 
 fn main() -> Result<()> {
     env_logger::Builder::from_env(

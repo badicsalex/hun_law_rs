@@ -523,8 +523,9 @@ pub enum StructuralReferenceElement {
 mod tests {
     use std::str::FromStr;
 
-    use super::*;
     use pretty_assertions::assert_eq;
+
+    use super::*;
 
     #[test]
     fn test_builder_happy_cases() {

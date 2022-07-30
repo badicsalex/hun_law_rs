@@ -14,14 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::fs;
+use std::io::Write;
+use std::path::PathBuf;
+
 use anyhow::{anyhow, Result};
 use flate2::write::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
 use fn_error_context::context;
-use std::fs;
-use std::io::Write;
-use std::path::PathBuf;
 
 pub struct Cache {
     cache_dir: PathBuf,

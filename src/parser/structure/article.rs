@@ -17,13 +17,12 @@
 use anyhow::{anyhow, Result};
 use lazy_regex::regex;
 
+use super::sae::{ParagraphParser, ParseWrapUp, SAEParser};
 use crate::{
     identifier::{ArticleIdentifier, IsNextFrom},
     structure::{Article, Paragraph},
     util::indentedline::IndentedLine,
 };
-
-use super::sae::{ParagraphParser, ParseWrapUp, SAEParser};
 
 pub struct ArticleParserFactory {
     last_id: Option<ArticleIdentifier>,

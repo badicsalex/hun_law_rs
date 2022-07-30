@@ -22,7 +22,6 @@ use std::{
 
 use hun_law::cache::Cache;
 use rstest::fixture;
-
 use serde::Serialize;
 pub use tempfile::TempDir;
 

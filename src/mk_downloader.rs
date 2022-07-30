@@ -17,9 +17,10 @@
 use std::io::Read;
 use std::str::FromStr;
 
-use crate::cache::Cache;
 use anyhow::{ensure, Result};
 use log::info;
+
+use crate::cache::Cache;
 
 #[derive(Debug, Clone)]
 pub struct MkIssue {

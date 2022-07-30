@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, Result};
-use derive_visitor::{visitor_enter_fn, Drive};
-
 use std::collections::HashMap;
 
-use crate::{identifier::ActIdentifier, semantic_info::ActIdAbbreviation};
+use anyhow::{anyhow, Result};
+use derive_visitor::{visitor_enter_fn, Drive};
 use hun_law_grammar::*;
+
+use crate::{identifier::ActIdentifier, semantic_info::ActIdAbbreviation};
 
 pub fn get_new_abbreviations(root: &Root) -> Result<Vec<ActIdAbbreviation>> {
     let mut result: Vec<Result<ActIdAbbreviation>> = Vec::new();

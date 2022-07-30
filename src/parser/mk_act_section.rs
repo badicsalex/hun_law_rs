@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use anyhow::{bail, Result};
+use lazy_regex::regex_captures;
+
 use crate::identifier::ActIdentifier;
 use crate::util::date::Date;
 use crate::util::indentedline::IndentedLine;
 use crate::{parser::pdf::PageOfLines, util::indentedline::EMPTY_LINE};
-
-use anyhow::{bail, Result};
-use lazy_regex::regex_captures;
 
 #[derive(Debug, Default)]
 pub struct ActRawText {

@@ -15,6 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{anyhow, Result};
+use hun_law_grammar::*;
 
 use super::{
     abbreviation::AbbreviationCache,
@@ -27,7 +28,6 @@ use crate::{
         str_to_int_hun,
     },
 };
-use hun_law_grammar::*;
 
 pub fn convert_enforcement_date(
     abbreviation_cache: &AbbreviationCache,

@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::{collections::HashMap, path::Path};
+
+use datatest_stable::Result;
 use hun_law::{
     identifier::ActIdentifier,
     parser::semantic_info::{abbreviation::AbbreviationCache, extract_semantic_info},
@@ -21,10 +24,7 @@ use hun_law::{
     semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
     util::is_default,
 };
-
-use datatest_stable::Result;
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, path::Path};
 
 use crate::test_utils::{ensure_eq, read_all};
 

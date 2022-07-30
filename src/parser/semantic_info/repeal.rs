@@ -15,12 +15,12 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::Result;
+use hun_law_grammar::*;
 
 use super::reference::convert_act_reference;
 use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
 use crate::reference::{self, StructuralReference};
 use crate::semantic_info;
-use hun_law_grammar::*;
 
 pub fn convert_repeal(
     abbreviation_cache: &AbbreviationCache,

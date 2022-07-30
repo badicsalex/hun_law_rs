@@ -15,16 +15,15 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 use anyhow::{bail, Result};
 
-use crate::{
-    parser::mk_act_section::ActRawText,
-    structure::{Act, ActChild, StructuralElementType},
-    util::{indentedline::IndentedLine, QuoteCheck},
-};
-
 use super::{
     article::{ArticleParser, ArticleParserFactory},
     structural_element::{StructuralElementParser, StructuralElementParserFactory},
     subtitle::{SubtitleParser, SubtitleParserFactory},
+};
+use crate::{
+    parser::mk_act_section::ActRawText,
+    structure::{Act, ActChild, StructuralElementType},
+    util::{indentedline::IndentedLine, QuoteCheck},
 };
 
 pub fn parse_act_structure(raw_act: ActRawText) -> Result<Act> {

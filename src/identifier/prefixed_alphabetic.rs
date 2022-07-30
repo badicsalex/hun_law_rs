@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, Error};
-use serde::{Deserialize, Serialize};
 use std::{fmt::Display, str::FromStr};
 
-use crate::util::IsDefault;
+use anyhow::{anyhow, Error};
+use serde::{Deserialize, Serialize};
 
 use super::{HungarianIdentifierChar, IsNextFrom};
+use crate::util::IsDefault;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]

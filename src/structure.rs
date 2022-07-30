@@ -16,6 +16,10 @@
 
 use std::fmt::Debug;
 
+use anyhow::{anyhow, Result};
+use from_variants::FromVariants;
+use serde::{Deserialize, Serialize};
+
 use crate::{
     identifier::{
         ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, IsNextFrom, NumericIdentifier,
@@ -23,9 +27,6 @@ use crate::{
     },
     util::{date::Date, indentedline::IndentedLine, is_default, str_to_int_hun, IsDefault},
 };
-use anyhow::{anyhow, Result};
-use from_variants::FromVariants;
-use serde::{Deserialize, Serialize};
 
 //  Main act on which all the code was based:
 //  61/2009. (XII. 14.) IRM rendelet a jogszabályszerkesztésről

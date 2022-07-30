@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::{fmt::Display, str::FromStr};
+
 use anyhow::{anyhow, bail, Error, Result};
 use serde::{Deserialize, Serialize};
-use std::{fmt::Display, str::FromStr};
 
 use super::{HungarianIdentifierChar, IsNextFrom};
 use crate::util::{IsDefault, DIGITS, ROMAN_DIGITS};
@@ -142,8 +143,9 @@ impl IsDefault for NumericIdentifier {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use pretty_assertions::assert_eq;
+
+    use super::*;
 
     #[test]
     fn test_numeric_identifier_parsing() {

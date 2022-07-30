@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::{fmt::Display, str::FromStr};
+
 use anyhow::{Error, Result};
 use serde::{Deserialize, Serialize};
-use std::{fmt::Display, str::FromStr};
 
 use super::{IsNextFrom, NumericIdentifier};
 
@@ -103,8 +104,9 @@ impl From<u16> for ArticleIdentifier {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use pretty_assertions::assert_eq;
+
+    use super::*;
 
     #[test]
     fn test_article_identifier_parsing() {

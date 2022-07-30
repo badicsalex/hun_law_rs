@@ -115,8 +115,9 @@ impl QuoteCheck {
 
 #[cfg(test)]
 mod tests {
-    use super::{indentedline::IndentedLinePart, *};
     use pretty_assertions::assert_eq;
+
+    use super::{indentedline::IndentedLinePart, *};
 
     #[test]
     fn test_int_to_str() {
