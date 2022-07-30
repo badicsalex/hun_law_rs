@@ -19,9 +19,11 @@ use clap::Parser;
 use log::info;
 
 pub mod cache;
+pub mod identifier;
 pub mod mk_downloader;
 pub mod parser;
 pub mod reference;
+pub mod semantic_info;
 pub mod structure;
 pub mod util;
 

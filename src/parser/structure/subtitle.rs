@@ -15,10 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 use lazy_regex::regex_captures;
 
-use crate::{
-    structure::{NumericIdentifier, Subtitle},
-    util::indentedline::IndentedLine,
-};
+use crate::{identifier::NumericIdentifier, structure::Subtitle, util::indentedline::IndentedLine};
 
 pub enum SubtitleParserFactory {}
 

@@ -19,7 +19,7 @@ use anyhow::{anyhow, ensure, Result};
 use super::abbreviation::AbbreviationCache;
 use super::reference::GetOutgoingReferences;
 use crate::reference;
-use crate::structure::semantic_info;
+use crate::semantic_info;
 use hun_law_grammar::*;
 
 pub fn convert_article_title_amendment(

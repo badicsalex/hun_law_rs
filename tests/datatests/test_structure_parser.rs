@@ -17,9 +17,10 @@
 use std::path::Path;
 
 use hun_law::{
+    identifier::ActIdentifier,
     parser::mk_act_section::ActRawText,
     parser::structure::parse_act_structure,
-    structure::{Act, ActIdentifier},
+    structure::Act,
     util::{date::Date, indentedline::IndentedLine},
 };
 

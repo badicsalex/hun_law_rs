@@ -17,7 +17,7 @@
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
-use super::ActIdentifier;
+use crate::identifier::ActIdentifier;
 use crate::reference::{Reference, StructuralReference};
 use crate::util::date::Date;
 use crate::util::is_default;

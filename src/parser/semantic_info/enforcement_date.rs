@@ -21,7 +21,7 @@ use super::{
     reference::{FeedReferenceBuilder, OutgoingReferenceBuilder},
 };
 use crate::{
-    structure::semantic_info::{self, EnforcementDateType},
+    semantic_info::{self, EnforcementDateType},
     util::{
         date::{self, text_to_month_hun},
         str_to_int_hun,

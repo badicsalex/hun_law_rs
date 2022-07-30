@@ -18,9 +18,10 @@ use anyhow::{anyhow, bail, Result};
 use lazy_regex::regex;
 
 use crate::{
+    identifier::{HungarianIdentifierChar, IsNextFrom, PrefixedAlphabeticIdentifier},
     structure::{
-        AlphabeticPoint, AlphabeticSubpoint, HungarianIdentifierChar, IsNextFrom, NumericPoint,
-        NumericSubpoint, Paragraph, PrefixedAlphabeticIdentifier, SAEBody, SAECommon,
+        AlphabeticPoint, AlphabeticSubpoint, NumericPoint, NumericSubpoint, Paragraph, SAEBody,
+        SAECommon,
     },
     util::{indentedline::IndentedLine, QuoteCheck},
 };

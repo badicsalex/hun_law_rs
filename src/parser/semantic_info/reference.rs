@@ -18,14 +18,15 @@ use anyhow::{anyhow, bail, Result};
 
 use super::abbreviation::AbbreviationCache;
 use crate::{
+    identifier::{
+        ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
+        PrefixedAlphabeticIdentifier,
+    },
     reference::{
         RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint,
         ReferenceBuilder, ReferenceBuilderSetPart,
     },
-    structure::{
-        semantic_info::OutgoingReference, ActIdentifier, AlphabeticIdentifier, ArticleIdentifier,
-        NumericIdentifier, PrefixedAlphabeticIdentifier,
-    },
+    semantic_info::OutgoingReference,
 };
 use hun_law_grammar::*;
 

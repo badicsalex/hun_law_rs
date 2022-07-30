@@ -15,12 +15,10 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use hun_law::{
+    identifier::ActIdentifier,
     parser::semantic_info::{abbreviation::AbbreviationCache, extract_semantic_info},
     reference::Reference,
-    structure::{
-        semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
-        ActIdentifier,
-    },
+    semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
     util::is_default,
 };
 

@@ -19,7 +19,7 @@ use anyhow::{anyhow, bail, Result};
 use super::reference::convert_act_reference;
 use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
 use crate::reference::{self, StructuralReference, StructuralReferenceElement};
-use crate::structure::semantic_info;
+use crate::semantic_info;
 use hun_law_grammar::*;
 
 pub fn convert_block_amendment(

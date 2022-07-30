@@ -17,13 +17,15 @@
 use std::str::FromStr;
 
 use hun_law::{
+    identifier::{
+        ActIdentifier, AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier,
+    },
     reference::{
         RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint, Reference,
         ReferenceBuilder, ReferenceBuilderSetPart,
     },
     structure::{
-        Act, ActIdentifier, AlphabeticIdentifier, AlphabeticPoint, AlphabeticSubpoint, Article,
-        NumericIdentifier, NumericPoint, Paragraph, PrefixedAlphabeticIdentifier, SAEBody,
+        Act, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, Paragraph, SAEBody,
         StructuralElement, StructuralElementType, Subtitle,
     },
     util::date::Date,

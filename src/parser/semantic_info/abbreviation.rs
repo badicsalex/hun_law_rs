@@ -19,7 +19,7 @@ use derive_visitor::{visitor_enter_fn, Drive};
 
 use std::collections::HashMap;
 
-use crate::structure::{semantic_info::ActIdAbbreviation, ActIdentifier};
+use crate::{identifier::ActIdentifier, semantic_info::ActIdAbbreviation};
 use hun_law_grammar::*;
 
 pub fn get_new_abbreviations(root: &Root) -> Result<Vec<ActIdAbbreviation>> {

@@ -32,7 +32,7 @@ pub trait IsNextFrom {
     /// Can the parameter be considered the previous identifier. Handles suffix transitions.
     ///
     /// ```
-    /// use hun_law::structure::{NumericIdentifier, IsNextFrom};
+    /// use hun_law::identifier::{NumericIdentifier, IsNextFrom};
     /// let id121:NumericIdentifier = 121.into();
     /// let id122:NumericIdentifier = 122.into();
     /// let id123:NumericIdentifier = 123.into();

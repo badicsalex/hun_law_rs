@@ -18,7 +18,7 @@ use anyhow::{anyhow, bail, Result};
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
-use crate::structure::{
+use crate::identifier::{
     ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
     PrefixedAlphabeticIdentifier,
 };

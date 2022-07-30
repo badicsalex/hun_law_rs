@@ -16,7 +16,8 @@
 use lazy_regex::{regex, Regex};
 
 use crate::{
-    structure::{NumericIdentifier, StructuralElement, StructuralElementType},
+    identifier::NumericIdentifier,
+    structure::{StructuralElement, StructuralElementType},
     util::indentedline::IndentedLine,
 };
 

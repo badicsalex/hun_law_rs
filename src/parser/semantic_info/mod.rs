@@ -29,7 +29,7 @@ use self::{
     repeal::{convert_repeal, convert_structural_repeal},
     text_amendment::convert_text_amendment,
 };
-use crate::structure::semantic_info::{SemanticInfo, SpecialPhrase};
+use crate::semantic_info::{SemanticInfo, SpecialPhrase};
 
 pub mod abbreviation;
 pub mod article_title_amendment;

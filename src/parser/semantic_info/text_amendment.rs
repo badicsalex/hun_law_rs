@@ -18,7 +18,7 @@ use anyhow::Result;
 
 use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
 use crate::reference;
-use crate::structure::semantic_info;
+use crate::semantic_info;
 use hun_law_grammar::*;
 
 pub fn convert_text_amendment(
