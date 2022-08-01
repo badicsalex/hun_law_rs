@@ -1,0 +1,86 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: A tesztelésről szóló 2345. évi I. törvény
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body:
+                    intro: 8. §
+                    children:
+                      AlphabeticSubpoint:
+                        - identifier: aa
+                          body: "(5) bekezdése,"
+                          semantic_info:
+                            outgoing_references:
+                              - start: 0
+                                end: 14
+                                reference:
+                                  act:
+                                    year: 2345
+                                    number: 1
+                                  article: "8"
+                                  paragraph: "5"
+                        - identifier: ab
+                          body: "(6) bekezdés a) pontja,"
+                          semantic_info:
+                            outgoing_references:
+                              - start: 0
+                                end: 23
+                                reference:
+                                  act:
+                                    year: 2345
+                                    number: 1
+                                  article: "8"
+                                  paragraph: "6"
+                                  point: a
+                  semantic_info:
+                    outgoing_references:
+                      - start: 0
+                        end: 5
+                        reference:
+                          act:
+                            year: 2345
+                            number: 1
+                          article: "8"
+                - identifier: b
+                  body: "10. §-a, és"
+                  semantic_info:
+                    outgoing_references:
+                      - start: 0
+                        end: 8
+                        reference:
+                          act:
+                            year: 2345
+                            number: 1
+                          article: "10"
+                - identifier: c
+                  body: "egy totál másik dolog 1. § c) pontja, még utána ezzel szöveggel"
+                  semantic_info:
+                    outgoing_references:
+                      - start: 24
+                        end: 39
+                        reference:
+                          article: "1"
+                          point: c
+            wrap_up: jól van feldolgozva.
+          semantic_info:
+            outgoing_references:
+              - start: 25
+                end: 48
+                reference:
+                  act:
+                    year: 2345
+                    number: 1

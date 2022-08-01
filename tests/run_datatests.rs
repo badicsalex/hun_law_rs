@@ -37,7 +37,7 @@ macro_rules! declare_test {
 pub(crate) use declare_test;
 
 macro_rules! generate_harness{
-    ($($id_first:ident$(::$id_rest:ident)*),*) => {
+    ($($id_first:ident$(::$id_rest:ident)*),* $(,)*) => {
         datatest_stable::harness!(
             $(
                 datatests::$id_first$(::$id_rest)*::run_test,
@@ -48,4 +48,9 @@ macro_rules! generate_harness{
     }
 }
 
-generate_harness!(test_pdf_parser, test_structure_parser, test_semantic_parser);
+generate_harness!(
+    test_pdf_parser,
+    test_structure_parser,
+    test_semantic_parser,
+    test_add_semantic_info,
+);

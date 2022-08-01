@@ -1,0 +1,138 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: Hatályát veszti
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body: "a Polgári Törvénykönyvről szóló 1959. évi IV. törvény 261. § (4) bekezdése,"
+                  semantic_info:
+                    outgoing_references:
+                      - start: 39
+                        end: 63
+                        reference:
+                          act:
+                            year: 1959
+                            number: 4
+                      - start: 64
+                        end: 86
+                        reference:
+                          act:
+                            year: 1959
+                            number: 4
+                          article: "261"
+                          paragraph: "4"
+                    special_phrase:
+                      Repeal:
+                        positions:
+                          - act:
+                              year: 1959
+                              number: 4
+                            article: "261"
+                            paragraph: "4"
+                - identifier: b
+                  # TODO: misparsed Act-like decree ref
+                  body: "a Polgári Törvénykönyv hatálybalépéséről és végrehajtásáról szóló 1960. évi 11. törvényerejű rendelet 83/A. §-a,"
+                  semantic_info:
+                    outgoing_references:
+                      - start: 122
+                        end: 132
+                        reference:
+                          article: 83/A
+                - identifier: c
+                  body: "az ingatlan-nyilvántartásról szóló 1997. évi CXLI. törvény 16/A. §-a és 91. § (2) bekezdése,"
+                  semantic_info:
+                    outgoing_references:
+                      - start: 40
+                        end: 66
+                        reference:
+                          act:
+                            year: 1997
+                            number: 141
+                      - start: 67
+                        end: 77
+                        reference:
+                          act:
+                            year: 1997
+                            number: 141
+                          article: 16/A
+                      - start: 82
+                        end: 103
+                        reference:
+                          act:
+                            year: 1997
+                            number: 141
+                          article: "91"
+                          paragraph: "2"
+                    special_phrase:
+                      Repeal:
+                        positions:
+                          - act:
+                              year: 1997
+                              number: 141
+                            article: 16/A
+                          - act:
+                              year: 1997
+                              number: 141
+                            article: "91"
+                            paragraph: "2"
+                - identifier: d
+                  body: "a Büntető Törvénykönyvről szóló 2012. évi C. törvény (a továbbiakban: Btk.) 1. §-a,"
+                  semantic_info:
+                    outgoing_references:
+                      - start: 40
+                        end: 63
+                        reference:
+                          act:
+                            year: 2012
+                            number: 100
+                      - start: 88
+                        end: 95
+                        reference:
+                          act:
+                            year: 2012
+                            number: 100
+                          article: "1"
+                    new_abbreviations:
+                      - act_id:
+                          year: 2012
+                          number: 100
+                        abbreviation: Btk.
+                    special_phrase:
+                      Repeal:
+                        positions:
+                          - act:
+                              year: 2012
+                              number: 100
+                            article: "1"
+                - identifier: e
+                  body: a Btk. „Kényszermunka” című alcíme.
+                  semantic_info:
+                    outgoing_references:
+                      - start: 2
+                        end: 6
+                        reference:
+                          act:
+                            year: 2012
+                            number: 100
+                    special_phrase:
+                      StructuralRepeal:
+                        position:
+                          act:
+                            year: 2012
+                            number: 100
+                          structural_element:
+                            SubtitleTitle: Kényszermunka
+          semantic_info: {}

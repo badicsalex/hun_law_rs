@@ -20,7 +20,13 @@ use std::{
     path::Path,
 };
 
-use hun_law::cache::Cache;
+use hun_law::{
+    cache::Cache,
+    identifier::ActIdentifier,
+    parser::{mk_act_section::ActRawText, structure::parse_act_structure},
+    structure::Act,
+    util::{date::Date, indentedline::IndentedLine},
+};
 use rstest::fixture;
 use serde::Serialize;
 pub use tempfile::TempDir;
@@ -75,4 +81,29 @@ where
     } else {
         Ok(())
     }
+}
+
+pub fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
+    std::str::from_utf8(data)
+        .unwrap()
+        .split('\n')
+        .map(IndentedLine::from_test_str)
+        .collect()
+}
+
+pub fn parse_txt_as_act(path: &Path) -> anyhow::Result<Act> {
+    let data_as_lines = to_indented_lines(&read_all(path)?);
+    parse_act_structure(ActRawText {
+        identifier: ActIdentifier {
+            year: 2345,
+            number: 0xd,
+        },
+        subject: "A tesztelésről".to_string(),
+        publication_date: Date {
+            year: 2345,
+            month: 6,
+            day: 7,
+        },
+        body: data_as_lines,
+    })
 }

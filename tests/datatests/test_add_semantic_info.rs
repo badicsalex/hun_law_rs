@@ -14,7 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-pub mod test_add_semantic_info;
-pub mod test_pdf_parser;
-pub mod test_semantic_parser;
-pub mod test_structure_parser;
+use std::path::Path;
+
+use hun_law::structure::Act;
+
+use crate::test_utils::{ensure_eq, parse_txt_as_act, read_all};
+
+use crate::declare_test;
+declare_test!(dir = "data_add_semantic_info", pattern = r"\.txt");
+
+pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
+    let act = parse_txt_as_act(path)?.add_semantic_info()?;
+    let expected_act: Act = serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
+    ensure_eq(&expected_act, &act, "Wrong act contents")?;
+    Ok(())
+}

@@ -1,0 +1,57 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "A relatív referenciák, mint az a) pont működnek cikkre."
+          semantic_info:
+            outgoing_references:
+              - start: 33
+                end: 40
+                reference:
+                  point: a
+  - Article:
+      identifier: "2"
+      children:
+        - identifier: "1"
+          body: "A relatív referenciák, mint a (2) bekezdés 1. pontja, vagy simáncsak a) pont is mennek."
+          semantic_info:
+            outgoing_references:
+              - start: 32
+                end: 55
+                reference:
+                  paragraph: "2"
+                  point: "1"
+              - start: 73
+                end: 80
+                reference:
+                  point: a
+        - identifier: "2"
+          body:
+            intro: "Van második bekezdés, a pontjai"
+            children:
+              NumericPoint:
+                - identifier: "1"
+                  body: első pont
+                  semantic_info: {}
+                - identifier: "2"
+                  body: "második pont, ami referál a 12/A. § (1)–(5) bekezdéseire."
+                  semantic_info:
+                    outgoing_references:
+                      - start: 30
+                        end: 62
+                        reference:
+                          article: 12/A
+                          paragraph:
+                            start: "1"
+                            end: "5"
+          semantic_info: {}

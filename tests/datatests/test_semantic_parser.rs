@@ -48,7 +48,7 @@ declare_test!(dir = "data_semantic_parser", pattern = r"\.yml");
 pub fn run_test(path: &Path) -> Result<()> {
     let test_case: TestCase = serde_yaml::from_slice(&read_all(path)?)?;
     let mut abbreviation_cache = AbbreviationCache::from(test_case.abbreviations.clone());
-    let semantic_info = extract_semantic_info(&test_case.text, &mut abbreviation_cache)?;
+    let semantic_info = extract_semantic_info("", &test_case.text, "", &mut abbreviation_cache)?;
 
     let (expected_references, positions) =
         convert_references(&semantic_info.outgoing_references, &test_case.text);

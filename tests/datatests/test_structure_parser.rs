@@ -16,43 +16,15 @@
 
 use std::path::Path;
 
-use hun_law::{
-    identifier::ActIdentifier,
-    parser::mk_act_section::ActRawText,
-    parser::structure::parse_act_structure,
-    structure::Act,
-    util::{date::Date, indentedline::IndentedLine},
-};
+use hun_law::structure::Act;
 
-use crate::test_utils::{ensure_eq, read_all};
-
-fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
-    std::str::from_utf8(data)
-        .unwrap()
-        .split('\n')
-        .map(IndentedLine::from_test_str)
-        .collect()
-}
+use crate::test_utils::{ensure_eq, parse_txt_as_act, read_all};
 
 use crate::declare_test;
 declare_test!(dir = "data_structure_parser", pattern = r"\.txt");
 
 pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
-    let data_as_lines = to_indented_lines(&read_all(path)?);
-    let act = parse_act_structure(ActRawText {
-        identifier: ActIdentifier {
-            year: 2345,
-            number: 0xd,
-        },
-        subject: "A tesztelésről".to_string(),
-        publication_date: Date {
-            year: 2345,
-            month: 6,
-            day: 7,
-        },
-        body: data_as_lines,
-    })?;
-
+    let act = parse_txt_as_act(path)?;
     let expected_act: Act = serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
     ensure_eq(&expected_act, &act, "Wrong act contents")?;
     Ok(())

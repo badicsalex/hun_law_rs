@@ -1,0 +1,6 @@
+        1. §        A relatív referenciák, mint az a) pont működnek cikkre.
+
+        2. §    (1) A relatív referenciák, mint a (2) bekezdés 1. pontja, vagy simáncsak a) pont is mennek.
+                (2) Van második bekezdés, a pontjai
+                    1. első pont
+                    2. második pont, ami referál a 12/A. § (1)–(5) bekezdéseire.

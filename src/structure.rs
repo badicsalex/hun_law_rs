@@ -25,6 +25,7 @@ use crate::{
         ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, IsNextFrom, NumericIdentifier,
         PrefixedAlphabeticIdentifier,
     },
+    semantic_info::SemanticInfo,
     util::{date::Date, indentedline::IndentedLine, is_default, str_to_int_hun, IsDefault},
 };
 
@@ -185,6 +186,8 @@ where
     #[serde(skip_serializing_if = "is_default")]
     pub identifier: IdentifierType,
     pub body: SAEBody<ChildrenType>,
+    #[serde(skip_serializing_if = "is_default")]
+    pub semantic_info: Option<SemanticInfo>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -280,6 +283,10 @@ impl<IdentifierType: IsDefault + IsNextFrom + Clone + Debug, ChildrenType> SAECo
     type ChildrenType = ChildrenType;
 
     fn new(identifier: Self::IdentifierType, body: SAEBody<Self::ChildrenType>) -> Self {
-        Self { identifier, body }
+        Self {
+            identifier,
+            body,
+            semantic_info: None,
+        }
     }
 }

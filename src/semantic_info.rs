@@ -34,7 +34,9 @@ pub struct SemanticInfo {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct OutgoingReference {
+    /// Byte index of the first character of the reference string
     pub start: usize,
+    /// Byte index after the last character of the reference string
     pub end: usize,
     pub reference: Reference,
 }
