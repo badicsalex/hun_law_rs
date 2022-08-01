@@ -16,7 +16,7 @@
 
 use anyhow::{anyhow, bail, Result};
 use hun_law_grammar::PegParser;
-use lazy_regex::regex;
+use lazy_regex::regex_captures;
 
 use self::{
     abbreviation::{get_new_abbreviations, AbbreviationCache},
@@ -110,6 +110,7 @@ impl Paragraph {
             if quoted_blocks.len() != 1 {
                 bail!("Block amendment special case has to has exactly on quoted block.")
             }
+
             // TODO: We don't currently parse structural amendments properly in the
             // structural step.
             // Block amendements have a two-part intro, which we unfortunately merge:
@@ -118,23 +119,14 @@ impl Paragraph {
             //   „c) a társaság olyan részvényese, aki közvetve vagy közvetlenül a leadható szavazatok...
             //
             // Also, its sometimes bracketed with [] instead of ()
-
             let (actual_intro, context_intro, context_wrap_up) =
-                if let Some(matches) = regex!(r"^(.*:) ?(\(.*\)|\[.*\])$").captures(intro) {
+                if let Some((_, actual_intro, context_into)) =
+                    regex_captures!(r"^(.*:) ?(\(.*\)|\[.*\])$", intro,)
+                {
                     (
-                        matches
-                            .get(1)
-                            .ok_or_else(|| {
-                                anyhow!("Something went wrong with the block amendment regex")
-                            })?
-                            .as_str(),
+                        actual_intro,
                         Some(
-                            matches
-                                .get(2)
-                                .ok_or_else(|| {
-                                    anyhow!("Something went wrong with the block amendment regex")
-                                })?
-                                .as_str()
+                            context_into
                                 .trim_start_matches(['(', ']'])
                                 .trim_end_matches([')', ']']),
                         ),
