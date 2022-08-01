@@ -16,11 +16,23 @@ children:
   - Article:
       identifier: "2"
       children:
-        - body: A második szakasz viszont mar „Csodalatos quote-olt blokk” meghozzá szöveggel utána
+        - body:
+            intro: A második szakasz viszont mar
+            children:
+              QuotedBlock:
+                - lines: []
+            wrap_up: meghozzá szöveggel utána
   - Article:
       identifier: "3"
       children:
-        - body: "A harmadik szakasz pedig „Többet is tartalmaz” „Egyes idezett szövegeket több sorban is akár” “Kihagyott sorokkal, „nestelt idezetekkel” es egyeb finomsagokkal” meg persze idezojelen kivuli befejezessel."
+        - body:
+            intro: A harmadik szakasz pedig
+            children:
+              QuotedBlock:
+                - lines: []
+                - lines: []
+                - lines: []
+            wrap_up: "meg persze idezojelen kivuli befejezessel."
   - Article:
       identifier: "4"
       title: Elso soros dolgok
