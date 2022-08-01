@@ -14,8 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::Result;
+use anyhow::{anyhow, bail, Result};
 use hun_law_grammar::PegParser;
+use lazy_regex::regex;
 
 use self::{
     abbreviation::{get_new_abbreviations, AbbreviationCache},
@@ -34,8 +35,8 @@ use crate::{
     semantic_info::{OutgoingReference, SemanticInfo, SpecialPhrase},
     structure::{
         Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, Article,
-        NumericPointChildren, NumericSubpointChildren, ParagraphChildren, SAEBody,
-        SubArticleElement,
+        BlockAmendment, NumericPointChildren, NumericSubpointChildren, Paragraph,
+        ParagraphChildren, SAEBody, SubArticleElement,
     },
     util::IsDefault,
 };
@@ -79,9 +80,97 @@ impl Article {
         Ok(Self {
             children: self
                 .children
-                .add_semantic_info("", "", abbreviation_cache)?,
+                .into_iter()
+                .map(|p| p.convert_ba_or_add_semantic_info(abbreviation_cache))
+                .collect::<Result<Vec<Paragraph>>>()?,
             ..self
         })
+    }
+}
+
+impl Paragraph {
+    pub fn convert_ba_or_add_semantic_info(
+        self,
+        abbreviation_cache: &mut AbbreviationCache,
+    ) -> Result<Self> {
+        self.try_convert_block_amendment_special_case(abbreviation_cache)
+            .or_else(|_| self.add_semantic_info("", "", abbreviation_cache))
+    }
+
+    fn try_convert_block_amendment_special_case(
+        &self,
+        abbreviation_cache: &mut AbbreviationCache,
+    ) -> Result<Self> {
+        if let SAEBody::Children {
+            intro,
+            children: ParagraphChildren::QuotedBlock(quoted_blocks),
+            wrap_up,
+        } = &self.body
+        {
+            if quoted_blocks.len() != 1 {
+                bail!("Block amendment special case has to has exactly on quoted block.")
+            }
+            // TODO: We don't currently parse structural amendments properly in the
+            // structural step.
+            // Block amendements have a two-part intro, which we unfortunately merge:
+            //    Az Eurt.tv. 9. § (5) bekezdés c) pontja helyébe a következő rendelkezés lép:
+            //   (Nem minősül függetlennek az igazgatótanács tagja különösen akkor, ha)
+            //   „c) a társaság olyan részvényese, aki közvetve vagy közvetlenül a leadható szavazatok...
+            //
+            // Also, its sometimes bracketed with [] instead of ()
+
+            let (actual_intro, context_intro, context_wrap_up) =
+                if let Some(matches) = regex!(r"^(.*:) ?(\(.*\)|\[.*\])$").captures(intro) {
+                    (
+                        matches
+                            .get(1)
+                            .ok_or_else(|| {
+                                anyhow!("Something went wrong with the block amendment regex")
+                            })?
+                            .as_str(),
+                        Some(
+                            matches
+                                .get(2)
+                                .ok_or_else(|| {
+                                    anyhow!("Something went wrong with the block amendment regex")
+                                })?
+                                .as_str()
+                                .trim_start_matches(['(', ']'])
+                                .trim_end_matches([')', ']']),
+                        ),
+                        wrap_up.as_ref().map(|s| {
+                            s.trim_start_matches(['(', ']'])
+                                .trim_end_matches([')', ']'])
+                        }),
+                    )
+                } else {
+                    (intro as &str, None, None)
+                };
+            let semantic_info = extract_semantic_info("", actual_intro, "", abbreviation_cache)?;
+            let children = match semantic_info.special_phrase {
+                Some(SpecialPhrase::BlockAmendment(_))
+                | Some(SpecialPhrase::StructuralBlockAmendment(_)) => {
+                    ParagraphChildren::BlockAmendment(BlockAmendment {
+                        intro: context_intro.map(|s| s.to_owned()),
+                        children: vec![], // TODO: actual structure parsing
+                        wrap_up: context_wrap_up.map(|s| s.to_owned()),
+                    })
+                }
+                _ => bail!("Semantic info was not Block Amendment"),
+            };
+
+            Ok(Self {
+                semantic_info: Some(semantic_info),
+                body: SAEBody::Children {
+                    intro: actual_intro.to_owned(),
+                    children,
+                    wrap_up: None,
+                },
+                ..*self
+            })
+        } else {
+            Err(anyhow!("Paragraph child is not quoted block."))
+        }
     }
 }
 

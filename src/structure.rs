@@ -220,7 +220,7 @@ pub enum ParagraphChildren {
     AlphabeticPoint(Vec<AlphabeticPoint>),
     NumericPoint(Vec<NumericPoint>),
     QuotedBlock(Vec<QuotedBlock>),
-    BlockAmendment(Vec<BlockAmendment>),
+    BlockAmendment(BlockAmendment),
 }
 
 pub type AlphabeticPoint = SubArticleElement<AlphabeticIdentifier, AlphabeticPointChildren>;
@@ -253,7 +253,11 @@ pub struct QuotedBlock {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct BlockAmendment {
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub intro: Option<String>,
     pub children: Vec<BlockAmendmentChild>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub wrap_up: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]

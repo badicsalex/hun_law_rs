@@ -1,0 +1,90 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - identifier: "1"
+          body:
+            intro: "A devizakölcsönök törlesztési árfolyamának rögzítéséről és a lakóingatlanok kényszerértékesítésének rendjéről szóló 2011. évi LXXV. törvény (a továbbiakban: Tv.) 1. § (1) bekezdés 1. pont c) alpontja helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                intro: "E törvényben és az e törvény felhatalmazása alapján kiadott jogszabályban: 1. devizakölcsön: a természetes személy mint adós vagy adóstárs és a pénzügyi intézmény között létrejött olyan kölcsönszerződés alapján fennálló tartozás, amelynél"
+                children: []
+                wrap_up: outro for fun
+          semantic_info:
+            outgoing_references:
+              - start: 140
+                end: 166
+                reference:
+                  act:
+                    year: 2011
+                    number: 75
+              - start: 190
+                end: 229
+                reference:
+                  act:
+                    year: 2011
+                    number: 75
+                  article: "1"
+                  paragraph: "1"
+                  point: "1"
+                  subpoint: c
+            new_abbreviations:
+              - act_id:
+                  year: 2011
+                  number: 75
+                abbreviation: Tv.
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2011
+                    number: 75
+                  article: "1"
+                  paragraph: "1"
+                  point: "1"
+                  subpoint: c
+                pure_insertion: false
+        - identifier: "2"
+          body:
+            intro: "A Tv. 1. § (1) bekezdés 4. pontja helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                intro: "E törvényben és az e törvény felhatalmazása alapján kiadott jogszabályban:"
+                children: []
+          semantic_info:
+            outgoing_references:
+              - start: 2
+                end: 5
+                reference:
+                  act:
+                    year: 2011
+                    number: 75
+              - start: 6
+                end: 35
+                reference:
+                  act:
+                    year: 2011
+                    number: 75
+                  article: "1"
+                  paragraph: "1"
+                  point: "4"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2011
+                    number: 75
+                  article: "1"
+                  paragraph: "1"
+                  point: "4"
+                pure_insertion: false
