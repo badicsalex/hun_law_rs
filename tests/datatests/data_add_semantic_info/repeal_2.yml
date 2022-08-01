@@ -1,0 +1,117 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "Hatályát veszti a Tesztelésről Szóló 2020. évi I. törvény (a továbbiakban: Teszttv.)"
+            children:
+              AlphabeticPoint:
+                - identifier: a
+                  body: "1. § (1) és (3) bekezdése,"
+                  semantic_info:
+                    outgoing_references:
+                      - start: 0
+                        end: 9
+                        reference:
+                          act:
+                            year: 2020
+                            number: 1
+                          article: "1"
+                          paragraph: "1"
+                      - start: 14
+                        end: 28
+                        reference:
+                          act:
+                            year: 2020
+                            number: 1
+                          article: "1"
+                          paragraph: "3"
+                    new_abbreviations:
+                      - act_id:
+                          year: 2020
+                          number: 1
+                        abbreviation: Teszttv.
+                    special_phrase:
+                      Repeal:
+                        positions:
+                          - act:
+                              year: 2020
+                              number: 1
+                            article: "1"
+                            paragraph: "1"
+                          - act:
+                              year: 2020
+                              number: 1
+                            article: "1"
+                            paragraph: "3"
+                - identifier: b
+                  body: "2. §-a, valamint"
+                  semantic_info:
+                    outgoing_references:
+                      - start: 0
+                        end: 7
+                        reference:
+                          act:
+                            year: 2020
+                            number: 1
+                          article: "2"
+                    new_abbreviations:
+                      - act_id:
+                          year: 2020
+                          number: 1
+                        abbreviation: Teszttv.
+                    special_phrase:
+                      Repeal:
+                        positions:
+                          - act:
+                              year: 2020
+                              number: 1
+                            article: "2"
+                - identifier: c
+                  body: 3. § (1) bekezdése.
+                  semantic_info:
+                    outgoing_references:
+                      - start: 0
+                        end: 20
+                        reference:
+                          act:
+                            year: 2020
+                            number: 1
+                          article: "3"
+                          paragraph: "1"
+                    new_abbreviations:
+                      - act_id:
+                          year: 2020
+                          number: 1
+                        abbreviation: Teszttv.
+                    special_phrase:
+                      Repeal:
+                        positions:
+                          - act:
+                              year: 2020
+                              number: 1
+                            article: "3"
+                            paragraph: "1"
+          semantic_info:
+            outgoing_references:
+              - start: 43
+                end: 66
+                reference:
+                  act:
+                    year: 2020
+                    number: 1
+            new_abbreviations:
+              - act_id:
+                  year: 2020
+                  number: 1
+                abbreviation: Teszttv.

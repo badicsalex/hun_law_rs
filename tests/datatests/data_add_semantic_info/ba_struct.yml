@@ -1,0 +1,54 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik a Rövidítésekről szóló 2020. évi III. törvény (a továbbiakban: Rvtv.)."
+          semantic_info:
+            outgoing_references:
+              - start: 38
+                end: 63
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+            new_abbreviations:
+              - act_id:
+                  year: 2020
+                  number: 3
+                abbreviation: Rvtv.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "Az Rvtv. Harmadik Könyv VIII/A. Címének helyébe a következő cím lép:"
+            children:
+              BlockAmendment:
+                children: []
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 8
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+            special_phrase:
+              StructuralBlockAmendment:
+                position:
+                  act:
+                    year: 2020
+                    number: 3
+                  book: "3"
+                  structural_element:
+                    Title: 8a
+                pure_insertion: false

@@ -1,0 +1,153 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik a Rövidítésekről szóló 2020. évi III. törvény (a továbbiakban: Rvtv.)."
+          semantic_info:
+            outgoing_references:
+              - start: 38
+                end: 63
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+            new_abbreviations:
+              - act_id:
+                  year: 2020
+                  number: 3
+                abbreviation: Rvtv.
+  - Article:
+      identifier: "2"
+      children:
+        - body: Hatályát veszti az Rvtv. 1. § (1)–(5) bekezdése.
+          semantic_info:
+            outgoing_references:
+              - start: 21
+                end: 26
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+              - start: 27
+                end: 53
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+                  article: "1"
+                  paragraph:
+                    start: "1"
+                    end: "5"
+            special_phrase:
+              Repeal:
+                positions:
+                  - act:
+                      year: 2020
+                      number: 3
+                    article: "1"
+                    paragraph:
+                      start: "1"
+                      end: "5"
+  - Article:
+      identifier: "3"
+      children:
+        - body: Az Rvtv. 12. § (7) bekezdésében a „fontatlan” szövegrész helyébe a „nem fontos” szöveg lép.
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 8
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+              - start: 9
+                end: 34
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+                  article: "12"
+                  paragraph: "7"
+            special_phrase:
+              TextAmendment:
+                positions:
+                  - act:
+                      year: 2020
+                      number: 3
+                    article: "12"
+                    paragraph: "7"
+                replacements:
+                  - from: fontatlan
+                    to: nem fontos
+  - Article:
+      identifier: "4"
+      children:
+        - body:
+            intro: "Az Rvtv. 12. § (8) bekezdése helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                children: []
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 8
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+              - start: 9
+                end: 30
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+                  article: "12"
+                  paragraph: "8"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2020
+                    number: 3
+                  article: "12"
+                  paragraph: "8"
+                pure_insertion: false
+  - Article:
+      identifier: "5"
+      children:
+        - body: Az Rvtv. 12. § címében a „röv.” szövegrész helyébe a „rövidítés” szöveg lép.
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 8
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+              - start: 9
+                end: 15
+                reference:
+                  act:
+                    year: 2020
+                    number: 3
+                  article: "12"
+            special_phrase:
+              ArticleTitleAmendment:
+                position:
+                  act:
+                    year: 2020
+                    number: 3
+                  article: "12"
+                replacement:
+                  from: röv.
+                  to: rövidítés
