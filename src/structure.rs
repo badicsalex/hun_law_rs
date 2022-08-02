@@ -248,7 +248,11 @@ pub enum NumericSubpointChildren {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct QuotedBlock {
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub intro: Option<String>,
     pub lines: Vec<IndentedLine>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub wrap_up: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

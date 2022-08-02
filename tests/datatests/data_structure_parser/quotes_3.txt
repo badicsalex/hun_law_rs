@@ -1,0 +1,54 @@
+1. § Quote parsing is hard.
+(Because)
+It is not easy.
+
+2. § Quote parsing is done:
+(intro)
+„Többet is tartalmaz”
+(outro)
+
+3. § Quote parsing is done:
+(intro)
+„Többet is tartalmaz”
+weird outro
+
+4. § Quote parsing is done:
+
+(intro)
+
+„Többet is tartalmaz”
+
+(outro)
+
+5. § Quote parsing is done:
+[int
+ro]
+„Többet 
+is tartalmaz”
+[ou
+tro]
+
+6. § Special case, doesnt need to work well:
+(int
+
+ro)
+(int
+
+ro)
+
+„Többet 
+
+is tartalmaz”
+„Többet is tartalmaz”
+„Többet 
+
+is tartalmaz”
+(ou
+
+tro)
+(ou
+
+tro)
+
+extra wrap
+up

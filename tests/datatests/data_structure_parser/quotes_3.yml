@@ -1,0 +1,68 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: Quote parsing is hard. (Because) It is not easy.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "Quote parsing is done:"
+            children:
+              QuotedBlock:
+                - intro: intro
+                  lines: []
+                  wrap_up: outro
+  - Article:
+      identifier: "3"
+      children:
+        - body:
+            intro: "Quote parsing is done:"
+            children:
+              QuotedBlock:
+                - intro: intro
+                  lines: []
+            wrap_up: weird outro
+  - Article:
+      identifier: "4"
+      children:
+        - body:
+            intro: "Quote parsing is done:"
+            children:
+              QuotedBlock:
+                - intro: intro
+                  lines: []
+                  wrap_up: outro
+  - Article:
+      identifier: "5"
+      children:
+        - body:
+            intro: "Quote parsing is done:"
+            children:
+              QuotedBlock:
+                - intro: int ro
+                  lines: []
+                  wrap_up: ou tro
+  - Article:
+      identifier: "6"
+      children:
+        - body:
+            intro: "Special case, doesnt need to work well: (int ro)"
+            children:
+              QuotedBlock:
+                - intro: int ro
+                  lines: []
+                - lines: []
+                - lines: []
+                  wrap_up: ou tro
+            wrap_up: (ou tro) extra wrap up

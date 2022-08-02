@@ -20,11 +20,13 @@ use lazy_regex::regex;
 use crate::{
     identifier::{HungarianIdentifierChar, IsNextFrom, PrefixedAlphabeticIdentifier},
     structure::{
-        AlphabeticPoint, AlphabeticSubpoint, NumericPoint, NumericSubpoint, Paragraph,
-        ParagraphChildren, QuotedBlock, SAEBody, SAECommon,
+        AlphabeticPoint, AlphabeticSubpoint, NumericPoint, NumericSubpoint, Paragraph, SAEBody,
+        SAECommon,
     },
     util::{indentedline::IndentedLine, QuoteCheck},
 };
+
+use super::quote::QuotedBlockParser;
 
 #[derive(Debug, PartialEq)]
 pub enum ParseWrapUp {
@@ -280,88 +282,5 @@ impl SAEParser for AlphabeticSubpointParser {
         _body: &[IndentedLine],
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
-    }
-}
-
-pub struct QuotedBlockParser;
-
-#[derive(Debug, PartialEq, Eq)]
-enum QuotedBlockParseState {
-    Start,
-    QuotedBlock,
-    WrapUp,
-}
-
-impl QuotedBlockParser {
-    /// Extract multiple instances from the text. Fails if line does not start with quote
-    pub fn extract_multiple(
-        &self,
-        lines: &[IndentedLine],
-    ) -> Result<(ParagraphChildren, Option<String>)> {
-        if lines.is_empty() || !lines[0].content().starts_with(['„', '“']) {
-            bail!("Quoted block starting char not found")
-        }
-
-        let mut state = QuotedBlockParseState::Start;
-        let mut blocks = Vec::new();
-        let mut wrap_up = None;
-        let mut quoted_lines = Vec::new();
-
-        let mut quote_checker = QuoteCheck::default();
-        for line in lines {
-            quote_checker.update(line)?;
-            match state {
-                QuotedBlockParseState::Start => {
-                    if !line.is_empty() {
-                        if line.content().starts_with(['„', '“']) {
-                            if line.content().ends_with('”') {
-                                blocks.push(QuotedBlock {
-                                    lines: vec![line.slice(1, Some(-1))],
-                                })
-                            } else {
-                                quoted_lines = vec![line.slice(1, None)];
-                                state = QuotedBlockParseState::QuotedBlock;
-                            }
-                        } else {
-                            wrap_up = Some(line.content().to_string());
-                            state = QuotedBlockParseState::WrapUp;
-                        }
-                    }
-                }
-                QuotedBlockParseState::QuotedBlock => {
-                    if !line.is_empty()
-                        && !quote_checker.end_is_quoted
-                        && line.content().ends_with('”')
-                    {
-                        quoted_lines.push(line.slice(0, Some(-1)));
-                        blocks.push(QuotedBlock {
-                            lines: std::mem::take(&mut quoted_lines),
-                        });
-                        state = QuotedBlockParseState::Start;
-                    } else {
-                        // Note that this else also applies to EMPTY_LINEs
-                        quoted_lines.push(line.clone());
-                    }
-                }
-                QuotedBlockParseState::WrapUp => {
-                    if let Some(wuc) = &mut wrap_up {
-                        line.append_to(wuc);
-                    } else {
-                        // Should never happen, actually.
-                        wrap_up = Some(line.content().to_string())
-                    }
-                }
-            }
-        }
-        if state == QuotedBlockParseState::QuotedBlock {
-            Err(anyhow!("Quoted block parser ended in invalid state"))
-        } else if blocks.is_empty() {
-            // This should be impossible, actually, because we start with a
-            // starting quote the state is already checked, which means at
-            // least one push should've been done.
-            Err(anyhow!("Quoted block parser didn't find any blocks"))
-        } else {
-            Ok((blocks.into(), wrap_up))
-        }
     }
 }
