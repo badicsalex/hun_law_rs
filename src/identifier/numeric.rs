@@ -16,7 +16,7 @@
 
 use std::{fmt::Display, str::FromStr};
 
-use anyhow::{anyhow, bail, Error, Result};
+use anyhow::{anyhow, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
 
 use super::{HungarianIdentifierChar, IsNextFrom};
@@ -47,9 +47,10 @@ impl NumericIdentifier {
             let (prefix, mut suffix_str) = s.split_at(suffix_start);
             if suffix_str.as_bytes()[0] == b'/' {
                 suffix_str = &suffix_str[1..];
-                if suffix_str.is_empty() {
-                    bail!("There must be an actual suffix_str after '/'")
-                }
+                ensure!(
+                    !suffix_str.is_empty(),
+                    "There must be an actual suffix_str after '/'"
+                );
             }
             let suffix = if suffix_str.is_empty() {
                 None
@@ -93,9 +94,11 @@ impl FromStr for NumericIdentifier {
     /// Convert a possibly suffixed value to an identifier.
     fn from_str(value: &str) -> Result<Self, Self::Err> {
         let (num_str, suffix) = Self::split_suffix(value, &DIGITS)?;
-        if num_str.is_empty() {
-            bail!("{} does not start with a number", value);
-        }
+        ensure!(
+            !num_str.is_empty(),
+            "{} does not start with a number",
+            value
+        );
         Ok(Self {
             num: num_str.parse()?,
             suffix,

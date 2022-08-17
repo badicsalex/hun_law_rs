@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, bail, ensure, Result};
+use anyhow::{anyhow, ensure, Result};
 use lazy_regex::regex;
 use std::fmt::Debug;
 
@@ -159,8 +159,8 @@ pub trait SAEParser {
 
         result.push(self.parse(identifier, &body)?);
 
-        if params.check_children_count && result.len() < 2 {
-            bail!("Not enough children could be parsed");
+        if params.check_children_count {
+            ensure!(result.len() > 1, "Not enough children could be parsed");
         }
         Ok((result.into(), wrap_up))
     }

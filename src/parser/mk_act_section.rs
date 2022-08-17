@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{bail, Result};
+use anyhow::{ensure, Result};
 use lazy_regex::regex_captures;
 
 use crate::identifier::ActIdentifier;
@@ -174,14 +174,15 @@ fn parse_mk_cover_page(page: &PageOfLines) -> Result<Date> {
     // A MAGYAR KÖZTÁRSASÁG HIVATALOS LAPJA
     // 2011. június 28., kedd
 
-    if page.lines.len() < 4 {
-        bail!("First page too short")
-    }
+    ensure!(page.lines.len() >= 4, "First page too short");
     // TODO: Lets hope justified text detector works, and it's not something like
     // "M A G Y A R K O Z L O N Y"
-    if !page.lines[0].content().starts_with("MAGYAR KÖZLÖNY") {
-        bail!("Wrong header on PDF: {}", page.lines[0].content())
-    }
+    ensure!(
+        page.lines[0].content().starts_with("MAGYAR KÖZLÖNY"),
+        "Wrong header on PDF: {}",
+        page.lines[0].content()
+    );
+
     Date::from_hungarian_string(page.lines[3].content())
 }
 
@@ -197,9 +198,10 @@ fn line_is_act_section_end(line: &IndentedLine) -> bool {
 }
 
 pub fn parse_mk_pages_into_acts(pages: &[PageOfLines]) -> Result<Vec<ActRawText>> {
-    if pages.len() < 2 {
-        bail!("Magyar Közlöny PDFs should have at least 2 pages")
-    }
+    ensure!(
+        pages.len() >= 2,
+        "Magyar Közlöny PDFs should have at least 2 pages",
+    );
     let publication_date = parse_mk_cover_page(&pages[0])?;
 
     let mut extractor = ActExtractor::new(publication_date);

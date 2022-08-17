@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::{anyhow, bail, ensure, Result};
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
@@ -241,24 +241,25 @@ impl Reference {
 
     pub fn make_range(start: &Self, end: &Self) -> Result<Self> {
         let mut builder = ReferenceBuilder::new();
-        if start.act != end.act {
-            bail!("Reference ranges between acts are not allowed")
-        }
+        ensure!(
+            start.act == end.act,
+            "Reference ranges between acts are not allowed"
+        );
         if let Some(act) = start.act {
             builder.set_part(act);
         }
 
         // --- article ---
         if start.article != end.article {
-            if start.paragraph.is_some()
-                || end.paragraph.is_some()
-                || start.point.is_some()
-                || end.point.is_some()
-                || start.subpoint.is_some()
-                || end.subpoint.is_some()
-            {
-                bail!("Trying to create a ref range where not only the last component differs (article)")
-            }
+            ensure!(
+                start.paragraph.is_none()
+                    && end.paragraph.is_none()
+                    && start.point.is_none()
+                    && end.point.is_none()
+                    && start.subpoint.is_none()
+                    && end.subpoint.is_none(),
+                "Trying to create a ref range where not only the last component differs (article)"
+            );
             if let (Some(start_article), Some(end_article)) = (&start.article, &end.article) {
                 builder.set_part(RefPartArticle::from_range(
                     start_article.first_in_range(),
@@ -275,13 +276,14 @@ impl Reference {
 
         // --- paragraph ---
         if start.paragraph != end.paragraph {
-            if start.point.is_some()
-                || end.point.is_some()
-                || start.subpoint.is_some()
-                || end.subpoint.is_some()
-            {
-                bail!("Trying to create a ref range where not only the last component differs (paragraph)")
-            }
+            ensure!(
+                start.point.is_none()
+                    && end.point.is_none()
+                    && start.subpoint.is_none()
+                    && end.subpoint.is_none(),
+                "Trying to create a ref range where not only the last component differs (paragraph)"
+            );
+
             if let (Some(start_paragraph), Some(end_paragraph)) = (&start.paragraph, &end.paragraph)
             {
                 builder.set_part(RefPartParagraph::from_range(
@@ -299,9 +301,10 @@ impl Reference {
 
         // --- point ---
         if start.point != end.point {
-            if start.subpoint.is_some() || end.subpoint.is_some() {
-                bail!("Trying to create a ref range where not only the last component differs (point)")
-            }
+            ensure!(
+                start.subpoint.is_none() && end.subpoint.is_none(),
+                "Trying to create a ref range where not only the last component differs (point)"
+            );
             if let (Some(start_point), Some(end_point)) = (&start.point, &end.point) {
                 match (start_point, end_point) {
                     (RefPartPoint::Numeric(sp), RefPartPoint::Numeric(ep)) => builder.set_part(
@@ -398,20 +401,27 @@ impl UncheckedReference {
 
     fn check_ranges(&self) -> Result<()> {
         if let Some(article) = &self.article {
-            if article.is_range()
-                && (self.paragraph.is_some() || self.point.is_some() || self.subpoint.is_some())
-            {
-                bail!("Reference parts found after article range");
+            if article.is_range() {
+                ensure!(
+                    self.paragraph.is_none() && self.point.is_none() && self.subpoint.is_none(),
+                    "Reference parts found after article range"
+                );
             }
         }
         if let Some(paragraph) = &self.paragraph {
-            if paragraph.is_range() && (self.point.is_some() || self.subpoint.is_some()) {
-                bail!("Reference parts found after paragraph range");
+            if paragraph.is_range() {
+                ensure!(
+                    self.point.is_none() && self.subpoint.is_none(),
+                    "Reference parts found after paragraph range"
+                );
             }
         }
         if let Some(point) = &self.point {
-            if point.is_range() && self.subpoint.is_some() {
-                bail!("Reference parts found after point range");
+            if point.is_range() {
+                ensure!(
+                    self.subpoint.is_none(),
+                    "Reference parts found after point range"
+                );
             }
         }
         Ok(())

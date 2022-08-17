@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{bail, Result};
+use anyhow::{bail, ensure, Result};
 
 use crate::{
     structure::{ParagraphChildren, QuotedBlock},
@@ -154,11 +154,11 @@ impl QuotedBlockParser {
                 }
             }
         }
-        if state != QuotedBlockParseState::WaitingForQuotedBlock
-            && state != QuotedBlockParseState::WrapUp
-        {
-            bail!("Quoted block parser ended in invalid state");
-        }
+        ensure!(
+            state == QuotedBlockParseState::WaitingForQuotedBlock
+                || state == QuotedBlockParseState::WrapUp,
+            "Quoted block parser ended in invalid state"
+        );
 
         if let Some(first_block) = blocks.first_mut() {
             first_block.intro = if quoted_block_intro.is_empty() {

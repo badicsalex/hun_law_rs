@@ -15,7 +15,7 @@ use std::collections::HashMap;
 //
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
-use anyhow::{bail, Result};
+use anyhow::{ensure, Result};
 
 pub mod date;
 pub mod indentedline;
@@ -94,21 +94,22 @@ impl QuoteCheck {
         self.quote_level += line.content().matches(['„', '“']).count() as i64;
         self.quote_level -= line.content().matches('”').count() as i64;
 
-        if self.quote_level < 0 {
-            bail!(
-                "Malformed quoting. (Quote_level = {}, line='{}')",
-                self.quote_level,
-                line.content()
-            )
-        }
+        ensure!(
+            self.quote_level >= 0,
+            "Malformed quoting. (Quote_level = {}, line='{}')",
+            self.quote_level,
+            line.content()
+        );
         self.end_is_quoted = self.quote_level > 0;
         Ok(())
     }
 
     pub fn check_end(self) -> Result<()> {
-        if self.quote_level != 0 {
-            bail!("Unclosed quoting. (Quote_level = {})", self.quote_level)
-        }
+        ensure!(
+            self.quote_level == 0,
+            "Unclosed quoting. (Quote_level = {})",
+            self.quote_level
+        );
         Ok(())
     }
 }
