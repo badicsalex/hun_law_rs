@@ -20,6 +20,7 @@ use std::{
     path::Path,
 };
 
+use anyhow::{anyhow, Result};
 use hun_law::{
     cache::Cache,
     identifier::ActIdentifier,
@@ -61,7 +62,7 @@ pub fn read_all(path: impl AsRef<Path>) -> io::Result<Vec<u8>> {
     Ok(result)
 }
 
-pub fn ensure_eq<T, U>(expected: &T, actual: &U, message: &str) -> datatest_stable::Result<()>
+pub fn ensure_eq<T, U>(expected: &T, actual: &U, message: &str) -> Result<()>
 where
     T: Serialize + ?Sized + PartialEq<U>,
     U: Serialize + ?Sized,
@@ -69,15 +70,14 @@ where
     // This is duplicated from ensure_eq, but that's because the structures may be 'equal' even
     // when ther YML form is not.
     if expected != actual {
-        Err(format!(
+        Err(anyhow!(
             "{}\n{}",
             message,
             colored_diff::PrettyDifference {
                 expected: &serde_yaml::to_string(expected).unwrap(),
                 actual: &serde_yaml::to_string(actual).unwrap()
             }
-        )
-        .into())
+        ))
     } else {
         Ok(())
     }
@@ -91,7 +91,7 @@ pub fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
         .collect()
 }
 
-pub fn parse_txt_as_act(path: &Path) -> anyhow::Result<Act> {
+pub fn parse_txt_as_act(path: &Path) -> Result<Act> {
     let data_as_lines = to_indented_lines(&read_all(path)?);
     parse_act_structure(ActRawText {
         identifier: ActIdentifier {
