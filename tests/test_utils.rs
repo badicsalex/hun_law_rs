@@ -25,7 +25,7 @@ use hun_law::{
     cache::Cache,
     identifier::ActIdentifier,
     parser::{mk_act_section::ActRawText, structure::parse_act_structure},
-    structure::Act,
+    structure::{Act, ActChild, ParagraphChildren, SAEBody},
     util::{date::Date, indentedline::IndentedLine},
 };
 use rstest::fixture;
@@ -106,4 +106,24 @@ pub fn parse_txt_as_act(path: &Path) -> Result<Act> {
         },
         body: data_as_lines,
     })
+}
+
+// clean out the quoted blocks' contents, because we don't want to
+// pollute the test yamls with serialized indented lines
+pub fn clean_quoted_blocks(act: &mut Act) {
+    for act_child in &mut act.children {
+        if let ActChild::Article(article) = act_child {
+            for paragraph in &mut article.children {
+                if let SAEBody::Children {
+                    children: ParagraphChildren::QuotedBlock(qbs),
+                    ..
+                } = &mut paragraph.body
+                {
+                    for qb in qbs {
+                        qb.lines = vec![]
+                    }
+                }
+            }
+        }
+    }
 }

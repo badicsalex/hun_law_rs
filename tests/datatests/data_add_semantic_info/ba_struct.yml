@@ -32,8 +32,8 @@ children:
         - body:
             intro: "Az Rvtv. Harmadik Könyv VIII/A. Címének helyébe a következő cím lép:"
             children:
-              BlockAmendment:
-                children: []
+              QuotedBlock:
+                - lines: []
           semantic_info:
             outgoing_references:
               - start: 3

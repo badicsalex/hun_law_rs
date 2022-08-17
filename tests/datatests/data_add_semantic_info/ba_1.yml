@@ -16,10 +16,10 @@ children:
           body:
             intro: "A devizakölcsönök törlesztési árfolyamának rögzítéséről és a lakóingatlanok kényszerértékesítésének rendjéről szóló 2011. évi LXXV. törvény (a továbbiakban: Tv.) 1. § (1) bekezdés 1. pont c) alpontja helyébe a következő rendelkezés lép:"
             children:
-              BlockAmendment:
-                intro: "E törvényben és az e törvény felhatalmazása alapján kiadott jogszabályban: 1. devizakölcsön: a természetes személy mint adós vagy adóstárs és a pénzügyi intézmény között létrejött olyan kölcsönszerződés alapján fennálló tartozás, amelynél"
-                children: []
-                wrap_up: outro for fun
+              QuotedBlock:
+                - intro: "E törvényben és az e törvény felhatalmazása alapján kiadott jogszabályban: 1. devizakölcsön: a természetes személy mint adós vagy adóstárs és a pénzügyi intézmény között létrejött olyan kölcsönszerződés alapján fennálló tartozás, amelynél"
+                  lines: []
+                  wrap_up: outro for fun
           semantic_info:
             outgoing_references:
               - start: 140
@@ -58,9 +58,9 @@ children:
           body:
             intro: "A Tv. 1. § (1) bekezdés 4. pontja helyébe a következő rendelkezés lép:"
             children:
-              BlockAmendment:
-                intro: "E törvényben és az e törvény felhatalmazása alapján kiadott jogszabályban:"
-                children: []
+              QuotedBlock:
+                - intro: "E törvényben és az e törvény felhatalmazása alapján kiadott jogszabályban:"
+                  lines: []
           semantic_info:
             outgoing_references:
               - start: 2

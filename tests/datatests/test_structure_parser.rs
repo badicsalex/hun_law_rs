@@ -16,9 +16,9 @@
 
 use std::path::Path;
 
-use hun_law::structure::{Act, ActChild, ParagraphChildren, SAEBody};
+use hun_law::structure::Act;
 
-use crate::test_utils::{ensure_eq, parse_txt_as_act, read_all};
+use crate::test_utils::{clean_quoted_blocks, ensure_eq, parse_txt_as_act, read_all};
 
 use crate::declare_test;
 declare_test!(dir = "data_structure_parser", pattern = r"\.txt");
@@ -29,24 +29,4 @@ pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let expected_act: Act = serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
     ensure_eq(&expected_act, &act, "Wrong act contents")?;
     Ok(())
-}
-
-// clean out the quoted blocks' contents, because we don't want to
-// pollute the test yamls with serialized indented lines
-fn clean_quoted_blocks(act: &mut Act) {
-    for act_child in &mut act.children {
-        if let ActChild::Article(article) = act_child {
-            for paragraph in &mut article.children {
-                if let SAEBody::Children {
-                    children: ParagraphChildren::QuotedBlock(qbs),
-                    ..
-                } = &mut paragraph.body
-                {
-                    for qb in qbs {
-                        qb.lines = vec![]
-                    }
-                }
-            }
-        }
-    }
 }

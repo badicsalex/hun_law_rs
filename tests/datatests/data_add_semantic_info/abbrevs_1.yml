@@ -95,8 +95,8 @@ children:
         - body:
             intro: "Az Rvtv. 12. § (8) bekezdése helyébe a következő rendelkezés lép:"
             children:
-              BlockAmendment:
-                children: []
+              QuotedBlock:
+                - lines: []
           semantic_info:
             outgoing_references:
               - start: 3
