@@ -1,0 +1,6 @@
+    1. § Létezik az atomenergiáról szóló 1996. évi CXVI. törvény (a továbbiakban: Atv.).
+
+    2. §       Az Atv. 14. § (1) bekezdése helyébe a következő rendelkezés lép:
+               „(1) Az atomenergia-felügyeleti szerv jogszabályban meghatározott esetekben és feltételek szerint az engedélyes
+               kérelmére összevont engedélyt, előzetes típusengedélyt, valamint atomerőmű esetén az eltérő fűtőelemkötegek
+               alkalmazását célzó átalakításhoz előzetes elvi átalakítási engedélyt, vagy átalakítási engedélyt adhat ki.”

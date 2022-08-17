@@ -14,11 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::Result;
+use std::fmt::Debug;
+
+use anyhow::{anyhow, bail, ensure, Context, Result};
 
 use crate::{
+    identifier::{ArticleIdentifier, NumericIdentifier},
+    parser::structure::sae::{AlphabeticPointParser, AlphabeticSubpointParser, SAEParseParams},
+    reference::{AnyReferencePart, IdentifierRange, RefPartPoint, RefPartSubpoint, Reference},
     semantic_info::{SemanticInfo, SpecialPhrase},
-    structure::{Act, ActChild, Article, BlockAmendment, Paragraph, ParagraphChildren, SAEBody},
+    structure::{
+        Act, ActChild, Article, BlockAmendment, BlockAmendmentChildren, Paragraph,
+        ParagraphChildren, SAEBody,
+    },
+    util::indentedline::IndentedLine,
+};
+
+use super::{
+    article::ArticleParserFactory,
+    sae::{NumericPointParser, ParagraphParser, SAEParser},
 };
 
 impl Act {
@@ -60,12 +74,22 @@ impl Paragraph {
             }) = &self.semantic_info
             {
                 match special_phrase {
-                    SpecialPhrase::BlockAmendment(_)
-                    | SpecialPhrase::StructuralBlockAmendment(_) => {
+                    SpecialPhrase::BlockAmendment(ba) => {
+                        *children = ParagraphChildren::BlockAmendment(BlockAmendment {
+                            intro: std::mem::take(&mut quoted_block.intro),
+                            children: convert_simple_block_amendment(
+                                &ba.position,
+                                &quoted_block.lines,
+                            )
+                            .with_context(|| "Error during parsing simple block amendment")?,
+                            wrap_up: std::mem::take(&mut quoted_block.wrap_up),
+                        })
+                    }
+                    SpecialPhrase::StructuralBlockAmendment(_) => {
                         // TODO: actual parsing
                         *children = ParagraphChildren::BlockAmendment(BlockAmendment {
                             intro: std::mem::take(&mut quoted_block.intro),
-                            children: vec![],
+                            children: BlockAmendmentChildren::StructuralElement(vec![]),
                             wrap_up: std::mem::take(&mut quoted_block.wrap_up),
                         })
                     }
@@ -74,5 +98,86 @@ impl Paragraph {
             }
         }
         Ok(())
+    }
+}
+
+fn convert_simple_block_amendment(
+    position: &Reference,
+    lines: &[IndentedLine],
+) -> Result<BlockAmendmentChildren> {
+    ensure!(!lines.is_empty());
+
+    Ok(match position.get_last_part() {
+        Some(AnyReferencePart::Article(article_id)) => {
+            convert_articles(article_id.first_in_range(), lines)?.into()
+        }
+        Some(AnyReferencePart::Paragraph(id)) => {
+            ParagraphParser
+                .extract_multiple(lines, create_parse_params_paragraph(id))?
+                .0
+        }
+        Some(AnyReferencePart::Point(RefPartPoint::Numeric(id))) => {
+            NumericPointParser
+                .extract_multiple(lines, create_parse_params(id))?
+                .0
+        }
+        Some(AnyReferencePart::Point(RefPartPoint::Alphabetic(id))) => {
+            AlphabeticPointParser
+                .extract_multiple(lines, create_parse_params(id))?
+                .0
+        }
+        Some(AnyReferencePart::Subpoint(RefPartSubpoint::Numeric(id))) => {
+            NumericPointParser
+                .extract_multiple(lines, create_parse_params(id))?
+                .0
+        }
+        Some(AnyReferencePart::Subpoint(RefPartSubpoint::Alphabetic(id))) => {
+            let prefix = id.first_in_range().get_prefix();
+            AlphabeticSubpointParser { prefix }
+                .extract_multiple(lines, create_parse_params(id))?
+                .0
+        }
+        Some(AnyReferencePart::Act(_)) | None => bail!(
+            "Invalid reference type in phrase during BlockAmendment conversion: {:?}",
+            position
+        ),
+    })
+}
+
+fn convert_articles(first_id: ArticleIdentifier, lines: &[IndentedLine]) -> Result<Vec<Article>> {
+    let mut factory = ArticleParserFactory::new();
+    let mut result = Vec::new();
+    let mut parser = factory
+        .try_create_from_header(&lines[0], Some(first_id))
+        .ok_or_else(|| anyhow!("First line could not be parsed into an article header"))?;
+    for line in &lines[1..] {
+        if let Some(new_parser) = factory.try_create_from_header(line, None) {
+            result.push(parser.finish()?);
+            parser = new_parser;
+        } else {
+            parser.feed_line(line);
+        }
+    }
+    result.push(parser.finish()?);
+    Ok(result)
+}
+
+fn create_parse_params_paragraph(
+    id: IdentifierRange<NumericIdentifier>,
+) -> SAEParseParams<Option<NumericIdentifier>> {
+    SAEParseParams {
+        expected_identifier: Some(Some(id.first_in_range())),
+        ..Default::default()
+    }
+}
+
+fn create_parse_params<T>(id: IdentifierRange<T>) -> SAEParseParams<T>
+where
+    T: Eq + Debug + Clone,
+{
+    SAEParseParams {
+        expected_identifier: Some(id.first_in_range()),
+        parse_wrap_up: false,
+        check_children_count: false,
     }
 }

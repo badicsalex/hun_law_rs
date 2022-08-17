@@ -1,0 +1,81 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik a gyermekek védelméről és a gyámügyi igazgatásról szóló 1997. évi XXXI. törvény (a továbbiakban: Gyvt.)."
+          semantic_info:
+            outgoing_references:
+              - start: 75
+                end: 101
+                reference:
+                  act:
+                    year: 1997
+                    number: 31
+            new_abbreviations:
+              - act_id:
+                  year: 1997
+                  number: 31
+                abbreviation: Gyvt.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "A Gyvt. 102. §-a a következő (5)–(8) bekezdéssel egészül ki:"
+            children:
+              BlockAmendment:
+                children:
+                  Paragraph:
+                    - identifier: "5"
+                      body:
+                        intro: "A hivatásos gondnok egyidejűleg 30 gondnokolt érdekében járhat el, kivéve ha"
+                        children:
+                          AlphabeticPoint:
+                            - identifier: a
+                              body: "az adott gondnokoltak igényeinek figyelembevétele alapján a gondnoki feladatok ellátását legfeljebb 35 gondnokolt egyidejű ellátása nem veszélyezteti, vagy"
+                            - identifier: b
+                              body: a hivatásos gondnoki feladatokat kormányzati szolgálati jogviszonyban álló személy látja el.
+                    - identifier: "6"
+                      body: Az (1a) bekezdés b) pontjában meghatározott személy egyidejűleg legfeljebb 45 gondnokolt érdekében járhat el.
+                    - identifier: "7"
+                      body: "Ha a hivatásos gondnok hivatásos támogatói feladatokat is ellát, a gondnokoltjainak és támogatott személyeinek száma együttesen sem haladhatja meg az (1a) és (1b) bekezdésben foglalt létszámot."
+                    - identifier: "8"
+                      body: "Ha a hivatásos gondnok tevékenységét munkavégzésre irányuló egyéb jogviszonyban látja el, díjazását úgy kell megállapítani, hogy annak összege gondnokoltanként – a gondnoki feladatok mértéke alapján – az öregségi nyugdíj mindenkori legkisebb összegének legalább 10%-át elérje."
+          semantic_info:
+            outgoing_references:
+              - start: 2
+                end: 7
+                reference:
+                  act:
+                    year: 1997
+                    number: 31
+              - start: 8
+                end: 54
+                reference:
+                  act:
+                    year: 1997
+                    number: 31
+                  article: "102"
+                  paragraph:
+                    start: "5"
+                    end: "8"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1997
+                    number: 31
+                  article: "102"
+                  paragraph:
+                    start: "5"
+                    end: "8"
+                pure_insertion: true

@@ -1,0 +1,70 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik a Polgári Törvénykönyvről szóló 2013. évi V. törvény (a továbbiakban: Ptk.)."
+          semantic_info:
+            outgoing_references:
+              - start: 48
+                end: 71
+                reference:
+                  act:
+                    year: 2013
+                    number: 5
+            new_abbreviations:
+              - act_id:
+                  year: 2013
+                  number: 5
+                abbreviation: Ptk.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "A Ptk. 3:305. §-a a következő szöveggel lép hatályba:"
+            children:
+              BlockAmendment:
+                children:
+                  Article:
+                    - identifier: "3:305"
+                      # This is the main tested part, the fact that we skipped the empty line after the title.
+                      title: Kötvény helyett részvény igénylése és a kötvény részvénnyé történő átváltozása
+                      children:
+                        - identifier: "1"
+                          body: Az átváltoztatható ...
+                        - identifier: "2"
+                          body: Az átváltoztatható ...
+                        - identifier: "3"
+                          body: Az (1) bekezdés ...
+          semantic_info:
+            outgoing_references:
+              - start: 2
+                end: 6
+                reference:
+                  act:
+                    year: 2013
+                    number: 5
+              - start: 7
+                end: 18
+                reference:
+                  act:
+                    year: 2013
+                    number: 5
+                  article: "3:305"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2013
+                    number: 5
+                  article: "3:305"
+                pure_insertion: false

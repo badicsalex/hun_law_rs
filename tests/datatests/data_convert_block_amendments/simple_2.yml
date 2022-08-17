@@ -1,0 +1,64 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik az atomenergiáról szóló 1996. évi CXVI. törvény (a továbbiakban: Atv.)."
+          semantic_info:
+            outgoing_references:
+              - start: 37
+                end: 63
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+            new_abbreviations:
+              - act_id:
+                  year: 1996
+                  number: 116
+                abbreviation: Atv.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "Az Atv. 14. § (1) bekezdése helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                children:
+                  Paragraph:
+                    - identifier: "1"
+                      body: "Az atomenergia-felügyeleti szerv jogszabályban meghatározott esetekben és feltételek szerint az engedélyes kérelmére összevont engedélyt, előzetes típusengedélyt, valamint atomerőmű esetén az eltérő fűtőelemkötegek alkalmazását célzó átalakításhoz előzetes elvi átalakítási engedélyt, vagy átalakítási engedélyt adhat ki."
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 7
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+              - start: 8
+                end: 29
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+                  article: "14"
+                  paragraph: "1"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1996
+                    number: 116
+                  article: "14"
+                  paragraph: "1"
+                pure_insertion: false

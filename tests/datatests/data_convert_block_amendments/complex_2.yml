@@ -1,0 +1,76 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik az atomenergiáról szóló 1996. évi CXVI. törvény (a továbbiakban: Atv.)."
+          semantic_info:
+            outgoing_references:
+              - start: 37
+                end: 63
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+            new_abbreviations:
+              - act_id:
+                  year: 1996
+                  number: 116
+                abbreviation: Atv.
+  - Article:
+      identifier: "2"
+      children:
+        - identifier: "1"
+          body:
+            intro: "Az Atv. 67. § s) pontja helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                intro: "Felhatalmazást kap a Kormány, hogy rendeletben szabályozza"
+                children:
+                  AlphabeticPoint:
+                    - identifier: s
+                      body:
+                        intro: az atomenergia alkalmazása körében eljáró
+                        children:
+                          AlphabeticSubpoint:
+                            - identifier: sa
+                              body: "független műszaki szakértői tevékenység folytatásának szabályait, végzésének feltételeit, a vonatkozó összeférhetetlenségi szabályokat, a szakértői szakterületeket, az e tevékenységre jogosító engedély kiadásának rendjét, a tevékenységre jogosító engedély iránti kérelmezési eljárásban részt vevő minősítő bizottságok tagjaira és összeférhetetlenségére vonatkozó feltételeket, a szakvélemény tartalmi elemeit és elkészítésére irányadó szabályokat, a szakértői tevékenységre jogszabályban vagy hatósági határozatban előírt kötelezettségek be nem tartása esetén alkalmazandó jogkövetkezményeket, valamint a külföldi szakértőre vonatkozó, az EGT-állam állampolgár szakértőitől eltérő szabályait;"
+                            - identifier: sb
+                              body: "műszaki szakértő szervezet minősítésének, nyilvántartásának, működésének és alkalmazásának szabályait."
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 7
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+              - start: 8
+                end: 24
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+                  article: "67"
+                  point: s
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1996
+                    number: 116
+                  article: "67"
+                  point: s
+                pure_insertion: false
+        - identifier: "2"
+          body: Second paragraph.
+          semantic_info: {}

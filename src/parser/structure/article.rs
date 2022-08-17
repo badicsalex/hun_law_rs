@@ -17,7 +17,7 @@
 use anyhow::{anyhow, Result};
 use lazy_regex::regex;
 
-use super::sae::{ParagraphParser, ParseWrapUp, SAEParser};
+use super::sae::{ParagraphParser, SAEParseParams, SAEParser};
 use crate::{
     identifier::{ArticleIdentifier, IsNextFrom},
     structure::{Article, Paragraph},
@@ -37,7 +37,11 @@ impl ArticleParserFactory {
         }
     }
 
-    pub fn try_create_from_header(&mut self, line: &IndentedLine) -> Option<ArticleParser> {
+    pub fn try_create_from_header(
+        &mut self,
+        line: &IndentedLine,
+        expected_identifier: Option<ArticleIdentifier>,
+    ) -> Option<ArticleParser> {
         if let Some(expected_indent) = self.article_header_indent {
             if !line.indent_less_or_eq(expected_indent) {
                 return None;
@@ -48,7 +52,11 @@ impl ArticleParserFactory {
             "^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$"
         ))?;
 
-        if let Some(last_id) = self.last_id {
+        if let Some(expected_id) = expected_identifier {
+            if expected_id != identifier {
+                return None;
+            }
+        } else if let Some(last_id) = self.last_id {
             if !identifier.is_next_from(last_id) {
                 return None;
             }
@@ -86,9 +94,14 @@ impl ArticleParser {
         if self.lines[0].is_empty() {
             self.lines.remove(0);
         }
-        let children: Vec<Paragraph> = if let Ok((extracted, wrap_up)) =
-            ParagraphParser.extract_multiple(&self.lines, ParseWrapUp::No)
-        {
+        let children: Vec<Paragraph> = if let Ok((extracted, wrap_up)) = ParagraphParser
+            .extract_multiple(
+                &self.lines,
+                SAEParseParams {
+                    check_children_count: true,
+                    ..Default::default()
+                },
+            ) {
             assert!(wrap_up.is_none());
             extracted
         } else {

@@ -1,0 +1,80 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik a Polgári Törvénykönyvről szóló 2013. évi V. törvény (a továbbiakban: Ptk.)."
+          semantic_info:
+            outgoing_references:
+              - start: 48
+                end: 71
+                reference:
+                  act:
+                    year: 2013
+                    number: 5
+            new_abbreviations:
+              - act_id:
+                  year: 2013
+                  number: 5
+                abbreviation: Ptk.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "A Ptk. 6:130. §-a a következő szöveggel lép hatályba:"
+            children:
+              BlockAmendment:
+                children:
+                  Article:
+                    - identifier: "6:130"
+                      title: Pénztartozás teljesítésének ideje
+                      children:
+                        - identifier: "1"
+                          body: "Ha a felek a szerződésben a pénztartozás teljesítésének idejét nem határozták meg, a pénztartozást a jogosult fizetési felszólításának vagy számlájának kézhezvételétől számított harminc napon belül kell teljesíteni. Ha a pénztartozás fizetésére kötelezett szerződő hatóság, a szerződő hatóságnak nem minősülő vállalkozással kötött szerződése esetén pénztartozását a jogosult fizetési felszólításának vagy számlájának kézhezvételétől számított harminc napon belül köteles teljesíteni, ebben az esetben a számla kézhezvételének napja nem képezheti a felek között érvényes megállapodás tárgyát."
+                        - identifier: "2"
+                          body:
+                            intro: "A jogosult teljesítésétől számított harminc napon belül kell teljesíteni a pénztartozást, ha"
+                            children:
+                              AlphabeticPoint:
+                                - identifier: a
+                                  body: a jogosult fizetési felszólításának vagy számlájának kézhezvétele a jogosult teljesítését (vállalkozási szerződés esetén az átadás-átvételi eljárás befejezését) megelőzte;
+                                - identifier: b
+                                  body: nem állapítható meg egyértelműen a jogosult fizetési felszólítása vagy számlája kézhezvételének időpontja; vagy
+                                - identifier: c
+                                  body: a kötelezettnek fizetési felszólítás vagy számla bevárása nélkül teljesítenie kell fizetési kötelezettségét.
+                        - identifier: "3"
+                          body: "Vállalkozások közötti szerződés esetén az e § rendelkezéseitől a jóhiszeműség és tisztesség követelményének megsértésével egyoldalúan és indokolatlanul a jogosult hátrányára eltérő szerződési feltételt – mint tisztességtelen kikötést – a jogosult megtámadhatja. Pénztartozás fizetésére kötelezett szerződő hatóságnak szerződő hatóságnak nem minősülő vállalkozással kötött szerződése esetén a pénztartozás teljesítésére kikötött idő az (1)–(2) bekezdésben meghatározott határidőket csak akkor haladhatja meg, ha a szerződésben a felek a pénztartozás halasztott teljesítésében állapodtak meg, feltéve hogy a szerződés jellege miatt ez tényszerűen indokolt; a pénztartozás teljesítésére kikötött idő ebben az esetben sem haladhatja meg a hatvan napot. Pénztartozás fizetésére kötelezett szerződő hatóságnak szerződő hatóságnak nem minősülő vállalkozással kötött szerződése esetén a pénztartozás teljesítésére kikötött idő a hatvan napot meghaladó részében semmis."
+                        - identifier: "4"
+                          body: "Vállalkozások közötti szerződés esetén az ellenkező bizonyításáig tisztességtelen kikötésnek kell tekinteni a jóhiszeműség és tisztesség követelményének megsértésével egyoldalúan és indokolatlanul a jogosult hátrányára eltérő olyan szerződési feltételt, amely a pénztartozás teljesítésére az (1) és (2) bekezdésben foglaltaktól eltérő, hatvan napnál hosszabb határidőt határoz meg. Pénztartozás fizetésére kötelezett szerződő hatóságnak szerződő hatóságnak nem minősülő vállalkozással kötött szerződése esetén a pénztartozás teljesítésére az (1)–(2) bekezdés rendelkezéseitől eltérően, a jóhiszeműség és tisztesség követelményének megsértésével egyoldalúan és indokolatlanul a jogosult hátrányára kikötött olyan határidőt, amely a hatvan napot nem haladja meg – mint tisztességtelen kikötést –, a jogosult megtámadhatja."
+          semantic_info:
+            outgoing_references:
+              - start: 2
+                end: 6
+                reference:
+                  act:
+                    year: 2013
+                    number: 5
+              - start: 7
+                end: 18
+                reference:
+                  act:
+                    year: 2013
+                    number: 5
+                  article: "6:130"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2013
+                    number: 5
+                  article: "6:130"
+                pure_insertion: false

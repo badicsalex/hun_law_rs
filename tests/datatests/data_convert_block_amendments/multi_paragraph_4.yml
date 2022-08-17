@@ -1,0 +1,64 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A Büntető Törvénykönyvről szóló 2012. évi C. törvény (a továbbiakban: Btk.) 283. § (2) és (2a) bekezdése helyébe a következő rendelkezések lépnek:"
+            children:
+              BlockAmendment:
+                children:
+                  Paragraph:
+                    - identifier: "2"
+                      body: "Aki abból a célból, hogy az ellene folytatott büntetőeljárás alól kivonja magát, a bűnügyi felügyelet tartama alatt a számára meghatározott területet, lakást, egyéb helyiséget, intézményt, vagy ahhoz tartozó bekerített helyet a kényszerintézkedés szabályainak megszegésével elhagyja, vétség miatt két évig terjedő szabadságvesztéssel büntetendő."
+                    - identifier: 2a
+                      body: "A (2) bekezdés szerint büntetendő, aki abból a célból, hogy az ellene folytatott kiadatási vagy átadási eljárás alól kivonja magát, az ideiglenes kiadatási, illetve az ideiglenes átadási bűnügyi felügyelet tartama alatt a számára meghatározott területet, lakást, egyéb helyiséget, intézményt, vagy ahhoz tartozó bekerített helyet a kényszerintézkedés szabályainak megszegésével elhagyja."
+          semantic_info:
+            outgoing_references:
+              - start: 40
+                end: 63
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+              - start: 88
+                end: 99
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "283"
+                  paragraph: "2"
+              - start: 104
+                end: 119
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "283"
+                  paragraph: 2a
+            new_abbreviations:
+              - act_id:
+                  year: 2012
+                  number: 100
+                abbreviation: Btk.
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "283"
+                  paragraph:
+                    start: "2"
+                    end: 2a
+                pure_insertion: false

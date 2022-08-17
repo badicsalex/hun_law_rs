@@ -1,0 +1,48 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A társasági adóról és az osztalékadóról szóló 1996. évi LXXXI. törvény 4. § 44/a. pontja helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                intro: E törvény alkalmazásában
+                children:
+                  NumericPoint:
+                    - identifier: 44a
+                      body: "képzés: a 22/C. § alkalmazásában olyan oktatást tartalmazó képzés, amely nem fontos."
+          semantic_info:
+            outgoing_references:
+              - start: 56
+                end: 83
+                reference:
+                  act:
+                    year: 1996
+                    number: 81
+              - start: 84
+                end: 102
+                reference:
+                  act:
+                    year: 1996
+                    number: 81
+                  article: "4"
+                  point: 44a
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1996
+                    number: 81
+                  article: "4"
+                  point: 44a
+                pure_insertion: false

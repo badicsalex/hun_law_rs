@@ -259,33 +259,34 @@ pub struct QuotedBlock {
 pub struct BlockAmendment {
     #[serde(default, skip_serializing_if = "is_default")]
     pub intro: Option<String>,
-    pub children: Vec<BlockAmendmentChild>,
+    pub children: BlockAmendmentChildren,
     #[serde(default, skip_serializing_if = "is_default")]
     pub wrap_up: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
-pub enum BlockAmendmentChild {
-    Article(Article),
-    Paragraph(Paragraph),
-    AlphabeticPoint(AlphabeticPoint),
-    NumericPoint(NumericPoint),
-    AlphabeticSubpoint(AlphabeticSubpoint),
-    NumericSubpoint(NumericSubpoint),
-    StructuralElement(StructuralElement),
+pub enum BlockAmendmentChildren {
+    Article(Vec<Article>),
+    Paragraph(Vec<Paragraph>),
+    AlphabeticPoint(Vec<AlphabeticPoint>),
+    NumericPoint(Vec<NumericPoint>),
+    AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
+    NumericSubpoint(Vec<NumericSubpoint>),
+    StructuralElement(Vec<ActChild>),
 }
 
 // This trait is a workaround for the following limitations:
 // - No inherent associated types
 // - Generic type cannot be used as a trait bound
 pub trait SAECommon: Sized {
-    type IdentifierType: IsNextFrom + Clone + Debug;
+    type IdentifierType: IsNextFrom + Clone + Debug + Eq;
     type ChildrenType;
     fn new(identifier: Self::IdentifierType, body: SAEBody<Self::ChildrenType>) -> Self;
 }
 
-impl<IdentifierType: IsDefault + IsNextFrom + Clone + Debug, ChildrenType> SAECommon
-    for SubArticleElement<IdentifierType, ChildrenType>
+impl<IdentifierType, ChildrenType> SAECommon for SubArticleElement<IdentifierType, ChildrenType>
+where
+    IdentifierType: IsDefault + IsNextFrom + Clone + Debug + Eq,
 {
     type IdentifierType = IdentifierType;
     type ChildrenType = ChildrenType;

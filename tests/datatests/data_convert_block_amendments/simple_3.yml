@@ -1,0 +1,48 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A légiközlekedésről szóló 1995. évi XCVII. törvény 71. §-a a következő 3a. ponttal egészül ki:"
+            children:
+              BlockAmendment:
+                intro: A törvény alkalmazásában
+                children:
+                  NumericPoint:
+                    - identifier: 3a
+                      body: "gazdálkodó szervezet: a polgári perrendtartásról szóló törvény szerinti gazdálkodó szervezet;"
+          semantic_info:
+            outgoing_references:
+              - start: 32
+                end: 59
+                reference:
+                  act:
+                    year: 1995
+                    number: 97
+              - start: 60
+                end: 94
+                reference:
+                  act:
+                    year: 1995
+                    number: 97
+                  article: "71"
+                  point: 3a
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1995
+                    number: 97
+                  article: "71"
+                  point: 3a
+                pure_insertion: true

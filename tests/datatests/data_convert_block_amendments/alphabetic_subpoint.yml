@@ -1,0 +1,93 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - identifier: "1"
+          body:
+            intro: "A Büntető Törvénykönyvről szóló 2012. évi C. törvény (a továbbiakban: Btk.) 28. §-a a következő (1a) bekezdéssel egészül ki:"
+            children:
+              BlockAmendment:
+                children:
+                  Paragraph:
+                    - identifier: 1a
+                      body: Ha ...
+          semantic_info:
+            outgoing_references:
+              - start: 40
+                end: 63
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+              - start: 88
+                end: 128
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "28"
+                  paragraph: 1a
+            new_abbreviations:
+              - act_id:
+                  year: 2012
+                  number: 100
+                abbreviation: Btk.
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "28"
+                  paragraph: 1a
+                pure_insertion: true
+        - identifier: "2"
+          body:
+            intro: "A Btk. 398. § (3) bekezdés a) pont af) alpontja helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                intro: "A (2) bekezdés b) pontja alkalmazása szempontjából az alapanyag jelentős mennyiségű, ha"
+                children:
+                  AlphabeticSubpoint:
+                    - identifier: af
+                      body: "szárított dohány, fermentált dohány vagy vágott dohány esetén az 5 kilogrammot,"
+                wrap_up: meghaladja.
+          semantic_info:
+            outgoing_references:
+              - start: 2
+                end: 6
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+              - start: 7
+                end: 49
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "398"
+                  paragraph: "3"
+                  point: a
+                  subpoint: af
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "398"
+                  paragraph: "3"
+                  point: a
+                  subpoint: af
+                pure_insertion: false

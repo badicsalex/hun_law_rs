@@ -1,0 +1,7 @@
+        1. §           A tesztelésről szóló 2042. évi XX. törvény 1-3. §-ai helyébe a következő rendelkezés lép:
+                       „1. § elso
+                       2. § [masodik cim]
+                       masodik
+                       3. § harmadik
+                       harmadik.
+                       ”

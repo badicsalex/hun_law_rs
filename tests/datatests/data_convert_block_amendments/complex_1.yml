@@ -1,0 +1,68 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik az atomenergiáról szóló 1996. évi CXVI. törvény (a továbbiakban: Atv.)."
+          semantic_info:
+            outgoing_references:
+              - start: 37
+                end: 63
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+            new_abbreviations:
+              - act_id:
+                  year: 1996
+                  number: 116
+                abbreviation: Atv.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "Az Atv. 13. § helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                children:
+                  Article:
+                    - identifier: "13"
+                      children:
+                        - identifier: "1"
+                          body: "A nukleáris létesítménnyel összefüggő hatósági engedélyezési eljárás során biztosítani kell a szakértőként eljáró személyek vagy szervezetek függetlenségét. Az egyes eljárásokban kirendelt, illetve felkért szakértők vagy szakértő szervezetek egymással nem állhatnak semmilyen függőségi viszonyban, nem lehetnek az eljárásban érintett ügyfelek hozzátartozói, nem állhatnak semmilyen közvetlen vagy közvetett gazdasági kapcsolatban a kérelmezővel, továbbá a hatósági eljárásban megjelölt technológia-szállítójával vagy annak versenytársával."
+                        - identifier: "2"
+                          body: "A nukleáris létesítmény nukleáris biztonságára lényeges hatással levő tevékenység engedélyezése esetében a kérelmet megalapozó dokumentációt független szakértői értékelésnek kell alávetni. A független szakértői értékelést a kérelmező a hatósági eljárásban, az arra vonatkozó nukleáris biztonsági követelmények szerint nyújtja be az atomenergia-felügyeleti szervhez."
+                        - identifier: "3"
+                          body: "A (2) bekezdéstől eltérően új nukleáris létesítmény létesítési engedélyezési eljárásában a független műszaki szakértői véleményeztetés nem előfeltétele az engedélyezési eljárásnak. Ha a kérelmező nem vagy nem teljes körűen nyújt be független szakértői véleményt, akkor az atomenergia felügyeleti szerv azt hivatalból készítteti el, amelynek költsége a kérelmezőt terheli."
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 7
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+              - start: 8
+                end: 14
+                reference:
+                  act:
+                    year: 1996
+                    number: 116
+                  article: "13"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1996
+                    number: 116
+                  article: "13"
+                pure_insertion: false

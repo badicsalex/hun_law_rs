@@ -1,0 +1,67 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik a foglalkoztatás elősegítéséről és a munkanélküliek ellátásáról szóló 1991. évi IV. törvény (a továbbiakban: Flt.)."
+          semantic_info:
+            outgoing_references:
+              - start: 94
+                end: 118
+                reference:
+                  act:
+                    year: 1991
+                    number: 4
+            new_abbreviations:
+              - act_id:
+                  year: 1991
+                  number: 4
+                abbreviation: Flt.
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "Az Flt. 57/A. § (2) bekezdése a következő k) ponttal egészül ki:"
+            children:
+              BlockAmendment:
+                intro: "Az (1) bekezdésben meghatározott szervek a jogszabályban meghatározott feladataik ellátásával összefüggésben a következő adatok nyilvántartására jogosultak:"
+                children:
+                  AlphabeticPoint:
+                    - identifier: k
+                      body: a nemzetiséghez való tartozásra vonatkozó adatok.
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 7
+                reference:
+                  act:
+                    year: 1991
+                    number: 4
+              - start: 8
+                end: 56
+                reference:
+                  act:
+                    year: 1991
+                    number: 4
+                  article: 57/A
+                  paragraph: "2"
+                  point: k
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1991
+                    number: 4
+                  article: 57/A
+                  paragraph: "2"
+                  point: k
+                pure_insertion: true

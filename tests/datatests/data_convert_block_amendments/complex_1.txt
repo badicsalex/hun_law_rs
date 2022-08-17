@@ -1,0 +1,15 @@
+    1. § Létezik az atomenergiáról szóló 1996. évi CXVI. törvény (a továbbiakban: Atv.).
+    2. §      Az Atv. 13. § helyébe a következő rendelkezés lép:
+               „13. § (1) A nukleáris létesítménnyel összefüggő hatósági engedélyezési eljárás során biztosítani kell a szakértőként
+               eljáró személyek vagy szervezetek függetlenségét. Az egyes eljárásokban kirendelt, illetve felkért szakértők vagy
+               szakértő szervezetek egymással nem állhatnak semmilyen függőségi viszonyban, nem lehetnek az eljárásban
+               érintett ügyfelek hozzátartozói, nem állhatnak semmilyen közvetlen vagy közvetett gazdasági kapcsolatban
+               a kérelmezővel, továbbá a hatósági eljárásban megjelölt technológia-szállítójával vagy annak versenytársával.
+               (2) A nukleáris létesítmény nukleáris biztonságára lényeges hatással levő tevékenység engedélyezése esetében
+               a kérelmet megalapozó dokumentációt független szakértői értékelésnek kell alávetni. A független szakértői
+               értékelést a kérelmező a hatósági eljárásban, az arra vonatkozó nukleáris biztonsági követelmények szerint nyújtja
+               be az atomenergia-felügyeleti szervhez.
+               (3) A (2) bekezdéstől eltérően új nukleáris létesítmény létesítési engedélyezési eljárásában a független műszaki
+               szakértői véleményeztetés nem előfeltétele az engedélyezési eljárásnak. Ha a kérelmező nem vagy nem teljes
+               körűen nyújt be független szakértői véleményt, akkor az atomenergia felügyeleti szerv azt hivatalból készítteti el,
+               amelynek költsége a kérelmezőt terheli.”

@@ -1,0 +1,13 @@
+    1. §       Létezik a gyermekek védelméről és a gyámügyi igazgatásról szóló 1997. évi XXXI. törvény (a továbbiakban: Gyvt.).
+    2. §        A Gyvt. 102. §-a a következő (5)–(8) bekezdéssel egészül ki:
+                „(5) A hivatásos gondnok egyidejűleg 30 gondnokolt érdekében járhat el, kivéve ha
+                a) az adott gondnokoltak igényeinek figyelembevétele alapján a gondnoki feladatok ellátását legfeljebb
+                35 gondnokolt egyidejű ellátása nem veszélyezteti, vagy
+                b) a hivatásos gondnoki feladatokat kormányzati szolgálati jogviszonyban álló személy látja el.
+                (6) Az (1a) bekezdés b) pontjában meghatározott személy egyidejűleg legfeljebb 45 gondnokolt érdekében
+                járhat el.
+                (7) Ha a hivatásos gondnok hivatásos támogatói feladatokat is ellát, a gondnokoltjainak és támogatott
+                személyeinek száma együttesen sem haladhatja meg az (1a) és (1b) bekezdésben foglalt létszámot.
+                (8) Ha a hivatásos gondnok tevékenységét munkavégzésre irányuló egyéb jogviszonyban látja el, díjazását úgy
+                kell megállapítani, hogy annak összege gondnokoltanként – a gondnoki feladatok mértéke alapján – az öregségi
+                nyugdíj mindenkori legkisebb összegének legalább 10%-át elérje.”

@@ -15,6 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 pub mod test_add_semantic_info;
+pub mod test_convert_block_amendments;
 pub mod test_pdf_parser;
 pub mod test_semantic_parser;
 pub mod test_structure_parser;

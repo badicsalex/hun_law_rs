@@ -171,7 +171,26 @@ pub struct Reference {
     subpoint: Option<RefPartSubpoint>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, FromVariants)]
+pub enum AnyReferencePart {
+    Act(ActIdentifier),
+    Article(RefPartArticle),
+    Paragraph(RefPartParagraph),
+    Point(RefPartPoint),
+    Subpoint(RefPartSubpoint),
+}
+
 impl Reference {
+    pub fn get_last_part(&self) -> Option<AnyReferencePart> {
+        self.subpoint
+            .clone()
+            .map(|x| x.into())
+            .or_else(|| self.point.clone().map(|x| x.into()))
+            .or_else(|| self.paragraph.clone().map(|x| x.into()))
+            .or_else(|| self.article.clone().map(|x| x.into()))
+            .or_else(|| self.act.map(|x| x.into()))
+    }
+
     pub fn is_act_only(&self) -> bool {
         self.article.is_none()
     }

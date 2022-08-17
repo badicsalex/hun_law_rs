@@ -53,4 +53,5 @@ generate_harness!(
     test_structure_parser,
     test_semantic_parser,
     test_add_semantic_info,
+    test_convert_block_amendments,
 );

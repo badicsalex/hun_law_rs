@@ -66,7 +66,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
                 })
                 .or_else(|| {
                     article_parser_factory
-                        .try_create_from_header(line)
+                        .try_create_from_header(line, None)
                         .map(ParseState::Article)
                 })
         } else {

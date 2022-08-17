@@ -1,0 +1,10 @@
+    1. §       Létezik a gyermekek védelméről és a gyámügyi igazgatásról szóló 1997. évi XXXI. törvény (a továbbiakban: Gyvt.).
+    2. §        A Gyvt. 69/D. §-a a következő (1a) és (1b) bekezdéssel egészül ki:
+                „(1a) A közhasznú szervezet – a (3) bekezdésben foglalt kivétellel – azzal a vér szerinti szülővel és örökbe fogadni
+                szándékozó személlyel, akik már ismerik egymást és együtt kérik a nyílt örökbefogadást elősegítő szolgáltatást
+                a) megállapodást köt, vagy
+                b) – ha a megállapodás megkötésére nem kerül sor – tájékoztatást nyújt, hogy a nyílt örökbefogadást elősegítő
+                szolgáltatás a területi gyermekvédelmi szakszolgálatnál is igénybe vehető.
+                (1b) Ha a közhasznú szervezet a (3) bekezdésben meghatározott okokról szerez tudomást, öt napon belül írásban
+                értesíti az örökbefogadásra való alkalmasságot megállapító, valamint az örökbefogadás engedélyezésére illetékes
+                gyámhatóságot.”

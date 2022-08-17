@@ -1,0 +1,153 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body: "Létezik a gyermekek védelméről és a gyámügyi igazgatásról szóló 1997. évi XXXI. törvény (a továbbiakban: Gyvt.)."
+          semantic_info:
+            outgoing_references:
+              - start: 75
+                end: 101
+                reference:
+                  act:
+                    year: 1997
+                    number: 31
+            new_abbreviations:
+              - act_id:
+                  year: 1997
+                  number: 31
+                abbreviation: Gyvt.
+  - Article:
+      identifier: "2"
+      children:
+        - body: "Létezik az előfizetői jogviszonnyal és az elektronikus hírközlési szolgáltatásokkal kapcsolatos fogalmakat az elektronikus hírközlésről szóló 2003. évi C. törvény (a továbbiakban: Eht.)."
+          semantic_info:
+            outgoing_references:
+              - start: 157
+                end: 180
+                reference:
+                  act:
+                    year: 2003
+                    number: 100
+            new_abbreviations:
+              - act_id:
+                  year: 2003
+                  number: 100
+                abbreviation: Eht.
+  - Article:
+      identifier: "3"
+      children:
+        - identifier: "1"
+          body:
+            intro: "A Gyvt. 5. §-a a következő ny) ponttal egészül ki:"
+            children:
+              BlockAmendment:
+                intro: E törvény alkalmazásában
+                children:
+                  AlphabeticPoint:
+                    - identifier: ny
+                      body: "nevelőszülő: a Ptk. 4:122. § (2) bekezdése szerinti gyermekvédelmi nevelőszülő,"
+          semantic_info:
+            outgoing_references:
+              - start: 2
+                end: 7
+                reference:
+                  act:
+                    year: 1997
+                    number: 31
+              - start: 8
+                end: 41
+                reference:
+                  act:
+                    year: 1997
+                    number: 31
+                  article: "5"
+                  point: ny
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1997
+                    number: 31
+                  article: "5"
+                  point: ny
+                pure_insertion: true
+        - identifier: "2"
+          body:
+            intro: "A Gyvt. 5. §-a a következő sz) ponttal egészül ki:"
+            children:
+              BlockAmendment:
+                intro: E törvény alkalmazásában
+                children:
+                  AlphabeticPoint:
+                    - identifier: sz
+                      body: "családbafogadó gyám: az a gyámként kirendelt személy, akinél a gyámhatóság a gyermeket ideiglenes hatállyal elhelyezte, vagy akinél a bíróság a gyermeket elhelyezte, vagy aki a gyermeket a gyámhatóság hozzájárulásával családba fogadta, kivéve ha a gyermeket ideiglenes hatállyal nevelőszülőnél, gyermekotthonban vagy más bentlakásos intézményben helyezték el,"
+          semantic_info:
+            outgoing_references:
+              - start: 2
+                end: 7
+                reference:
+                  act:
+                    year: 1997
+                    number: 31
+              - start: 8
+                end: 41
+                reference:
+                  act:
+                    year: 1997
+                    number: 31
+                  article: "5"
+                  point: sz
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 1997
+                    number: 31
+                  article: "5"
+                  point: sz
+                pure_insertion: true
+        - identifier: "3"
+          body:
+            intro: "Az Eht. 188. §-a a következő 31/a. ponttal egészül ki:"
+            children:
+              BlockAmendment:
+                intro: "E törvény alkalmazásában:"
+                children:
+                  NumericPoint:
+                    - identifier: 31a
+                      body: "Gazdálkodó szervezet: a polgári perrendtartásról szóló törvény szerinti gazdálkodó szervezet."
+          semantic_info:
+            outgoing_references:
+              - start: 3
+                end: 7
+                reference:
+                  act:
+                    year: 2003
+                    number: 100
+              - start: 8
+                end: 45
+                reference:
+                  act:
+                    year: 2003
+                    number: 100
+                  article: "188"
+                  point: 31a
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2003
+                    number: 100
+                  article: "188"
+                  point: 31a
+                pure_insertion: true

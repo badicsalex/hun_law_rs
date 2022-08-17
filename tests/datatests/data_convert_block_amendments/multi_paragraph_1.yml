@@ -1,0 +1,55 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A tesztelésről szóló 2042. évi XX. törvény 14. § (1) - (3) bekezdései helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                children:
+                  Paragraph:
+                    - identifier: "1"
+                      body: elso
+                    - identifier: "2"
+                      body: masodik
+                    - identifier: "3"
+                      body: harmadik harmadik.
+          semantic_info:
+            outgoing_references:
+              - start: 25
+                end: 49
+                reference:
+                  act:
+                    year: 2042
+                    number: 20
+              - start: 50
+                end: 78
+                reference:
+                  act:
+                    year: 2042
+                    number: 20
+                  article: "14"
+                  paragraph:
+                    start: "1"
+                    end: "3"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2042
+                    number: 20
+                  article: "14"
+                  paragraph:
+                    start: "1"
+                    end: "3"
+                pure_insertion: false

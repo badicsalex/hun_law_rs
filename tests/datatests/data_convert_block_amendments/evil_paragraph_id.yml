@@ -1,0 +1,47 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A Magyar Nemzeti Bankról szóló 2013. évi CXXXIX. törvény 72. § (4) bekezdése helyébe a következő rendelkezés lép:"
+            children:
+              BlockAmendment:
+                children:
+                  Paragraph:
+                    - identifier: "4"
+                      body: "Az (1) bekezdésben meghatározott személy helyszíni ellenőrzés során történő eljárására a 67. § (5)–(8) bekezdésében meghatározott szabályokat kell alkalmazni azzal, hogy az ügyfél a szakértői vizsgálatban közreműködni köteles."
+          semantic_info:
+            outgoing_references:
+              - start: 34
+                end: 62
+                reference:
+                  act:
+                    year: 2013
+                    number: 139
+              - start: 63
+                end: 84
+                reference:
+                  act:
+                    year: 2013
+                    number: 139
+                  article: "72"
+                  paragraph: "4"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2013
+                    number: 139
+                  article: "72"
+                  paragraph: "4"
+                pure_insertion: false

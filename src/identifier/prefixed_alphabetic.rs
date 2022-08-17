@@ -34,6 +34,10 @@ impl PrefixedAlphabeticIdentifier {
     pub fn prefix_is(&self, prefix: Option<HungarianIdentifierChar>) -> bool {
         self.prefix == prefix
     }
+
+    pub fn get_prefix(&self) -> Option<HungarianIdentifierChar> {
+        self.prefix
+    }
 }
 
 impl IsNextFrom for PrefixedAlphabeticIdentifier {
