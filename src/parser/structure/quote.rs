@@ -37,6 +37,7 @@ impl QuotedBlockParser {
     /// Extract multiple instances from the text. Fails if line does not start with quote
     pub fn extract_multiple(
         &self,
+        previous_nonempty_line: Option<&IndentedLine>,
         lines: &[IndentedLine],
     ) -> Result<(ParagraphChildren, Option<String>)> {
         let mut state = QuotedBlockParseState::Start;
@@ -64,7 +65,9 @@ impl QuotedBlockParser {
                             quoted_lines = vec![line.slice(1, None)];
                             state = QuotedBlockParseState::QuotedBlock;
                         }
-                    } else if line.content().starts_with(['(', '[']) {
+                    } else if previous_nonempty_line.map_or(false, |l| l.content().ends_with(':'))
+                        && line.content().starts_with(['(', '['])
+                    {
                         if line.content().ends_with([')', ']']) {
                             quoted_block_intro = line.slice(1, Some(-1)).content().to_owned();
                             state = QuotedBlockParseState::WaitingForQuotedBlock;

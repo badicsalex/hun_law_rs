@@ -49,6 +49,7 @@ pub trait SAEParser {
     fn try_extract_children(
         &self,
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)>;
 
@@ -60,10 +61,12 @@ pub trait SAEParser {
     ) -> Result<Self::SAE> {
         let mut intro = String::new();
         let mut quote_checker = QuoteCheck::default();
+        let mut previous_nonempty_line = None;
         for i in 0..body.len() {
             quote_checker.update(&body[i])?;
             if !quote_checker.beginning_is_quoted {
-                if let Ok((children, wrap_up)) = self.try_extract_children(&identifier, &body[i..])
+                if let Ok((children, wrap_up)) =
+                    self.try_extract_children(&identifier, previous_nonempty_line, &body[i..])
                 {
                     return Ok(<Self::SAE>::new(
                         identifier,
@@ -77,6 +80,9 @@ pub trait SAEParser {
             }
             let line = &body[i];
             line.append_to(&mut intro);
+            if !line.is_empty() {
+                previous_nonempty_line = Some(line);
+            }
         }
         quote_checker.check_end()?;
         Ok(<Self::SAE>::new(identifier, intro.into()))
@@ -178,10 +184,11 @@ impl SAEParser for ParagraphParser {
     fn try_extract_children(
         &self,
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         QuotedBlockParser
-            .extract_multiple(body)
+            .extract_multiple(previous_nonempty_line, body)
             .or_else(|_| NumericPointParser.extract_multiple(body, ParseWrapUp::Yes))
             .or_else(|_| AlphabeticPointParser.extract_multiple(body, ParseWrapUp::Yes))
     }
@@ -202,6 +209,7 @@ impl SAEParser for NumericPointParser {
     fn try_extract_children(
         &self,
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         AlphabeticSubpointParser { prefix: None }.extract_multiple(body, ParseWrapUp::Yes)
@@ -223,6 +231,7 @@ impl SAEParser for AlphabeticPointParser {
     fn try_extract_children(
         &self,
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         NumericSubpointParser
@@ -251,6 +260,7 @@ impl SAEParser for NumericSubpointParser {
     fn try_extract_children(
         &self,
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
@@ -279,6 +289,7 @@ impl SAEParser for AlphabeticSubpointParser {
     fn try_extract_children(
         &self,
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
