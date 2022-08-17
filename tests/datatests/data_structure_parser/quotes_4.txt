@@ -1,40 +1,40 @@
 1. § Quote parsing is hard.
-(Because)
+[Because]
 It is not easy.
 
 2. § Quote parsing is done:
-(intro)
+[intro]
 „Többet is tartalmaz”
-(outro)
+[outro]
 
 3. § Quote parsing is done:
-(intro)
+[intro]
 „Többet is tartalmaz”
 weird outro
 
 4. § Quote parsing is done:
 
-(intro)
+[intro]
 
 „Többet is tartalmaz”
 
-(outro)
+[outro]
 
 5. § Quote parsing is done:
-(int
-ro)
+[int
+ro]
 „Többet 
 is tartalmaz”
-(ou
-tro)
+[ou
+tro]
 
 6. § Special case, doesnt need to work well:
-(int
+[int
 
-ro)
-(int
+ro]
+[int
 
-ro)
+ro]
 
 „Többet 
 
@@ -43,12 +43,12 @@ is tartalmaz”
 „Többet 
 
 is tartalmaz”
-(ou
+[ou
 
-tro)
-(ou
+tro]
+[ou
 
-tro)
+tro]
 
 extra wrap
 up

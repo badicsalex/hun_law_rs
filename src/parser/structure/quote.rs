@@ -65,7 +65,7 @@ impl QuotedBlockParser {
                             state = QuotedBlockParseState::QuotedBlock;
                         }
                     } else if line.content().starts_with(['(', '[']) {
-                        if line.content().ends_with([')', '[']) {
+                        if line.content().ends_with([')', ']']) {
                             quoted_block_intro = line.slice(1, Some(-1)).content().to_owned();
                             state = QuotedBlockParseState::WaitingForQuotedBlock;
                         } else {
@@ -91,7 +91,7 @@ impl QuotedBlockParser {
                                 state = QuotedBlockParseState::QuotedBlock;
                             }
                         } else if line.content().starts_with(['(', '[']) {
-                            if line.content().ends_with([')', '[']) {
+                            if line.content().ends_with([')', ']']) {
                                 quoted_block_wrap_up = line.slice(1, Some(-1)).content().to_owned();
                                 state = QuotedBlockParseState::WrapUp;
                             } else {
