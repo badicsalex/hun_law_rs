@@ -1,0 +1,133 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A Büntető Törvénykönyvről szóló 2012. évi C. törvény 370. §-a a következő szöveggel lép hatályba:"
+            children:
+              BlockAmendment:
+                children:
+                  Article:
+                    - identifier: "370"
+                      children:
+                        - identifier: "1"
+                          body: "Aki idegen dolgot mástól azért vesz el, hogy azt jogtalanul eltulajdonítsa, lopást követ el."
+                        - identifier: "2"
+                          body:
+                            intro: "A büntetés vétség miatt két évig terjedő szabadságvesztés, ha"
+                            children:
+                              AlphabeticPoint:
+                                - identifier: a
+                                  body: a lopást kisebb értékre vagy
+                                - identifier: b
+                                  body:
+                                    intro: a szabálysértési értékre elkövetett lopást
+                                    children:
+                                      AlphabeticSubpoint:
+                                        - identifier: ba
+                                          body: "bűnszövetségben,"
+                                        - identifier: bb
+                                          body: "üzletszerűen,"
+                                        - identifier: bc
+                                          body: "dolog elleni erőszakkal – ideértve azt is, ha a dolog eltulajdonításának megakadályozására szolgáló eszközt állagsérelem okozása nélkül eltávolítják, vagy a dolog eltulajdonításának megakadályozására alkalmatlanná teszik –,"
+                                        - identifier: bd
+                                          body: "zsebtolvajlás útján,"
+                                        - identifier: be
+                                          body: "egy vagy több közokirat, magánokirat vagy készpénz-helyettesítő fizetési eszköz egyidejű elvételével,"
+                                        - identifier: bf
+                                          body: "helyiségbe vagy ehhez tartozó bekerített helyre megtévesztéssel, vagy a jogosult, illetve a használó tudta és beleegyezése nélkül bemenve,"
+                                        - identifier: bg
+                                          body: "hamis vagy lopott kulcs használatával,"
+                                        - identifier: bh
+                                          body: lakást vagy hasonló helyiséget az elkövetővel közösen használó sérelmére vagy
+                                        - identifier: bi
+                                          body: erdőben jogellenes fakivágással
+                            wrap_up: követik el.
+                        - identifier: "3"
+                          body:
+                            intro: "A büntetés bűntett miatt három évig terjedő szabadságvesztés, ha"
+                            children:
+                              AlphabeticPoint:
+                                - identifier: a
+                                  body: "a lopást nagyobb értékre,"
+                                - identifier: b
+                                  body:
+                                    intro: a kisebb értékre elkövetett lopást
+                                    children:
+                                      AlphabeticSubpoint:
+                                        - identifier: ba
+                                          body: "a (2) bekezdés ba)–be) pontjában meghatározott valamely módon,"
+                                        - identifier: bb
+                                          body: "védett kulturális javak körébe tartozó tárgyra vagy régészeti leletre,"
+                                        - identifier: bc
+                                          body: "vallási tisztelet tárgyára,"
+                                        - identifier: bd
+                                          body: "holttesten lévő tárgyra, illetve temetőben vagy temetkezési emlékhelyen a halott emlékére rendelt tárgyra,"
+                                        - identifier: be
+                                          body: nemesfémre vagy
+                                - identifier: c
+                                  body: a lopást szabálysértési vagy kisebb értékre közveszély színhelyén
+                            wrap_up: követik el.
+                        - identifier: "4"
+                          body:
+                            intro: "A büntetés egy évtől öt évig terjedő szabadságvesztés, ha"
+                            children:
+                              AlphabeticPoint:
+                                - identifier: a
+                                  body: a lopást jelentős értékre vagy
+                                - identifier: b
+                                  body: a nagyobb értékre elkövetett lopást a (2) bekezdés ba)–be) pontjában meghatározott valamely módon vagy közveszély színhelyén
+                            wrap_up: követik el.
+                        - identifier: "5"
+                          body:
+                            intro: "A büntetés két évtől nyolc évig terjedő szabadságvesztés, ha"
+                            children:
+                              AlphabeticPoint:
+                                - identifier: a
+                                  body: a lopást különösen nagy értékre vagy
+                                - identifier: b
+                                  body: a jelentős értékre elkövetett lopást a (2) bekezdés ba)–be) pontjában meghatározott valamely módon vagy közveszély színhelyén
+                            wrap_up: követik el.
+                        - identifier: "6"
+                          body:
+                            intro: "A büntetés öt évtől tíz évig terjedő szabadságvesztés, ha"
+                            children:
+                              AlphabeticPoint:
+                                - identifier: a
+                                  body: a lopást különösen jelentős értékre vagy
+                                - identifier: b
+                                  body: a különösen nagy értékre elkövetett lopást a (2) bekezdés ba)–be) pontjában meghatározott valamely módon vagy közveszély színhelyén
+                            wrap_up: követik el.
+          semantic_info:
+            outgoing_references:
+              - start: 40
+                end: 63
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+              - start: 64
+                end: 73
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "370"
+            special_phrase:
+              BlockAmendment:
+                position:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "370"
+                pure_insertion: false

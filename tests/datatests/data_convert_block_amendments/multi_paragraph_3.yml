@@ -43,10 +43,7 @@ children:
                             - identifier: a
                               body: "megállapodást köt, vagy"
                             - identifier: b
-                              body: "– ha a megállapodás megkötésére nem kerül sor – tájékoztatást nyújt, hogy a nyílt örökbefogadást elősegítő"
-                        # This is incorrectly parsed here, but note that the parsing of wrap-ups without indentation is very ambigous.
-                        # TODO: Fix the test once "non-justified-detection" lands
-                        wrap_up: szolgáltatás a területi gyermekvédelmi szakszolgálatnál is igénybe vehető.
+                              body: "– ha a megállapodás megkötésére nem kerül sor – tájékoztatást nyújt, hogy a nyílt örökbefogadást elősegítő szolgáltatás a területi gyermekvédelmi szakszolgálatnál is igénybe vehető."
                     - identifier: 1b
                       body: "Ha a közhasznú szervezet a (3) bekezdésben meghatározott okokról szerez tudomást, öt napon belül írásban értesíti az örökbefogadásra való alkalmasságot megállapító, valamint az örökbefogadás engedélyezésére illetékes gyámhatóságot."
           semantic_info:

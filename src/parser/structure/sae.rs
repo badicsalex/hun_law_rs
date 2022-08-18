@@ -27,26 +27,28 @@ use crate::{
     util::{indentedline::IndentedLine, QuoteCheck},
 };
 
-use super::quote::QuotedBlockParser;
+use super::{act::ParsingContext, quote::QuotedBlockParser};
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct SAEParseParams<TI: Debug> {
     pub parse_wrap_up: bool,
     pub check_children_count: bool,
     pub expected_identifier: Option<TI>,
+    pub context: ParsingContext,
 }
 
 impl<TI: Debug> SAEParseParams<TI> {
-    fn children_parsing_default() -> Self {
+    fn children_parsing_default(context: ParsingContext) -> Self {
         Self {
             parse_wrap_up: true,
             check_children_count: true,
             expected_identifier: None,
+            context,
         }
     }
 }
 
-pub trait SAEParser {
+pub trait SAEParser: Debug {
     type SAE: Sized + SAECommon;
 
     /// Parse the header into and identifier, and return it, along with the rest of the first line
@@ -63,6 +65,7 @@ pub trait SAEParser {
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
         previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
+        context: ParsingContext,
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)>;
 
     /// Parse a single instance.
@@ -70,6 +73,7 @@ pub trait SAEParser {
         &self,
         identifier: <Self::SAE as SAECommon>::IdentifierType,
         body: &[IndentedLine],
+        context: ParsingContext,
     ) -> Result<Self::SAE> {
         let mut intro = String::new();
         let mut quote_checker = QuoteCheck::default();
@@ -77,9 +81,12 @@ pub trait SAEParser {
         for i in 0..body.len() {
             quote_checker.update(&body[i])?;
             if !quote_checker.beginning_is_quoted {
-                if let Ok((children, wrap_up)) =
-                    self.try_extract_children(&identifier, previous_nonempty_line, &body[i..])
-                {
+                if let Ok((children, wrap_up)) = self.try_extract_children(
+                    &identifier,
+                    previous_nonempty_line,
+                    &body[i..],
+                    context,
+                ) {
                     return Ok(<Self::SAE>::new(
                         identifier,
                         SAEBody::Children {
@@ -134,7 +141,7 @@ pub trait SAEParser {
                 None
             };
             if let Some((new_identifier, rest)) = new_header {
-                result.push(self.parse(identifier, &body)?);
+                result.push(self.parse(identifier, &body, params.context)?);
                 identifier = new_identifier;
                 body = vec![rest];
             } else if !line.is_empty() {
@@ -146,9 +153,35 @@ pub trait SAEParser {
         // This is a stupid heuristic: we hope line-broken points are indented, while
         // the wrapup will be at the same level as the headers.
         if params.parse_wrap_up {
-            if let Some(wrap_up_split) =
-                body.iter().position(|l| l.indent_less_or_eq(header_indent))
-            {
+            let wrap_up_split = match params.context {
+                ParsingContext::FullAct => {
+                    // Indentation-driven split
+                    body.iter().position(|l| l.indent_less_or_eq(header_indent))
+                }
+                ParsingContext::BlockAmendment => {
+                    // We have no proper indentations in block amendments, so we try to
+                    // find the split, based on right-justification:
+                    // We assume that the wrap-up starts after the first non-justified line
+                    // It's important to go from back to front, because of the following scenario,
+                    // where all lines are non-justified:
+                    //
+                    // a) ...
+                    // b) ...
+                    // ba) ...
+                    // bc) ...
+                    // ...
+                    //
+                    // In this case, we would split off the subpoints from b), which is not intended.
+
+                    body.iter()
+                        .enumerate()
+                        .rev()
+                        .skip(1) // Last line can be justified or not, it's not going to be a split point.
+                        .find(|(_, l)| !l.is_justified())
+                        .map(|(i, _)| i + 1) // Split point is _after_ the found non-justified line
+                }
+            };
+            if let Some(wrap_up_split) = wrap_up_split {
                 let wrap_up_lines = body.split_off(wrap_up_split);
                 wrap_up = Some(wrap_up_lines.into_iter().fold(String::new(), |mut s, l| {
                     l.append_to(&mut s);
@@ -157,7 +190,7 @@ pub trait SAEParser {
             }
         }
 
-        result.push(self.parse(identifier, &body)?);
+        result.push(self.parse(identifier, &body, params.context)?);
 
         if params.check_children_count {
             ensure!(result.len() > 1, "Not enough children could be parsed");
@@ -185,6 +218,7 @@ pub trait SAEParser {
     }
 }
 
+#[derive(Debug)]
 pub struct ParagraphParser;
 
 impl SAEParser for ParagraphParser {
@@ -203,20 +237,22 @@ impl SAEParser for ParagraphParser {
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
+        context: ParsingContext,
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         QuotedBlockParser
             .extract_multiple(previous_nonempty_line, body)
             .or_else(|_| {
                 NumericPointParser
-                    .extract_multiple(body, SAEParseParams::children_parsing_default())
+                    .extract_multiple(body, SAEParseParams::children_parsing_default(context))
             })
             .or_else(|_| {
                 AlphabeticPointParser
-                    .extract_multiple(body, SAEParseParams::children_parsing_default())
+                    .extract_multiple(body, SAEParseParams::children_parsing_default(context))
             })
     }
 }
 
+#[derive(Debug)]
 pub struct NumericPointParser;
 
 impl SAEParser for NumericPointParser {
@@ -234,12 +270,14 @@ impl SAEParser for NumericPointParser {
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
+        context: ParsingContext,
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         AlphabeticSubpointParser { prefix: None }
-            .extract_multiple(body, SAEParseParams::children_parsing_default())
+            .extract_multiple(body, SAEParseParams::children_parsing_default(context))
     }
 }
 
+#[derive(Debug)]
 pub struct AlphabeticPointParser;
 
 impl SAEParser for AlphabeticPointParser {
@@ -257,18 +295,20 @@ impl SAEParser for AlphabeticPointParser {
         identifier: &<Self::SAE as SAECommon>::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
+        context: ParsingContext,
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         NumericSubpointParser
-            .extract_multiple(body, SAEParseParams::children_parsing_default())
+            .extract_multiple(body, SAEParseParams::children_parsing_default(context))
             .or_else(|_| {
                 AlphabeticSubpointParser {
                     prefix: Some(*identifier),
                 }
-                .extract_multiple(body, SAEParseParams::children_parsing_default())
+                .extract_multiple(body, SAEParseParams::children_parsing_default(context))
             })
     }
 }
 
+#[derive(Debug)]
 pub struct NumericSubpointParser;
 
 impl SAEParser for NumericSubpointParser {
@@ -286,11 +326,13 @@ impl SAEParser for NumericSubpointParser {
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
+        _context: ParsingContext,
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
     }
 }
 
+#[derive(Debug)]
 pub struct AlphabeticSubpointParser {
     pub prefix: Option<HungarianIdentifierChar>,
 }
@@ -315,6 +357,7 @@ impl SAEParser for AlphabeticSubpointParser {
         _identifier: &<Self::SAE as SAECommon>::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
+        _context: ParsingContext,
     ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
     }

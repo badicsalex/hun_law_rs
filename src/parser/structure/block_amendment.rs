@@ -177,7 +177,9 @@ fn create_parse_params_paragraph(
 ) -> SAEParseParams<Option<NumericIdentifier>> {
     SAEParseParams {
         expected_identifier: Some(Some(id.first_in_range())),
-        ..Default::default()
+        parse_wrap_up: false,
+        check_children_count: false,
+        context: ParsingContext::BlockAmendment,
     }
 }
 
@@ -189,5 +191,6 @@ where
         expected_identifier: Some(id.first_in_range()),
         parse_wrap_up: false,
         check_children_count: false,
+        context: ParsingContext::BlockAmendment,
     }
 }

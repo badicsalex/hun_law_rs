@@ -1,0 +1,11 @@
+
+           1. § A teszteléstről szóló 2020. évi I. törvény 1. § helyébe a következő rendelkezés lép:
+                „1. § (1) Ha egy felsorolas utolso pontja
+                a) modositasban van
+                b) az utolso sora nem sorkizart, es
+           <NJ> c) a bekezdessel van egy behuzason,
+                a wrap_up field helyesen ki lesz toltve.
+                (2) Nincs wrap_up
+                a) felsorolas vege megis sorkizart,
+                b) a pont vege
+                indentalva van.”

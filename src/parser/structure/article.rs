@@ -74,6 +74,7 @@ impl ArticleParserFactory {
         Some(ArticleParser {
             identifier,
             lines: vec![rest],
+            context: self.context,
         })
     }
 }
@@ -82,6 +83,7 @@ impl ArticleParserFactory {
 pub struct ArticleParser {
     identifier: ArticleIdentifier,
     lines: Vec<IndentedLine>,
+    context: ParsingContext,
 }
 
 impl ArticleParser {
@@ -104,13 +106,15 @@ impl ArticleParser {
                 &self.lines,
                 SAEParseParams {
                     check_children_count: true,
-                    ..Default::default()
+                    parse_wrap_up: false,
+                    expected_identifier: None,
+                    context: self.context,
                 },
             ) {
             assert!(wrap_up.is_none());
             extracted
         } else {
-            vec![ParagraphParser.parse(None, &self.lines)?]
+            vec![ParagraphParser.parse(None, &self.lines, self.context)?]
         };
         Ok(Article {
             identifier: self.identifier,
