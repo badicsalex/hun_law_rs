@@ -67,7 +67,7 @@ pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     ensure_eq(&parsed.len(), &1, "Wrong number of pages parsed")?;
     let lines: Vec<SimplifiedLine> = parsed[0].lines.iter().map(SimplifiedLine::from).collect();
     let expected_lines: Vec<SimplifiedLine> =
-        serde_json::from_slice(&read_all(path.with_extension("json"))?)?;
+        serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
     ensure_eq(&lines, &expected_lines, "Wrong content")?;
     Ok(())
 }
