@@ -24,6 +24,7 @@ const SAME_LINE_EPSILON: f64 = 0.2;
 const ADDITIONAL_EMPTY_LINE_THRESHOLD: f64 = 16.0;
 const DEFAULT_WIDTH_OF_SPACE: f64 = 0.25;
 const SPACE_DETECTION_THRESHOLD_RATIO: f64 = 0.4;
+const JUSTIFIED_DETECTION_THRESHOLD: f64 = 0.2;
 
 #[derive(Debug)]
 struct PositionedChar {
@@ -90,11 +91,17 @@ impl PdfExtractor {
         }
     }
 
-    fn consolidate_line(mut chars: Vec<PositionedChar>) -> IndentedLine {
-        if chars.is_empty() {
-            return EMPTY_LINE;
-        }
+    fn consolidate_line(
+        mut chars: Vec<PositionedChar>,
+        estimated_right_margin: f64,
+    ) -> IndentedLine {
         chars.sort_unstable_by(|c1, c2| compare_float_for_sorting(c1.x, c2.x));
+        let last_char = match chars.last() {
+            Some(x) => x,
+            None => return EMPTY_LINE,
+        };
+        let justified =
+            last_char.x + last_char.width + JUSTIFIED_DETECTION_THRESHOLD >= estimated_right_margin;
         let mut result = Vec::<IndentedLinePart>::new();
         let mut threshold_to_space = f64::INFINITY;
         let mut prev_x = 0.0;
@@ -123,10 +130,14 @@ impl PdfExtractor {
         while let Some(IndentedLinePart { content: ' ', .. }) = result.last() {
             result.pop();
         }
-        IndentedLine::from_parts(result)
+        IndentedLine::from_parts(result, justified)
     }
 
     fn consolidate_page(page: PageOfPositionedChars) -> Result<PageOfLines> {
+        let estimated_right_margin = page
+            .chars
+            .iter()
+            .fold(0.0_f64, |acc, c| acc.max(c.x + c.width));
         let mut result = Vec::<IndentedLine>::new();
         let mut chars = page.chars;
         chars.sort_unstable_by(|c1, c2| compare_float_for_sorting(c2.y, c1.y));
@@ -143,7 +154,7 @@ impl PdfExtractor {
             if y_diff < SAME_LINE_EPSILON {
                 current_line.push(current_char);
             } else {
-                result.push(Self::consolidate_line(current_line));
+                result.push(Self::consolidate_line(current_line, estimated_right_margin));
                 // Add empty line on a "big-enough gap"
                 // Should be based on actual font height, but this is
                 // good enough for the rest of the parsing steps.
@@ -153,7 +164,7 @@ impl PdfExtractor {
                 current_line = vec![current_char];
             }
         }
-        result.push(Self::consolidate_line(current_line));
+        result.push(Self::consolidate_line(current_line, estimated_right_margin));
         Ok(PageOfLines { lines: result })
     }
 

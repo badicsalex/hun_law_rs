@@ -34,8 +34,9 @@ children:
                                     body: "fegyveresen,"
                                   - identifier: b
                                     body: "felfegyverkezve,"
-                              # TODO: wrap_up parsing with the NJ flag
-                              wrap_up: "<NJ> c) tömegzavargás résztvevőjeként követik el."
+                                  - identifier: c
+                                    body: tömegzavargás résztvevőjeként
+                              wrap_up: követik el.
                           - identifier: "3"
                             body: "Aki az (1) bekezdésben meghatározott bűncselekményt fegyveresen vagy felfegyverkezve tömegzavargás résztvevőjeként követi el, két évtől nyolc évig terjedő szabadságvesztéssel büntetendő."
                           - identifier: "4"
@@ -56,8 +57,9 @@ children:
                                     body: "fegyveresen,"
                                   - identifier: b
                                     body: "felfegyverkezve,"
-                              # TODO: wrap_up parsing with the NJ flag
-                              wrap_up: "<NJ> c) tömegzavargás résztvevőjeként követik el."
+                                  - identifier: c
+                                    body: tömegzavargás résztvevőjeként
+                              wrap_up: követik el.
                           - identifier: "3"
                             body: "Aki az (1) bekezdésben meghatározott bűncselekményt fegyveresen vagy felfegyverkezve tömegzavargás résztvevőjeként követi el, öt évtől tíz évig terjedő szabadságvesztéssel büntetendő."
                           - identifier: "4"

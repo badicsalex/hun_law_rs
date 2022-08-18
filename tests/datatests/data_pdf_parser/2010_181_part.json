@@ -88,11 +88,13 @@
   {},
   {
     "indent": 56.6929,
-    "content": "Az Országgyűlés arra való tekintettel, hogy 2010. június 23-án Brüsszelben aláírták az Európai Unióról szóló Szerződéshez,"
+    "content": "Az Országgyűlés arra való tekintettel, hogy 2010. június 23-án Brüsszelben aláírták az Európai Unióról szóló Szerződéshez,",
+    "is_justified": true
   },
   {
     "indent": 56.6929,
-    "content": "az Európai Unió Működéséről szóló Szerződéshez és az Európai Atomenergia-közösséget létrehozó Szerződéshez csatolt,"
+    "content": "az Európai Unió Működéséről szóló Szerződéshez és az Európai Atomenergia-közösséget létrehozó Szerződéshez csatolt,",
+    "is_justified": true
   },
   {
     "indent": 56.6929,
@@ -101,15 +103,18 @@
   {},
   {
     "indent": 56.6929,
-    "content": "1. § Az Országgyűlés e törvénnyel felhatalmazást ad a 2010. június 23-án aláírt, az Európai Unióról szóló Szerződéshez,"
+    "content": "1. § Az Országgyűlés e törvénnyel felhatalmazást ad a 2010. június 23-án aláírt, az Európai Unióról szóló Szerződéshez,",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "az Európai Unió Működéséről szóló Szerződéshez és az Európai Atomenergia-közösséget létrehozó Szerződéshez"
+    "content": "az Európai Unió Működéséről szóló Szerződéshez és az Európai Atomenergia-közösséget létrehozó Szerződéshez",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "csatolt, az átmeneti rendelkezésekről szóló jegyzőkönyv módosításáról szóló jegyzőkönyv (a továbbiakban: módosító"
+    "content": "csatolt, az átmeneti rendelkezésekről szóló jegyzőkönyv módosításáról szóló jegyzőkönyv (a továbbiakban: módosító",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
@@ -128,43 +133,53 @@
   {},
   {
     "indent": 56.6929,
-    "content": "4. § Az Országgyűlés e törvénnyel kihirdeti a Belga Királyság, a Dán Királyság, a Németországi Szövetségi Köztársaság,"
+    "content": "4. § Az Országgyűlés e törvénnyel kihirdeti a Belga Királyság, a Dán Királyság, a Németországi Szövetségi Köztársaság,",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "a Görög Köztársaság, a Spanyol Királyság, a Francia Köztársaság, Írország, az Olasz Köztársaság, a Luxemburgi"
+    "content": "a Görög Köztársaság, a Spanyol Királyság, a Francia Köztársaság, Írország, az Olasz Köztársaság, a Luxemburgi",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "Nagyhercegség, a Holland Királyság, az Osztrák Köztársaság, a Portugál Köztársaság, a Finn Köztársaság, a Svéd"
+    "content": "Nagyhercegség, a Holland Királyság, az Osztrák Köztársaság, a Portugál Köztársaság, a Finn Köztársaság, a Svéd",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "Királyság, Nagy-Britannia és Észak-Írország Egyesült Királysága (az Európai Unió tagállamai) és a Cseh Köztársaság,"
+    "content": "Királyság, Nagy-Britannia és Észak-Írország Egyesült Királysága (az Európai Unió tagállamai) és a Cseh Köztársaság,",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "az Észt Köztársaság, a Ciprusi Köztársaság, a Lett Köztársaság, a Litván Köztársaság, a Magyar Köztársaság, a Máltai"
+    "content": "az Észt Köztársaság, a Ciprusi Köztársaság, a Lett Köztársaság, a Litván Köztársaság, a Magyar Köztársaság, a Máltai",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "Köztársaság, a Lengyel Köztársaság, a Szlovén Köztársaság és a Szlovák Köztársaság között, a Cseh Köztársaságnak,"
+    "content": "Köztársaság, a Lengyel Köztársaság, a Szlovén Köztársaság és a Szlovák Köztársaság között, a Cseh Köztársaságnak,",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "az Észt Köztársaságnak, a Ciprusi Köztársaságnak, a Lett Köztársaságnak, a Litván Köztársaságnak, a Magyar"
+    "content": "az Észt Köztársaságnak, a Ciprusi Köztársaságnak, a Lett Köztársaságnak, a Litván Köztársaságnak, a Magyar",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "Köztársaságnak, a Máltai Köztársaságnak, a Lengyel Köztársaságnak, a Szlovén Köztársaságnak és a Szlovák"
+    "content": "Köztársaságnak, a Máltai Köztársaságnak, a Lengyel Köztársaságnak, a Szlovén Köztársaságnak és a Szlovák",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "Köztársaságnak az Európai Unióhoz történő csatlakozásáról szóló, Athénban 2003. április 16-án aláírt szerződés"
+    "content": "Köztársaságnak az Európai Unióhoz történő csatlakozásáról szóló, Athénban 2003. április 16-án aláírt szerződés",
+    "is_justified": true
   },
   {
     "indent": 104.8819,
-    "content": "helyesbítéséről szóló, Rómában 2010. március 8-án aláírt, az Olasz Köztársaság Kormányánál letétbe helyezett ötödik"
+    "content": "helyesbítéséről szóló, Rómában 2010. március 8-án aláírt, az Olasz Köztársaság Kormányánál letétbe helyezett ötödik",
+    "is_justified": true
   },
   {
     "indent": 104.8819,

@@ -29,6 +29,8 @@ struct SimplifiedLine {
     #[serde(default, skip_serializing_if = "is_default")]
     is_bold: bool,
     #[serde(default, skip_serializing_if = "is_default")]
+    is_justified: bool,
+    #[serde(default, skip_serializing_if = "is_default")]
     content: String,
 }
 
@@ -37,6 +39,7 @@ impl PartialEq for SimplifiedLine {
         (self.indent - other.indent) < 0.01
             && self.is_bold == other.is_bold
             && self.content == other.content
+            && self.is_justified == other.is_justified
     }
 }
 
@@ -46,6 +49,7 @@ impl From<&IndentedLine> for SimplifiedLine {
             indent: l.indent(),
             is_bold: l.is_bold(),
             content: l.content().to_string(),
+            is_justified: l.is_justified(),
         }
     }
 }

@@ -33,12 +33,13 @@ pub struct IndentedLinePart {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IndentedLine {
     parts: Vec<IndentedLinePart>,
+    justified: bool,
     cached_content: String,
     cached_bold: bool,
 }
 
 impl IndentedLine {
-    pub fn from_parts(parts: Vec<IndentedLinePart>) -> Self {
+    pub fn from_parts(parts: Vec<IndentedLinePart>, justified: bool) -> Self {
         let cached_content: String = parts.iter().map(|p| p.content).collect();
         let bold_character_count = parts.iter().filter(|p| p.bold).count();
         let cached_bold = bold_character_count * 2 > parts.len();
@@ -46,6 +47,7 @@ impl IndentedLine {
             parts,
             cached_content,
             cached_bold,
+            justified,
         }
     }
 
@@ -70,7 +72,8 @@ impl IndentedLine {
                 }
             }
         }
-        Self::from_parts(result_parts)
+        let justified = others.last().map_or(false, |o| o.justified);
+        Self::from_parts(result_parts, justified)
     }
 
     pub fn indent(&self) -> f64 {
@@ -86,6 +89,10 @@ impl IndentedLine {
 
     pub fn is_bold(&self) -> bool {
         self.cached_bold
+    }
+
+    pub fn is_justified(&self) -> bool {
+        self.justified
     }
 
     pub fn len(&self) -> usize {
@@ -119,7 +126,9 @@ impl IndentedLine {
             .map(|e| e.dx as i64)
             .sum();
         new_parts[0].dx += additional_indent as f64;
-        Self::from_parts(new_parts.to_owned())
+
+        let justified = self.justified && to == self.parts.len();
+        Self::from_parts(new_parts.to_owned(), justified)
     }
 
     pub fn slice_bytes(&self, from: usize, to: Option<usize>) -> IndentedLine {
@@ -145,7 +154,8 @@ impl IndentedLine {
         let mut parts = Vec::<IndentedLinePart>::new();
         let mut spaces_num = 1;
         let bold = s.contains("<BOLD>");
-        let s = s.replace("<BOLD>", "      ");
+        let justified = !s.contains("<NJ>");
+        let s = s.replace("<BOLD>", "      ").replace("<NJ>", "    ");
         for c in s.chars() {
             if c == ' ' {
                 if spaces_num == 0 {
@@ -165,7 +175,7 @@ impl IndentedLine {
                 spaces_num = 0
             }
         }
-        Self::from_parts(parts)
+        Self::from_parts(parts, justified)
     }
 
     pub fn indent_less_or_eq(&self, other: f64) -> bool {
@@ -211,6 +221,7 @@ pub const EMPTY_LINE: IndentedLine = IndentedLine {
     parts: Vec::new(),
     cached_content: String::new(),
     cached_bold: false,
+    justified: false,
 };
 
 #[cfg(test)]
@@ -221,10 +232,13 @@ mod tests {
 
     #[test]
     fn test_empty() {
-        assert_eq!(EMPTY_LINE, IndentedLine::from_parts(vec![]));
-        assert_eq!(IndentedLine::from_parts(vec![]), EMPTY_LINE);
+        assert_eq!(EMPTY_LINE, IndentedLine::from_parts(vec![], false));
+        assert_eq!(EMPTY_LINE, IndentedLine::from_parts(vec![], true));
+        assert_eq!(IndentedLine::from_parts(vec![], false), EMPTY_LINE);
+        assert_eq!(IndentedLine::from_parts(vec![], true), EMPTY_LINE);
         assert_eq!(EMPTY_LINE, IndentedLine::from_multiple(&[]));
-        assert!(IndentedLine::from_parts(vec![]).is_empty());
+        assert!(IndentedLine::from_parts(vec![], true).is_empty());
+        assert!(IndentedLine::from_parts(vec![], false).is_empty());
         assert!(IndentedLine::from_multiple(&[]).is_empty());
         assert!(IndentedLine::from_multiple(&[&EMPTY_LINE, &EMPTY_LINE]).is_empty());
     }
@@ -247,43 +261,61 @@ mod tests {
 
     #[test]
     fn test_indented_line_slice() {
-        let line = IndentedLine::from_parts(vec![
-            ilp(5.0, 'a'),
-            ilp(5.0, 'b'),
-            ilp(5.0, 'c'),
-            ilp(1.0, 'd'),
-            ilp(2.0, 'e'),
-            ilp(2.0, ' '),
-            ilp(5.0, 'f'),
-        ]);
+        let line = IndentedLine::from_parts(
+            vec![
+                ilp(5.0, 'a'),
+                ilp(5.0, 'b'),
+                ilp(5.0, 'c'),
+                ilp(1.0, 'd'),
+                ilp(2.0, 'e'),
+                ilp(2.0, ' '),
+                ilp(5.0, 'f'),
+            ],
+            true,
+        );
         assert_eq!(line.content(), "abcde f");
         assert_eq!(line.indent(), 5.0);
+        assert!(line.is_justified());
 
         assert_eq!(line.slice(0, None), line);
+        assert!(line.slice(0, None).is_justified());
 
         assert_eq!(line.slice(1, None).content(), "bcde f");
+        assert!(line.slice(1, None).is_justified());
         assert_eq!(line.slice(1, None).indent(), 10.0);
 
         assert_eq!(line.slice(2, None).content(), "cde f");
+        assert!(line.slice(2, None).is_justified());
         assert_eq!(line.slice(2, None).indent(), 15.0);
         assert_eq!(line.slice(5, None).content(), " f");
+        assert!(line.slice(5, None).is_justified());
         assert_eq!(line.slice(5, None).indent(), 20.0);
 
         assert_eq!(line.slice(7, None), EMPTY_LINE);
         assert_eq!(line.slice(100, None), EMPTY_LINE);
 
         assert_eq!(line.slice(-2, None).content(), " f");
+        assert!(line.slice(-2, None).is_justified());
         assert_eq!(line.slice(-2, None).indent(), 20.0);
 
         assert_eq!(line.slice(0, Some(-1)).content(), "abcde ");
+        assert!(!line.slice(0, Some(-1)).is_justified());
+        assert_eq!(line.slice(0, Some(-1)).slice(0, None).content(), "abcde ");
+        assert!(!line.slice(0, Some(-1)).slice(0, None).is_justified());
         assert_eq!(line.slice(0, Some(-2)).content(), "abcde");
+        assert!(!line.slice(0, Some(-2)).is_justified());
         assert_eq!(line.slice(0, Some(5)).content(), "abcde");
+        assert!(!line.slice(0, Some(5)).is_justified());
 
         assert_eq!(line.slice(1, Some(-1)).content(), "bcde ");
+        assert!(!line.slice(1, Some(-1)).is_justified());
         assert_eq!(line.slice(2, Some(-2)).content(), "cde");
+        assert!(!line.slice(2, Some(-2)).is_justified());
         assert_eq!(line.slice(2, Some(5)).content(), "cde");
+        assert!(!line.slice(2, Some(5)).is_justified());
         assert_eq!(line.slice(2, Some(5)).indent(), 15.0);
         assert_eq!(line.slice(-2, Some(-1)).content(), " ");
+        assert!(!line.slice(-2, Some(-1)).is_justified());
 
         assert_eq!(line.slice(1, Some(1)), EMPTY_LINE);
         assert_eq!(line.slice(5, Some(3)), EMPTY_LINE);
@@ -291,10 +323,13 @@ mod tests {
 
     #[test]
     fn test_indented_line_from_multiple() {
-        let line1 = IndentedLine::from_parts(vec![ilp(5.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')]);
-        let line2 = IndentedLine::from_parts(vec![ilp(25.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')]);
+        let line1 =
+            IndentedLine::from_parts(vec![ilp(5.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')], false);
+        let line2 =
+            IndentedLine::from_parts(vec![ilp(25.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')], true);
         let concatenated = IndentedLine::from_multiple(&[&line1, &line2]);
         assert_eq!(concatenated.content(), "abcabc");
+        assert!(concatenated.is_justified());
         assert_eq!(concatenated.indent(), 5.0);
         assert_eq!(concatenated.slice(3, None).content(), "abc");
 
@@ -303,17 +338,17 @@ mod tests {
         assert_eq!(concatenated.slice(4, None).indent(), 30.0);
 
         let big_conc = IndentedLine::from_multiple(&[
-            &IndentedLine::from_parts(vec![ilp(5.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')]),
-            &IndentedLine::from_parts(vec![ilp(25.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')]),
-            &IndentedLine::from_parts(vec![ilp(45.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')]),
-            &IndentedLine::from_parts(vec![ilp(65.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')]),
+            &IndentedLine::from_parts(vec![ilp(5.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')], false),
+            &IndentedLine::from_parts(vec![ilp(25.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')], false),
+            &IndentedLine::from_parts(vec![ilp(45.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')], false),
+            &IndentedLine::from_parts(vec![ilp(65.0, 'a'), ilp(5.0, 'b'), ilp(5.0, 'c')], false),
         ]);
 
-        println!("{:?}", big_conc);
         assert_eq!(big_conc.slice(8, None).indent(), 55.0);
         assert_eq!(big_conc.slice(9, None).indent(), 65.0);
         assert_eq!(big_conc.slice(10, None).indent(), 70.0);
         assert_eq!(big_conc.len(), 12);
+        assert!(!big_conc.is_justified());
 
         for i in 0..11 {
             let slice1 = big_conc.slice(0, Some(i));
@@ -328,24 +363,25 @@ mod tests {
 
     #[test]
     fn test_boldness() {
-        assert!(!IndentedLine::from_parts(vec![ilp(25.0, 'a')]).is_bold());
-        assert!(IndentedLine::from_parts(vec![ilpb(25.0, 'a')]).is_bold());
+        assert!(!IndentedLine::from_parts(vec![ilp(25.0, 'a')], false).is_bold());
+        assert!(IndentedLine::from_parts(vec![ilpb(25.0, 'a')], false).is_bold());
 
-        let half_bold = IndentedLine::from_parts(vec![
-            ilp(5.0, 'a'),
-            ilp(5.0, 'b'),
-            ilpb(5.0, 'c'),
-            ilpb(1.0, 'd'),
-        ]);
+        let half_bold = IndentedLine::from_parts(
+            vec![ilp(5.0, 'a'), ilp(5.0, 'b'), ilpb(5.0, 'c'), ilpb(1.0, 'd')],
+            false,
+        );
         assert!(!half_bold.is_bold());
 
-        let more_than_half_bold = IndentedLine::from_parts(vec![
-            ilp(25.0, 'a'),
-            ilp(5.0, 'b'),
-            ilpb(5.0, 'c'),
-            ilpb(1.0, 'd'),
-            ilpb(1.0, '2'),
-        ]);
+        let more_than_half_bold = IndentedLine::from_parts(
+            vec![
+                ilp(25.0, 'a'),
+                ilp(5.0, 'b'),
+                ilpb(5.0, 'c'),
+                ilpb(1.0, 'd'),
+                ilpb(1.0, '2'),
+            ],
+            false,
+        );
         assert!(more_than_half_bold.is_bold());
 
         let spliced = IndentedLine::from_multiple(&[&half_bold, &more_than_half_bold]);
@@ -359,129 +395,139 @@ mod tests {
     fn test_from_test_str() {
         assert_eq!(
             IndentedLine::from_test_str("    Lol ez   mi?"),
-            IndentedLine::from_parts(vec![
-                ilp(30.0, 'L'),
-                ilp(5.0, 'o'),
-                ilp(5.0, 'l'),
-                ilp(5.0, ' '),
-                ilp(5.0, 'e'),
-                ilp(5.0, 'z'),
-                ilp(5.0, ' '),
-                ilp(10.0, 'm'),
-                ilp(5.0, 'i'),
-                ilp(5.0, '?'),
-            ])
+            IndentedLine::from_parts(
+                vec![
+                    ilp(30.0, 'L'),
+                    ilp(5.0, 'o'),
+                    ilp(5.0, 'l'),
+                    ilp(5.0, ' '),
+                    ilp(5.0, 'e'),
+                    ilp(5.0, 'z'),
+                    ilp(5.0, ' '),
+                    ilp(10.0, 'm'),
+                    ilp(5.0, 'i'),
+                    ilp(5.0, '?'),
+                ],
+                true
+            )
         );
         assert_eq!(
             IndentedLine::from_test_str(" <BOLD> bld"),
-            IndentedLine::from_parts(vec![ilpb(50.0, 'b'), ilpb(5.0, 'l'), ilpb(5.0, 'd'),])
-        )
+            IndentedLine::from_parts(vec![ilpb(50.0, 'b'), ilpb(5.0, 'l'), ilpb(5.0, 'd'),], true)
+        );
+        assert_eq!(
+            IndentedLine::from_test_str(" <NJ>   nj"),
+            IndentedLine::from_parts(vec![ilp(50.0, 'n'), ilp(5.0, 'j')], false)
+        );
     }
 
     #[test]
     fn test_slice_bytes() {
-        let line = IndentedLine::from_parts(vec![
-            IndentedLinePart {
-                dx: 75.0,
-                content: '2',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: ':',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: '2',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: '.',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: ' ',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 10.0,
-                content: '§',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: ' ',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 10.0,
-                content: '[',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 'D',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 'u',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 'm',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 'm',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 'y',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: ' ',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 10.0,
-                content: 't',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 'i',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 't',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 'l',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: 'e',
-                bold: false,
-            },
-            IndentedLinePart {
-                dx: 5.0,
-                content: ']',
-                bold: false,
-            },
-        ]);
+        let line = IndentedLine::from_parts(
+            vec![
+                IndentedLinePart {
+                    dx: 75.0,
+                    content: '2',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: ':',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: '2',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: '.',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: ' ',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 10.0,
+                    content: '§',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: ' ',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 10.0,
+                    content: '[',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 'D',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 'u',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 'm',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 'm',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 'y',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: ' ',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 10.0,
+                    content: 't',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 'i',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 't',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 'l',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: 'e',
+                    bold: false,
+                },
+                IndentedLinePart {
+                    dx: 5.0,
+                    content: ']',
+                    bold: false,
+                },
+            ],
+            false,
+        );
         assert_eq!(&"2:2. § [Dummy title]"[8..21], "[Dummy title]");
         assert_eq!(line.content(), "2:2. § [Dummy title]");
         assert_eq!(line.slice_bytes(8, Some(21)).content(), "[Dummy title]");

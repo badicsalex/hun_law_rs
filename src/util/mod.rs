@@ -145,6 +145,7 @@ mod tests {
                     bold: false,
                 })
                 .collect(),
+            false,
         )
     }
 
