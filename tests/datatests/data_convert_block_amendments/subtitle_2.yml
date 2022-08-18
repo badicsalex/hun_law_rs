@@ -1,0 +1,94 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A A Büntető Törvénykönyvről szóló 2012. évi C. törvény a következő 352/A–352/C. §-sal és az azokat megelőző alcímekkel egészül ki:"
+            children:
+              BlockAmendment:
+                children:
+                  StructuralElement:
+                    - Subtitle:
+                        title: Határzár tiltott átlépése
+                    - Article:
+                        identifier: 352/A
+                        children:
+                          - identifier: "1"
+                            body: "Aki Magyarországnak az államhatár rendje védelmét biztosító létesítmény által védett területére a létesítményen keresztül jogosulatlanul belép, bűntett miatt három évig terjedő szabadságvesztéssel büntetendő."
+                          - identifier: "2"
+                            body:
+                              intro: "A büntetés egy évtől öt évig terjedő szabadságvesztés, ha az (1) bekezdésben meghatározott bűncselekményt"
+                              children:
+                                AlphabeticPoint:
+                                  - identifier: a
+                                    body: "fegyveresen,"
+                                  - identifier: b
+                                    body: "felfegyverkezve,"
+                              # TODO: wrap_up parsing with the NJ flag
+                              wrap_up: "<NJ> c) tömegzavargás résztvevőjeként követik el."
+                          - identifier: "3"
+                            body: "Aki az (1) bekezdésben meghatározott bűncselekményt fegyveresen vagy felfegyverkezve tömegzavargás résztvevőjeként követi el, két évtől nyolc évig terjedő szabadságvesztéssel büntetendő."
+                          - identifier: "4"
+                            body: "A büntetés öt évtől tíz évig terjedő szabadságvesztés, ha a (2) vagy (3) bekezdésben meghatározott bűncselekmény halált okoz."
+                    - Subtitle:
+                        title: Határzár megrongálása
+                    - Article:
+                        identifier: 352/B
+                        children:
+                          - identifier: "1"
+                            body: "Aki az államhatár rendjének védelmét biztosító létesítményt, illetve eszközt megsemmisíti vagy megrongálja, ha súlyosabb bűncselekmény nem valósul meg, bűntett miatt egy évtől öt évig terjedő szabadságvesztéssel büntetendő."
+                          - identifier: "2"
+                            body:
+                              intro: "A büntetés két évtől nyolc évig terjedő szabadságvesztés, ha az (1) bekezdésben meghatározott bűncselekményt"
+                              children:
+                                AlphabeticPoint:
+                                  - identifier: a
+                                    body: "fegyveresen,"
+                                  - identifier: b
+                                    body: "felfegyverkezve,"
+                              # TODO: wrap_up parsing with the NJ flag
+                              wrap_up: "<NJ> c) tömegzavargás résztvevőjeként követik el."
+                          - identifier: "3"
+                            body: "Aki az (1) bekezdésben meghatározott bűncselekményt fegyveresen vagy felfegyverkezve tömegzavargás résztvevőjeként követi el, öt évtől tíz évig terjedő szabadságvesztéssel büntetendő."
+                          - identifier: "4"
+                            body: "A büntetés tíz évtől húsz évig terjedő szabadságvesztés, ha a (2) vagy (3) bekezdésben meghatározott bűncselekmény halált okoz. Határzárral kapcsolatos építési munka akadályozása"
+                    - Article:
+                        identifier: 352/C
+                        children:
+                          - body: "Aki az államhatár rendjének védelmét biztosító létesítmény építésével vagy karbantartásával kapcsolatos munkavégzést akadályozza, ha más bűncselekmény nem valósul meg, vétség miatt egy évig terjedő szabadságvesztéssel büntetendő."
+          semantic_info:
+            outgoing_references:
+              - start: 42
+                end: 65
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+              - start: 80
+                end: 101
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+                  article:
+                    start: 352/A
+                    end: 352/C
+            special_phrase:
+              StructuralBlockAmendment:
+                position:
+                  act:
+                    year: 2012
+                    number: 100
+                  structural_element:
+                    SubtitleBeforeArticleInclusive: 352/A
+                pure_insertion: true

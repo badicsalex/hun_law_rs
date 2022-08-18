@@ -17,7 +17,10 @@
 use anyhow::{anyhow, Result};
 use lazy_regex::regex;
 
-use super::sae::{ParagraphParser, SAEParseParams, SAEParser};
+use super::{
+    act::ParsingContext,
+    sae::{ParagraphParser, SAEParseParams, SAEParser},
+};
 use crate::{
     identifier::{ArticleIdentifier, IsNextFrom},
     structure::{Article, Paragraph},
@@ -27,13 +30,15 @@ use crate::{
 pub struct ArticleParserFactory {
     last_id: Option<ArticleIdentifier>,
     article_header_indent: Option<f64>,
+    context: ParsingContext,
 }
 
 impl ArticleParserFactory {
-    pub fn new() -> Self {
+    pub fn new(context: ParsingContext) -> Self {
         Self {
             last_id: None,
             article_header_indent: None,
+            context,
         }
     }
 
@@ -60,7 +65,7 @@ impl ArticleParserFactory {
             if !identifier.is_next_from(last_id) {
                 return None;
             }
-        } else if !identifier.is_first() {
+        } else if self.context == ParsingContext::FullAct && !identifier.is_first() {
             return None;
         }
 

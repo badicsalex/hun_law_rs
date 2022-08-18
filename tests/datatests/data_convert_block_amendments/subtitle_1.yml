@@ -1,0 +1,93 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date:
+  year: 2345
+  month: 6
+  day: 7
+children:
+  - Article:
+      identifier: "1"
+      children:
+        - body:
+            intro: "A Büntető Törvénykönyvről szóló 2012. évi C. törvény (a továbbiakban: Btk.) a 300. §-t megelőzően a következő alcímmel egészül ki:"
+            children:
+              BlockAmendment:
+                children:
+                  StructuralElement:
+                    - Subtitle:
+                        title: Korrupciós bűncselekmény feljelentésének elmulasztása
+          semantic_info:
+            outgoing_references:
+              - start: 40
+                end: 63
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+              - start: 90
+                end: 99
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: "300"
+            new_abbreviations:
+              - act_id:
+                  year: 2012
+                  number: 100
+                abbreviation: Btk.
+            special_phrase:
+              StructuralBlockAmendment:
+                position:
+                  act:
+                    year: 2012
+                    number: 100
+                  structural_element:
+                    SubtitleBeforeArticle: "300"
+                pure_insertion: true
+  - Article:
+      identifier: "2"
+      children:
+        - body:
+            intro: "A Btk. XXVII. Fejezete a következő alcímmel és 300/A. §-sal egészül ki:"
+            children:
+              BlockAmendment:
+                children:
+                  StructuralElement:
+                    - Subtitle:
+                        title: Értelmező rendelkezés
+                    - Article:
+                        identifier: 300/A
+                        children:
+                          - identifier: "1"
+                            body: E fejezet alkalmazásában kötelességszegés a kötelességnek előny adásához kötött teljesítése is.
+                          - identifier: "2"
+                            body: "A 290. § és a 291. § alkalmazásában külföldi gazdálkodó szervezet az a szervezet, amely a személyes joga szerint jogi személyiséggel rendelkezik és az adott szervezeti formában gazdasági tevékenység végzésére jogosult."
+          semantic_info:
+            outgoing_references:
+              - start: 2
+                end: 6
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+              - start: 51
+                end: 64
+                reference:
+                  act:
+                    year: 2012
+                    number: 100
+                  article: 300/A
+            special_phrase:
+              StructuralBlockAmendment:
+                position:
+                  act:
+                    year: 2012
+                    number: 100
+                  structural_element:
+                    SubtitleBeforeArticleInclusive: 300/A
+                pure_insertion: true

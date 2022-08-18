@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
-use anyhow::{bail, Result};
+use anyhow::{bail, ensure, Result};
 
 use super::{
     article::{ArticleParser, ArticleParserFactory},
@@ -27,7 +27,7 @@ use crate::{
 };
 
 pub fn parse_act_structure(raw_act: ActRawText) -> Result<Act> {
-    let (preamble, children) = parse_act_body(&raw_act.body)?;
+    let (preamble, children) = parse_complex_body(&raw_act.body, ParsingContext::FullAct)?;
     Ok(Act {
         identifier: raw_act.identifier,
         subject: raw_act.subject,
@@ -37,7 +37,16 @@ pub fn parse_act_structure(raw_act: ActRawText) -> Result<Act> {
     })
 }
 
-fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ParsingContext {
+    FullAct,
+    BlockAmendment,
+}
+
+pub fn parse_complex_body(
+    lines: &[IndentedLine],
+    context: ParsingContext,
+) -> Result<(String, Vec<ActChild>)> {
     let mut preamble = String::new();
     let mut children: Vec<ActChild> = Vec::new();
     let mut state = ParseState::Preamble;
@@ -48,7 +57,7 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
         StructuralElementParserFactory::new(StructuralElementType::Title),
         StructuralElementParserFactory::new(StructuralElementType::Chapter),
     ];
-    let mut article_parser_factory = ArticleParserFactory::new();
+    let mut article_parser_factory = ArticleParserFactory::new(context);
     let mut quote_checker = QuoteCheck::default();
     let mut prev_line_is_empty = true;
     for line in lines {
@@ -98,6 +107,14 @@ fn parse_act_body(lines: &[IndentedLine]) -> Result<(String, Vec<ActChild>)> {
         ParseState::StructuralElement(parser) => children.push(parser.finish().into()),
         ParseState::Subtitle(parser) => children.push(parser.finish().into()),
     }
+
+    if context != ParsingContext::FullAct {
+        ensure!(
+            preamble.is_empty(),
+            "Junk detected at the beginning of a complex body"
+        );
+    }
+
     Ok((preamble, children))
 }
 

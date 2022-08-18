@@ -31,6 +31,7 @@ use crate::{
 };
 
 use super::{
+    act::{parse_complex_body, ParsingContext},
     article::ArticleParserFactory,
     sae::{NumericPointParser, ParagraphParser, SAEParser},
 };
@@ -86,10 +87,12 @@ impl Paragraph {
                         })
                     }
                     SpecialPhrase::StructuralBlockAmendment(_) => {
-                        // TODO: actual parsing
                         *children = ParagraphChildren::BlockAmendment(BlockAmendment {
                             intro: std::mem::take(&mut quoted_block.intro),
-                            children: BlockAmendmentChildren::StructuralElement(vec![]),
+                            children: convert_structural_block_amendment(&quoted_block.lines)
+                                .with_context(|| {
+                                    "Error during parsing structural block amendment"
+                                })?,
                             wrap_up: std::mem::take(&mut quoted_block.wrap_up),
                         })
                     }
@@ -99,6 +102,13 @@ impl Paragraph {
         }
         Ok(())
     }
+}
+
+fn convert_structural_block_amendment(lines: &[IndentedLine]) -> Result<BlockAmendmentChildren> {
+    // TODO: Absolutely no checks on the result here, we are basically hoping for the best.
+    Ok(parse_complex_body(lines, ParsingContext::BlockAmendment)?
+        .1
+        .into())
 }
 
 fn convert_simple_block_amendment(
@@ -145,7 +155,7 @@ fn convert_simple_block_amendment(
 }
 
 fn convert_articles(first_id: ArticleIdentifier, lines: &[IndentedLine]) -> Result<Vec<Article>> {
-    let mut factory = ArticleParserFactory::new();
+    let mut factory = ArticleParserFactory::new(ParsingContext::BlockAmendment);
     let mut result = Vec::new();
     let mut parser = factory
         .try_create_from_header(&lines[0], Some(first_id))
