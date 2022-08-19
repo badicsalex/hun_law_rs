@@ -15,7 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::Result;
-use log::warn;
+use log::debug;
 use pdf_extract_fhl as pdf_extract;
 use serde::Serialize;
 
@@ -235,7 +235,7 @@ impl pdf_extract::OutputDev for PdfExtractor {
     ) -> Result<(), pdf_extract::OutputError> {
         self.width_of_space = font.get_width(32).unwrap_or(0.0) / 1000.;
         if self.width_of_space == 0.0 || self.width_of_space == 1.0 {
-            warn!("Had to use default space width for font");
+            debug!("Had to use default space width for font");
             self.width_of_space = DEFAULT_WIDTH_OF_SPACE;
         };
         let base_font = font.get_basefont();
