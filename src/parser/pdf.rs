@@ -17,6 +17,7 @@
 use anyhow::Result;
 use log::warn;
 use pdf_extract_fhl as pdf_extract;
+use serde::Serialize;
 
 use crate::util::indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE};
 
@@ -49,7 +50,7 @@ struct PdfExtractor {
     crop: CropBox,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct PageOfLines {
     pub lines: Vec<IndentedLine>,
 }

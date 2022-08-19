@@ -16,13 +16,14 @@
 
 use anyhow::{ensure, Result};
 use lazy_regex::regex_captures;
+use serde::Serialize;
 
 use crate::identifier::ActIdentifier;
 use crate::util::date::Date;
 use crate::util::indentedline::IndentedLine;
 use crate::{parser::pdf::PageOfLines, util::indentedline::EMPTY_LINE};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize)]
 pub struct ActRawText {
     pub identifier: ActIdentifier,
     pub subject: String,
