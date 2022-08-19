@@ -119,13 +119,8 @@ impl IndentedLine {
 
         let mut new_parts = self.parts[from..to].to_owned();
 
-        let additional_indent: i64 = self
-            .parts
-            .iter()
-            .take(from as usize)
-            .map(|e| e.dx as i64)
-            .sum();
-        new_parts[0].dx += additional_indent as f64;
+        let additional_indent: f64 = self.parts.iter().take(from as usize).map(|e| e.dx).sum();
+        new_parts[0].dx += additional_indent;
 
         let justified = self.justified && to == self.parts.len();
         Self::from_parts(new_parts.to_owned(), justified)
@@ -263,10 +258,10 @@ mod tests {
     fn test_indented_line_slice() {
         let line = IndentedLine::from_parts(
             vec![
-                ilp(5.0, 'a'),
-                ilp(5.0, 'b'),
-                ilp(5.0, 'c'),
-                ilp(1.0, 'd'),
+                ilp(5.4, 'a'),
+                ilp(5.6, 'b'),
+                ilp(5.7, 'c'),
+                ilp(1.8, 'd'),
                 ilp(2.0, 'e'),
                 ilp(2.0, ' '),
                 ilp(5.0, 'f'),
@@ -274,7 +269,7 @@ mod tests {
             true,
         );
         assert_eq!(line.content(), "abcde f");
-        assert_eq!(line.indent(), 5.0);
+        assert_eq!(line.indent(), 5.4);
         assert!(line.is_justified());
 
         assert_eq!(line.slice(0, None), line);
@@ -282,21 +277,21 @@ mod tests {
 
         assert_eq!(line.slice(1, None).content(), "bcde f");
         assert!(line.slice(1, None).is_justified());
-        assert_eq!(line.slice(1, None).indent(), 10.0);
+        assert_eq!(line.slice(1, None).indent(), 11.0);
 
         assert_eq!(line.slice(2, None).content(), "cde f");
         assert!(line.slice(2, None).is_justified());
-        assert_eq!(line.slice(2, None).indent(), 15.0);
+        assert_eq!(line.slice(2, None).indent(), 16.7);
         assert_eq!(line.slice(5, None).content(), " f");
         assert!(line.slice(5, None).is_justified());
-        assert_eq!(line.slice(5, None).indent(), 20.0);
+        assert_eq!(line.slice(5, None).indent(), 22.5);
 
         assert_eq!(line.slice(7, None), EMPTY_LINE);
         assert_eq!(line.slice(100, None), EMPTY_LINE);
 
         assert_eq!(line.slice(-2, None).content(), " f");
         assert!(line.slice(-2, None).is_justified());
-        assert_eq!(line.slice(-2, None).indent(), 20.0);
+        assert_eq!(line.slice(-2, None).indent(), 22.5);
 
         assert_eq!(line.slice(0, Some(-1)).content(), "abcde ");
         assert!(!line.slice(0, Some(-1)).is_justified());
@@ -313,7 +308,7 @@ mod tests {
         assert!(!line.slice(2, Some(-2)).is_justified());
         assert_eq!(line.slice(2, Some(5)).content(), "cde");
         assert!(!line.slice(2, Some(5)).is_justified());
-        assert_eq!(line.slice(2, Some(5)).indent(), 15.0);
+        assert_eq!(line.slice(2, Some(5)).indent(), 16.7);
         assert_eq!(line.slice(-2, Some(-1)).content(), " ");
         assert!(!line.slice(-2, Some(-1)).is_justified());
 
