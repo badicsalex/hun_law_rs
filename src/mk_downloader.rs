@@ -20,13 +20,20 @@ use std::str::FromStr;
 use anyhow::{ensure, Result};
 use log::info;
 
-use crate::cache::Cache;
+use crate::{cache::Cache, parser::pdf::CropBox};
 
 #[derive(Debug, Clone)]
 pub struct MkIssue {
     pub year: i64,
     pub issue: i64,
 }
+
+pub const DEFAULT_MK_CROP: CropBox = CropBox {
+    top: 842.0 - 1.25 * 72.0,
+    bottom: 0.0,
+    left: 0.0,
+    right: 1000.0,
+};
 
 impl MkIssue {
     fn cache_key(&self) -> String {

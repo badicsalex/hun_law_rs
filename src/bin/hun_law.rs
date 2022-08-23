@@ -23,8 +23,8 @@ use std::io::Write;
 
 use hun_law::{
     cache::Cache,
-    mk_downloader::{download_mk_issue, MkIssue},
-    parser::pdf::{parse_pdf, CropBox, PageOfLines},
+    mk_downloader::{download_mk_issue, MkIssue, DEFAULT_MK_CROP},
+    parser::pdf::{parse_pdf, PageOfLines},
     parser::{
         mk_act_section::{parse_mk_pages_into_acts, ActRawText},
         structure::parse_act_structure,
@@ -181,11 +181,7 @@ pub fn main() -> Result<()> {
         info!("Processing MK {:?}/{:?}", issue.year, issue.issue);
         let body = download_mk_issue(issue, &cache)?;
         info!("{:?} bytes", body.len());
-        let crop = CropBox {
-            top: 842.0 - 1.25 * 72.0,
-            ..Default::default()
-        };
-        let pages = parse_pdf(&body, crop)?;
+        let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
         if args.parse_until == ParsingStep::PdfLines {
             pages.cli_output(args.output, &mut output)?;
             continue;

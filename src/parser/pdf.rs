@@ -60,7 +60,7 @@ pub struct PageOfLines {
 /// Coordinates start from bottom left. Unit is 'point', there are 72 'points' in an inch
 /// An A4 page is 595 x 842 points
 /// A typical margin is 0.75 inches.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct CropBox {
     pub bottom: f64,
     pub left: f64,
