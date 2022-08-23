@@ -50,46 +50,48 @@ pub mod structural_reference;
 pub mod text_amendment;
 
 impl Act {
-    pub fn add_semantic_info(self) -> Result<Self> {
+    pub fn add_semantic_info(&self) -> Result<Self> {
         // TODO: If there's any Act-level semantic info caching, this is the place for that.
         let mut abbreviation_cache = AbbreviationCache::new();
         Ok(Self {
             children: self
                 .children
-                .into_iter()
+                .iter()
                 .map(|child| child.add_semantic_info(&mut abbreviation_cache))
                 .collect::<Result<Vec<ActChild>>>()?,
-            ..self
+            // XXX: Doesn't this clone the children though?
+            ..self.clone()
         })
     }
 }
 
 impl ActChild {
-    pub fn add_semantic_info(self, abbreviation_cache: &mut AbbreviationCache) -> Result<Self> {
+    pub fn add_semantic_info(&self, abbreviation_cache: &mut AbbreviationCache) -> Result<Self> {
         match self {
             ActChild::Article(x) => Ok(ActChild::Article(x.add_semantic_info(abbreviation_cache)?)),
-            ActChild::StructuralElement(_) | ActChild::Subtitle(_) => Ok(self),
+            ActChild::StructuralElement(_) | ActChild::Subtitle(_) => Ok(self.clone()),
         }
     }
 }
 
 impl Article {
-    pub fn add_semantic_info(self, abbreviation_cache: &mut AbbreviationCache) -> Result<Self> {
+    pub fn add_semantic_info(&self, abbreviation_cache: &mut AbbreviationCache) -> Result<Self> {
         // TODO: If there's any Article-level semantic info caching, this is the place for that.
         Ok(Self {
             children: self
                 .children
-                .into_iter()
+                .iter()
                 .map(|p| p.add_semantic_info("", "", abbreviation_cache))
                 .collect::<Result<Vec<Paragraph>>>()?,
-            ..self
+            // XXX: Doesn't this clone the children though?
+            ..self.clone()
         })
     }
 }
 
 trait AddSemanticInfoSAE: Sized {
     fn add_semantic_info(
-        self,
+        &self,
         prefix: &str,
         postfix: &str,
         abbreviation_cache: &mut AbbreviationCache,
@@ -99,25 +101,25 @@ trait AddSemanticInfoSAE: Sized {
 impl<IdentifierType, ChildrenType> AddSemanticInfoSAE
     for SubArticleElement<IdentifierType, ChildrenType>
 where
-    IdentifierType: IsNextFrom + IsDefault + Sized,
+    IdentifierType: IsNextFrom + IsDefault + Sized + Clone,
     ChildrenType: AddSemanticInfoSAE,
 {
     fn add_semantic_info(
-        self,
+        &self,
         prefix: &str,
         postfix: &str,
         abbreviation_cache: &mut AbbreviationCache,
     ) -> Result<Self> {
-        Ok(match self.body {
+        Ok(match &self.body {
             SAEBody::Text(body) => Self {
+                identifier: self.identifier.clone(),
                 semantic_info: Some(extract_semantic_info(
                     prefix,
                     &body,
                     postfix,
                     abbreviation_cache,
                 )?),
-                body: SAEBody::Text(body),
-                ..self
+                body: SAEBody::Text(body.clone()),
             },
             SAEBody::Children {
                 intro,
@@ -137,12 +139,10 @@ where
                 //
                 // In this case, we hope that the string "From now on" can be parsed without
                 // the second part of the sentence.
-                let semantic_info = Some(extract_semantic_info(
-                    prefix,
-                    &intro,
-                    "",
-                    abbreviation_cache,
-                )?);
+                let semantic_info = Some(
+                    extract_semantic_info(prefix, intro, "", abbreviation_cache)
+                        .with_elem_context("Could not extract semantic info from intro", self)?,
+                );
                 let new_prefix = format!("{}{} ", prefix, intro);
                 let new_postfix = if let Some(wrap_up_contents) = &wrap_up {
                     format!(" {}{}", wrap_up_contents, postfix)
@@ -152,13 +152,13 @@ where
                 let children =
                     children.add_semantic_info(&new_prefix, &new_postfix, abbreviation_cache)?;
                 Self {
+                    identifier: self.identifier.clone(),
                     semantic_info,
                     body: SAEBody::Children {
-                        intro,
+                        intro: intro.clone(),
                         children,
-                        wrap_up,
+                        wrap_up: wrap_up.clone(),
                     },
-                    ..self
                 }
             }
         })
@@ -167,12 +167,12 @@ where
 
 impl<T: AddSemanticInfoSAE> AddSemanticInfoSAE for Vec<T> {
     fn add_semantic_info(
-        self,
+        &self,
         prefix: &str,
         postfix: &str,
         abbreviation_cache: &mut AbbreviationCache,
     ) -> Result<Self> {
-        self.into_iter()
+        self.iter()
             .map(|item| item.add_semantic_info(prefix, postfix, abbreviation_cache))
             .collect()
     }
@@ -180,7 +180,7 @@ impl<T: AddSemanticInfoSAE> AddSemanticInfoSAE for Vec<T> {
 
 impl AddSemanticInfoSAE for ParagraphChildren {
     fn add_semantic_info(
-        self,
+        &self,
         prefix: &str,
         postfix: &str,
         abbreviation_cache: &mut AbbreviationCache,
@@ -192,14 +192,16 @@ impl AddSemanticInfoSAE for ParagraphChildren {
             ParagraphChildren::NumericPoint(x) => Ok(ParagraphChildren::NumericPoint(
                 x.add_semantic_info(prefix, postfix, abbreviation_cache)?,
             )),
-            ParagraphChildren::QuotedBlock(_) | ParagraphChildren::BlockAmendment(_) => Ok(self),
+            ParagraphChildren::QuotedBlock(_) | ParagraphChildren::BlockAmendment(_) => {
+                Ok(self.clone())
+            }
         }
     }
 }
 
 impl AddSemanticInfoSAE for NumericPointChildren {
     fn add_semantic_info(
-        self,
+        &self,
         prefix: &str,
         postfix: &str,
         abbreviation_cache: &mut AbbreviationCache,
@@ -216,7 +218,7 @@ impl AddSemanticInfoSAE for NumericPointChildren {
 
 impl AddSemanticInfoSAE for AlphabeticPointChildren {
     fn add_semantic_info(
-        self,
+        &self,
         prefix: &str,
         postfix: &str,
         abbreviation_cache: &mut AbbreviationCache,
@@ -238,25 +240,25 @@ impl AddSemanticInfoSAE for AlphabeticPointChildren {
 
 impl AddSemanticInfoSAE for AlphabeticSubpointChildren {
     fn add_semantic_info(
-        self,
+        &self,
         _prefix: &str,
         _postfix: &str,
         _abbreviation_cache: &mut AbbreviationCache,
     ) -> Result<Self> {
         // This is an empty enum, the function shall never run.
-        match self {}
+        match *self {}
     }
 }
 
 impl AddSemanticInfoSAE for NumericSubpointChildren {
     fn add_semantic_info(
-        self,
+        &self,
         _prefix: &str,
         _postfix: &str,
         _abbreviation_cache: &mut AbbreviationCache,
     ) -> Result<Self> {
         // This is an empty enum, the function shall never run.
-        match self {}
+        match *self {}
     }
 }
 
