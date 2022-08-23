@@ -43,7 +43,7 @@ impl Cache {
         let file_path = self.cache_dir.join(key);
         let file_dir = file_path
             .parent()
-            .ok_or(anyhow!("Cache object must have a parent directory"))?;
+            .ok_or_else(|| anyhow!("Cache object must have a parent directory"))?;
         fs::create_dir_all(file_dir)?;
         fs::write(file_path, data)?;
         Ok(())
