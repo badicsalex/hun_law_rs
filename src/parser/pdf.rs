@@ -107,7 +107,10 @@ impl PdfExtractor {
         let mut threshold_to_space = f64::INFINITY;
         let mut prev_x = 0.0;
         for current_char in &chars {
-            if current_char.x > threshold_to_space {
+            // The exception for '„' is needed, because
+            // Visually, there is very little space between the starting quote and the
+            // text before it, but logically, there should always be a space character.
+            if current_char.x > threshold_to_space || current_char.content == '„' {
                 result.push(IndentedLinePart {
                     dx: threshold_to_space - prev_x,
                     content: ' ',
