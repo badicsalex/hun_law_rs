@@ -26,11 +26,11 @@ use crate::{
     util::{indentedline::IndentedLine, QuoteCheck},
 };
 
-pub fn parse_act_structure(raw_act: ActRawText) -> Result<Act> {
+pub fn parse_act_structure(raw_act: &ActRawText) -> Result<Act> {
     let (preamble, children) = parse_complex_body(&raw_act.body, ParsingContext::FullAct)?;
     Ok(Act {
         identifier: raw_act.identifier,
-        subject: raw_act.subject,
+        subject: raw_act.subject.clone(),
         preamble,
         publication_date: raw_act.publication_date,
         children,

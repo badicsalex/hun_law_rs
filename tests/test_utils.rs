@@ -93,7 +93,7 @@ pub fn to_indented_lines(data: &[u8]) -> Vec<IndentedLine> {
 
 pub fn parse_txt_as_act(path: &Path) -> Result<Act> {
     let data_as_lines = to_indented_lines(&read_all(path)?);
-    parse_act_structure(ActRawText {
+    parse_act_structure(&ActRawText {
         identifier: ActIdentifier {
             year: 2345,
             number: 0xd,
