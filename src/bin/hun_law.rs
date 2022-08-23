@@ -15,12 +15,13 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::Result;
+
 use clap::Parser;
 use log::info;
 use serde::Serialize;
 use std::io::Write;
 
-use crate::{
+use hun_law::{
     cache::Cache,
     mk_downloader::{download_mk_issue, MkIssue},
     parser::pdf::{parse_pdf, CropBox, PageOfLines},
@@ -166,7 +167,7 @@ fn quick_display_indented_line(l: &IndentedLine, testing_tags: bool) -> String {
     s
 }
 
-pub fn cli_main() -> Result<()> {
+pub fn main() -> Result<()> {
     env_logger::Builder::from_env(
         env_logger::Env::default().filter_or(env_logger::DEFAULT_FILTER_ENV, "info"),
     )

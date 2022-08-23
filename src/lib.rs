@@ -15,7 +15,6 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 pub mod cache;
-pub mod cli;
 pub mod identifier;
 pub mod mk_downloader;
 pub mod parser;
