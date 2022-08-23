@@ -49,7 +49,6 @@ struct HunLawArgs {
     parse_until: ParsingStep,
 }
 
-/// What
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
 enum OutputType {
     /// Plain text output
