@@ -31,6 +31,19 @@ pub struct ActRawText {
     pub body: Vec<IndentedLine>,
 }
 
+impl ActRawText {
+    pub fn remove_double_empty_lines(&mut self) {
+        let mut i = 1;
+        while i < self.body.len() {
+            if self.body[i - 1].is_empty() && self.body[i].is_empty() {
+                self.body.remove(i);
+            } else {
+                i += 1;
+            }
+        }
+    }
+}
+
 struct ActExtractor {
     publication_date: Date,
     current_act: ActRawText,
@@ -223,6 +236,8 @@ pub fn parse_mk_pages_into_acts(pages: &[PageOfLines]) -> Result<Vec<ActRawText>
             extractor.feed_line(&EMPTY_LINE);
         }
     }
-
+    for act in &mut extractor.result {
+        act.remove_double_empty_lines();
+    }
     Ok(extractor.result)
 }
