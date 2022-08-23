@@ -23,7 +23,7 @@ use crate::util::date::Date;
 use crate::util::indentedline::IndentedLine;
 use crate::{parser::pdf::PageOfLines, util::indentedline::EMPTY_LINE};
 
-#[derive(Debug, Default, Serialize)]
+#[derive(Debug, Default, Clone, Serialize)]
 pub struct ActRawText {
     pub identifier: ActIdentifier,
     pub subject: String,

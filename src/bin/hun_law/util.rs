@@ -14,12 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-pub mod cache;
-pub mod fixups;
-pub mod identifier;
-pub mod mk_downloader;
-pub mod parser;
-pub mod reference;
-pub mod semantic_info;
-pub mod structure;
-pub mod util;
+use hun_law::util::indentedline::IndentedLine;
+
+pub fn quick_display_indented_line(l: &IndentedLine, testing_tags: bool) -> String {
+    let mut s = String::new();
+    let mut indent = (l.indent() * 0.2) as usize;
+    if testing_tags {
+        if l.is_bold() {
+            s.push_str("<BOLD>");
+            indent = indent.saturating_sub(6);
+        }
+        if !l.is_justified() {
+            s.push_str("<NJ>");
+            indent = indent.saturating_sub(4);
+        }
+    }
+    s.push_str(&" ".repeat(indent));
+    s.push_str(l.content());
+    s
+}

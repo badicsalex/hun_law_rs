@@ -29,6 +29,7 @@ roman = "0.1"
 serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0"
 serde_yaml = "0.8"
+tempfile = "3"
 ureq = "2.4"
 
 [dev-dependencies]
@@ -36,7 +37,6 @@ datatest-stable = "0.1.2"
 pretty_assertions = "1"
 colored-diff = "= 0.2.2" # Version 0.2.3 broke the pretty display: https://github.com/CAD97/colored-diff/issues/8
 rstest = "0.12"
-tempfile = "3"
 
 [build-dependencies]
 phf_codegen = "0.10"
