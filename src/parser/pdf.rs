@@ -104,19 +104,21 @@ impl PdfExtractor {
         let justified =
             last_char.x + last_char.width + JUSTIFIED_DETECTION_THRESHOLD >= estimated_right_margin;
         let mut result = Vec::<IndentedLinePart>::new();
-        let mut threshold_to_space = f64::INFINITY;
+        let mut threshold_to_space = None;
         let mut prev_x = 0.0;
         for current_char in &chars {
-            // The exception for '„' is needed, because
-            // Visually, there is very little space between the starting quote and the
-            // text before it, but logically, there should always be a space character.
-            if current_char.x > threshold_to_space || current_char.content == '„' {
-                result.push(IndentedLinePart {
-                    dx: threshold_to_space - prev_x,
-                    content: ' ',
-                    bold: current_char.bold,
-                });
-                prev_x = threshold_to_space;
+            if let Some(threshold_to_space) = threshold_to_space {
+                // The exception for '„' is needed, because
+                // Visually, there is very little space between the starting quote and the
+                // text before it, but logically, there should always be a space character.
+                if current_char.x > threshold_to_space || current_char.content == '„' {
+                    result.push(IndentedLinePart {
+                        dx: threshold_to_space - prev_x,
+                        content: ' ',
+                        bold: current_char.bold,
+                    });
+                    prev_x = threshold_to_space;
+                }
             }
             result.push(IndentedLinePart {
                 dx: current_char.x - prev_x,
@@ -124,9 +126,11 @@ impl PdfExtractor {
                 bold: current_char.bold,
             });
             prev_x = current_char.x;
-            threshold_to_space = current_char.x
-                + current_char.width
-                + current_char.width_of_space * SPACE_DETECTION_THRESHOLD_RATIO;
+            threshold_to_space = Some(
+                current_char.x
+                    + current_char.width
+                    + current_char.width_of_space * SPACE_DETECTION_THRESHOLD_RATIO,
+            );
         }
         while let Some(IndentedLinePart { content: ' ', .. }) = result.get(0) {
             result.remove(0);
