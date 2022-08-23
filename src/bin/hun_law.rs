@@ -181,6 +181,7 @@ fn main() -> Result<()> {
     let args = HunLawArgs::parse();
     let cache = Cache::new(&"./cache");
     let mut output = std::io::stdout();
+    let mut everything_ok = true;
     for issue in &args.issues {
         info!("Processing MK {:?}/{:?}", issue.year, issue.issue);
         let body = download_mk_issue(issue, &cache)?;
@@ -205,8 +206,16 @@ fn main() -> Result<()> {
                 "------ Act {:?}/{:?} ------",
                 act.identifier.year, act.identifier.number
             )?;
-            process_single_act(act, &args, &mut output)?;
+            let act_id = act.identifier;
+            if let Err(error) = process_single_act(act, &args, &mut output) {
+                everything_ok = false;
+                log::error!("{}: {:?}", act_id, error);
+            }
         }
     }
-    Ok(())
+    if everything_ok {
+        Ok(())
+    } else {
+        Err(anyhow::anyhow!("Some acts were not processed"))
+    }
 }
