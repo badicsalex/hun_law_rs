@@ -43,6 +43,7 @@ phf_codegen = "0.10"
 
 [profile.release]
 debug = true
+incremental = true
 
 [[test]]
 name = "run_simple_tests"
