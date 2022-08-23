@@ -26,7 +26,10 @@ use crate::{
         PrefixedAlphabeticIdentifier,
     },
     semantic_info::SemanticInfo,
-    util::{date::Date, indentedline::IndentedLine, is_default, str_to_int_hun, IsDefault},
+    util::{
+        date::Date, debug::DebugContextString, indentedline::IndentedLine, is_default,
+        str_to_int_hun, IsDefault,
+    },
 };
 
 //  Main act on which all the code was based:
@@ -297,5 +300,30 @@ where
             body,
             semantic_info: None,
         }
+    }
+}
+
+macro_rules! simple_dbg_ctx {
+    ($t:ident) => {
+        impl DebugContextString for $t {
+            fn debug_ctx(&self) -> String {
+                format!(concat!(stringify!($t), " {}"), self.identifier)
+            }
+        }
+    };
+}
+
+simple_dbg_ctx!(Act);
+simple_dbg_ctx!(Article);
+simple_dbg_ctx!(AlphabeticPoint);
+simple_dbg_ctx!(NumericPoint);
+simple_dbg_ctx!(AlphabeticSubpoint);
+simple_dbg_ctx!(NumericSubpoint);
+impl DebugContextString for Paragraph {
+    fn debug_ctx(&self) -> String {
+        format!(
+            "Paragraph {}",
+            self.identifier.map_or("None".to_owned(), |i| i.to_string())
+        )
     }
 }

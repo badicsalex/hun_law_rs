@@ -27,7 +27,7 @@ use crate::{
         Act, ActChild, Article, BlockAmendment, BlockAmendmentChildren, Paragraph,
         ParagraphChildren, SAEBody,
     },
-    util::indentedline::IndentedLine,
+    util::{debug::WithElemContext, indentedline::IndentedLine},
 };
 
 use super::{
@@ -40,7 +40,9 @@ impl Act {
     pub fn convert_block_amendments(&mut self) -> Result<()> {
         for act_child in &mut self.children {
             if let ActChild::Article(article) = act_child {
-                article.convert_block_amendments()?
+                article
+                    .convert_block_amendments()
+                    .with_elem_context("Could not convert block amendments", article)?;
             }
         }
         Ok(())
@@ -50,7 +52,9 @@ impl Act {
 impl Article {
     pub fn convert_block_amendments(&mut self) -> Result<()> {
         for paragraph in &mut self.children {
-            paragraph.convert_block_amendments()?;
+            paragraph
+                .convert_block_amendments()
+                .with_elem_context("Could not convert block amendments", paragraph)?;
         }
         Ok(())
     }
@@ -82,7 +86,7 @@ impl Paragraph {
                                 &ba.position,
                                 &quoted_block.lines,
                             )
-                            .with_context(|| "Error during parsing simple block amendment")?,
+                            .with_context(|| "Could not parse simple block amendment")?,
                             wrap_up: std::mem::take(&mut quoted_block.wrap_up),
                         })
                     }
@@ -90,9 +94,7 @@ impl Paragraph {
                         *children = ParagraphChildren::BlockAmendment(BlockAmendment {
                             intro: std::mem::take(&mut quoted_block.intro),
                             children: convert_structural_block_amendment(&quoted_block.lines)
-                                .with_context(|| {
-                                    "Error during parsing structural block amendment"
-                                })?,
+                                .with_context(|| "Could not parse structural block amendment")?,
                             wrap_up: std::mem::take(&mut quoted_block.wrap_up),
                         })
                     }

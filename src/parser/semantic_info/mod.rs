@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use hun_law_grammar::PegParser;
 
 use self::{
@@ -37,7 +37,10 @@ use crate::{
         NumericPointChildren, NumericSubpointChildren, Paragraph, ParagraphChildren, SAEBody,
         SubArticleElement,
     },
-    util::IsDefault,
+    util::{
+        debug::{DebugContextString, WithElemContext},
+        IsDefault,
+    },
 };
 
 pub mod abbreviation;
@@ -58,7 +61,8 @@ impl Act {
                 .children
                 .iter()
                 .map(|child| child.add_semantic_info(&mut abbreviation_cache))
-                .collect::<Result<Vec<ActChild>>>()?,
+                .collect::<Result<Vec<ActChild>>>()
+                .with_elem_context("Could not add semantic info to children", self)?,
             // XXX: Doesn't this clone the children though?
             ..self.clone()
         })
@@ -68,7 +72,10 @@ impl Act {
 impl ActChild {
     pub fn add_semantic_info(&self, abbreviation_cache: &mut AbbreviationCache) -> Result<Self> {
         match self {
-            ActChild::Article(x) => Ok(ActChild::Article(x.add_semantic_info(abbreviation_cache)?)),
+            ActChild::Article(x) => Ok(ActChild::Article(
+                x.add_semantic_info(abbreviation_cache)
+                    .with_elem_context("Could not add semantic info to children", x)?,
+            )),
             ActChild::StructuralElement(_) | ActChild::Subtitle(_) => Ok(self.clone()),
         }
     }
@@ -81,7 +88,10 @@ impl Article {
             children: self
                 .children
                 .iter()
-                .map(|p| p.add_semantic_info("", "", abbreviation_cache))
+                .map(|p| {
+                    p.add_semantic_info("", "", abbreviation_cache)
+                        .with_elem_context("Could not add semantic info to children", p)
+                })
                 .collect::<Result<Vec<Paragraph>>>()?,
             // XXX: Doesn't this clone the children though?
             ..self.clone()
@@ -103,6 +113,7 @@ impl<IdentifierType, ChildrenType> AddSemanticInfoSAE
 where
     IdentifierType: IsNextFrom + IsDefault + Sized + Clone,
     ChildrenType: AddSemanticInfoSAE,
+    Self: DebugContextString,
 {
     fn add_semantic_info(
         &self,
@@ -113,12 +124,10 @@ where
         Ok(match &self.body {
             SAEBody::Text(body) => Self {
                 identifier: self.identifier.clone(),
-                semantic_info: Some(extract_semantic_info(
-                    prefix,
-                    &body,
-                    postfix,
-                    abbreviation_cache,
-                )?),
+                semantic_info: Some(
+                    extract_semantic_info(prefix, body, postfix, abbreviation_cache)
+                        .with_elem_context("Could not extract semantic info from body", self)?,
+                ),
                 body: SAEBody::Text(body.clone()),
             },
             SAEBody::Children {
@@ -149,8 +158,9 @@ where
                 } else {
                     postfix.to_owned()
                 };
-                let children =
-                    children.add_semantic_info(&new_prefix, &new_postfix, abbreviation_cache)?;
+                let children = children
+                    .add_semantic_info(&new_prefix, &new_postfix, abbreviation_cache)
+                    .with_elem_context("Could not add semantic info to children", self)?;
                 Self {
                     identifier: self.identifier.clone(),
                     semantic_info,
@@ -282,7 +292,8 @@ pub fn extract_semantic_info(
         .filter_map(|oref| adjust_outgoing_reference(prefix.len(), s.len() - postfix.len(), oref))
         .collect();
 
-    let special_phrase = extract_special_phrase(abbreviation_cache, &parsed)?;
+    let special_phrase = extract_special_phrase(abbreviation_cache, &parsed)
+        .with_context(|| format!("Could not extract special phrase from '{}'", s))?;
     Ok(SemanticInfo {
         outgoing_references,
         new_abbreviations,

@@ -19,6 +19,8 @@ use std::{fmt::Debug, str::FromStr};
 use lazy_regex::Regex;
 use serde::{Deserialize, Serialize};
 
+use super::debug::DebugContextString;
+
 // Extremely scientific.
 // Value worked well for the python version for hundreds of documents
 const INDENT_SIMILARITY_THRESHOLD: f64 = 1.0;
@@ -211,6 +213,12 @@ impl PartialEq for IndentedLine {
     }
 }
 impl Eq for IndentedLine {}
+
+impl DebugContextString for IndentedLine {
+    fn debug_ctx(&self) -> String {
+        format!("line '{}'", self.content())
+    }
+}
 
 pub const EMPTY_LINE: IndentedLine = IndentedLine {
     parts: Vec::new(),

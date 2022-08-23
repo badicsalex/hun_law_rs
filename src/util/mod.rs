@@ -19,6 +19,7 @@ use anyhow::{ensure, Result};
 
 pub mod date;
 pub mod indentedline;
+pub mod debug;
 use indentedline::IndentedLine;
 
 pub trait IsDefault {
