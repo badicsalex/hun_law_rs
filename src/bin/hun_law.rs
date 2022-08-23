@@ -99,20 +99,6 @@ trait CliOutput: Sized + Serialize {
     fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()>;
 }
 
-impl<T: CliOutput> CliOutput for Vec<T> {
-    fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()> {
-        let mut first = true;
-        for item in self {
-            if !first {
-                writeln!(target, "------->8------")?;
-            }
-            first = false;
-            item.cli_output_plain(testing_tags, target)?;
-        }
-        Ok(())
-    }
-}
-
 impl CliOutput for PageOfLines {
     fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()> {
         for line in self.lines {
@@ -167,7 +153,26 @@ fn quick_display_indented_line(l: &IndentedLine, testing_tags: bool) -> String {
     s
 }
 
-pub fn main() -> Result<()> {
+fn process_single_act(
+    act: ActRawText,
+    args: &HunLawArgs,
+    output: &mut impl std::io::Write,
+) -> Result<()> {
+    if args.parse_until == ParsingStep::ActLines {
+        return act.cli_output(args.output, output);
+    }
+    let act = parse_act_structure(act)?;
+
+    if args.parse_until == ParsingStep::Structure {
+        return act.cli_output(args.output, output);
+    }
+
+    let mut act = act.add_semantic_info()?;
+    act.convert_block_amendments()?;
+    act.cli_output(args.output, output)
+}
+
+fn main() -> Result<()> {
     env_logger::Builder::from_env(
         env_logger::Env::default().filter_or(env_logger::DEFAULT_FILTER_ENV, "info"),
     )
@@ -183,34 +188,26 @@ pub fn main() -> Result<()> {
         info!("{:?} bytes", body.len());
         let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
         if args.parse_until == ParsingStep::PdfLines {
-            pages.cli_output(args.output, &mut output)?;
+            let mut first = true;
+            for page in pages {
+                if !first {
+                    writeln!(&mut output, "------- >8 ------")?;
+                }
+                first = false;
+                page.cli_output(args.output, &mut output)?;
+            }
             continue;
         }
 
-        let acts = parse_mk_pages_into_acts(&pages)?;
-        if args.parse_until == ParsingStep::ActLines {
-            acts.cli_output(args.output, &mut output)?;
-            continue;
+        for act in parse_mk_pages_into_acts(&pages)? {
+            // TODO: output into output files
+            writeln!(
+                output,
+                "------ Act {:?}/{:?} ------",
+                act.identifier.year, act.identifier.number
+            )?;
+            process_single_act(act, &args, &mut output)?;
         }
-
-        let acts = acts
-            .into_iter()
-            .map(parse_act_structure)
-            .collect::<Result<Vec<_>>>()?;
-        if args.parse_until == ParsingStep::Structure {
-            acts.cli_output(args.output, &mut output)?;
-            continue;
-        }
-
-        let acts = acts
-            .into_iter()
-            .map(|mut act| {
-                act = act.add_semantic_info()?;
-                act.convert_block_amendments()?;
-                Ok(act)
-            })
-            .collect::<Result<Vec<_>>>()?;
-        acts.cli_output(args.output, &mut output)?;
     }
     Ok(())
 }
