@@ -144,7 +144,7 @@ impl ActExtractor {
                 || body.last().unwrap().content() == "köztársasági elnök az Országgyűlés alelnöke")
         {
             body.truncate(body.len() - 3);
-            self.current_act.publication_date = self.publication_date.clone();
+            self.current_act.publication_date = self.publication_date;
             // take() fills self.current_act with defaults, which is exactly what we want.
             self.result.push(std::mem::take(&mut self.current_act));
             return WaitingForHeaderNewline;
