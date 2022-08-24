@@ -84,7 +84,7 @@ pub const ROMAN_DIGITS: [char; 7] = ['I', 'V', 'X', 'L', 'C', 'D', 'M'];
 #[derive(Debug, Default)]
 #[must_use]
 pub struct QuoteCheck {
-    quote_level: i64,
+    pub quote_level: i64,
     pub beginning_is_quoted: bool,
     pub end_is_quoted: bool,
 }
@@ -94,6 +94,7 @@ impl QuoteCheck {
         self.beginning_is_quoted = self.quote_level > 0;
         self.quote_level += line.content().matches(['„', '“']).count() as i64;
         self.quote_level -= line.content().matches('”').count() as i64;
+        self.end_is_quoted = self.quote_level > 0;
 
         ensure!(
             self.quote_level >= 0,
@@ -101,7 +102,6 @@ impl QuoteCheck {
             self.quote_level,
             line.content()
         );
-        self.end_is_quoted = self.quote_level > 0;
         Ok(())
     }
 
