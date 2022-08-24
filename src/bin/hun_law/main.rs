@@ -137,7 +137,10 @@ fn main() -> Result<()> {
             } else {
                 process_single_act(act, &args, &mut output)
             };
-            everything_ok = everything_ok && process_result.is_ok();
+            if let Err(error) = process_result {
+                log::error!("{:?}", error);
+                everything_ok = false;
+            }
         }
     }
     if everything_ok {
@@ -168,6 +171,7 @@ fn process_single_act(
     args: &HunLawArgs,
     output: &mut impl std::io::Write,
 ) -> Result<()> {
+    info!("Parsing {}", act_raw.identifier);
     Fixups::load(act_raw.identifier)?.apply(&mut act_raw.body)?;
     act_raw.remove_double_empty_lines();
 
