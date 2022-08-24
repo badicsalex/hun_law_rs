@@ -103,6 +103,18 @@ impl Fixup {
             .position(|w| w == needle)
             .ok_or_else(|| anyhow!("Could not find '{}' in text", self.old))?
             + self.after.len();
+
+        let found_places = lines_as_strs
+            .windows(needle.len())
+            .filter(|w| *w == needle)
+            .count();
+        ensure!(
+            found_places == 1,
+            "Replacement 'old' text ('{}') found too many ({:?}) times.",
+            self.old,
+            found_places
+        );
+
         lines[position] = self
             .apply_to_line(&lines[position])
             .with_elem_context("Could not apply fixup", self)?;
