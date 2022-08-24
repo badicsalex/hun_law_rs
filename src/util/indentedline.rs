@@ -109,16 +109,9 @@ impl IndentedLine {
     }
 
     pub fn slice(&self, from: i64, to: Option<i64>) -> IndentedLine {
-        let len = self.len() as i64;
-        let from = if from >= 0 { from } else { len + from };
-        let from = from.clamp(0, len) as usize;
-        let to = match to {
-            Some(num) if num < 0 => len + num,
-            Some(num) => num,
-            None => len,
-        };
-        let to = to.clamp(from as i64, len) as usize;
-        if to == from {
+        let from = self.convert_index(from);
+        let to = to.map_or(self.len(), |to| self.convert_index(to));
+        if to <= from {
             return EMPTY_LINE;
         }
 
@@ -205,6 +198,22 @@ impl IndentedLine {
             s.push(' ');
         }
         s.push_str(self.content());
+    }
+
+    /// Returns the indentation at a specific char index.
+    /// Indexes past length return the indent of the last character.
+    pub fn indent_at(&self, from: i64) -> f64 {
+        self.parts
+            .iter()
+            .take(self.convert_index(from) + 1)
+            .map(|p| p.dx)
+            .sum()
+    }
+
+    fn convert_index(&self, from: i64) -> usize {
+        let len = self.len() as i64;
+        let from = if from >= 0 { from } else { len + from };
+        from.clamp(0, len) as usize
     }
 }
 
@@ -545,5 +554,35 @@ mod tests {
         assert_eq!(line.slice_bytes(8, None).content(), "[Dummy title]");
         assert_eq!(line.slice_bytes(8, Some(15)).content(), "[Dummy ");
         assert_eq!(line.slice_bytes(2, Some(15)).content(), "2. § [Dummy ");
+    }
+
+    #[test]
+    fn test_indent_at() {
+        let line = IndentedLine::from_parts(
+            vec![
+                ilp(5.4, 'a'),
+                ilp(5.6, 'b'),
+                ilp(5.7, 'c'),
+                ilp(1.8, 'd'),
+                ilp(2.0, 'e'),
+                ilp(2.0, ' '),
+                ilp(5.0, 'f'),
+            ],
+            true,
+        );
+
+        let len = line.len() as i64;
+        for i in -len..len {
+            assert_eq!(
+                line.indent_at(i),
+                line.slice(i, None).indent(),
+                "Indent not good at {:?}",
+                i
+            )
+        }
+        assert_eq!(line.indent_at(len), 27.5);
+        assert_eq!(line.indent_at(len + 100), 27.5);
+        assert_eq!(line.indent_at(-len), 5.4);
+        assert_eq!(line.indent_at(-len - 100), 5.4);
     }
 }
