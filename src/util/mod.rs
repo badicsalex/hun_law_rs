@@ -18,8 +18,8 @@ use std::collections::HashMap;
 use anyhow::{ensure, Result};
 
 pub mod date;
-pub mod indentedline;
 pub mod debug;
+pub mod indentedline;
 use indentedline::IndentedLine;
 
 pub trait IsDefault {
