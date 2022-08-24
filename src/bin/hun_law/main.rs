@@ -158,7 +158,12 @@ fn process_single_act_interactive(
     while let Err(error) = process_single_act(act_raw.clone(), args, output) {
         log::error!("{:?}", error);
         if confirm("Try to fix issue in editor?")? {
-            run_fixup_editor(&act_raw, &args.editor)?;
+            // TODO: Remove this duplicate code somehow
+            let mut act_fixed_up = act_raw.clone();
+            Fixups::load(act_fixed_up.identifier)?.apply(&mut act_fixed_up.body)?;
+            act_fixed_up.remove_double_empty_lines();
+
+            run_fixup_editor(&act_fixed_up, &args.editor)?;
             continue;
         }
         return Err(error);

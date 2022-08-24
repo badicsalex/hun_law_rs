@@ -19,7 +19,9 @@ use anyhow::{anyhow, ensure, Result};
 use hun_law::{
     fixups::{Fixup, Fixups},
     parser::mk_act_section::ActRawText,
+    util::QuoteCheck,
 };
+use log::info;
 use std::io::{Read, Seek, SeekFrom, Write};
 
 use crate::util::quick_display_indented_line;
@@ -29,26 +31,46 @@ pub fn run_fixup_editor(act: &ActRawText, editor: &str) -> Result<()> {
         .prefix(&act.identifier.to_string())
         .suffix(".txt")
         .tempfile()?;
-    for line in &act.body {
+    let mut quote_check = QuoteCheck::default();
+    let mut first_error = None;
+    let mut line_after_last_unquoted = None;
+    for (i, line) in act.body.iter().enumerate() {
         ensure!(
             !line.content().ends_with(' '),
             "All lines must be rtrimmed, or else modification detection does not work"
         );
         ensure!(
             !line.content().starts_with(' '),
-            "All lines must be rtrimmed, or else modification detection does not work"
+            "All lines must be ltrimmed, or else modification detection does not work"
         );
-        writeln!(temp_file, "L: {}", quick_display_indented_line(line, false))?;
+        // We don't care about the check error here, only the actual count
+        if quote_check.update(line).is_err() && first_error.is_none() {
+            first_error = Some(i);
+        }
+        if !quote_check.end_is_quoted {
+            line_after_last_unquoted = Some(i + 1);
+        }
+
+        writeln!(
+            temp_file,
+            "{:>4} {}",
+            quote_check.quote_level,
+            quick_display_indented_line(line, false)
+        )?;
     }
     temp_file.flush()?;
+
+    let open_at_line = first_error.or(line_after_last_unquoted).unwrap_or(0);
     std::process::Command::new(editor)
         .arg(temp_file.path())
+        .arg(format!("+{}", open_at_line + 1))
         .status()?;
+
     let mut contents = String::new();
     temp_file.seek(SeekFrom::Start(0))?;
     temp_file.read_to_string(&mut contents)?;
     let old_lines: Vec<&str> = act.body.iter().map(|l| l.content().trim()).collect();
-    let new_lines: Vec<&str> = contents.lines().map(|l| l[3..].trim()).collect();
+    let new_lines: Vec<&str> = contents.lines().map(|l| l[5..].trim()).collect();
     let mut fixups = Fixups::load(act.identifier)?;
     update_fixups(&mut fixups, old_lines, new_lines)?;
     fixups.save()?;
@@ -80,14 +102,17 @@ fn update_fixups<'a>(
             })
             .ok_or_else(|| {
                 anyhow!(
-                    "Could not find big enough context for {}",
-                    original_lines[change_pos]
+                    "Could not find big enough context for '{}' on line {:?}",
+                    original_lines[change_pos],
+                    change_pos,
                 )
             })?;
         let after = original_lines[change_pos - context_len..change_pos]
             .iter()
             .map(|l| l.to_owned().to_owned())
             .collect();
+        info!("Added fixup, old: '{}'", original_lines[change_pos]);
+        info!("             new: '{}'", new_lines[change_pos]);
         fixups.add(Fixup {
             after,
             old: original_lines[change_pos].to_owned(),
