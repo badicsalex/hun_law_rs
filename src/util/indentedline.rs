@@ -74,7 +74,10 @@ impl IndentedLine {
                 }
             }
         }
-        let justified = others.last().map_or(false, |o| o.justified);
+        let justified = others
+            .iter()
+            .rfind(|l| !l.is_empty())
+            .map_or(false, |o| o.justified);
         Self::from_parts(result_parts, justified)
     }
 
@@ -362,6 +365,11 @@ mod tests {
             assert_eq!(concatenated_2, big_conc);
             assert_eq!(slice2, reslice2);
         }
+
+        let sorrounded_by_emptiness =
+            IndentedLine::from_multiple(&[&EMPTY_LINE, &line2, &EMPTY_LINE]);
+        assert_eq!(sorrounded_by_emptiness, line2);
+        assert!(sorrounded_by_emptiness.is_justified());
     }
 
     #[test]
