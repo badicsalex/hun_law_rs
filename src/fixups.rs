@@ -102,7 +102,7 @@ impl Fixup {
             .windows(needle.len())
             .position(|w| w == needle)
             .ok_or_else(|| anyhow!("Could not find '{}' in text", self.old))?
-            - self.after.len();
+            + self.after.len();
         lines[position] = self
             .apply_to_line(&lines[position])
             .with_elem_context("Could not apply fixup", self)?;

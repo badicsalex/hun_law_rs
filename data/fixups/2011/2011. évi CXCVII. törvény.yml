@@ -1,0 +1,8 @@
+---
+- after:
+    - biztosíték teljesítéséért a vezetőtől való behajthatatlanság esetén kezesként felel. A külföldi székhelyű vállalkozás
+    - az említett kezesi kötelezettségéből eredő fizetési kötelezettségét nem teljesítheti a fióktelepe rendelkezésére
+  old: bocsátott vagyonból.”
+  new: bocsátott vagyonból.
+- old: (8) bekezdése.”
+  new: (8) bekezdése.
