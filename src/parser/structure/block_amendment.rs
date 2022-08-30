@@ -22,7 +22,7 @@ use crate::{
     identifier::{ArticleIdentifier, NumericIdentifier},
     parser::structure::sae::{AlphabeticPointParser, AlphabeticSubpointParser, SAEParseParams},
     reference::{AnyReferencePart, IdentifierRange, RefPartPoint, RefPartSubpoint, Reference},
-    semantic_info::{SemanticInfo, SpecialPhrase},
+    semantic_info::SpecialPhrase,
     structure::{
         Act, ActChild, Article, BlockAmendment, BlockAmendmentChildren, Paragraph,
         ParagraphChildren, SAEBody,
@@ -73,11 +73,7 @@ impl Paragraph {
                 return Ok(());
             }
             let quoted_block = &mut qbs[0];
-            if let Some(SemanticInfo {
-                special_phrase: Some(special_phrase),
-                ..
-            }) = &self.semantic_info
-            {
+            if let Some(special_phrase) = &self.semantic_info.special_phrase {
                 match special_phrase {
                     SpecialPhrase::BlockAmendment(ba) => {
                         *children = ParagraphChildren::BlockAmendment(BlockAmendment {

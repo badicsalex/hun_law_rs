@@ -124,10 +124,8 @@ where
         Ok(match &self.body {
             SAEBody::Text(body) => Self {
                 identifier: self.identifier.clone(),
-                semantic_info: Some(
-                    extract_semantic_info(prefix, body, postfix, abbreviation_cache)
-                        .with_elem_context("Could not extract semantic info from body", self)?,
-                ),
+                semantic_info: extract_semantic_info(prefix, body, postfix, abbreviation_cache)
+                    .with_elem_context("Could not extract semantic info from body", self)?,
                 body: SAEBody::Text(body.clone()),
             },
             SAEBody::Children {
@@ -148,10 +146,8 @@ where
                 //
                 // In this case, we hope that the string "From now on" can be parsed without
                 // the second part of the sentence.
-                let semantic_info = Some(
-                    extract_semantic_info(prefix, intro, "", abbreviation_cache)
-                        .with_elem_context("Could not extract semantic info from intro", self)?,
-                );
+                let semantic_info = extract_semantic_info(prefix, intro, "", abbreviation_cache)
+                    .with_elem_context("Could not extract semantic info from intro", self)?;
                 let new_prefix = format!("{}{} ", prefix, intro);
                 let new_postfix = if let Some(wrap_up_contents) = &wrap_up {
                     format!(" {}{}", wrap_up_contents, postfix)

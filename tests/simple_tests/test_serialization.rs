@@ -63,7 +63,7 @@ fn get_test_act() -> Act {
                 children: vec![Paragraph {
                     identifier: None,
                     body: "Meg szövege".into(),
-                    semantic_info: None,
+                    semantic_info: Default::default(),
                 }],
             }
             .into(),
@@ -74,7 +74,7 @@ fn get_test_act() -> Act {
                     Paragraph {
                         identifier: Some(1.into()),
                         body: "Valami valami".into(),
-                        semantic_info: None,
+                        semantic_info: Default::default(),
                     },
                     Paragraph {
                         identifier: Some(2.into()),
@@ -85,7 +85,7 @@ fn get_test_act() -> Act {
                                 AlphabeticPoint {
                                     identifier: "a".parse().unwrap(),
                                     body: "többelemű".into(),
-                                    semantic_info: None,
+                                    semantic_info: Default::default(),
                                 },
                                 AlphabeticPoint {
                                     identifier: "b".parse().unwrap(),
@@ -96,22 +96,22 @@ fn get_test_act() -> Act {
                                             AlphabeticSubpoint {
                                                 identifier: "ba".parse().unwrap(),
                                                 body: "átláthatatlan".into(),
-                                                semantic_info: None,
+                                                semantic_info: Default::default(),
                                             },
                                             AlphabeticSubpoint {
                                                 identifier: "bb".parse().unwrap(),
                                                 body: "komplex".into(),
-                                                semantic_info: None,
+                                                semantic_info: Default::default(),
                                             },
                                         ]
                                         .into(),
                                     },
-                                    semantic_info: None,
+                                    semantic_info: Default::default(),
                                 },
                             ]
                             .into(),
                         },
-                        semantic_info: None,
+                        semantic_info: Default::default(),
                     },
                 ],
             }
@@ -139,7 +139,7 @@ fn get_test_act() -> Act {
                 children: vec![Paragraph {
                     identifier: None,
                     body: "Nothing fancy yet".into(),
-                    semantic_info: None,
+                    semantic_info: Default::default(),
                 }],
             }
             .into(),
@@ -160,7 +160,7 @@ fn get_test_act() -> Act {
                 children: vec![Paragraph {
                     identifier: None,
                     body: "Added after the fact".into(),
-                    semantic_info: None,
+                    semantic_info: Default::default(),
                 }],
             }
             .into(),
@@ -176,22 +176,22 @@ fn get_test_act() -> Act {
                             NumericPoint {
                                 identifier: 1.into(),
                                 body: "Paragraphs".into(),
-                                semantic_info: None,
+                                semantic_info: Default::default(),
                             },
                             NumericPoint {
                                 identifier: "1a".parse().unwrap(),
                                 body: "Numeric points".into(),
-                                semantic_info: None,
+                                semantic_info: Default::default(),
                             },
                             NumericPoint {
                                 identifier: 2.into(),
                                 body: "Alphabetic points".into(),
-                                semantic_info: None,
+                                semantic_info: Default::default(),
                             },
                         ]
                         .into(),
                     },
-                    semantic_info: None,
+                    semantic_info: Default::default(),
                 }],
             }
             .into(),

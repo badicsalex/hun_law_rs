@@ -20,9 +20,9 @@ use serde::{Deserialize, Serialize};
 use crate::identifier::ActIdentifier;
 use crate::reference::{Reference, StructuralReference};
 use crate::util::date::Date;
-use crate::util::is_default;
+use crate::util::{is_default, IsDefault};
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq)]
 pub struct SemanticInfo {
     #[serde(default, skip_serializing_if = "is_default")]
     pub outgoing_references: Vec<OutgoingReference>,
@@ -30,6 +30,12 @@ pub struct SemanticInfo {
     pub new_abbreviations: Vec<ActIdAbbreviation>,
     #[serde(default, skip_serializing_if = "is_default")]
     pub special_phrase: Option<SpecialPhrase>,
+}
+
+impl IsDefault for SemanticInfo {
+    fn is_default(&self) -> bool {
+        self == &Self::default()
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

@@ -189,8 +189,8 @@ where
     #[serde(skip_serializing_if = "is_default")]
     pub identifier: IdentifierType,
     pub body: SAEBody<ChildrenType>,
-    #[serde(skip_serializing_if = "is_default")]
-    pub semantic_info: Option<SemanticInfo>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub semantic_info: SemanticInfo,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -298,7 +298,7 @@ where
         Self {
             identifier,
             body,
-            semantic_info: None,
+            semantic_info: SemanticInfo::default(),
         }
     }
 }
