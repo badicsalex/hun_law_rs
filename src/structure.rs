@@ -186,6 +186,9 @@ pub struct SubArticleElement<IdentifierType, ChildrenType>
 where
     IdentifierType: IsNextFrom + IsDefault + Sized,
 {
+    // Note: no serde(default) here, because IdentifierType doesn't usually have a default.
+    // Except for paragraphs, which is an Option<NumericIdentifier>.
+    // Fortunately (?) serde automatically adds "default" to Option type fields.
     #[serde(skip_serializing_if = "is_default")]
     pub identifier: IdentifierType,
     pub body: SAEBody<ChildrenType>,
