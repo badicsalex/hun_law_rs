@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use chrono::NaiveDate;
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
 use crate::identifier::ActIdentifier;
 use crate::reference::{Reference, StructuralReference};
-use crate::util::date::Date;
 use crate::util::{is_default, IsDefault};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq)]
@@ -106,12 +106,12 @@ pub struct EnforcementDate {
     pub positions: Vec<Reference>,
     pub date: EnforcementDateType,
     #[serde(default, skip_serializing_if = "is_default")]
-    pub inline_repeal: Option<Date>,
+    pub inline_repeal: Option<NaiveDate>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum EnforcementDateType {
-    Date(Date),
+    Date(NaiveDate),
     DaysAfterPublication(u16),
     DayInMonthAfterPublication {
         #[serde(default, skip_serializing_if = "is_default")]

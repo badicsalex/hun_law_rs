@@ -98,7 +98,4 @@ expected_special_phrase:
           start: "315"
           end: "317"
     date:
-      Date:
-        year: 2013
-        month: 7
-        day: 1
+      Date: 2013-07-01

@@ -4,10 +4,7 @@ identifier:
   number: 13
 subject: A tesztelésről
 preamble: ""
-publication_date:
-  year: 2345
-  month: 6
-  day: 7
+publication_date: 2345-06-07
 children:
   - StructuralElement:
       identifier: "1"

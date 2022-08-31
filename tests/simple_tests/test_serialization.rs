@@ -16,6 +16,7 @@
 
 use std::str::FromStr;
 
+use chrono::NaiveDate;
 use hun_law::{
     identifier::{
         ActIdentifier, AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier,
@@ -28,7 +29,6 @@ use hun_law::{
         Act, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, Paragraph, SAEBody,
         StructuralElement, StructuralElementType, Subtitle,
     },
-    util::date::Date,
 };
 use pretty_assertions::assert_eq;
 
@@ -38,11 +38,7 @@ fn get_test_act() -> Act {
             year: 2345,
             number: 0xd,
         },
-        publication_date: Date {
-            year: 2345,
-            month: 6,
-            day: 7,
-        },
+        publication_date: NaiveDate::from_ymd(2345, 6, 7),
         subject: "A tesztelésről".into(),
         preamble: "A tesztelés nagyon fontos, és egyben kötelező".into(),
         children: vec![
@@ -205,10 +201,7 @@ identifier:
   number: 13
 subject: A tesztelésről
 preamble: "A tesztelés nagyon fontos, és egyben kötelező"
-publication_date:
-  year: 2345
-  month: 6
-  day: 7
+publication_date: 2345-06-07
 children:
   - StructuralElement:
       identifier: "1"

@@ -25,7 +25,4 @@ expected_special_phrase:
       - article: "73"
         point: b
     date:
-      Date:
-        year: 2019
-        month: 9
-        day: 1
+      Date: 2019-09-01

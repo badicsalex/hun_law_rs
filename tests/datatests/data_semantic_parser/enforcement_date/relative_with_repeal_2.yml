@@ -4,7 +4,4 @@ expected_special_phrase:
   EnforcementDate:
     date:
       DaysAfterPublication: 1
-    inline_repeal:
-      year: 2019
-      month: 2
-      day: 10
+    inline_repeal: 2019-02-10

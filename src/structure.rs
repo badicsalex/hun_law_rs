@@ -17,6 +17,7 @@
 use std::fmt::Debug;
 
 use anyhow::{anyhow, Result};
+use chrono::NaiveDate;
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
@@ -27,8 +28,8 @@ use crate::{
     },
     semantic_info::SemanticInfo,
     util::{
-        date::Date, debug::DebugContextString, indentedline::IndentedLine, is_default,
-        str_to_int_hun, IsDefault,
+        debug::DebugContextString, indentedline::IndentedLine, is_default, str_to_int_hun,
+        IsDefault,
     },
 };
 
@@ -89,7 +90,7 @@ pub struct Act {
     pub identifier: ActIdentifier,
     pub subject: String,
     pub preamble: String,
-    pub publication_date: Date,
+    pub publication_date: NaiveDate,
     pub children: Vec<ActChild>,
 }
 

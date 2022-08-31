@@ -15,11 +15,12 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{ensure, Result};
+use chrono::NaiveDate;
 use lazy_regex::regex_captures;
 use serde::Serialize;
 
 use crate::identifier::ActIdentifier;
-use crate::util::date::Date;
+use crate::util::date::date_from_hungarian_string;
 use crate::util::indentedline::IndentedLine;
 use crate::{parser::pdf::PageOfLines, util::indentedline::EMPTY_LINE};
 
@@ -27,7 +28,7 @@ use crate::{parser::pdf::PageOfLines, util::indentedline::EMPTY_LINE};
 pub struct ActRawText {
     pub identifier: ActIdentifier,
     pub subject: String,
-    pub publication_date: Date,
+    pub publication_date: NaiveDate,
     pub body: Vec<IndentedLine>,
 }
 
@@ -45,7 +46,7 @@ impl ActRawText {
 }
 
 struct ActExtractor {
-    publication_date: Date,
+    publication_date: NaiveDate,
     current_act: ActRawText,
     result: Vec<ActRawText>,
     state: ActExtractionState,
@@ -62,7 +63,7 @@ enum ActExtractionState {
 use ActExtractionState::*;
 
 impl ActExtractor {
-    fn new(publication_date: Date) -> Self {
+    fn new(publication_date: NaiveDate) -> Self {
         Self {
             current_act: Default::default(),
             state: WaitingForHeaderNewline,
@@ -180,7 +181,7 @@ const ACT_SECTION_STOPS: &[&str] = &[
     "IX. Határozatok Tára",
 ];
 
-fn parse_mk_cover_page(page: &PageOfLines) -> Result<Date> {
+fn parse_mk_cover_page(page: &PageOfLines) -> Result<NaiveDate> {
     // The expected first page is:
 
     // MAGYAR KÖZLÖNY 71 . szám
@@ -197,7 +198,7 @@ fn parse_mk_cover_page(page: &PageOfLines) -> Result<Date> {
         page.lines[0].content()
     );
 
-    Date::from_hungarian_string(page.lines[3].content())
+    date_from_hungarian_string(page.lines[3].content())
 }
 
 fn line_is_act_section_start(line: &IndentedLine) -> bool {

@@ -21,12 +21,13 @@ use std::{
 };
 
 use anyhow::{anyhow, Result};
+use chrono::NaiveDate;
 use hun_law::{
     cache::Cache,
     identifier::ActIdentifier,
     parser::{mk_act_section::ActRawText, structure::parse_act_structure},
     structure::{Act, ActChild, ParagraphChildren, SAEBody},
-    util::{date::Date, indentedline::IndentedLine},
+    util::indentedline::IndentedLine,
 };
 use rstest::fixture;
 use serde::Serialize;
@@ -99,11 +100,7 @@ pub fn parse_txt_as_act(path: &Path) -> Result<Act> {
             number: 0xd,
         },
         subject: "A tesztelésről".to_string(),
-        publication_date: Date {
-            year: 2345,
-            month: 6,
-            day: 7,
-        },
+        publication_date: NaiveDate::from_ymd(2345, 6, 7),
         body: data_as_lines,
     })
 }

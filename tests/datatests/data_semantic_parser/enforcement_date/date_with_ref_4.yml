@@ -7,10 +7,7 @@ expected_references:
 expected_special_phrase:
   EnforcementDate:
     date:
-      Date:
-        year: 2013
-        month: 1
-        day: 2
+      Date: 2013-01-02
     positions:
       - article: "180"
         paragraph: "1"

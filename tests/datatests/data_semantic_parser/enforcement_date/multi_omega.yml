@@ -242,7 +242,4 @@ expected_special_phrase:
           end: "n"
       - article: "193"
     date:
-      Date:
-        year: 2014
-        month: 3
-        day: 15
+      Date: 2014-03-15

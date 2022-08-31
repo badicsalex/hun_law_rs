@@ -35,7 +35,4 @@ expected_special_phrase:
         paragraph: "54"
         point: "30"
     date:
-      Date:
-        year: 2014
-        month: 7
-        day: 1
+      Date: 2014-07-01

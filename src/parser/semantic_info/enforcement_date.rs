@@ -15,6 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{anyhow, Result};
+use chrono::NaiveDate;
 use hun_law_grammar::*;
 
 use super::{
@@ -23,10 +24,7 @@ use super::{
 };
 use crate::{
     semantic_info::{self, EnforcementDateType},
-    util::{
-        date::{self, text_to_month_hun},
-        str_to_int_hun,
-    },
+    util::{date::text_to_month_hun, str_to_int_hun},
 };
 
 pub fn convert_enforcement_date(
@@ -42,7 +40,7 @@ pub fn convert_enforcement_date(
         .collect();
     let date = (&elem.date).try_into()?;
     let inline_repeal = if let Some(ir) = &elem.inline_repeal {
-        Some(ir.try_into()?)
+        Some(convert_date(ir)?)
     } else {
         None
     };
@@ -89,20 +87,17 @@ impl TryFrom<&Date> for EnforcementDateType {
     type Error = anyhow::Error;
 
     fn try_from(value: &Date) -> Result<Self, Self::Error> {
-        Ok(EnforcementDateType::Date(value.try_into()?))
+        Ok(EnforcementDateType::Date(convert_date(value)?))
     }
 }
 
-impl TryFrom<&Date> for date::Date {
-    type Error = anyhow::Error;
-
-    fn try_from(value: &Date) -> Result<Self, Self::Error> {
-        Ok(date::Date {
-            year: value.year.parse()?,
-            month: text_to_month_hun(&value.month)?,
-            day: value.day.parse()?,
-        })
-    }
+fn convert_date(gdate: &Date) -> Result<NaiveDate> {
+    NaiveDate::from_ymd_opt(
+        gdate.year.parse()?,
+        text_to_month_hun(&gdate.month)?.into(),
+        gdate.day.parse()?,
+    )
+    .ok_or_else(|| anyhow!("Invalid date from grammar: {:?}", gdate))
 }
 
 impl TryFrom<&DayInMonth> for EnforcementDateType {

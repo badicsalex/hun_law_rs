@@ -3,11 +3,5 @@ positions: "                                                                    
 expected_special_phrase:
   EnforcementDate:
     date:
-      Date:
-        year: 2014
-        month: 1
-        day: 1
-    inline_repeal:
-      year: 2015
-      month: 12
-      day: 31
+      Date: 2014-01-01
+    inline_repeal: 2015-12-31

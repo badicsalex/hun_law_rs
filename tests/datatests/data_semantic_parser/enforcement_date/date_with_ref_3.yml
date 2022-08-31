@@ -65,7 +65,4 @@ expected_special_phrase:
       - article: "314"
       - article: "318"
     date:
-      Date:
-        year: 2013
-        month: 2
-        day: 1
+      Date: 2013-02-01
