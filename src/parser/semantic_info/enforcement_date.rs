@@ -24,7 +24,7 @@ use super::{
 };
 use crate::{
     semantic_info::{self, EnforcementDateType},
-    util::{date::text_to_month_hun, str_to_int_hun},
+    util::hun_str::{text_to_month_hun, FromHungarianString},
 };
 
 pub fn convert_enforcement_date(
@@ -71,9 +71,7 @@ impl TryFrom<&AfterPublication> for EnforcementDateType {
         Ok(EnforcementDateType::DaysAfterPublication(
             if let Some(x) = &value.days {
                 match x {
-                    AfterPublication_days::HungarianOrdinal(num) => {
-                        str_to_int_hun(num).ok_or_else(|| anyhow!("Invalid hungarian ordinal"))?
-                    }
+                    AfterPublication_days::HungarianOrdinal(num) => u16::from_hungarian(num)?,
                     AfterPublication_days::NumberWithDot(num) => num.parse()?,
                 }
             } else {
@@ -105,18 +103,12 @@ impl TryFrom<&DayInMonth> for EnforcementDateType {
 
     fn try_from(value: &DayInMonth) -> Result<Self, Self::Error> {
         let month = if let Some(m) = &value.month {
-            Some(
-                str_to_int_hun(m)
-                    .and_then(|v| u8::try_from(v).ok())
-                    .ok_or_else(|| anyhow!("Invalid hungarian ordinal"))?,
-            )
+            Some(u8::from_hungarian(m)?)
         } else {
             None
         };
         let day = match &value.day {
-            DayInMonth_day::HungarianOrdinal(num) => {
-                str_to_int_hun(num).ok_or_else(|| anyhow!("Invalid hungarian ordinal"))?
-            }
+            DayInMonth_day::HungarianOrdinal(num) => u16::from_hungarian(num)?,
             DayInMonth_day::NumberWithDot(num) => num.parse()?,
         };
         Ok(Self::DayInMonthAfterPublication { month, day })

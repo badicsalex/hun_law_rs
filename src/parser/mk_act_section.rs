@@ -20,7 +20,7 @@ use lazy_regex::regex_captures;
 use serde::Serialize;
 
 use crate::identifier::ActIdentifier;
-use crate::util::date::date_from_hungarian_string;
+use crate::util::hun_str::FromHungarianString;
 use crate::util::indentedline::IndentedLine;
 use crate::{parser::pdf::PageOfLines, util::indentedline::EMPTY_LINE};
 
@@ -198,7 +198,7 @@ fn parse_mk_cover_page(page: &PageOfLines) -> Result<NaiveDate> {
         page.lines[0].content()
     );
 
-    date_from_hungarian_string(page.lines[3].content())
+    NaiveDate::from_hungarian(page.lines[3].content())
 }
 
 fn line_is_act_section_start(line: &IndentedLine) -> bool {

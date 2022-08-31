@@ -99,7 +99,7 @@ fn regen_phf() {
 
     writeln!(
         &mut file,
-        "pub const STR_TO_INT_HUN: phf::Map<&'static str, u16> = \n{};",
+        "pub const STR_TO_INT_HUN: phf::Map<&'static str, u8> = \n{};",
         phf_builder.build()
     )
     .unwrap();

@@ -28,8 +28,8 @@ use crate::{
     },
     semantic_info::SemanticInfo,
     util::{
-        debug::DebugContextString, indentedline::IndentedLine, is_default, str_to_int_hun,
-        IsDefault,
+        debug::DebugContextString, hun_str::FromHungarianString, indentedline::IndentedLine,
+        is_default, IsDefault,
     },
 };
 
@@ -154,9 +154,7 @@ impl StructuralElementType {
                 Self::parse_special_part_identifier(id)
             }
             StructuralElementType::Book | StructuralElementType::Part { is_special: false } => {
-                str_to_int_hun(id)
-                    .map(NumericIdentifier::from)
-                    .ok_or_else(|| anyhow!("Invalid hungarian numeral {}", id))
+                u16::from_hungarian(id).map(NumericIdentifier::from)
             }
             StructuralElementType::Title | StructuralElementType::Chapter => {
                 NumericIdentifier::from_roman(id)
