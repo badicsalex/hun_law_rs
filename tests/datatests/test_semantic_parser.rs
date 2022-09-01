@@ -26,7 +26,10 @@ use hun_law::{
 };
 use serde::{Deserialize, Serialize};
 
+use crate::declare_test;
 use crate::test_utils::{ensure_eq, read_all};
+
+declare_test!(dir = "data_semantic_parser", pattern = r"\.yml");
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -43,8 +46,6 @@ struct TestCase {
     pub expected_special_phrase: Option<SpecialPhrase>,
 }
 
-use crate::declare_test;
-declare_test!(dir = "data_semantic_parser", pattern = r"\.yml");
 pub fn run_test(path: &Path) -> Result<()> {
     let test_case: TestCase = serde_yaml::from_slice(&read_all(path)?)?;
     let mut abbreviation_cache = AbbreviationCache::from(test_case.abbreviations.clone());

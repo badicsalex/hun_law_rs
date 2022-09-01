@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, ensure, Result};
+use std::io::{Read, Seek, SeekFrom, Write};
 
+use anyhow::{anyhow, ensure, Result};
 use hun_law::{
     fixups::{Fixup, Fixups},
     parser::mk_act_section::ActRawText,
     util::QuoteCheck,
 };
 use log::info;
-use std::io::{Read, Seek, SeekFrom, Write};
 
 use crate::util::quick_display_indented_line;
 

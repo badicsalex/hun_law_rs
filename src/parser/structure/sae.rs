@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, ensure, Result};
-use lazy_regex::regex;
 use std::fmt::Debug;
 
+use anyhow::{anyhow, ensure, Result};
+use lazy_regex::regex;
+
+use super::{act::ParsingContext, quote::QuotedBlockParser};
 use crate::{
     identifier::{HungarianIdentifierChar, IsNextFrom, PrefixedAlphabeticIdentifier},
     structure::{
@@ -26,8 +28,6 @@ use crate::{
     },
     util::{indentedline::IndentedLine, QuoteCheck},
 };
-
-use super::{act::ParsingContext, quote::QuotedBlockParser};
 
 #[derive(Debug)]
 pub struct SAEParseParams<TI: Debug> {

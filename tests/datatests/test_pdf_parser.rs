@@ -20,7 +20,10 @@ use hun_law::parser::pdf::{parse_pdf, CropBox};
 use hun_law::util::{indentedline::IndentedLine, is_default};
 use serde::{Deserialize, Serialize};
 
+use crate::declare_test;
 use crate::test_utils::{ensure_eq, read_all};
+
+declare_test!(dir = "data_pdf_parser", pattern = r"\.pdf");
 
 #[derive(Serialize, Deserialize, Debug)]
 struct SimplifiedLine {
@@ -53,9 +56,6 @@ impl From<&IndentedLine> for SimplifiedLine {
         }
     }
 }
-
-use crate::declare_test;
-declare_test!(dir = "data_pdf_parser", pattern = r"\.pdf");
 
 pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let crop = CropBox {

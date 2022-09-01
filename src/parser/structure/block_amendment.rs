@@ -18,6 +18,11 @@ use std::fmt::Debug;
 
 use anyhow::{anyhow, bail, ensure, Context, Result};
 
+use super::{
+    act::{parse_complex_body, ParsingContext},
+    article::ArticleParserFactory,
+    sae::{NumericPointParser, ParagraphParser, SAEParser},
+};
 use crate::{
     identifier::{ArticleIdentifier, NumericIdentifier},
     parser::structure::sae::{AlphabeticPointParser, AlphabeticSubpointParser, SAEParseParams},
@@ -28,12 +33,6 @@ use crate::{
         ParagraphChildren, SAEBody,
     },
     util::{debug::WithElemContext, indentedline::IndentedLine},
-};
-
-use super::{
-    act::{parse_complex_body, ParsingContext},
-    article::ArticleParserFactory,
-    sae::{NumericPointParser, ParagraphParser, SAEParser},
 };
 
 impl Act {

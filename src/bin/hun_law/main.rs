@@ -17,13 +17,11 @@
 mod fixup_editor;
 pub mod util;
 
-use anyhow::Result;
-
-use clap::Parser;
-use log::info;
-use serde::Serialize;
 use std::{io::Write, path::PathBuf};
 
+use anyhow::Result;
+use clap::Parser;
+use fixup_editor::run_fixup_editor;
 use hun_law::{
     fixups::Fixups,
     mk_downloader::{download_mk_issue, MkIssue, DEFAULT_MK_CROP},
@@ -34,8 +32,8 @@ use hun_law::{
     },
     structure::Act,
 };
-
-use fixup_editor::run_fixup_editor;
+use log::info;
+use serde::Serialize;
 use util::quick_display_indented_line;
 
 /// Hun-Law output generator
