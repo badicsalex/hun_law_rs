@@ -14,13 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::io::Read;
+use std::fs;
 use std::str::FromStr;
+use std::{io::Read, path::Path};
 
 use anyhow::{ensure, Result};
 use log::info;
 
-use crate::{cache::Cache, parser::pdf::CropBox};
+use crate::parser::pdf::CropBox;
 
 #[derive(Debug, Clone)]
 pub struct MkIssue {
@@ -64,14 +65,18 @@ impl FromStr for MkIssue {
     }
 }
 
-pub fn download_mk_issue(issue: &MkIssue, cache: &Cache) -> Result<Vec<u8>> {
-    if let Ok(cached_result) = cache.load(&issue.cache_key()) {
+pub fn download_mk_issue(issue: &MkIssue, cache_dir: &Path) -> Result<Vec<u8>> {
+    let file_path = cache_dir.join(issue.cache_key());
+    if let Ok(cached_result) = fs::read(&file_path) {
         return Ok(cached_result);
     }
     info!("Downloading {} into {}", issue.url(), issue.cache_key());
     let http_response = ureq::get(&issue.url()).call()?;
     let mut http_body: Vec<u8> = vec![];
     http_response.into_reader().read_to_end(&mut http_body)?;
-    cache.store(&issue.cache_key(), &http_body)?;
+    if let Some(file_dir) = file_path.parent() {
+        fs::create_dir_all(file_dir)?;
+    }
+    fs::write(file_path, &http_body)?;
     Ok(http_body)
 }

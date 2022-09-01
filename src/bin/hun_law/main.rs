@@ -22,10 +22,9 @@ use anyhow::Result;
 use clap::Parser;
 use log::info;
 use serde::Serialize;
-use std::io::Write;
+use std::{io::Write, path::PathBuf};
 
 use hun_law::{
-    cache::Cache,
     fixups::Fixups,
     mk_downloader::{download_mk_issue, MkIssue, DEFAULT_MK_CROP},
     parser::pdf::{parse_pdf, PageOfLines},
@@ -105,12 +104,11 @@ fn main() -> Result<()> {
     .init();
 
     let args = HunLawArgs::parse();
-    let cache = Cache::new(&"./cache");
     let mut output = std::io::stdout();
     let mut everything_ok = true;
     for issue in &args.issues {
         info!("Processing MK {:?}/{:?}", issue.year, issue.issue);
-        let body = download_mk_issue(issue, &cache)?;
+        let body = download_mk_issue(issue, &PathBuf::from("./cache"))?;
         info!("{:?} bytes", body.len());
         let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
         if args.parse_until == ParsingStep::PdfLines {

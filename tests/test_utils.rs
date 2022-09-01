@@ -23,39 +23,13 @@ use std::{
 use anyhow::{anyhow, Result};
 use chrono::NaiveDate;
 use hun_law::{
-    cache::Cache,
     identifier::ActIdentifier,
     parser::{mk_act_section::ActRawText, structure::parse_act_structure},
     structure::{Act, ActChild, ParagraphChildren, SAEBody},
     util::indentedline::IndentedLine,
 };
-use rstest::fixture;
 use serde::Serialize;
 pub use tempfile::TempDir;
-
-#[fixture]
-pub fn tempdir() -> TempDir {
-    tempfile::Builder::new()
-        .prefix("hun_law_test_run")
-        .tempdir()
-        .unwrap()
-}
-
-pub struct CacheInTempDir {
-    pub cache: Cache,
-
-    // This field is here so that drop is called when the whole fixture goes out of scope
-    #[allow(dead_code)]
-    tempdir: TempDir,
-}
-
-#[fixture]
-pub fn cache_in_tempdir(tempdir: TempDir) -> CacheInTempDir {
-    CacheInTempDir {
-        cache: Cache::new(&tempdir.path()),
-        tempdir,
-    }
-}
 
 pub fn read_all(path: impl AsRef<Path>) -> io::Result<Vec<u8>> {
     let mut result = Vec::new();

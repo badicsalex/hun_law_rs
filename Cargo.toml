@@ -17,8 +17,6 @@ chrono = {version = "0.4", default-features = false, features = ["serde"]}
 clap = {version = "3.1", features = ["derive"]}
 derive-visitor = { version = "0.2.1", features = ["std-types-drive"] }
 env_logger = "0.9.0"
-flate2 = "1.0"
-fn-error-context = "0.2"
 from_variants = "1.0"
 hun_law_grammar = { path = "hun_law_grammar" }
 lazy-regex = "2.3"
@@ -37,7 +35,6 @@ ureq = "2.4"
 datatest-stable = "0.1.2"
 pretty_assertions = "1"
 colored-diff = "= 0.2.2" # Version 0.2.3 broke the pretty display: https://github.com/CAD97/colored-diff/issues/8
-rstest = "0.12"
 
 [build-dependencies]
 phf_codegen = "0.10"

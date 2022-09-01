@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-pub mod cache;
 pub mod fixups;
 pub mod identifier;
 pub mod mk_downloader;
