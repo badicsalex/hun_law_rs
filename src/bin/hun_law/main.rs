@@ -31,6 +31,7 @@ use hun_law::{
         structure::parse_act_structure,
     },
     structure::Act,
+    util::singleton_yaml,
 };
 use log::info;
 use serde::Serialize;
@@ -197,7 +198,7 @@ trait CliOutput: Sized + Serialize {
             OutputType::Plain => self.cli_output_plain(false, target)?,
             OutputType::TestPlain => self.cli_output_plain(true, target)?,
             OutputType::Json => serde_json::to_writer(target, &self)?,
-            OutputType::Yaml => serde_yaml::to_writer(target, &self)?,
+            OutputType::Yaml => singleton_yaml::to_writer(target, &self)?,
         };
         Ok(())
     }

@@ -17,6 +17,7 @@
 use std::path::Path;
 
 use hun_law::parser::pdf::{parse_pdf, CropBox};
+use hun_law::util::singleton_yaml;
 use hun_law::util::{indentedline::IndentedLine, is_default};
 use serde::{Deserialize, Serialize};
 
@@ -67,7 +68,7 @@ pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     ensure_eq(&parsed.len(), &1, "Wrong number of pages parsed")?;
     let lines: Vec<SimplifiedLine> = parsed[0].lines.iter().map(SimplifiedLine::from).collect();
     let expected_lines: Vec<SimplifiedLine> =
-        serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
+        singleton_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
     ensure_eq(&lines, &expected_lines, "Wrong content")?;
     Ok(())
 }

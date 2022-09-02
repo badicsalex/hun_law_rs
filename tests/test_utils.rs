@@ -26,7 +26,7 @@ use hun_law::{
     identifier::ActIdentifier,
     parser::{mk_act_section::ActRawText, structure::parse_act_structure},
     structure::{Act, ActChild, ParagraphChildren, SAEBody},
-    util::indentedline::IndentedLine,
+    util::{indentedline::IndentedLine, singleton_yaml},
 };
 use serde::Serialize;
 pub use tempfile::TempDir;
@@ -49,8 +49,8 @@ where
             "{}\n{}",
             message,
             colored_diff::PrettyDifference {
-                expected: &serde_yaml::to_string(expected).unwrap(),
-                actual: &serde_yaml::to_string(actual).unwrap()
+                expected: &singleton_yaml::to_string(expected).unwrap(),
+                actual: &singleton_yaml::to_string(actual).unwrap()
             }
         ))
     } else {

@@ -29,6 +29,7 @@ use hun_law::{
         Act, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, Paragraph, SAEBody,
         StructuralElement, StructuralElementType, Subtitle,
     },
+    util::singleton_yaml,
 };
 use pretty_assertions::assert_eq;
 
@@ -195,97 +196,97 @@ fn get_test_act() -> Act {
     }
 }
 
-const YAML_SERIALIZED_ACT: &str = r#"---
-identifier:
+const YAML_SERIALIZED_ACT: &str = r#"identifier:
   year: 2345
   number: 13
 subject: A tesztelésről
-preamble: "A tesztelés nagyon fontos, és egyben kötelező"
+preamble: A tesztelés nagyon fontos, és egyben kötelező
 publication_date: 2345-06-07
 children:
-  - StructuralElement:
-      identifier: "1"
-      title: Egyszerű dolgok
-      element_type: Book
-  - Subtitle:
-      title: Alcim id nelkul
-  - Article:
-      identifier: "1:1"
-      title: "Az egyetlen cikk, aminek cime van."
-      children:
-        - body: Meg szövege
-  - Article:
-      identifier: "1:2"
-      children:
-        - identifier: "1"
-          body: Valami valami
-        - identifier: "2"
-          body:
-            intro: Egy felsorolás legyen
-            children:
-              AlphabeticPoint:
-                - identifier: a
-                  body: többelemű
-                - identifier: b
-                  body:
-                    intro: kellően
-                    children:
-                      AlphabeticSubpoint:
-                        - identifier: ba
-                          body: átláthatatlan
-                        - identifier: bb
-                          body: komplex
-            wrap_up: minden esetben.
-  - StructuralElement:
-      identifier: "2"
-      title: Amended stuff in english
-      element_type: Book
-  - StructuralElement:
-      identifier: "1"
-      title: Az eleje
-      element_type:
-        Part: {}
-  - Subtitle:
-      identifier: "1"
-      title: Alcim id-vel
-  - Article:
-      identifier: "2:1"
-      children:
-        - body: Nothing fancy yet
-  - StructuralElement:
-      identifier: 1a
-      title: A hozzaadott
-      element_type:
-        Part: {}
-  - Subtitle:
-      identifier: 1a
-      title: Alcim amendelt id-vel
-  - Article:
-      identifier: "2:1/A"
-      children:
-        - body: Added after the fact
-  - Article:
-      identifier: "2:2"
-      children:
-        - identifier: "1"
-          body:
-            intro: "This can legally be after 2:1/A. Also, "
-            children:
-              NumericPoint:
-                - identifier: "1"
-                  body: Paragraphs
-                - identifier: 1a
-                  body: Numeric points
-                - identifier: "2"
-                  body: Alphabetic points
-            wrap_up: Can also be amended
+- StructuralElement:
+    identifier: '1'
+    title: Egyszerű dolgok
+    element_type: Book
+- Subtitle:
+    title: Alcim id nelkul
+- Article:
+    identifier: 1:1
+    title: Az egyetlen cikk, aminek cime van.
+    children:
+    - body: Meg szövege
+- Article:
+    identifier: 1:2
+    children:
+    - identifier: '1'
+      body: Valami valami
+    - identifier: '2'
+      body:
+        intro: Egy felsorolás legyen
+        children:
+          AlphabeticPoint:
+          - identifier: a
+            body: többelemű
+          - identifier: b
+            body:
+              intro: kellően
+              children:
+                AlphabeticSubpoint:
+                - identifier: ba
+                  body: átláthatatlan
+                - identifier: bb
+                  body: komplex
+        wrap_up: minden esetben.
+- StructuralElement:
+    identifier: '2'
+    title: Amended stuff in english
+    element_type: Book
+- StructuralElement:
+    identifier: '1'
+    title: Az eleje
+    element_type:
+      Part: {}
+- Subtitle:
+    identifier: '1'
+    title: Alcim id-vel
+- Article:
+    identifier: 2:1
+    children:
+    - body: Nothing fancy yet
+- StructuralElement:
+    identifier: 1a
+    title: A hozzaadott
+    element_type:
+      Part: {}
+- Subtitle:
+    identifier: 1a
+    title: Alcim amendelt id-vel
+- Article:
+    identifier: 2:1/A
+    children:
+    - body: Added after the fact
+- Article:
+    identifier: 2:2
+    children:
+    - identifier: '1'
+      body:
+        intro: 'This can legally be after 2:1/A. Also, '
+        children:
+          NumericPoint:
+          - identifier: '1'
+            body: Paragraphs
+          - identifier: 1a
+            body: Numeric points
+          - identifier: '2'
+            body: Alphabetic points
+        wrap_up: Can also be amended
 "#;
 
 #[test]
 fn test_act_yaml_serialization() {
     let act = get_test_act();
-    let yaml = serde_yaml::to_string(&act).unwrap();
-    let roundtrip: Act = serde_yaml::from_str(&yaml).unwrap();
+    let yaml = singleton_yaml::to_string(&act).unwrap();
+    println!("{}", yaml);
+    let roundtrip: Act = singleton_yaml::from_str(&yaml).unwrap();
     assert_eq!(act, roundtrip);
     assert_eq!(yaml, YAML_SERIALIZED_ACT);
 }
@@ -375,40 +376,39 @@ fn test_reference_serialization() {
             .build()
             .unwrap(),
     ];
-    let expected_yaml = r#"---
-- act:
+    let expected_yaml = r#"- act:
     year: 2012
     number: 123
-  article: "1:23/B"
+  article: 1:23/B
   paragraph: 2b
-  point: "1"
+  point: '1'
   subpoint: a
 - point: sz
-  subpoint: "12"
+  subpoint: '12'
 - article:
-    start: "1"
-    end: "2"
+    start: '1'
+    end: '2'
 - act:
     year: 2012
     number: 123
 - paragraph:
-    start: "1"
-    end: "5"
+    start: '1'
+    end: '5'
 - point:
-    start: "1"
-    end: "5"
+    start: '1'
+    end: '5'
 - point:
     start: a
     end: c
 - subpoint:
-    start: "1"
-    end: "5"
+    start: '1'
+    end: '5'
 - subpoint:
     start: ca
     end: cc
 "#;
-    let yaml = serde_yaml::to_string(&references).unwrap();
-    let roundtrip: Vec<Reference> = serde_yaml::from_str(&yaml).unwrap();
+    let yaml = singleton_yaml::to_string(&references).unwrap();
+    let roundtrip: Vec<Reference> = singleton_yaml::from_str(&yaml).unwrap();
     assert_eq!(references, roundtrip);
     assert_eq!(yaml, expected_yaml);
     let json = serde_json::to_string(&references).unwrap();
@@ -418,7 +418,7 @@ fn test_reference_serialization() {
 
 #[test]
 fn test_invalid_reference_deserialization() {
-    assert!(serde_yaml::from_str::<Reference>(
+    assert!(singleton_yaml::from_str::<Reference>(
         r#"---
         paragraph:
             start: "1"
@@ -429,7 +429,7 @@ fn test_invalid_reference_deserialization() {
     "#
     )
     .is_err());
-    assert!(serde_yaml::from_str::<Reference>(
+    assert!(singleton_yaml::from_str::<Reference>(
         r#"---
         article: "1"
         subpoint: "a"

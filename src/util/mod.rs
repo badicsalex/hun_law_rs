@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 // Copyright (C) 2022, Alex Badics
 //
 // This file is part of Hun-Law.
@@ -15,11 +13,15 @@ use std::collections::HashMap;
 //
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
+
+use std::collections::HashMap;
+
 use anyhow::{ensure, Result};
 
 pub mod debug;
 pub mod hun_str;
 pub mod indentedline;
+pub mod singleton_yaml;
 use indentedline::IndentedLine;
 
 pub trait IsDefault {

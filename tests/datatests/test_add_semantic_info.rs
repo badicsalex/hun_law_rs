@@ -17,6 +17,7 @@
 use std::path::Path;
 
 use hun_law::structure::Act;
+use hun_law::util::singleton_yaml;
 
 use crate::declare_test;
 use crate::test_utils::{clean_quoted_blocks, ensure_eq, parse_txt_as_act, read_all};
@@ -26,7 +27,7 @@ declare_test!(dir = "data_add_semantic_info", pattern = r"\.txt");
 pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
     let mut act = parse_txt_as_act(path)?.add_semantic_info()?;
     clean_quoted_blocks(&mut act);
-    let expected_act: Act = serde_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
+    let expected_act: Act = singleton_yaml::from_slice(&read_all(path.with_extension("yml"))?)?;
     ensure_eq(&expected_act, &act, "Wrong act contents")?;
     Ok(())
 }

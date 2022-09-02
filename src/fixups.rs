@@ -27,7 +27,7 @@ use crate::{
     util::{
         debug::{DebugContextString, WithElemContext},
         indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE},
-        is_default,
+        is_default, singleton_yaml,
     },
 };
 
@@ -57,7 +57,7 @@ impl Fixups {
             .join(act_id.year.to_string())
             .join(format!("{}.yml", act_id));
         let fixups = if fixup_path.exists() {
-            serde_yaml::from_reader(File::open(&fixup_path)?)?
+            singleton_yaml::from_reader(File::open(&fixup_path)?)?
         } else {
             Vec::new()
         };
@@ -75,7 +75,7 @@ impl Fixups {
                 .parent()
                 .ok_or_else(|| anyhow!("No parent for fixup_path"))?,
         )?;
-        serde_yaml::to_writer(&mut File::create(&self.fixup_path)?, &self.fixups)?;
+        singleton_yaml::to_writer(&mut File::create(&self.fixup_path)?, &self.fixups)?;
         Ok(())
     }
 

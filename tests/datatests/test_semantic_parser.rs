@@ -22,7 +22,7 @@ use hun_law::{
     parser::semantic_info::{abbreviation::AbbreviationCache, extract_semantic_info},
     reference::Reference,
     semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
-    util::is_default,
+    util::{is_default, singleton_yaml},
 };
 use serde::{Deserialize, Serialize};
 
@@ -47,7 +47,7 @@ struct TestCase {
 }
 
 pub fn run_test(path: &Path) -> Result<()> {
-    let test_case: TestCase = serde_yaml::from_slice(&read_all(path)?)?;
+    let test_case: TestCase = singleton_yaml::from_slice(&read_all(path)?)?;
     let mut abbreviation_cache = AbbreviationCache::from(test_case.abbreviations.clone());
     let semantic_info = extract_semantic_info("", &test_case.text, "", &mut abbreviation_cache)?;
 
