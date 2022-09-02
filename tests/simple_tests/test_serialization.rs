@@ -70,7 +70,7 @@ fn get_test_act() -> Act {
                 children: vec![
                     Paragraph {
                         identifier: Some(1.into()),
-                        body: "Valami valami".into(),
+                        body: "Valami valami hosszu szoveg csak azert hogy leteszteljuk hogy a yaml szerializacio mennyire nez ki jol igy. Remelhetoleg nem tori tobb sorba.".into(),
                         semantic_info: Default::default(),
                     },
                     Paragraph {
@@ -218,7 +218,7 @@ children:
     identifier: 1:2
     children:
     - identifier: '1'
-      body: Valami valami
+      body: Valami valami hosszu szoveg csak azert hogy leteszteljuk hogy a yaml szerializacio mennyire nez ki jol igy. Remelhetoleg nem tori tobb sorba.
     - identifier: '2'
       body:
         intro: Egy felsorolás legyen
