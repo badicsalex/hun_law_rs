@@ -15,6 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use std::{
+    fmt::Display,
     fs::File,
     io::{self, Read},
     path::Path,
@@ -22,6 +23,7 @@ use std::{
 
 use anyhow::{anyhow, Result};
 use chrono::NaiveDate;
+use colored::*;
 use hun_law::{
     identifier::ActIdentifier,
     parser::{mk_act_section::ActRawText, structure::parse_act_structure},
@@ -29,12 +31,56 @@ use hun_law::{
     util::{indentedline::IndentedLine, singleton_yaml},
 };
 use serde::Serialize;
+use similar::{ChangeTag, TextDiff};
 pub use tempfile::TempDir;
 
 pub fn read_all(path: impl AsRef<Path>) -> io::Result<Vec<u8>> {
     let mut result = Vec::new();
     File::open(path)?.read_to_end(&mut result)?;
     Ok(result)
+}
+
+struct PrettyDiff {
+    pub left: String,
+    pub right: String,
+}
+
+impl Display for PrettyDiff {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let diff = TextDiff::from_lines(&self.left, &self.right);
+
+        for (idx, group) in diff.grouped_ops(3).iter().enumerate() {
+            if idx > 0 {
+                println!("{:-^1$}", "-", 80);
+            }
+            for op in group {
+                for change in diff.iter_inline_changes(op) {
+                    let tag = match change.tag() {
+                        ChangeTag::Delete => "-".red(),
+                        ChangeTag::Insert => "+".green(),
+                        ChangeTag::Equal => " ".white(),
+                    };
+                    tag.fmt(f)?;
+
+                    for (emphasized, value) in change.iter_strings_lossy() {
+                        if emphasized {
+                            write!(
+                                f,
+                                "{}",
+                                value.color(tag.fgcolor().unwrap()).underline().bold()
+                            )?;
+                        } else {
+                            write!(f, "{}", value.color(tag.fgcolor().unwrap()))?;
+                        }
+                    }
+                    if change.missing_newline() {
+                        writeln!(f)?;
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
 }
 
 pub fn ensure_eq<T, U>(expected: &T, actual: &U, message: &str) -> Result<()>
@@ -48,9 +94,9 @@ where
         Err(anyhow!(
             "{}\n{}",
             message,
-            colored_diff::PrettyDifference {
-                expected: &singleton_yaml::to_string(expected).unwrap(),
-                actual: &singleton_yaml::to_string(actual).unwrap()
+            PrettyDiff {
+                left: singleton_yaml::to_string(expected).unwrap(),
+                right: singleton_yaml::to_string(actual).unwrap(),
             }
         ))
     } else {
