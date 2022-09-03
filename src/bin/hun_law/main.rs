@@ -17,7 +17,7 @@
 mod fixup_editor;
 pub mod util;
 
-use std::{io::Write, path::PathBuf};
+use std::{fs::File, io::Write, path::PathBuf};
 
 use anyhow::Result;
 use clap::Parser;
@@ -45,9 +45,9 @@ struct HunLawArgs {
     #[clap(value_parser, required = true, name = "issue")]
     /// The  Magyar Közlöny issues to download in YEAR/ISSUE format. Example: '2013/31'
     issues: Vec<MkIssue>,
-    /// Output type
-    #[clap(value_enum, long, short, default_value_t)]
-    output: OutputType,
+    /// Output format
+    #[clap(value_enum, long, short = 't', default_value_t)]
+    output_format: OutputFromat,
     /// Do parsing only until and including this step
     #[clap(value_enum, long, short, default_value_t)]
     parse_until: ParsingStep,
@@ -57,10 +57,13 @@ struct HunLawArgs {
     /// Editor to use for interactive fixups
     #[clap(long, short, default_value = "nvim")]
     editor: String,
+    /// Output directory. If not specified, output is printed to stdout
+    #[clap(long, short)]
+    output_dir: Option<PathBuf>,
 }
 
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
-enum OutputType {
+enum OutputFromat {
     /// Plain text output
     Plain,
     /// Plain text output with special markers for bold and not right-justified lines
@@ -71,7 +74,7 @@ enum OutputType {
     Yaml,
 }
 
-impl Default for OutputType {
+impl Default for OutputFromat {
     fn default() -> Self {
         Self::Yaml
     }
@@ -103,32 +106,21 @@ fn main() -> Result<()> {
     .init();
 
     let args = HunLawArgs::parse();
-    let mut output = std::io::stdout();
     let mut everything_ok = true;
     for issue in &args.issues {
-        info!("Processing MK {:?}/{:?}", issue.year, issue.issue);
+        let mk_name = format!("mk_{}_{}", issue.year, issue.issue);
+        info!("Processing {}", mk_name);
         let body = download_mk_issue(issue, &PathBuf::from("./cache"))?;
         info!("{:?} bytes", body.len());
         let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
         if args.parse_until == ParsingStep::PdfLines {
-            let mut first = true;
-            for page in pages {
-                if !first {
-                    writeln!(&mut output, "------- >8 ------")?;
-                }
-                first = false;
-                page.cli_output(args.output, &mut output)?;
-            }
+            let mut output = get_output(&mk_name, &args)?;
+            pages.cli_output(args.output_format, &mut output)?;
             continue;
         }
 
         for act in parse_mk_pages_into_acts(&pages)? {
-            // TODO: output into output files
-            writeln!(
-                output,
-                "------ Act {:?}/{:?} ------",
-                act.identifier.year, act.identifier.number
-            )?;
+            let mut output = get_output(&act.identifier.to_string(), &args)?;
             let process_result = if args.interactive {
                 process_single_act_interactive(act, &args, &mut output)
             } else {
@@ -144,6 +136,26 @@ fn main() -> Result<()> {
         Ok(())
     } else {
         Err(anyhow::anyhow!("Some acts were not processed"))
+    }
+}
+
+fn get_output(filename: &str, args: &HunLawArgs) -> Result<Box<dyn std::io::Write>> {
+    match &args.output_dir {
+        Some(odir) => {
+            let extension = match args.output_format {
+                OutputFromat::Plain => "txt",
+                OutputFromat::TestPlain => "txt",
+                OutputFromat::Json => "json",
+                OutputFromat::Yaml => "yml",
+            };
+            let path = odir.join(format!("{}.{}", filename, extension));
+            info!("Writing into {:?}", path);
+            Ok(Box::new(File::create(path)?))
+        }
+        None => {
+            println!("------ {} ------", filename);
+            Ok(Box::new(std::io::stdout()))
+        }
     }
 }
 
@@ -178,31 +190,47 @@ fn process_single_act(
     act_raw.remove_double_empty_lines();
 
     if args.parse_until == ParsingStep::ActLines {
-        return act_raw.cli_output(args.output, output);
+        return act_raw.cli_output(args.output_format, output);
     }
 
     let act = parse_act_structure(&act_raw)?;
 
     if args.parse_until == ParsingStep::Structure {
-        return act.cli_output(args.output, output);
+        return act.cli_output(args.output_format, output);
     }
 
     let mut act = act.add_semantic_info()?;
     act.convert_block_amendments()?;
-    act.cli_output(args.output, output)
+    act.cli_output(args.output_format, output)
 }
 
 trait CliOutput: Sized + Serialize {
-    fn cli_output(self, output_type: OutputType, target: &mut impl std::io::Write) -> Result<()> {
+    fn cli_output(self, output_type: OutputFromat, target: &mut impl std::io::Write) -> Result<()> {
         match output_type {
-            OutputType::Plain => self.cli_output_plain(false, target)?,
-            OutputType::TestPlain => self.cli_output_plain(true, target)?,
-            OutputType::Json => serde_json::to_writer(target, &self)?,
-            OutputType::Yaml => singleton_yaml::to_writer(target, &self)?,
+            OutputFromat::Plain => self.cli_output_plain(false, target)?,
+            OutputFromat::TestPlain => self.cli_output_plain(true, target)?,
+            OutputFromat::Json => serde_json::to_writer(target, &self)?,
+            OutputFromat::Yaml => singleton_yaml::to_writer(target, &self)?,
         };
         Ok(())
     }
     fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()>;
+}
+
+impl CliOutput for Vec<PageOfLines> {
+    fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()> {
+        let num_pages = self.len();
+        for (page_no, page) in self.into_iter().enumerate() {
+            writeln!(
+                target,
+                "\n------- page {:?}/{:?} -------\n",
+                page_no + 1,
+                num_pages,
+            )?;
+            page.cli_output_plain(testing_tags, target)?;
+        }
+        Ok(())
+    }
 }
 
 impl CliOutput for PageOfLines {
