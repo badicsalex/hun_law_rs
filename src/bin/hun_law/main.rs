@@ -60,6 +60,9 @@ struct HunLawArgs {
     /// Output directory. If not specified, output is printed to stdout
     #[clap(long, short)]
     output_dir: Option<PathBuf>,
+    /// Cache directory used to store downloaded MK issue pdfs
+    #[clap(long, short, default_value = "./cache")]
+    cache_dir: PathBuf,
 }
 
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
@@ -112,7 +115,7 @@ fn main() -> Result<()> {
     for issue in &args.issues {
         let mk_name = format!("mk_{}_{}", issue.year, issue.issue);
         info!("Processing {}", mk_name);
-        let body = download_mk_issue(issue, &PathBuf::from("./cache"))?;
+        let body = download_mk_issue(issue, &args.cache_dir)?;
         info!("{:?} bytes", body.len());
         let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
         if args.parse_until == ParsingStep::PdfLines {
