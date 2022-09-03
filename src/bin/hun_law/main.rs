@@ -65,12 +65,14 @@ struct HunLawArgs {
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
 enum OutputFromat {
     /// Plain text output
+    #[clap(alias("txt"))]
     Plain,
     /// Plain text output with special markers for bold and not right-justified lines
     TestPlain,
     /// JSON output. Compact. Use YAML format if you need a human readable version
     Json,
     /// YAML output
+    #[clap(alias("yml"))]
     Yaml,
 }
 
