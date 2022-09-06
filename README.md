@@ -1,6 +1,6 @@
 # Hun-Law (Rust version)
 
-A small project for parsing Hungarian Law. A rewrite of the [Python version](https://github.com/badicsalex/hun_law) in Rust.
+A small project for parsing Hungarian Law. A rewrite of the [Python version](https://github.com/badicsalex/hun_law_py) in Rust.
 
 It does the following things:
 
