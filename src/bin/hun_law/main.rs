@@ -198,13 +198,13 @@ fn process_single_act(
         return act_raw.cli_output(args.output_format, output);
     }
 
-    let act = parse_act_structure(&act_raw)?;
+    let mut act = parse_act_structure(&act_raw)?;
 
     if args.parse_until == ParsingStep::Structure {
         return act.cli_output(args.output_format, output);
     }
 
-    let mut act = act.add_semantic_info()?;
+    act.add_semantic_info()?;
     act.convert_block_amendments()?;
     act.cli_output(args.output_format, output)
 }

@@ -22,6 +22,7 @@ pub mod debug;
 pub mod hun_str;
 pub mod indentedline;
 pub mod singleton_yaml;
+pub mod walker;
 use indentedline::IndentedLine;
 
 pub trait IsDefault {

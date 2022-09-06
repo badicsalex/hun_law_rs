@@ -19,7 +19,7 @@ use std::{collections::HashMap, path::Path};
 use datatest_stable::Result;
 use hun_law::{
     identifier::ActIdentifier,
-    parser::semantic_info::{abbreviation::AbbreviationCache, extract_semantic_info},
+    parser::semantic_info::{abbreviation::AbbreviationCache, sae::SemanticInfoAdder},
     reference::Reference,
     semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
     util::{is_default, singleton_yaml},
@@ -49,7 +49,8 @@ struct TestCase {
 pub fn run_test(path: &Path) -> Result<()> {
     let test_case: TestCase = singleton_yaml::from_slice(&read_all(path)?)?;
     let mut abbreviation_cache = AbbreviationCache::from(test_case.abbreviations.clone());
-    let semantic_info = extract_semantic_info("", &test_case.text, "", &mut abbreviation_cache)?;
+    let mut visitor = SemanticInfoAdder::new(&mut abbreviation_cache);
+    let semantic_info = visitor.extract_semantic_info(&test_case.text)?;
 
     let (expected_references, positions) =
         convert_references(&semantic_info.outgoing_references, &test_case.text);

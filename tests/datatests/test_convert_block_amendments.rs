@@ -25,7 +25,8 @@ use crate::test_utils::{clean_quoted_blocks, ensure_eq, parse_txt_as_act, read_a
 declare_test!(dir = "data_convert_block_amendments", pattern = r"\.txt");
 
 pub fn run_test(path: &Path) -> datatest_stable::Result<()> {
-    let mut act: Act = parse_txt_as_act(path)?.add_semantic_info()?;
+    let mut act: Act = parse_txt_as_act(path)?;
+    act.add_semantic_info()?;
     act.convert_block_amendments()?;
     // Clear remaining quoted blocks to make failing output a bit smaller
     clean_quoted_blocks(&mut act);

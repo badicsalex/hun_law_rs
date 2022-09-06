@@ -329,3 +329,27 @@ impl DebugContextString for Paragraph {
         )
     }
 }
+
+impl DebugContextString for ActChild {
+    fn debug_ctx(&self) -> String {
+        match self {
+            ActChild::StructuralElement(x) => x.debug_ctx(),
+            ActChild::Subtitle(x) => x.debug_ctx(),
+            ActChild::Article(x) => x.debug_ctx(),
+        }
+    }
+}
+
+impl DebugContextString for StructuralElement {
+    fn debug_ctx(&self) -> String {
+        // TODO: Proper pretty format
+        format!("{:?}", self)
+    }
+}
+
+impl DebugContextString for Subtitle {
+    fn debug_ctx(&self) -> String {
+        // TODO: Proper pretty format
+        format!("{:?}", self)
+    }
+}
