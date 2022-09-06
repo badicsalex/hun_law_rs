@@ -19,7 +19,7 @@ use hun_law_grammar::PegParser;
 
 use crate::{
     semantic_info::{OutgoingReference, SemanticInfo, SpecialPhrase},
-    util::walker::SAEVisitor,
+    util::walker::SAEVisitorMut,
 };
 
 use super::{
@@ -43,7 +43,7 @@ pub struct SemanticInfoAdder<'a> {
     abbreviation_cache: &'a mut AbbreviationCache,
 }
 
-impl<'a> SAEVisitor for SemanticInfoAdder<'a> {
+impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
     fn on_enter(
         &mut self,
         intro: &mut String,

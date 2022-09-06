@@ -16,7 +16,11 @@
 
 use anyhow::Result;
 
-use crate::{structure::Act, util::walker::WalkSAE};
+use crate::{
+    semantic_info::{EnforcementDate, SemanticInfo, SpecialPhrase},
+    structure::Act,
+    util::walker::{SAEVisitor, WalkSAE, WalkSAEMut},
+};
 
 use self::{abbreviation::AbbreviationCache, sae::SemanticInfoAdder};
 
@@ -34,6 +38,26 @@ impl Act {
     pub fn add_semantic_info(&mut self) -> Result<()> {
         let mut abbreviation_cache = AbbreviationCache::default();
         let mut visitor = SemanticInfoAdder::new(&mut abbreviation_cache);
-        self.walk_saes(&mut visitor)
+        self.walk_saes_mut(&mut visitor)
+    }
+    pub fn all_enforcement_dates(&self) -> Result<Vec<EnforcementDate>> {
+        let mut visitor = EnforcementDateAccumulator::default();
+        self.walk_saes(&mut visitor)?;
+        Ok(visitor.result)
+    }
+}
+
+#[derive(Debug, Default)]
+struct EnforcementDateAccumulator {
+    result: Vec<EnforcementDate>,
+}
+
+impl SAEVisitor for EnforcementDateAccumulator {
+    // on_enter and on_exit not needed, since EnforcementDates are always in leaf nodes.
+    fn on_text(&mut self, _text: &String, semantic_info: &SemanticInfo) -> Result<()> {
+        if let Some(SpecialPhrase::EnforcementDate(ed)) = &semantic_info.special_phrase {
+            self.result.push(ed.clone())
+        }
+        Ok(())
     }
 }
