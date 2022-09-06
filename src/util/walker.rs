@@ -36,7 +36,10 @@ pub trait SAEVisitor {
         intro: &mut String,
         wrap_up: &mut Option<String>,
         semantic_info: &mut SemanticInfo,
-    ) -> Result<()>;
+    ) -> Result<()> {
+        let _ = (intro, wrap_up, semantic_info);
+        Ok(())
+    }
 
     /// Called on exiting a SAE which have children
     fn on_exit(
@@ -44,10 +47,16 @@ pub trait SAEVisitor {
         intro: &mut String,
         wrap_up: &mut Option<String>,
         semantic_info: &mut SemanticInfo,
-    ) -> Result<()>;
+    ) -> Result<()> {
+        let _ = (intro, wrap_up, semantic_info);
+        Ok(())
+    }
 
     /// Called on SAEs which have no children (instead of enter and exit)
-    fn on_text(&mut self, text: &mut String, semantic_info: &mut SemanticInfo) -> Result<()>;
+    fn on_text(&mut self, text: &mut String, semantic_info: &mut SemanticInfo) -> Result<()> {
+        let _ = (text, semantic_info);
+        Ok(())
+    }
 }
 
 pub trait WalkSAE {
