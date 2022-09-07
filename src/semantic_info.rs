@@ -118,7 +118,6 @@ pub enum EnforcementDateType {
         month: Option<u8>,
         day: u16,
     },
-    Special(String),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
