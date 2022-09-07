@@ -354,7 +354,7 @@ impl Reference {
     }
 }
 
-/// Helper to create Reference isntances from parts.
+/// Helper to create Reference instances from parts.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct UncheckedReference {
     #[serde(default, skip_serializing_if = "is_default")]
