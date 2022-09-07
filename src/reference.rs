@@ -352,6 +352,31 @@ impl Reference {
         }
         builder.build()
     }
+
+    pub fn is_parent_of(&self, other: &Reference) -> bool {
+        if self.act != other.act {
+            false
+        } else if self.article != other.article {
+            self.article.is_none()
+        } else if self.paragraph != other.paragraph {
+            self.paragraph.is_none()
+        } else if self.point != other.point {
+            self.point.is_none()
+        } else if self.subpoint != other.subpoint {
+            self.subpoint.is_none()
+        } else {
+            false
+        }
+    }
+
+    pub fn contains(&self, other: &Reference) -> bool {
+        let self_first = self.first_in_range();
+        let self_last = self.last_in_range();
+        let other_first = other.first_in_range();
+        let other_last = other.last_in_range();
+        ((self_first <= other_first) || (self_first.is_parent_of(&other_first)))
+            && ((self_last >= other_last) || (self_last.is_parent_of(&other_last)))
+    }
 }
 
 /// Helper to create Reference instances from parts.
@@ -550,7 +575,7 @@ pub enum StructuralReferenceElement {
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
+    use std::{fmt::Debug, str::FromStr};
 
     use pretty_assertions::assert_eq;
 
@@ -977,5 +1002,151 @@ mod tests {
                 }))
             }
         );
+    }
+
+    #[test]
+    fn test_contains() {
+        fn convert_one<TR, TI>(s: &str) -> Option<TR>
+        where
+            TR: RefPartFrom<TI>,
+            TI: Clone + FromStr,
+            <TI as FromStr>::Err: Debug,
+        {
+            if s.is_empty() {
+                None
+            } else if let Some((start, end)) = s.split_once('-') {
+                Some(TR::from_range(start.parse().unwrap(), end.parse().unwrap()))
+            } else {
+                Some(TR::from_single(s.parse().unwrap()))
+            }
+        }
+        fn easy_contains(
+            article_outer: &str,
+            paragraph_outer: &str,
+            article_inner: &str,
+            paragraph_inner: &str,
+        ) -> bool {
+            let ref_outer = Reference {
+                act: None,
+                article: convert_one(article_outer),
+                paragraph: convert_one(paragraph_outer),
+                point: None,
+                subpoint: None,
+            };
+            let ref_inner = Reference {
+                act: None,
+                article: convert_one(article_inner),
+                paragraph: convert_one(paragraph_inner),
+                point: None,
+                subpoint: None,
+            };
+            println!("Outer: {:?}, inner: {:?}", ref_outer, ref_inner);
+            ref_outer.contains(&ref_inner)
+        }
+
+        assert!(easy_contains("1", "", "1", ""));
+        assert!(!easy_contains("1", "", "2", ""));
+
+        assert!(!easy_contains("2-4", "", "1", ""));
+        assert!(easy_contains("2-4", "", "2", ""));
+        assert!(easy_contains("2-4", "", "3", ""));
+        assert!(easy_contains("2-4", "", "4", ""));
+        assert!(!easy_contains("2-4", "", "5", ""));
+
+        assert!(!easy_contains("2-4", "", "1-3", ""));
+        assert!(easy_contains("2-4", "", "2-3", ""));
+        assert!(easy_contains("2-4", "", "2-4", ""));
+        assert!(easy_contains("2-4", "", "3-4", ""));
+        assert!(!easy_contains("2-4", "", "4-5", ""));
+        assert!(!easy_contains("2-4", "", "14-15", ""));
+
+        assert!(easy_contains("1", "", "1", "2"));
+        assert!(!easy_contains("1", "1", "1", "2"));
+
+        assert!(easy_contains("1", "", "1", "2-15"));
+        assert!(easy_contains("1-2", "", "1", "2-15"));
+        assert!(easy_contains("1-2", "", "2", "2"));
+        assert!(easy_contains("1-3", "", "2", "2"));
+
+        assert!(!easy_contains("1", "1", "1", ""));
+        assert!(!easy_contains("1", "1", "2", ""));
+
+        // Very pathological cases
+        assert!(easy_contains("", "", "1", "")); // Empty reference "contains" everything.
+        assert!(!easy_contains("1", "", "", ""));
+        assert!(!easy_contains("1", "", "", "1"));
+
+        // Different acts
+        let ref_outer = Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: convert_one("1"),
+            paragraph: None,
+            point: None,
+            subpoint: None,
+        };
+        let ref_inner = Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 2,
+            }),
+            article: convert_one("1"),
+            paragraph: None,
+            point: None,
+            subpoint: None,
+        };
+        assert!(!ref_outer.contains(&ref_inner));
+
+        // Points
+        let ref_outer = Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: convert_one("1"),
+            paragraph: convert_one("1"),
+            point: convert_one::<RefPartPoint, NumericIdentifier>("1-4"),
+            subpoint: None,
+        };
+        let ref_inner = Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: convert_one("1"),
+            paragraph: convert_one("1"),
+            point: convert_one::<RefPartPoint, NumericIdentifier>("2-3"),
+            subpoint: None,
+        };
+        assert!(ref_outer.contains(&ref_outer));
+        assert!(ref_outer.contains(&ref_inner));
+        assert!(!ref_inner.contains(&ref_outer));
+
+        // Subpoints
+        let ref_outer = Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: convert_one("1"),
+            paragraph: convert_one("1"),
+            point: convert_one::<RefPartPoint, NumericIdentifier>("1"),
+            subpoint: convert_one::<RefPartSubpoint, NumericIdentifier>("1-4"),
+        };
+        let ref_inner = Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: convert_one("1"),
+            paragraph: convert_one("1"),
+            point: convert_one::<RefPartPoint, NumericIdentifier>("1"),
+            subpoint: convert_one::<RefPartSubpoint, NumericIdentifier>("2-3"),
+        };
+        assert!(ref_outer.contains(&ref_outer));
+        assert!(ref_outer.contains(&ref_inner));
+        assert!(!ref_inner.contains(&ref_outer));
     }
 }
