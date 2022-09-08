@@ -18,6 +18,7 @@ use anyhow::{Context, Result};
 use hun_law_grammar::PegParser;
 
 use crate::{
+    reference::Reference,
     semantic_info::{OutgoingReference, SemanticInfo, SpecialPhrase},
     util::walker::SAEVisitorMut,
 };
@@ -46,6 +47,7 @@ pub struct SemanticInfoAdder<'a> {
 impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
     fn on_enter(
         &mut self,
+        _position: &Reference,
         intro: &mut String,
         wrap_up: &mut Option<String>,
         semantic_info: &mut SemanticInfo,
@@ -80,6 +82,7 @@ impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
 
     fn on_exit(
         &mut self,
+        _position: &Reference,
         _intro: &mut String,
         _wrap_up: &mut Option<String>,
         _semantic_info: &mut SemanticInfo,
@@ -89,7 +92,12 @@ impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
         Ok(())
     }
 
-    fn on_text(&mut self, text: &mut String, semantic_info: &mut SemanticInfo) -> Result<()> {
+    fn on_text(
+        &mut self,
+        _position: &Reference,
+        text: &mut String,
+        semantic_info: &mut SemanticInfo,
+    ) -> Result<()> {
         *semantic_info = self.extract_semantic_info(text)?;
         Ok(())
     }

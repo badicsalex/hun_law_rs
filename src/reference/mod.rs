@@ -69,7 +69,7 @@ impl Reference {
         self.article.is_none()
     }
 
-    pub fn is_act_set(&self) -> bool {
+    pub fn has_act(&self) -> bool {
         self.act.is_some()
     }
 
