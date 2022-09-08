@@ -16,6 +16,7 @@
 
 use crate::{
     identifier::IsNextFrom,
+    reference::{to_element::ReferenceToElement, Reference},
     semantic_info::SemanticInfo,
     structure::{
         Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, NumericPointChildren,
@@ -35,54 +36,61 @@ macro_rules! impl_walk_sae {
             /// Called on entering a SAE which have children
             fn on_enter(
                 &mut self,
+                position: &Reference,
                 intro: $($ref_type)* String,
                 wrap_up: $($ref_type)* Option<String>,
                 semantic_info: $($ref_type)* SemanticInfo,
             ) -> Result<()> {
-                let _ = (intro, wrap_up, semantic_info);
+                let _ = (position, intro, wrap_up, semantic_info);
                 Ok(())
             }
 
             /// Called on exiting a SAE which have children
             fn on_exit(
                 &mut self,
+                position: &Reference,
                 intro: $($ref_type)* String,
                 wrap_up: $($ref_type)* Option<String>,
                 semantic_info: $($ref_type)* SemanticInfo,
             ) -> Result<()> {
-                let _ = (intro, wrap_up, semantic_info);
+                let _ = (position, intro, wrap_up, semantic_info);
                 Ok(())
             }
 
             /// Called on SAEs which have no children (instead of enter and exit)
-            fn on_text(&mut self, text: $($ref_type)* String, semantic_info: $($ref_type)* SemanticInfo) -> Result<()> {
-                let _ = (text, semantic_info);
+            fn on_text(
+                &mut self,
+                position: &Reference,
+                text: $($ref_type)* String,
+                semantic_info: $($ref_type)* SemanticInfo,
+            ) -> Result<()> {
+                let _ = (position, text, semantic_info);
                 Ok(())
             }
         }
         pub trait $Trait {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()>;
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()>;
         }
 
         impl<T: $Trait + DebugContextString> $Trait for Vec<T> {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()> {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
                 self.into_iter().try_for_each(|c| {
-                    c.$walk_fn(visitor)
+                    c.$walk_fn(base, visitor)
                         .with_elem_context("Error walking multiple", c)
                 })
             }
         }
 
-        impl $Trait for Act {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()> {
-                self.children.$walk_fn(visitor)
+        impl Act {
+            pub fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()> {
+                self.children.$walk_fn(&self.reference(), visitor)
             }
         }
 
         impl $Trait for ActChild {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()> {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
                 if let ActChild::Article(article) = self {
-                    article.children.$walk_fn(visitor)
+                    article.children.$walk_fn(&article.reference().relative_to(base)?, visitor)
                 } else {
                     Ok(())
                 }
@@ -91,14 +99,15 @@ macro_rules! impl_walk_sae {
 
         impl<IT, CT> $Trait for SubArticleElement<IT, CT>
         where
-            Self: DebugContextString,
+            Self: DebugContextString + ReferenceToElement,
             CT: $Trait,
             IT: IsDefault + IsNextFrom + Clone + std::fmt::Debug + Eq,
         {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()> {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
+                let element_ref = self.reference().relative_to(base)?;
                 match $($ref_type)* self.body {
                     SAEBody::Text(text) => visitor
-                        .on_text(text, $($ref_type)* self.semantic_info)
+                        .on_text(&element_ref, text, $($ref_type)* self.semantic_info)
                         .with_context(|| "'on_text' call failed"),
 
                     SAEBody::Children {
@@ -107,11 +116,11 @@ macro_rules! impl_walk_sae {
                         wrap_up,
                     } => {
                         visitor
-                            .on_enter(intro, wrap_up, $($ref_type)* self.semantic_info)
+                            .on_enter(&element_ref, intro, wrap_up, $($ref_type)* self.semantic_info)
                             .with_context(|| "'on_enter' call failed")?;
-                        children.$walk_fn(visitor)?;
+                        children.$walk_fn(&element_ref, visitor)?;
                         visitor
-                            .on_exit(intro, wrap_up, $($ref_type)* self.semantic_info)
+                            .on_exit(&element_ref, intro, wrap_up, $($ref_type)* self.semantic_info)
                             .with_context(|| "'on_exit' call failed")
                     }
                 }
@@ -119,10 +128,10 @@ macro_rules! impl_walk_sae {
         }
 
         impl $Trait for ParagraphChildren {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()> {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
                 match self {
-                    ParagraphChildren::AlphabeticPoint(b) => b.$walk_fn(visitor),
-                    ParagraphChildren::NumericPoint(b) => b.$walk_fn(visitor),
+                    ParagraphChildren::AlphabeticPoint(b) => b.$walk_fn(base, visitor),
+                    ParagraphChildren::NumericPoint(b) => b.$walk_fn(base, visitor),
                     ParagraphChildren::QuotedBlock(_) | ParagraphChildren::BlockAmendment(_) => {
                         Ok(())
                     }
@@ -131,31 +140,31 @@ macro_rules! impl_walk_sae {
         }
 
         impl $Trait for AlphabeticPointChildren {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()> {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
                 match self {
-                    AlphabeticPointChildren::AlphabeticSubpoint(b) => b.$walk_fn(visitor),
-                    AlphabeticPointChildren::NumericSubpoint(b) => b.$walk_fn(visitor),
+                    AlphabeticPointChildren::AlphabeticSubpoint(b) => b.$walk_fn(base, visitor),
+                    AlphabeticPointChildren::NumericSubpoint(b) => b.$walk_fn(base, visitor),
                 }
             }
         }
 
         impl $Trait for NumericPointChildren {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, visitor: &mut V) -> Result<()> {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
                 match self {
-                    NumericPointChildren::AlphabeticSubpoint(b) => b.$walk_fn(visitor),
+                    NumericPointChildren::AlphabeticSubpoint(b) => b.$walk_fn(base, visitor),
                 }
             }
         }
 
         impl $Trait for AlphabeticSubpointChildren {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, _visitor: &mut V) -> Result<()> {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, _base: &Reference, _visitor: &mut V) -> Result<()> {
                 // This is an empty enum, the function shall never run.
                 match *self {}
             }
         }
 
         impl $Trait for NumericSubpointChildren {
-            fn $walk_fn<V: $Visitor>($($ref_type)* self, _visitor: &mut V) -> Result<()> {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, _base: &Reference, _visitor: &mut V) -> Result<()> {
                 // This is an empty enum, the function shall never run.
                 match *self {}
             }
@@ -221,29 +230,45 @@ mod tests {
     }
 
     impl SAEVisitor for TestVisitor {
-        fn on_text(&mut self, text: &String, _semantic_info: &SemanticInfo) -> Result<()> {
-            self.events.push(format!("TEXT: {}", text));
+        fn on_text(
+            &mut self,
+            position: &Reference,
+            text: &String,
+            _semantic_info: &SemanticInfo,
+        ) -> Result<()> {
+            self.events.push(format!(
+                "TEXT@{}: {}",
+                serde_json::to_string(position).unwrap(),
+                text
+            ));
             Ok(())
         }
 
         fn on_enter(
             &mut self,
+            position: &Reference,
             intro: &String,
             _wrap_up: &Option<String>,
             _semantic_info: &SemanticInfo,
         ) -> Result<()> {
-            self.events.push(format!("ENTER: {}", intro));
+            self.events.push(format!(
+                "ENTER@{}: {}",
+                serde_json::to_string(position).unwrap(),
+                intro
+            ));
             Ok(())
         }
 
         fn on_exit(
             &mut self,
+            position: &Reference,
             _intro: &String,
             wrap_up: &Option<String>,
             _semantic_info: &SemanticInfo,
         ) -> Result<()> {
             self.events.push(format!(
-                "EXIT: {}",
+                "EXIT@{}: {}",
+                serde_json::to_string(position).unwrap(),
                 wrap_up.as_ref().map(|s| s as &str).unwrap_or("")
             ));
             Ok(())
@@ -258,15 +283,15 @@ mod tests {
         assert_eq!(
             visitor.events.iter().map(|s| s as &str).collect::<Vec<_>>(),
             vec![
-                "TEXT: Meg szövege",
-                "TEXT: Valami valami",
-                "ENTER: Egy felsorolás legyen",
-                "TEXT: többelemű",
-                "ENTER: kellően",
-                "TEXT: átláthatatlan",
-                "TEXT: komplex",
-                "EXIT: ",
-                "EXIT: minden esetben.",
+                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:1"}: Meg szövege"#,
+                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"1"}: Valami valami"#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2"}: Egy felsorolás legyen"#,
+                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"a"}: többelemű"#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b"}: kellően"#,
+                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b","subpoint":"ba"}: átláthatatlan"#,
+                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b","subpoint":"bb"}: komplex"#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b"}: "#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2"}: minden esetben."#,
             ]
         );
     }
@@ -317,13 +342,19 @@ mod tests {
     struct TestVisitorMut {}
 
     impl SAEVisitorMut for TestVisitorMut {
-        fn on_text(&mut self, text: &mut String, _semantic_info: &mut SemanticInfo) -> Result<()> {
+        fn on_text(
+            &mut self,
+            _position: &Reference,
+            text: &mut String,
+            _semantic_info: &mut SemanticInfo,
+        ) -> Result<()> {
             *text = text.replace('e', "a");
             Ok(())
         }
 
         fn on_enter(
             &mut self,
+            _position: &Reference,
             intro: &mut String,
             _wrap_up: &mut Option<String>,
             _semantic_info: &mut SemanticInfo,
@@ -334,6 +365,7 @@ mod tests {
 
         fn on_exit(
             &mut self,
+            _position: &Reference,
             _intro: &mut String,
             wrap_up: &mut Option<String>,
             _semantic_info: &mut SemanticInfo,
