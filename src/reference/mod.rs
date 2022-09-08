@@ -56,11 +56,10 @@ pub struct Reference {
 impl Reference {
     pub fn get_last_part(&self) -> AnyReferencePart {
         self.subpoint
-            .clone()
             .map(|x| x.into())
-            .or_else(|| self.point.clone().map(|x| x.into()))
-            .or_else(|| self.paragraph.clone().map(|x| x.into()))
-            .or_else(|| self.article.clone().map(|x| x.into()))
+            .or_else(|| self.point.map(|x| x.into()))
+            .or_else(|| self.paragraph.map(|x| x.into()))
+            .or_else(|| self.article.map(|x| x.into()))
             .or_else(|| self.act.map(|x| x.into()))
             .unwrap_or(AnyReferencePart::Empty)
     }
@@ -78,17 +77,15 @@ impl Reference {
             act: self.act,
             article: self
                 .article
-                .clone()
                 .map(|x| RefPartFrom::from_single(x.first_in_range())),
             paragraph: self
                 .paragraph
-                .clone()
                 .map(|x| RefPartFrom::from_single(x.first_in_range())),
-            point: self.point.clone().map(|x| match x {
+            point: self.point.map(|x| match x {
                 RefPartPoint::Numeric(n) => RefPartFrom::from_single(n.first_in_range()),
                 RefPartPoint::Alphabetic(a) => RefPartFrom::from_single(a.first_in_range()),
             }),
-            subpoint: self.subpoint.clone().map(|x| match x {
+            subpoint: self.subpoint.map(|x| match x {
                 RefPartSubpoint::Numeric(n) => RefPartFrom::from_single(n.first_in_range()),
                 RefPartSubpoint::Alphabetic(a) => RefPartFrom::from_single(a.first_in_range()),
             }),
@@ -100,17 +97,15 @@ impl Reference {
             act: self.act,
             article: self
                 .article
-                .clone()
                 .map(|x| RefPartFrom::from_single(x.last_in_range())),
             paragraph: self
                 .paragraph
-                .clone()
                 .map(|x| RefPartFrom::from_single(x.last_in_range())),
-            point: self.point.clone().map(|x| match x {
+            point: self.point.map(|x| match x {
                 RefPartPoint::Numeric(n) => RefPartFrom::from_single(n.last_in_range()),
                 RefPartPoint::Alphabetic(a) => RefPartFrom::from_single(a.last_in_range()),
             }),
-            subpoint: self.subpoint.clone().map(|x| match x {
+            subpoint: self.subpoint.map(|x| match x {
                 RefPartSubpoint::Numeric(n) => RefPartFrom::from_single(n.last_in_range()),
                 RefPartSubpoint::Alphabetic(a) => RefPartFrom::from_single(a.last_in_range()),
             }),
@@ -149,7 +144,7 @@ impl Reference {
         }
 
         if let Some(article) = &start.article {
-            builder.set_part(article.clone());
+            builder.set_part(*article);
         }
 
         // --- paragraph ---
@@ -174,7 +169,7 @@ impl Reference {
         }
 
         if let Some(paragraph) = &start.paragraph {
-            builder.set_part(paragraph.clone());
+            builder.set_part(*paragraph);
         }
 
         // --- point ---
@@ -201,7 +196,7 @@ impl Reference {
         }
 
         if let Some(point) = &start.point {
-            builder.set_part(point.clone());
+            builder.set_part(*point);
         }
 
         // --- subpoint ---
@@ -226,7 +221,7 @@ impl Reference {
         }
 
         if let Some(subpoint) = &start.subpoint {
-            builder.set_part(subpoint.clone());
+            builder.set_part(*subpoint);
         }
         builder.build()
     }

@@ -185,7 +185,7 @@ fn create_parse_params_paragraph(
 
 fn create_parse_params<T>(id: IdentifierRange<T>) -> SAEParseParams<T>
 where
-    T: Eq + Debug + Clone,
+    T: Eq + Debug + Copy,
 {
     SAEParseParams {
         expected_identifier: Some(id.first_in_range()),

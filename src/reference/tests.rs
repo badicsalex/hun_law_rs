@@ -305,7 +305,7 @@ fn test_contains() {
     fn convert_one<TR, TI>(s: &str) -> Option<TR>
     where
         TR: RefPartFrom<TI>,
-        TI: Clone + FromStr,
+        TI: Copy + FromStr,
         <TI as FromStr>::Err: Debug,
     {
         if s.is_empty() {

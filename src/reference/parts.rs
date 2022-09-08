@@ -22,25 +22,25 @@ use crate::identifier::{
     PrefixedAlphabeticIdentifier,
 };
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(from = "IdentifierRangeSerdeHelper<T>")]
 #[serde(into = "IdentifierRangeSerdeHelper<T>")]
-pub struct IdentifierRange<T: Clone + Eq> {
+pub struct IdentifierRange<T: Copy + Eq> {
     pub(super) start: T,
     pub(super) end: T,
 }
 
-impl<T: Clone + Eq> IdentifierRange<T> {
+impl<T: Copy + Eq> IdentifierRange<T> {
     pub fn is_range(&self) -> bool {
         self.start != self.end
     }
 
     pub fn first_in_range(&self) -> T {
-        self.start.clone()
+        self.start
     }
 
     pub fn last_in_range(&self) -> T {
-        self.end.clone()
+        self.end
     }
 }
 
@@ -54,18 +54,18 @@ enum IdentifierRangeSerdeHelper<T> {
     Range { start: T, end: T },
 }
 
-impl<T: Clone + Eq> From<IdentifierRangeSerdeHelper<T>> for IdentifierRange<T> {
+impl<T: Copy + Eq> From<IdentifierRangeSerdeHelper<T>> for IdentifierRange<T> {
     fn from(helper: IdentifierRangeSerdeHelper<T>) -> Self {
         match helper {
             IdentifierRangeSerdeHelper::Single(val) => Self {
-                start: val.clone(),
+                start: val,
                 end: val,
             },
             IdentifierRangeSerdeHelper::Range { start, end } => Self { start, end },
         }
     }
 }
-impl<T: Clone + Eq> From<IdentifierRange<T>> for IdentifierRangeSerdeHelper<T> {
+impl<T: Copy + Eq> From<IdentifierRange<T>> for IdentifierRangeSerdeHelper<T> {
     fn from(val: IdentifierRange<T>) -> Self {
         if val.start == val.end {
             Self::Single(val.start)
@@ -81,7 +81,9 @@ impl<T: Clone + Eq> From<IdentifierRange<T>> for IdentifierRangeSerdeHelper<T> {
 pub type RefPartArticle = IdentifierRange<ArticleIdentifier>;
 pub type RefPartParagraph = IdentifierRange<NumericIdentifier>;
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, FromVariants, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, FromVariants, Serialize, Deserialize,
+)]
 #[serde(untagged)]
 pub enum RefPartPoint {
     Numeric(IdentifierRange<NumericIdentifier>),
@@ -97,7 +99,9 @@ impl RefPartPoint {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, FromVariants, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, FromVariants, Serialize, Deserialize,
+)]
 #[serde(untagged)]
 pub enum RefPartSubpoint {
     Numeric(IdentifierRange<NumericIdentifier>),
@@ -113,9 +117,9 @@ impl RefPartSubpoint {
     }
 }
 
-pub trait RefPartFrom<T: Clone>: Sized {
+pub trait RefPartFrom<T: Copy>: Sized {
     fn from_single(id: T) -> Self {
-        Self::from_range(id.clone(), id)
+        Self::from_range(id, id)
     }
 
     fn from_range(start: T, end: T) -> Self;
