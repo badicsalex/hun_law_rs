@@ -30,16 +30,6 @@ pub trait IsNextFrom {
     fn is_first(&self) -> bool;
 
     /// Can the parameter be considered the previous identifier. Handles suffix transitions.
-    ///
-    /// ```
-    /// use hun_law::identifier::{NumericIdentifier, IsNextFrom};
-    /// let id121:NumericIdentifier = 121.into();
-    /// let id122:NumericIdentifier = 122.into();
-    /// let id123:NumericIdentifier = 123.into();
-    /// assert!(id122.is_next_from(id121));
-    /// assert!(!id123.is_next_from(id121));
-    /// assert!(!id121.is_next_from(id122));
-    /// ```
     fn is_next_from(&self, other: Self) -> bool;
 }
 
