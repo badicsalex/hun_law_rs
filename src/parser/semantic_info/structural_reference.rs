@@ -17,8 +17,10 @@
 use anyhow::Result;
 use hun_law_grammar::*;
 
-use crate::reference::{StructuralReference, StructuralReferenceElement};
-use crate::structure::StructuralElementType;
+use crate::{
+    reference::structural::{StructuralReference, StructuralReferenceElement},
+    structure::StructuralElementType,
+};
 
 impl TryFrom<&AnyStructuralReference> for StructuralReference {
     type Error = anyhow::Error;

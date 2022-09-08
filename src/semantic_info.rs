@@ -19,7 +19,7 @@ use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
 use crate::identifier::ActIdentifier;
-use crate::reference::{Reference, StructuralReference};
+use crate::reference::{structural::StructuralReference, Reference};
 use crate::util::{is_default, IsDefault};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq)]

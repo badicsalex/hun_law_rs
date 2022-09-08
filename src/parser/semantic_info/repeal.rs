@@ -19,7 +19,7 @@ use hun_law_grammar::*;
 
 use super::reference::convert_act_reference;
 use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
-use crate::reference::{self, StructuralReference};
+use crate::reference::{self, structural::StructuralReference};
 use crate::semantic_info;
 
 pub fn convert_repeal(

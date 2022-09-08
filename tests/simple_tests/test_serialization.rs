@@ -22,8 +22,9 @@ use hun_law::{
         ActIdentifier, AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier,
     },
     reference::{
-        RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint, Reference,
-        ReferenceBuilder, ReferenceBuilderSetPart,
+        builder::{ReferenceBuilder, ReferenceBuilderSetPart},
+        parts::{RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint},
+        Reference,
     },
     structure::{
         Act, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, Paragraph, SAEBody,

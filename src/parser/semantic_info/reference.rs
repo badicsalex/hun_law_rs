@@ -24,8 +24,8 @@ use crate::{
         PrefixedAlphabeticIdentifier,
     },
     reference::{
-        RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint,
-        ReferenceBuilder, ReferenceBuilderSetPart,
+        builder::{ReferenceBuilder, ReferenceBuilderSetPart},
+        parts::{RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint},
     },
     semantic_info::OutgoingReference,
 };

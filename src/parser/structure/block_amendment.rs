@@ -26,7 +26,10 @@ use super::{
 use crate::{
     identifier::{ArticleIdentifier, NumericIdentifier},
     parser::structure::sae::{AlphabeticPointParser, AlphabeticSubpointParser, SAEParseParams},
-    reference::{AnyReferencePart, IdentifierRange, RefPartPoint, RefPartSubpoint, Reference},
+    reference::{
+        parts::{AnyReferencePart, IdentifierRange, RefPartPoint, RefPartSubpoint},
+        Reference,
+    },
     semantic_info::SpecialPhrase,
     structure::{
         Act, ActChild, Article, BlockAmendment, BlockAmendmentChildren, Paragraph,
