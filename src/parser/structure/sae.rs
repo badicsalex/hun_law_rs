@@ -21,12 +21,15 @@ use lazy_regex::regex;
 
 use super::{act::ParsingContext, quote::QuotedBlockParser};
 use crate::{
-    identifier::{HungarianIdentifierChar, IsNextFrom, PrefixedAlphabeticIdentifier},
-    structure::{
-        AlphabeticPoint, AlphabeticSubpoint, NumericPoint, NumericSubpoint, Paragraph, SAEBody,
-        SAECommon,
+    identifier::{
+        AlphabeticIdentifier, HungarianIdentifierChar, IsNextFrom, NumericIdentifier,
+        PrefixedAlphabeticIdentifier,
     },
-    util::{indentedline::IndentedLine, QuoteCheck},
+    structure::{
+        AlphabeticPointChildren, AlphabeticSubpointChildren, NumericPointChildren,
+        NumericSubpointChildren, ParagraphChildren, SAEBody, SubArticleElement,
+    },
+    util::{indentedline::IndentedLine, IsDefault, QuoteCheck},
 };
 
 #[derive(Debug)]
@@ -49,32 +52,30 @@ impl<TI: Debug> SAEParseParams<TI> {
 }
 
 pub trait SAEParser: Debug {
-    type SAE: Sized + SAECommon;
+    type IdentifierType: IsDefault + IsNextFrom + Clone + Debug + Eq;
+    type ChildrenType;
 
     /// Parse the header into and identifier, and return it, along with the rest of the first line
-    fn parse_header(
-        &self,
-        line: &IndentedLine,
-    ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)>;
+    fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)>;
 
     /// Try to extract the children of this type, assuming the first line is the header of at least
     /// one child type, and there are multiple children. If any of this is not true, fail.
     /// Expected to call [SAEParser::extract_multiple] for all possible children type
     fn try_extract_children(
         &self,
-        identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        identifier: &Self::IdentifierType,
         previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
         context: ParsingContext,
-    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)>;
+    ) -> Result<(Self::ChildrenType, Option<String>)>;
 
     /// Parse a single instance.
     fn parse(
         &self,
-        identifier: <Self::SAE as SAECommon>::IdentifierType,
+        identifier: Self::IdentifierType,
         body: &[IndentedLine],
         context: ParsingContext,
-    ) -> Result<Self::SAE> {
+    ) -> Result<SubArticleElement<Self::IdentifierType, Self::ChildrenType>> {
         let mut intro = String::new();
         let mut quote_checker = QuoteCheck::default();
         let mut previous_nonempty_line = None;
@@ -87,14 +88,17 @@ pub trait SAEParser: Debug {
                     &body[i..],
                     context,
                 ) {
-                    return Ok(<Self::SAE>::new(
-                        identifier,
-                        SAEBody::Children {
-                            intro,
-                            children,
-                            wrap_up,
+                    return Ok(
+                        SubArticleElement::<Self::IdentifierType, Self::ChildrenType> {
+                            identifier,
+                            body: SAEBody::Children {
+                                intro,
+                                children,
+                                wrap_up,
+                            },
+                            semantic_info: Default::default(),
                         },
-                    ));
+                    );
                 }
             }
             let line = &body[i];
@@ -104,17 +108,23 @@ pub trait SAEParser: Debug {
             }
         }
         quote_checker.check_end()?;
-        Ok(<Self::SAE>::new(identifier, intro.into()))
+        Ok(
+            SubArticleElement::<Self::IdentifierType, Self::ChildrenType> {
+                identifier,
+                body: intro.into(),
+                semantic_info: Default::default(),
+            },
+        )
     }
 
     /// Extract multiple instances from the text. Fails if the first line is not a header
     fn extract_multiple<T>(
         &self,
         lines: &[IndentedLine],
-        params: SAEParseParams<<Self::SAE as SAECommon>::IdentifierType>,
+        params: SAEParseParams<Self::IdentifierType>,
     ) -> Result<(T, Option<String>)>
     where
-        T: From<Vec<Self::SAE>>,
+        T: From<Vec<SubArticleElement<Self::IdentifierType, Self::ChildrenType>>>,
     {
         let (mut identifier, first_line_rest) = self
             .parse_header(&lines[0])
@@ -129,7 +139,7 @@ pub trait SAEParser: Debug {
         }
         let mut quote_checker = QuoteCheck::default();
         quote_checker.update(&first_line_rest)?;
-        let mut result: Vec<Self::SAE> = Vec::new();
+        let mut result: Vec<_> = Vec::new();
         let mut body: Vec<IndentedLine> = vec![first_line_rest];
         let header_indent = lines[0].indent();
 
@@ -202,10 +212,10 @@ pub trait SAEParser: Debug {
     /// Checks indentation and identifier correctness.
     fn parse_and_check_header(
         &self,
-        last_identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        last_identifier: &Self::IdentifierType,
         expected_indent: f64,
         line: &IndentedLine,
-    ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
+    ) -> Option<(Self::IdentifierType, IndentedLine)> {
         if !line.indent_less_or_eq(expected_indent) {
             return None;
         }
@@ -222,23 +232,21 @@ pub trait SAEParser: Debug {
 pub struct ParagraphParser;
 
 impl SAEParser for ParagraphParser {
-    type SAE = Paragraph;
+    type IdentifierType = Option<NumericIdentifier>;
+    type ChildrenType = ParagraphChildren;
 
-    fn parse_header(
-        &self,
-        line: &IndentedLine,
-    ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
+    fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
         let (id, rest) = line.parse_header(regex!("^\\(([0-9]+[a-z]?)\\) +(.*)$"))?;
         Some((Some(id), rest))
     }
 
     fn try_extract_children(
         &self,
-        _identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        _identifier: &Self::IdentifierType,
         previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
         context: ParsingContext,
-    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+    ) -> Result<(Self::ChildrenType, Option<String>)> {
         QuotedBlockParser
             .extract_multiple(previous_nonempty_line, body)
             .or_else(|_| {
@@ -256,22 +264,20 @@ impl SAEParser for ParagraphParser {
 pub struct NumericPointParser;
 
 impl SAEParser for NumericPointParser {
-    type SAE = NumericPoint;
+    type IdentifierType = NumericIdentifier;
+    type ChildrenType = NumericPointChildren;
 
-    fn parse_header(
-        &self,
-        line: &IndentedLine,
-    ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
+    fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
         line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\. +(.*)$"))
     }
 
     fn try_extract_children(
         &self,
-        _identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        _identifier: &Self::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
         context: ParsingContext,
-    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+    ) -> Result<(Self::ChildrenType, Option<String>)> {
         AlphabeticSubpointParser { prefix: None }
             .extract_multiple(body, SAEParseParams::children_parsing_default(context))
     }
@@ -281,22 +287,20 @@ impl SAEParser for NumericPointParser {
 pub struct AlphabeticPointParser;
 
 impl SAEParser for AlphabeticPointParser {
-    type SAE = AlphabeticPoint;
+    type IdentifierType = AlphabeticIdentifier;
+    type ChildrenType = AlphabeticPointChildren;
 
-    fn parse_header(
-        &self,
-        line: &IndentedLine,
-    ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
+    fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
         line.parse_header(regex!("^([a-z]|cs|dz|gy|ly|ny|sz|ty)\\) +(.*)$"))
     }
 
     fn try_extract_children(
         &self,
-        identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        identifier: &Self::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
         context: ParsingContext,
-    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+    ) -> Result<(Self::ChildrenType, Option<String>)> {
         NumericSubpointParser
             .extract_multiple(body, SAEParseParams::children_parsing_default(context))
             .or_else(|_| {
@@ -312,22 +316,20 @@ impl SAEParser for AlphabeticPointParser {
 pub struct NumericSubpointParser;
 
 impl SAEParser for NumericSubpointParser {
-    type SAE = NumericSubpoint;
+    type IdentifierType = NumericIdentifier;
+    type ChildrenType = NumericSubpointChildren;
 
-    fn parse_header(
-        &self,
-        line: &IndentedLine,
-    ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
+    fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
         line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\. +(.*)$"))
     }
 
     fn try_extract_children(
         &self,
-        _identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        _identifier: &Self::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
         _context: ParsingContext,
-    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+    ) -> Result<(Self::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
     }
 }
@@ -338,11 +340,10 @@ pub struct AlphabeticSubpointParser {
 }
 
 impl SAEParser for AlphabeticSubpointParser {
-    type SAE = AlphabeticSubpoint;
-    fn parse_header(
-        &self,
-        line: &IndentedLine,
-    ) -> Option<(<Self::SAE as SAECommon>::IdentifierType, IndentedLine)> {
+    type IdentifierType = PrefixedAlphabeticIdentifier;
+    type ChildrenType = AlphabeticSubpointChildren;
+
+    fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
         let (result, rest) =
             line.parse_header::<PrefixedAlphabeticIdentifier>(regex!("^([a-z]?[a-z])\\) +(.*)$"))?;
         if result.prefix_is(self.prefix) {
@@ -354,11 +355,11 @@ impl SAEParser for AlphabeticSubpointParser {
 
     fn try_extract_children(
         &self,
-        _identifier: &<Self::SAE as SAECommon>::IdentifierType,
+        _identifier: &Self::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
         _context: ParsingContext,
-    ) -> Result<(<Self::SAE as SAECommon>::ChildrenType, Option<String>)> {
+    ) -> Result<(Self::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
     }
 }
