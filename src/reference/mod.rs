@@ -73,6 +73,15 @@ impl Reference {
         self.act.is_some()
     }
 
+    pub fn without_act(&self) -> Reference {
+        // This is done without going through an UncheckedReference because
+        // there is no way to create an invalid Reference like this.
+        Self {
+            act: None,
+            ..self.clone()
+        }
+    }
+
     pub fn first_in_range(&self) -> Self {
         Self {
             act: self.act,
