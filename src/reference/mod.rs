@@ -17,6 +17,7 @@
 pub mod builder;
 pub mod parts;
 pub mod structural;
+pub mod to_element;
 pub mod unchecked;
 
 #[cfg(test)]
