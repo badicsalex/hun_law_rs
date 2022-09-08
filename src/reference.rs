@@ -160,7 +160,7 @@ impl RefPartFrom<PrefixedAlphabeticIdentifier> for RefPartSubpoint {
 /// - There are no 'gaps' in the parts, apart from a potentially missing paragraph
 ///   (in that case, it means the 'default paragraph' of the article
 /// - It might be a range, but the range part is always the last part of the reference
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(try_from = "UncheckedReference")]
 #[serde(into = "UncheckedReference")]
 pub struct Reference {
@@ -173,6 +173,7 @@ pub struct Reference {
 
 #[derive(Debug, Clone, PartialEq, Eq, FromVariants)]
 pub enum AnyReferencePart {
+    Empty,
     Act(ActIdentifier),
     Article(RefPartArticle),
     Paragraph(RefPartParagraph),
@@ -181,7 +182,7 @@ pub enum AnyReferencePart {
 }
 
 impl Reference {
-    pub fn get_last_part(&self) -> Option<AnyReferencePart> {
+    pub fn get_last_part(&self) -> AnyReferencePart {
         self.subpoint
             .clone()
             .map(|x| x.into())
@@ -189,6 +190,7 @@ impl Reference {
             .or_else(|| self.paragraph.clone().map(|x| x.into()))
             .or_else(|| self.article.clone().map(|x| x.into()))
             .or_else(|| self.act.map(|x| x.into()))
+            .unwrap_or(AnyReferencePart::Empty)
     }
 
     pub fn is_act_only(&self) -> bool {
@@ -408,17 +410,13 @@ impl UncheckedReference {
             self.subpoint.is_some(),
         ];
         match filled {
-            // Just act ref
-            [true, false, false, false, false] => Ok(()),
-            // Act with article, maybe point, no subpoint. Paragraph can be missing
-            [true, true, _, _, false] => Ok(()),
-            // Subpoint ref
-            [true, true, _, true, true] => Ok(()),
-            // Relative article, maybe point, no subpoint. Paragraph can be missing
-            [false, true, _, _, false] => Ok(()),
-            // Relative subpoint ref
-            [false, true, _, true, true] => Ok(()),
-            // Relative paragraph,
+            // Just act ref or empty ref
+            [_, false, false, false, false] => Ok(()),
+            // Article, maybe point, no subpoint. Paragraph can be missing
+            [_, true, _, _, false] => Ok(()),
+            // Subpoint
+            [_, true, _, true, true] => Ok(()),
+            // Relative paragraph
             [false, false, true, false, false] => Ok(()),
             // Relative point or subpoint.
             [false, false, _, true, _] => Ok(()),
@@ -645,9 +643,7 @@ mod tests {
                     start: "1:10".parse().unwrap(),
                     end: "1:10/C".parse().unwrap()
                 }),
-                paragraph: None,
-                point: None,
-                subpoint: None
+                ..Default::default()
             }
         );
         let ref3 = ReferenceBuilder::new()
@@ -661,19 +657,21 @@ mod tests {
         assert_eq!(
             ref3,
             Reference {
-                act: None,
                 article: Some(RefPartArticle {
                     start: "1".parse().unwrap(),
                     end: "1".parse().unwrap()
                 }),
-                paragraph: None,
                 point: Some(RefPartPoint::Alphabetic(IdentifierRange {
                     start: "a".parse().unwrap(),
                     end: "x".parse().unwrap()
                 })),
-                subpoint: None
+                ..Default::default()
             }
         );
+        assert_eq!(
+            ReferenceBuilder::new().build().unwrap(),
+            Reference::default()
+        )
     }
 
     #[test]
@@ -927,26 +925,21 @@ mod tests {
     fn test_ordering() {
         assert!(
             Reference {
-                act: None,
                 article: Some(RefPartArticle {
                     start: "2".parse().unwrap(),
                     end: "2".parse().unwrap()
                 }),
-                paragraph: None,
-                point: None,
-                subpoint: None,
+                ..Default::default()
             } > Reference {
-                act: None,
                 article: Some(RefPartArticle {
                     start: "1".parse().unwrap(),
                     end: "1".parse().unwrap()
                 }),
-                paragraph: None,
                 point: Some(RefPartPoint::Alphabetic(IdentifierRange {
                     start: "a".parse().unwrap(),
                     end: "x".parse().unwrap()
                 })),
-                subpoint: None,
+                ..Default::default()
             }
         );
         assert!(
@@ -955,32 +948,25 @@ mod tests {
                     year: 2000,
                     number: 1
                 }),
-                article: None,
-                paragraph: None,
-                point: None,
-                subpoint: None,
+                ..Default::default()
             } > Reference {
-                act: None,
                 article: Some(RefPartArticle {
                     start: "1".parse().unwrap(),
                     end: "1".parse().unwrap()
                 }),
-                paragraph: None,
                 point: Some(RefPartPoint::Alphabetic(IdentifierRange {
                     start: "a".parse().unwrap(),
                     end: "x".parse().unwrap()
                 })),
-                subpoint: None,
+                ..Default::default()
             }
         );
         assert!(
             Reference {
-                act: None,
                 article: Some(RefPartArticle {
                     start: "1".parse().unwrap(),
                     end: "1".parse().unwrap()
                 }),
-                paragraph: None,
                 point: Some(RefPartPoint::Alphabetic(IdentifierRange {
                     start: "a".parse().unwrap(),
                     end: "a".parse().unwrap()
@@ -988,14 +974,13 @@ mod tests {
                 subpoint: Some(RefPartSubpoint::Numeric(IdentifierRange {
                     start: "1".parse().unwrap(),
                     end: "2".parse().unwrap()
-                }))
+                })),
+                ..Default::default()
             } < Reference {
-                act: None,
                 article: Some(RefPartArticle {
                     start: "1".parse().unwrap(),
                     end: "1".parse().unwrap()
                 }),
-                paragraph: None,
                 point: Some(RefPartPoint::Alphabetic(IdentifierRange {
                     start: "a".parse().unwrap(),
                     end: "a".parse().unwrap()
@@ -1003,7 +988,8 @@ mod tests {
                 subpoint: Some(RefPartSubpoint::Numeric(IdentifierRange {
                     start: "3".parse().unwrap(),
                     end: "4".parse().unwrap()
-                }))
+                })),
+                ..Default::default()
             }
         );
     }
@@ -1031,18 +1017,14 @@ mod tests {
             paragraph_inner: &str,
         ) -> bool {
             let ref_outer = Reference {
-                act: None,
                 article: convert_one(article_outer),
                 paragraph: convert_one(paragraph_outer),
-                point: None,
-                subpoint: None,
+                ..Default::default()
             };
             let ref_inner = Reference {
-                act: None,
                 article: convert_one(article_inner),
                 paragraph: convert_one(paragraph_inner),
-                point: None,
-                subpoint: None,
+                ..Default::default()
             };
             println!("Outer: {:?}, inner: {:?}", ref_outer, ref_inner);
             ref_outer.contains(&ref_inner)

@@ -115,36 +115,36 @@ fn convert_simple_block_amendment(
     ensure!(!lines.is_empty());
 
     Ok(match position.get_last_part() {
-        Some(AnyReferencePart::Article(article_id)) => {
+        AnyReferencePart::Article(article_id) => {
             convert_articles(article_id.first_in_range(), lines)?.into()
         }
-        Some(AnyReferencePart::Paragraph(id)) => {
+        AnyReferencePart::Paragraph(id) => {
             ParagraphParser
                 .extract_multiple(lines, create_parse_params_paragraph(id))?
                 .0
         }
-        Some(AnyReferencePart::Point(RefPartPoint::Numeric(id))) => {
+        AnyReferencePart::Point(RefPartPoint::Numeric(id)) => {
             NumericPointParser
                 .extract_multiple(lines, create_parse_params(id))?
                 .0
         }
-        Some(AnyReferencePart::Point(RefPartPoint::Alphabetic(id))) => {
+        AnyReferencePart::Point(RefPartPoint::Alphabetic(id)) => {
             AlphabeticPointParser
                 .extract_multiple(lines, create_parse_params(id))?
                 .0
         }
-        Some(AnyReferencePart::Subpoint(RefPartSubpoint::Numeric(id))) => {
+        AnyReferencePart::Subpoint(RefPartSubpoint::Numeric(id)) => {
             NumericPointParser
                 .extract_multiple(lines, create_parse_params(id))?
                 .0
         }
-        Some(AnyReferencePart::Subpoint(RefPartSubpoint::Alphabetic(id))) => {
+        AnyReferencePart::Subpoint(RefPartSubpoint::Alphabetic(id)) => {
             let prefix = id.first_in_range().get_prefix();
             AlphabeticSubpointParser { prefix }
                 .extract_multiple(lines, create_parse_params(id))?
                 .0
         }
-        Some(AnyReferencePart::Act(_)) | None => bail!(
+        AnyReferencePart::Act(_) | AnyReferencePart::Empty => bail!(
             "Invalid reference type in phrase during BlockAmendment conversion: {:?}",
             position
         ),
