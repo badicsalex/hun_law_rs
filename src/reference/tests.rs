@@ -17,10 +17,7 @@ use std::{fmt::Debug, str::FromStr};
 
 use pretty_assertions::assert_eq;
 
-use crate::{
-    identifier::{AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier},
-    reference::parts::IdentifierRange,
-};
+use crate::identifier::{AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier};
 
 use super::*;
 
@@ -231,20 +228,11 @@ fn test_make_range() {
 fn test_ordering() {
     assert!(
         Reference {
-            article: Some(RefPartArticle {
-                start: "2".parse().unwrap(),
-                end: "2".parse().unwrap()
-            }),
+            article: quick_convert_part("2"),
             ..Default::default()
         } > Reference {
-            article: Some(RefPartArticle {
-                start: "1".parse().unwrap(),
-                end: "1".parse().unwrap()
-            }),
-            point: Some(RefPartPoint::Alphabetic(IdentifierRange {
-                start: "a".parse().unwrap(),
-                end: "x".parse().unwrap()
-            })),
+            article: quick_convert_part("1"),
+            point: quick_convert_part::<RefPartPoint, AlphabeticIdentifier>("a-x"),
             ..Default::default()
         }
     );
@@ -256,45 +244,21 @@ fn test_ordering() {
             }),
             ..Default::default()
         } > Reference {
-            article: Some(RefPartArticle {
-                start: "1".parse().unwrap(),
-                end: "1".parse().unwrap()
-            }),
-            point: Some(RefPartPoint::Alphabetic(IdentifierRange {
-                start: "a".parse().unwrap(),
-                end: "x".parse().unwrap()
-            })),
+            article: quick_convert_part("1"),
+            point: quick_convert_part::<RefPartPoint, AlphabeticIdentifier>("a-x"),
             ..Default::default()
         }
     );
     assert!(
         Reference {
-            article: Some(RefPartArticle {
-                start: "1".parse().unwrap(),
-                end: "1".parse().unwrap()
-            }),
-            point: Some(RefPartPoint::Alphabetic(IdentifierRange {
-                start: "a".parse().unwrap(),
-                end: "a".parse().unwrap()
-            })),
-            subpoint: Some(RefPartSubpoint::Numeric(IdentifierRange {
-                start: "1".parse().unwrap(),
-                end: "2".parse().unwrap()
-            })),
+            article: quick_convert_part("1"),
+            point: quick_convert_part::<RefPartPoint, AlphabeticIdentifier>("a-x"),
+            subpoint: quick_convert_part::<RefPartSubpoint, NumericIdentifier>("1-2"),
             ..Default::default()
         } < Reference {
-            article: Some(RefPartArticle {
-                start: "1".parse().unwrap(),
-                end: "1".parse().unwrap()
-            }),
-            point: Some(RefPartPoint::Alphabetic(IdentifierRange {
-                start: "a".parse().unwrap(),
-                end: "a".parse().unwrap()
-            })),
-            subpoint: Some(RefPartSubpoint::Numeric(IdentifierRange {
-                start: "3".parse().unwrap(),
-                end: "4".parse().unwrap()
-            })),
+            article: quick_convert_part("1"),
+            point: quick_convert_part::<RefPartPoint, AlphabeticIdentifier>("a-x"),
+            subpoint: quick_convert_part::<RefPartSubpoint, NumericIdentifier>("3-4"),
             ..Default::default()
         }
     );
