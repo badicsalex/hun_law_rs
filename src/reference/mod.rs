@@ -250,4 +250,39 @@ impl Reference {
         ((self_first <= other_first) || (self_first.is_parent_of(&other_first)))
             && ((self_last >= other_last) || (self_last.is_parent_of(&other_last)))
     }
+
+    pub fn relative_to(&self, other: &Reference) -> Result<Reference> {
+        let result: UncheckedReference = if self.act.is_some() {
+            self.into()
+        } else if self.article.is_some() {
+            UncheckedReference {
+                act: other.act,
+                ..self.into()
+            }
+        } else if self.paragraph.is_some() {
+            UncheckedReference {
+                act: other.act,
+                article: other.article,
+                ..self.into()
+            }
+        } else if self.point.is_some() {
+            UncheckedReference {
+                act: other.act,
+                article: other.article,
+                paragraph: other.paragraph,
+                ..self.into()
+            }
+        } else if self.subpoint.is_some() {
+            UncheckedReference {
+                act: other.act,
+                article: other.article,
+                paragraph: other.paragraph,
+                point: other.point,
+                ..self.into()
+            }
+        } else {
+            other.into()
+        };
+        result.try_into()
+    }
 }

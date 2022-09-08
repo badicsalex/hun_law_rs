@@ -107,6 +107,12 @@ impl From<Reference> for UncheckedReference {
     }
 }
 
+impl From<&Reference> for UncheckedReference {
+    fn from(r: &Reference) -> Self {
+        r.clone().into()
+    }
+}
+
 impl TryFrom<UncheckedReference> for Reference {
     type Error = anyhow::Error;
 

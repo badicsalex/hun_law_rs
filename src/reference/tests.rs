@@ -302,20 +302,6 @@ fn test_ordering() {
 
 #[test]
 fn test_contains() {
-    fn convert_one<TR, TI>(s: &str) -> Option<TR>
-    where
-        TR: RefPartFrom<TI>,
-        TI: Copy + FromStr,
-        <TI as FromStr>::Err: Debug,
-    {
-        if s.is_empty() {
-            None
-        } else if let Some((start, end)) = s.split_once('-') {
-            Some(TR::from_range(start.parse().unwrap(), end.parse().unwrap()))
-        } else {
-            Some(TR::from_single(s.parse().unwrap()))
-        }
-    }
     fn easy_contains(
         article_outer: &str,
         paragraph_outer: &str,
@@ -323,13 +309,13 @@ fn test_contains() {
         paragraph_inner: &str,
     ) -> bool {
         let ref_outer = Reference {
-            article: convert_one(article_outer),
-            paragraph: convert_one(paragraph_outer),
+            article: quick_convert_part(article_outer),
+            paragraph: quick_convert_part(paragraph_outer),
             ..Default::default()
         };
         let ref_inner = Reference {
-            article: convert_one(article_inner),
-            paragraph: convert_one(paragraph_inner),
+            article: quick_convert_part(article_inner),
+            paragraph: quick_convert_part(paragraph_inner),
             ..Default::default()
         };
         println!("Outer: {:?}, inner: {:?}", ref_outer, ref_inner);
@@ -374,20 +360,16 @@ fn test_contains() {
             year: 2012,
             number: 1,
         }),
-        article: convert_one("1"),
-        paragraph: None,
-        point: None,
-        subpoint: None,
+        article: quick_convert_part("1"),
+        ..Default::default()
     };
     let ref_inner = Reference {
         act: Some(ActIdentifier {
             year: 2012,
             number: 2,
         }),
-        article: convert_one("1"),
-        paragraph: None,
-        point: None,
-        subpoint: None,
+        article: quick_convert_part("1"),
+        ..Default::default()
     };
     assert!(!ref_outer.contains(&ref_inner));
 
@@ -397,9 +379,9 @@ fn test_contains() {
             year: 2012,
             number: 1,
         }),
-        article: convert_one("1"),
-        paragraph: convert_one("1"),
-        point: convert_one::<RefPartPoint, NumericIdentifier>("1-4"),
+        article: quick_convert_part("1"),
+        paragraph: quick_convert_part("1"),
+        point: quick_convert_part::<RefPartPoint, NumericIdentifier>("1-4"),
         subpoint: None,
     };
     let ref_inner = Reference {
@@ -407,9 +389,9 @@ fn test_contains() {
             year: 2012,
             number: 1,
         }),
-        article: convert_one("1"),
-        paragraph: convert_one("1"),
-        point: convert_one::<RefPartPoint, NumericIdentifier>("2-3"),
+        article: quick_convert_part("1"),
+        paragraph: quick_convert_part("1"),
+        point: quick_convert_part::<RefPartPoint, NumericIdentifier>("2-3"),
         subpoint: None,
     };
     assert!(ref_outer.contains(&ref_outer));
@@ -422,22 +404,169 @@ fn test_contains() {
             year: 2012,
             number: 1,
         }),
-        article: convert_one("1"),
-        paragraph: convert_one("1"),
-        point: convert_one::<RefPartPoint, NumericIdentifier>("1"),
-        subpoint: convert_one::<RefPartSubpoint, NumericIdentifier>("1-4"),
+        article: quick_convert_part("1"),
+        paragraph: quick_convert_part("1"),
+        point: quick_convert_part::<RefPartPoint, NumericIdentifier>("1"),
+        subpoint: quick_convert_part::<RefPartSubpoint, NumericIdentifier>("1-4"),
     };
     let ref_inner = Reference {
         act: Some(ActIdentifier {
             year: 2012,
             number: 1,
         }),
-        article: convert_one("1"),
-        paragraph: convert_one("1"),
-        point: convert_one::<RefPartPoint, NumericIdentifier>("1"),
-        subpoint: convert_one::<RefPartSubpoint, NumericIdentifier>("2-3"),
+        article: quick_convert_part("1"),
+        paragraph: quick_convert_part("1"),
+        point: quick_convert_part::<RefPartPoint, NumericIdentifier>("1"),
+        subpoint: quick_convert_part::<RefPartSubpoint, NumericIdentifier>("2-3"),
     };
     assert!(ref_outer.contains(&ref_outer));
     assert!(ref_outer.contains(&ref_inner));
     assert!(!ref_inner.contains(&ref_outer));
+}
+
+#[test]
+fn test_relative_to() {
+    let base = Reference {
+        act: Some(ActIdentifier {
+            year: 2012,
+            number: 1,
+        }),
+        article: quick_convert_part("1"),
+        paragraph: quick_convert_part("1"),
+        point: quick_convert_part::<RefPartPoint, NumericIdentifier>("1"),
+        subpoint: quick_convert_part::<RefPartSubpoint, NumericIdentifier>("1"),
+    };
+
+    assert_eq!(Reference::default().relative_to(&base).unwrap(), base);
+    assert_eq!(base.relative_to(&Reference::default()).unwrap(), base);
+
+    assert_eq!(
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2014,
+                number: 1,
+            }),
+            ..Default::default()
+        }
+        .relative_to(&base)
+        .unwrap(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2014,
+                number: 1,
+            }),
+            ..Default::default()
+        }
+    );
+    assert_eq!(
+        Reference {
+            article: quick_convert_part("5"),
+            ..Default::default()
+        }
+        .relative_to(&base)
+        .unwrap(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: quick_convert_part("5"),
+            ..Default::default()
+        }
+    );
+    assert_eq!(
+        Reference {
+            paragraph: quick_convert_part("5"),
+            ..Default::default()
+        }
+        .relative_to(&base)
+        .unwrap(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: quick_convert_part("1"),
+            paragraph: quick_convert_part("5"),
+            ..Default::default()
+        }
+    );
+    assert_eq!(
+        Reference {
+            point: quick_convert_part::<RefPartPoint, NumericIdentifier>("5"),
+            ..Default::default()
+        }
+        .relative_to(&base)
+        .unwrap(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: quick_convert_part("1"),
+            paragraph: quick_convert_part("1"),
+            point: quick_convert_part::<RefPartPoint, NumericIdentifier>("5"),
+            ..Default::default()
+        }
+    );
+    assert_eq!(
+        Reference {
+            subpoint: quick_convert_part::<RefPartSubpoint, NumericIdentifier>("5"),
+            ..Default::default()
+        }
+        .relative_to(&base)
+        .unwrap(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: quick_convert_part("1"),
+            paragraph: quick_convert_part("1"),
+            point: quick_convert_part::<RefPartPoint, NumericIdentifier>("1"),
+            subpoint: quick_convert_part::<RefPartSubpoint, NumericIdentifier>("5"),
+        }
+    );
+
+    assert_eq!(
+        Reference {
+            subpoint: quick_convert_part::<RefPartSubpoint, PrefixedAlphabeticIdentifier>("ab"),
+            ..Default::default()
+        }
+        .relative_to(&Reference {
+            point: quick_convert_part::<RefPartPoint, AlphabeticIdentifier>("a"),
+            ..Default::default()
+        })
+        .unwrap(),
+        Reference {
+            point: quick_convert_part::<RefPartPoint, AlphabeticIdentifier>("a"),
+            subpoint: quick_convert_part::<RefPartSubpoint, PrefixedAlphabeticIdentifier>("ab"),
+            ..Default::default()
+        }
+    );
+
+    assert!(Reference {
+        subpoint: quick_convert_part::<RefPartSubpoint, PrefixedAlphabeticIdentifier>("ab"),
+        ..Default::default()
+    }
+    .relative_to(&Reference {
+        paragraph: quick_convert_part("1"),
+        ..Default::default()
+    })
+    .is_err());
+}
+
+fn quick_convert_part<TR, TI>(s: &str) -> Option<TR>
+where
+    TR: RefPartFrom<TI>,
+    TI: Copy + FromStr,
+    <TI as FromStr>::Err: Debug,
+{
+    if s.is_empty() {
+        None
+    } else if let Some((start, end)) = s.split_once('-') {
+        Some(TR::from_range(start.parse().unwrap(), end.parse().unwrap()))
+    } else {
+        Some(TR::from_single(s.parse().unwrap()))
+    }
 }
