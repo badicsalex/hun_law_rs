@@ -69,8 +69,8 @@ impl Reference {
         self.article.is_none()
     }
 
-    pub fn has_act(&self) -> bool {
-        self.act.is_some()
+    pub fn act(&self) -> Option<ActIdentifier> {
+        self.act
     }
 
     pub fn without_act(&self) -> Reference {
