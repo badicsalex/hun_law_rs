@@ -15,14 +15,13 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use crate::{
-    identifier::IsNextFrom,
+    identifier::IdentifierCommon,
     reference::{to_element::ReferenceToElement, Reference},
     semantic_info::SemanticInfo,
     structure::{
         Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, NumericPointChildren,
         NumericSubpointChildren, ParagraphChildren, SAEBody, SubArticleElement,
     },
-    util::IsDefault,
 };
 use anyhow::{Context, Result};
 
@@ -101,7 +100,7 @@ macro_rules! impl_walk_sae {
         where
             Self: DebugContextString + ReferenceToElement,
             CT: $Trait,
-            IT: IsDefault + IsNextFrom + Clone + std::fmt::Debug + Eq,
+            IT: IdentifierCommon,
         {
             fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
                 let element_ref = self.reference().relative_to(base)?;

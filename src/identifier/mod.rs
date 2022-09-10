@@ -26,15 +26,19 @@ pub use article::ArticleIdentifier;
 pub use numeric::NumericIdentifier;
 pub use prefixed_alphabetic::PrefixedAlphabeticIdentifier;
 
-pub trait IsNextFrom {
+pub trait IdentifierCommon: std::fmt::Debug + Clone + Copy + Sized + Eq {
     fn is_first(&self) -> bool;
 
     /// Can the parameter be considered the previous identifier. Handles suffix transitions.
     fn is_next_from(&self, other: Self) -> bool;
+
+    fn is_empty(&self) -> bool {
+        false
+    }
 }
 
 // TODO: Hacks until we have better IDs or something.
-impl IsNextFrom for Option<NumericIdentifier> {
+impl IdentifierCommon for Option<NumericIdentifier> {
     fn is_first(&self) -> bool {
         match self {
             Some(x) => x.is_first(),
@@ -48,15 +52,9 @@ impl IsNextFrom for Option<NumericIdentifier> {
             _ => false,
         }
     }
-}
 
-impl IsNextFrom for String {
-    fn is_first(&self) -> bool {
-        todo!()
-    }
-
-    fn is_next_from(&self, _other: Self) -> bool {
-        todo!()
+    fn is_empty(&self) -> bool {
+        self.is_none()
     }
 }
 
@@ -68,7 +66,7 @@ mod tests {
 
     fn check_is_next_from<T>(s1: &str, s2: &str) -> bool
     where
-        T: FromStr + IsNextFrom,
+        T: FromStr + IdentifierCommon,
         T::Err: Debug,
     {
         let i1 = s1.parse::<T>().unwrap();

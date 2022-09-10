@@ -19,8 +19,7 @@ use std::{fmt::Display, str::FromStr};
 use anyhow::{anyhow, Error};
 use serde::{Deserialize, Serialize};
 
-use super::{HungarianIdentifierChar, IsNextFrom};
-use crate::util::IsDefault;
+use super::{HungarianIdentifierChar, IdentifierCommon};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
@@ -40,7 +39,7 @@ impl PrefixedAlphabeticIdentifier {
     }
 }
 
-impl IsNextFrom for PrefixedAlphabeticIdentifier {
+impl IdentifierCommon for PrefixedAlphabeticIdentifier {
     fn is_first(&self) -> bool {
         self.chr.is_first()
     }
@@ -98,12 +97,6 @@ impl TryFrom<String> for PrefixedAlphabeticIdentifier {
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
         value.parse()
-    }
-}
-
-impl IsDefault for PrefixedAlphabeticIdentifier {
-    fn is_default(&self) -> bool {
-        false
     }
 }
 

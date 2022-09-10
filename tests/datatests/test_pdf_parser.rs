@@ -16,9 +16,10 @@
 
 use std::path::Path;
 
-use hun_law::parser::pdf::{parse_pdf, CropBox};
-use hun_law::util::singleton_yaml;
-use hun_law::util::{indentedline::IndentedLine, is_default};
+use hun_law::{
+    parser::pdf::{parse_pdf, CropBox},
+    util::{indentedline::IndentedLine, singleton_yaml},
+};
 use serde::{Deserialize, Serialize};
 
 use crate::declare_test;
@@ -28,14 +29,18 @@ declare_test!(dir = "data_pdf_parser", pattern = r"\.pdf");
 
 #[derive(Serialize, Deserialize, Debug)]
 struct SimplifiedLine {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "is_zero")]
     indent: f64,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     is_bold: bool,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     is_justified: bool,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "String::is_empty")]
     content: String,
+}
+
+fn is_zero(num: &f64) -> bool {
+    *num == 0.0
 }
 
 impl PartialEq for SimplifiedLine {

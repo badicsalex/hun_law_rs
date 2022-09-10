@@ -23,14 +23,11 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     identifier::{
-        ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, IsNextFrom, NumericIdentifier,
-        PrefixedAlphabeticIdentifier,
+        ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, IdentifierCommon,
+        NumericIdentifier, PrefixedAlphabeticIdentifier,
     },
     semantic_info::SemanticInfo,
-    util::{
-        debug::DebugContextString, hun_str::FromHungarianString, indentedline::IndentedLine,
-        is_default, IsDefault,
-    },
+    util::{debug::DebugContextString, hun_str::FromHungarianString, indentedline::IndentedLine},
 };
 
 //  Main act on which all the code was based:
@@ -117,7 +114,7 @@ pub struct StructuralElement {
 // 17. Az alcím
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Subtitle {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identifier: Option<NumericIdentifier>,
     pub title: String,
 }
@@ -131,7 +128,7 @@ pub enum StructuralElementType {
     Part {
         // Used for the three-part 'ÁLTALÁNOS RÉSZ', 'KÜLÖNÖS RÉSZ', 'ZÁRÓ RÉSZ' version
         // When true, identifier is a number between 1-3, and conversions have to be done on parsing and printing
-        #[serde(default, skip_serializing_if = "is_default")]
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         is_special: bool,
     },
 
@@ -175,7 +172,7 @@ impl StructuralElementType {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Article {
     pub identifier: ArticleIdentifier,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     pub children: Vec<Paragraph>,
 }
@@ -183,15 +180,15 @@ pub struct Article {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SubArticleElement<IdentifierType, ChildrenType>
 where
-    IdentifierType: IsNextFrom + IsDefault + Sized,
+    IdentifierType: IdentifierCommon,
 {
     // Note: no serde(default) here, because IdentifierType doesn't usually have a default.
     // Except for paragraphs, which is an Option<NumericIdentifier>.
     // Fortunately (?) serde automatically adds "default" to Option type fields.
-    #[serde(skip_serializing_if = "is_default")]
+    #[serde(skip_serializing_if = "IdentifierCommon::is_empty")]
     pub identifier: IdentifierType,
     pub body: SAEBody<ChildrenType>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "SemanticInfo::is_empty")]
     pub semantic_info: SemanticInfo,
 }
 
@@ -202,7 +199,7 @@ pub enum SAEBody<ChildrenType> {
     Children {
         intro: String,
         children: ChildrenType,
-        #[serde(default, skip_serializing_if = "is_default")]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
         wrap_up: Option<String>,
     },
 }
@@ -253,19 +250,19 @@ pub enum NumericSubpointChildren {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct QuotedBlock {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub intro: Option<String>,
     pub lines: Vec<IndentedLine>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wrap_up: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct BlockAmendment {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub intro: Option<String>,
     pub children: BlockAmendmentChildren,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wrap_up: Option<String>,
 }
 
@@ -284,14 +281,14 @@ pub enum BlockAmendmentChildren {
 // - No inherent associated types
 // - Generic type cannot be used as a trait bound
 pub trait SAECommon: Sized {
-    type IdentifierType: IsNextFrom + Clone + Debug + Eq;
+    type IdentifierType: IdentifierCommon + Clone + Debug + Eq;
     type ChildrenType;
     fn new(identifier: Self::IdentifierType, body: SAEBody<Self::ChildrenType>) -> Self;
 }
 
 impl<IdentifierType, ChildrenType> SAECommon for SubArticleElement<IdentifierType, ChildrenType>
 where
-    IdentifierType: IsDefault + IsNextFrom + Clone + Debug + Eq,
+    IdentifierType: IdentifierCommon,
 {
     type IdentifierType = IdentifierType;
     type ChildrenType = ChildrenType;

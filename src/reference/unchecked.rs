@@ -18,7 +18,7 @@ use anyhow::{anyhow, ensure, Result};
 
 use serde::{Deserialize, Serialize};
 
-use crate::{identifier::ActIdentifier, util::is_default};
+use crate::identifier::ActIdentifier;
 
 use super::{
     parts::{RefPartArticle, RefPartParagraph, RefPartPoint, RefPartSubpoint},
@@ -28,15 +28,15 @@ use super::{
 /// Helper to create Reference instances from parts.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct UncheckedReference {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) act: Option<ActIdentifier>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) article: Option<RefPartArticle>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) paragraph: Option<RefPartParagraph>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) point: Option<RefPartPoint>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub(super) subpoint: Option<RefPartSubpoint>,
 }
 

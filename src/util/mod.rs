@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::collections::HashMap;
-
 use anyhow::{ensure, Result};
 
 pub mod debug;
@@ -24,50 +22,6 @@ pub mod indentedline;
 pub mod singleton_yaml;
 pub mod walker;
 use indentedline::IndentedLine;
-
-pub trait IsDefault {
-    fn is_default(&self) -> bool;
-}
-
-impl<T> IsDefault for Vec<T> {
-    fn is_default(&self) -> bool {
-        self.is_empty()
-    }
-}
-
-impl<TK, TV> IsDefault for HashMap<TK, TV> {
-    fn is_default(&self) -> bool {
-        self.is_empty()
-    }
-}
-
-impl<T> IsDefault for Option<T> {
-    fn is_default(&self) -> bool {
-        self.is_none()
-    }
-}
-
-impl IsDefault for bool {
-    fn is_default(&self) -> bool {
-        self == &false
-    }
-}
-
-impl IsDefault for String {
-    fn is_default(&self) -> bool {
-        self.is_empty()
-    }
-}
-
-impl IsDefault for f64 {
-    fn is_default(&self) -> bool {
-        self == &0f64
-    }
-}
-
-pub fn is_default<T: IsDefault>(t: &T) -> bool {
-    t.is_default()
-}
 
 pub const DIGITS: [char; 10] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 pub const ROMAN_DIGITS: [char; 7] = ['I', 'V', 'X', 'L', 'C', 'D', 'M'];

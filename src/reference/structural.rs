@@ -16,16 +16,13 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    identifier::{ActIdentifier, ArticleIdentifier, NumericIdentifier},
-    util::is_default,
-};
+use crate::identifier::{ActIdentifier, ArticleIdentifier, NumericIdentifier};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct StructuralReference {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub act: Option<ActIdentifier>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub book: Option<NumericIdentifier>,
     pub structural_element: StructuralReferenceElement,
 }

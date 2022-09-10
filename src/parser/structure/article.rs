@@ -22,7 +22,7 @@ use super::{
     sae::{ParagraphParser, SAEParseParams, SAEParser},
 };
 use crate::{
-    identifier::{ArticleIdentifier, IsNextFrom},
+    identifier::{ArticleIdentifier, IdentifierCommon},
     structure::{Article, Paragraph},
     util::indentedline::IndentedLine,
 };

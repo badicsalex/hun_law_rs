@@ -20,21 +20,22 @@ use serde::{Deserialize, Serialize};
 
 use crate::identifier::ActIdentifier;
 use crate::reference::{structural::StructuralReference, Reference};
-use crate::util::{is_default, IsDefault};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq, Eq)]
 pub struct SemanticInfo {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub outgoing_references: Vec<OutgoingReference>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub new_abbreviations: Vec<ActIdAbbreviation>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub special_phrase: Option<SpecialPhrase>,
 }
 
-impl IsDefault for SemanticInfo {
-    fn is_default(&self) -> bool {
-        self == &Self::default()
+impl SemanticInfo {
+    pub fn is_empty(&self) -> bool {
+        self.outgoing_references.is_empty()
+            && self.new_abbreviations.is_empty()
+            && self.special_phrase.is_none()
     }
 }
 
@@ -102,10 +103,10 @@ pub struct TextAmendmentReplacement {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct EnforcementDate {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub positions: Vec<Reference>,
     pub date: EnforcementDateType,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline_repeal: Option<NaiveDate>,
 }
 
@@ -114,7 +115,7 @@ pub enum EnforcementDateType {
     Date(NaiveDate),
     DaysAfterPublication(u16),
     DayInMonthAfterPublication {
-        #[serde(default, skip_serializing_if = "is_default")]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
         month: Option<u8>,
         day: u16,
     },
@@ -123,7 +124,7 @@ pub enum EnforcementDateType {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Repeal {
     pub positions: Vec<Reference>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub texts: Vec<String>,
 }
 

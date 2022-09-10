@@ -22,14 +22,14 @@ use lazy_regex::regex;
 use super::{act::ParsingContext, quote::QuotedBlockParser};
 use crate::{
     identifier::{
-        AlphabeticIdentifier, HungarianIdentifierChar, IsNextFrom, NumericIdentifier,
+        AlphabeticIdentifier, HungarianIdentifierChar, IdentifierCommon, NumericIdentifier,
         PrefixedAlphabeticIdentifier,
     },
     structure::{
         AlphabeticPointChildren, AlphabeticSubpointChildren, NumericPointChildren,
         NumericSubpointChildren, ParagraphChildren, SAEBody, SubArticleElement,
     },
-    util::{indentedline::IndentedLine, IsDefault, QuoteCheck},
+    util::{indentedline::IndentedLine, QuoteCheck},
 };
 
 #[derive(Debug)]
@@ -52,7 +52,7 @@ impl<TI: Debug> SAEParseParams<TI> {
 }
 
 pub trait SAEParser: Debug {
-    type IdentifierType: IsDefault + IsNextFrom + Clone + Debug + Eq;
+    type IdentifierType: IdentifierCommon;
     type ChildrenType;
 
     /// Parse the header into and identifier, and return it, along with the rest of the first line
@@ -146,7 +146,7 @@ pub trait SAEParser: Debug {
         for line in &lines[1..] {
             quote_checker.update(line)?;
             let new_header = if !quote_checker.beginning_is_quoted {
-                self.parse_and_check_header(&identifier, header_indent, line)
+                self.parse_and_check_header(identifier, header_indent, line)
             } else {
                 None
             };
@@ -212,7 +212,7 @@ pub trait SAEParser: Debug {
     /// Checks indentation and identifier correctness.
     fn parse_and_check_header(
         &self,
-        last_identifier: &Self::IdentifierType,
+        last_identifier: Self::IdentifierType,
         expected_indent: f64,
         line: &IndentedLine,
     ) -> Option<(Self::IdentifierType, IndentedLine)> {
@@ -220,7 +220,7 @@ pub trait SAEParser: Debug {
             return None;
         }
         let (id, rest) = self.parse_header(line)?;
-        if !id.is_next_from(last_identifier.clone()) {
+        if !id.is_next_from(last_identifier) {
             return None;
         }
 

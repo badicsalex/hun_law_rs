@@ -19,8 +19,7 @@ use std::{fmt::Display, str::FromStr};
 use anyhow::{bail, Error, Result};
 use serde::{Deserialize, Serialize};
 
-use super::IsNextFrom;
-use crate::util::IsDefault;
+use super::IdentifierCommon;
 
 pub type AlphabeticIdentifier = HungarianIdentifierChar;
 
@@ -79,7 +78,7 @@ impl PartialOrd for HungarianIdentifierChar {
     }
 }
 
-impl IsNextFrom for HungarianIdentifierChar {
+impl IdentifierCommon for HungarianIdentifierChar {
     fn is_next_from(&self, other: Self) -> bool {
         match (*self, other) {
             (Self::Latin(s), Self::Latin(o)) => s > o && (s - o == 1),
@@ -171,12 +170,6 @@ impl TryFrom<String> for HungarianIdentifierChar {
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
         value.parse()
-    }
-}
-
-impl IsDefault for HungarianIdentifierChar {
-    fn is_default(&self) -> bool {
-        false
     }
 }
 

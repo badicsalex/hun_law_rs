@@ -19,8 +19,8 @@ use std::{fmt::Display, str::FromStr};
 use anyhow::{anyhow, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
 
-use super::{HungarianIdentifierChar, IsNextFrom};
-use crate::util::{IsDefault, DIGITS, ROMAN_DIGITS};
+use super::{HungarianIdentifierChar, IdentifierCommon};
+use crate::util::{DIGITS, ROMAN_DIGITS};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
@@ -70,7 +70,7 @@ impl NumericIdentifier {
     }
 }
 
-impl IsNextFrom for NumericIdentifier {
+impl IdentifierCommon for NumericIdentifier {
     fn is_next_from(&self, other: Self) -> bool {
         match (self.suffix, other.suffix) {
             (None, _) => self.num.wrapping_sub(other.num) == 1,
@@ -135,12 +135,6 @@ impl From<u16> for NumericIdentifier {
             num: val,
             suffix: None,
         }
-    }
-}
-
-impl IsDefault for NumericIdentifier {
-    fn is_default(&self) -> bool {
-        false
     }
 }
 

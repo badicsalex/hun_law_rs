@@ -19,7 +19,7 @@ use std::{fmt::Display, str::FromStr};
 use anyhow::{Error, Result};
 use serde::{Deserialize, Serialize};
 
-use super::{IsNextFrom, NumericIdentifier};
+use super::{IdentifierCommon, NumericIdentifier};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
@@ -29,7 +29,7 @@ pub struct ArticleIdentifier {
     identifier: NumericIdentifier,
 }
 
-impl IsNextFrom for ArticleIdentifier {
+impl IdentifierCommon for ArticleIdentifier {
     fn is_next_from(&self, other: Self) -> bool {
         match (self.book, other.book) {
             (None, None) => self.identifier.is_next_from(other.identifier),

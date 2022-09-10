@@ -22,7 +22,7 @@ use hun_law::{
     parser::semantic_info::{abbreviation::AbbreviationCache, sae::SemanticInfoAdder},
     reference::Reference,
     semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
-    util::{is_default, singleton_yaml},
+    util::singleton_yaml,
 };
 use serde::{Deserialize, Serialize};
 
@@ -36,13 +36,13 @@ declare_test!(dir = "data_semantic_parser", pattern = r"\.yml");
 struct TestCase {
     pub text: String,
     pub positions: String,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     pub abbreviations: HashMap<String, ActIdentifier>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     pub expected_new_abbreviations: HashMap<String, ActIdentifier>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub expected_references: Vec<Reference>,
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expected_special_phrase: Option<SpecialPhrase>,
 }
 

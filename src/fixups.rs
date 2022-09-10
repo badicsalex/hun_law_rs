@@ -27,7 +27,7 @@ use crate::{
     util::{
         debug::{DebugContextString, WithElemContext},
         indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE},
-        is_default, singleton_yaml,
+        singleton_yaml,
     },
 };
 
@@ -35,7 +35,7 @@ const REPLACEMENT_FAKE_WIDTH: f64 = 10.0;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Fixup {
-    #[serde(default, skip_serializing_if = "is_default")]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub after: Vec<String>,
     pub old: String,
     pub new: String,
