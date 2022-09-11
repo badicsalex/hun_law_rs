@@ -18,8 +18,10 @@ use anyhow::{Context, Result};
 use hun_law_grammar::PegParser;
 
 use crate::{
+    identifier::IdentifierCommon,
     reference::Reference,
     semantic_info::{OutgoingReference, SemanticInfo, SpecialPhrase},
+    structure::{SAEBody, SubArticleElement},
     util::walker::SAEVisitorMut,
 };
 
@@ -45,12 +47,10 @@ pub struct SemanticInfoAdder<'a> {
 }
 
 impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
-    fn on_enter(
+    fn on_enter<IT: IdentifierCommon, CT>(
         &mut self,
         _position: &Reference,
-        intro: &mut String,
-        wrap_up: &mut Option<String>,
-        semantic_info: &mut SemanticInfo,
+        element: &mut SubArticleElement<IT, CT>,
     ) -> Result<()> {
         // First parse the intro of this element, because although we will
         // parse the same text when in context of the children, we throw away
@@ -67,38 +67,35 @@ impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
         // the second part of the sentence.
         //
         // But we need to do something about references in the intro, so here we are
-        *semantic_info = self.extract_semantic_info(intro)?;
+        match &element.body {
+            SAEBody::Text(text) => {
+                element.semantic_info = self.extract_semantic_info(text)?;
+            }
+            SAEBody::Children { intro, wrap_up, .. } => {
+                element.semantic_info = self.extract_semantic_info(intro)?;
 
-        self.prefix_stack
-            .push(format!("{}{} ", self.prefix(), intro));
-        self.postfix_stack
-            .push(if let Some(wrap_up_contents) = &wrap_up {
-                format!(" {}{}", wrap_up_contents, self.postfix())
-            } else {
-                self.postfix().to_owned()
-            });
+                self.prefix_stack
+                    .push(format!("{}{} ", self.prefix(), intro));
+                self.postfix_stack
+                    .push(if let Some(wrap_up_contents) = &wrap_up {
+                        format!(" {}{}", wrap_up_contents, self.postfix())
+                    } else {
+                        self.postfix().to_owned()
+                    });
+            }
+        }
         Ok(())
     }
 
-    fn on_exit(
+    fn on_exit<IT: IdentifierCommon, CT>(
         &mut self,
         _position: &Reference,
-        _intro: &mut String,
-        _wrap_up: &mut Option<String>,
-        _semantic_info: &mut SemanticInfo,
+        element: &mut SubArticleElement<IT, CT>,
     ) -> Result<()> {
-        self.prefix_stack.pop();
-        self.postfix_stack.pop();
-        Ok(())
-    }
-
-    fn on_text(
-        &mut self,
-        _position: &Reference,
-        text: &mut String,
-        semantic_info: &mut SemanticInfo,
-    ) -> Result<()> {
-        *semantic_info = self.extract_semantic_info(text)?;
+        if let SAEBody::Children { .. } = element.body {
+            self.prefix_stack.pop();
+            self.postfix_stack.pop();
+        }
         Ok(())
     }
 }

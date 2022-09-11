@@ -17,53 +17,37 @@
 use crate::{
     identifier::IdentifierCommon,
     reference::{to_element::ReferenceToElement, Reference},
-    semantic_info::SemanticInfo,
     structure::{
         Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, NumericPointChildren,
         NumericSubpointChildren, ParagraphChildren, SAEBody, SubArticleElement,
     },
 };
-use anyhow::{Context, Result};
+use anyhow::Result;
 
 use super::debug::{DebugContextString, WithElemContext};
 
 macro_rules! impl_walk_sae {
     ($Trait:ident, $Visitor:ident, $walk_fn: tt, $($ref_type: tt)*) => {
-        /// Visit every SAE in the object in a typeless way
+        /// Visit every SAE in the object
         /// SAEs in Block Amendments are not traversed into.
         pub trait $Visitor {
-            /// Called on entering a SAE which have children
-            fn on_enter(
+            /// Called on entering any SAE
+            fn on_enter<IT: IdentifierCommon, CT>(
                 &mut self,
                 position: &Reference,
-                intro: $($ref_type)* String,
-                wrap_up: $($ref_type)* Option<String>,
-                semantic_info: $($ref_type)* SemanticInfo,
+                element: $($ref_type)* SubArticleElement<IT,CT>
             ) -> Result<()> {
-                let _ = (position, intro, wrap_up, semantic_info);
+                let _ = (position, element);
                 Ok(())
             }
 
             /// Called on exiting a SAE which have children
-            fn on_exit(
+            fn on_exit<IT: IdentifierCommon, CT>(
                 &mut self,
                 position: &Reference,
-                intro: $($ref_type)* String,
-                wrap_up: $($ref_type)* Option<String>,
-                semantic_info: $($ref_type)* SemanticInfo,
+                element: $($ref_type)* SubArticleElement<IT,CT>
             ) -> Result<()> {
-                let _ = (position, intro, wrap_up, semantic_info);
-                Ok(())
-            }
-
-            /// Called on SAEs which have no children (instead of enter and exit)
-            fn on_text(
-                &mut self,
-                position: &Reference,
-                text: $($ref_type)* String,
-                semantic_info: $($ref_type)* SemanticInfo,
-            ) -> Result<()> {
-                let _ = (position, text, semantic_info);
+                let _ = (position, element);
                 Ok(())
             }
         }
@@ -104,25 +88,12 @@ macro_rules! impl_walk_sae {
         {
             fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
                 let element_ref = self.reference().relative_to(base)?;
-                match $($ref_type)* self.body {
-                    SAEBody::Text(text) => visitor
-                        .on_text(&element_ref, text, $($ref_type)* self.semantic_info)
-                        .with_context(|| "'on_text' call failed"),
-
-                    SAEBody::Children {
-                        intro,
-                        children,
-                        wrap_up,
-                    } => {
-                        visitor
-                            .on_enter(&element_ref, intro, wrap_up, $($ref_type)* self.semantic_info)
-                            .with_context(|| "'on_enter' call failed")?;
-                        children.$walk_fn(&element_ref, visitor)?;
-                        visitor
-                            .on_exit(&element_ref, intro, wrap_up, $($ref_type)* self.semantic_info)
-                            .with_context(|| "'on_exit' call failed")
-                    }
+                visitor.on_enter(&element_ref, self)?;
+                if let SAEBody::Children {children, ..} = $($ref_type)* self.body {
+                    children.$walk_fn(&element_ref, visitor)?;
                 }
+                visitor.on_exit(&element_ref, self)
+                        //.with_context(|| "'on_text' call failed"),
             }
         }
 
@@ -179,7 +150,7 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     use super::*;
-    use crate::{structure::*, util::singleton_yaml};
+    use crate::{reference::parts::AnyReferencePart, structure::*, util::singleton_yaml};
 
     const TEST_ACT: &str = r#"
         identifier:
@@ -229,47 +200,28 @@ mod tests {
     }
 
     impl SAEVisitor for TestVisitor {
-        fn on_text(
+        fn on_enter<IT: IdentifierCommon, CT>(
             &mut self,
             position: &Reference,
-            text: &String,
-            _semantic_info: &SemanticInfo,
+            element: &SubArticleElement<IT, CT>,
         ) -> Result<()> {
             self.events.push(format!(
-                "TEXT@{}: {}",
+                "ENTER@{}",
                 serde_json::to_string(position).unwrap(),
-                text
             ));
+            if let SAEBody::Text(text) = &element.body {
+                self.events.push(format!("TEXT:{}", text));
+            }
             Ok(())
         }
 
-        fn on_enter(
+        fn on_exit<IT: IdentifierCommon, CT>(
             &mut self,
             position: &Reference,
-            intro: &String,
-            _wrap_up: &Option<String>,
-            _semantic_info: &SemanticInfo,
+            _element: &SubArticleElement<IT, CT>,
         ) -> Result<()> {
-            self.events.push(format!(
-                "ENTER@{}: {}",
-                serde_json::to_string(position).unwrap(),
-                intro
-            ));
-            Ok(())
-        }
-
-        fn on_exit(
-            &mut self,
-            position: &Reference,
-            _intro: &String,
-            wrap_up: &Option<String>,
-            _semantic_info: &SemanticInfo,
-        ) -> Result<()> {
-            self.events.push(format!(
-                "EXIT@{}: {}",
-                serde_json::to_string(position).unwrap(),
-                wrap_up.as_ref().map(|s| s as &str).unwrap_or("")
-            ));
+            self.events
+                .push(format!("EXIT@{}", serde_json::to_string(position).unwrap(),));
             Ok(())
         }
     }
@@ -282,15 +234,25 @@ mod tests {
         assert_eq!(
             visitor.events.iter().map(|s| s as &str).collect::<Vec<_>>(),
             vec![
-                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:1"}: Meg szövege"#,
-                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"1"}: Valami valami"#,
-                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2"}: Egy felsorolás legyen"#,
-                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"a"}: többelemű"#,
-                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b"}: kellően"#,
-                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b","subpoint":"ba"}: átláthatatlan"#,
-                r#"TEXT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b","subpoint":"bb"}: komplex"#,
-                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b"}: "#,
-                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2"}: minden esetben."#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:1"}"#,
+                r#"TEXT:Meg szövege"#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:1"}"#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"1"}"#,
+                r#"TEXT:Valami valami"#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"1"}"#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2"}"#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"a"}"#,
+                r#"TEXT:többelemű"#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"a"}"#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b"}"#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b","subpoint":"ba"}"#,
+                r#"TEXT:átláthatatlan"#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b","subpoint":"ba"}"#,
+                r#"ENTER@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b","subpoint":"bb"}"#,
+                r#"TEXT:komplex"#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b","subpoint":"bb"}"#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2","point":"b"}"#,
+                r#"EXIT@{"act":{"year":2345,"number":13},"article":"1:2","paragraph":"2"}"#,
             ]
         );
     }
@@ -327,52 +289,35 @@ mod tests {
                   - identifier: a
                     body: többalamű
                   - identifier: b
-                    body:
-                      intro: kallőan
-                      children:
-                        AlphabeticSubpoint:
-                        - identifier: ba
-                          body: átláthatatlan
-                        - identifier: bb
-                          body: komplax
-                      wrap_up: wot
+                    body: No childran allowad
+                wrap_up: minden esetben.
         "#;
     #[derive(Debug, Default)]
     struct TestVisitorMut {}
 
     impl SAEVisitorMut for TestVisitorMut {
-        fn on_text(
+        fn on_enter<IT: IdentifierCommon, CT>(
             &mut self,
-            _position: &Reference,
-            text: &mut String,
-            _semantic_info: &mut SemanticInfo,
+            position: &Reference,
+            element: &mut SubArticleElement<IT, CT>,
         ) -> Result<()> {
-            *text = text.replace('e', "a");
+            if let AnyReferencePart::Point(_) = position.get_last_part() {
+                if let SAEBody::Children { .. } = element.body {
+                    element.body = SAEBody::Text("No children allowed".to_owned());
+                }
+            }
             Ok(())
         }
 
-        fn on_enter(
+        fn on_exit<IT: IdentifierCommon, CT>(
             &mut self,
             _position: &Reference,
-            intro: &mut String,
-            _wrap_up: &mut Option<String>,
-            _semantic_info: &mut SemanticInfo,
+            element: &mut SubArticleElement<IT, CT>,
         ) -> Result<()> {
-            *intro = intro.replace('e', "a");
-            Ok(())
-        }
-
-        fn on_exit(
-            &mut self,
-            _position: &Reference,
-            _intro: &mut String,
-            wrap_up: &mut Option<String>,
-            _semantic_info: &mut SemanticInfo,
-        ) -> Result<()> {
-            *wrap_up = match wrap_up {
-                Some(_) => None,
-                None => Some("wot".to_owned()),
-            };
+            match &mut element.body {
+                SAEBody::Text(text) => *text = text.replace('e', "a"),
+                SAEBody::Children { intro, .. } => *intro = intro.replace('e', "a"),
+            }
             Ok(())
         }
     }
