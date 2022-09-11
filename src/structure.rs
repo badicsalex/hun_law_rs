@@ -277,31 +277,6 @@ pub enum BlockAmendmentChildren {
     StructuralElement(Vec<ActChild>),
 }
 
-// This trait is a workaround for the following limitations:
-// - No inherent associated types
-// - Generic type cannot be used as a trait bound
-pub trait SAECommon: Sized {
-    type IdentifierType: IdentifierCommon + Clone + Debug + Eq;
-    type ChildrenType;
-    fn new(identifier: Self::IdentifierType, body: SAEBody<Self::ChildrenType>) -> Self;
-}
-
-impl<IdentifierType, ChildrenType> SAECommon for SubArticleElement<IdentifierType, ChildrenType>
-where
-    IdentifierType: IdentifierCommon,
-{
-    type IdentifierType = IdentifierType;
-    type ChildrenType = ChildrenType;
-
-    fn new(identifier: Self::IdentifierType, body: SAEBody<Self::ChildrenType>) -> Self {
-        Self {
-            identifier,
-            body,
-            semantic_info: SemanticInfo::default(),
-        }
-    }
-}
-
 macro_rules! simple_dbg_ctx {
     ($t:ident) => {
         impl DebugContextString for $t {
