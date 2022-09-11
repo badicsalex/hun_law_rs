@@ -192,6 +192,17 @@ where
     pub semantic_info: SemanticInfo,
 }
 
+impl<IT:IdentifierCommon, CT> SubArticleElement<IT, CT> {
+    pub fn is_empty(&self) -> bool {
+        match &self.body {
+            SAEBody::Text(t) => t.is_empty(),
+            // TODO: What to do if there are no children?
+            // TODO: What to do if all children are empty?
+            SAEBody::Children {..} => false,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum SAEBody<ChildrenType> {
