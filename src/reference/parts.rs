@@ -44,6 +44,12 @@ impl<T: Copy + Eq> IdentifierRange<T> {
     }
 }
 
+impl<T: Ord + Copy> IdentifierRange<T> {
+    pub fn contains(&self, id: T) -> bool {
+        self.start >= id && self.end <= id
+    }
+}
+
 // I tried manually implementing Serialize and Deserialize for IdentifierRange,
 // But it was some 200 lines of very error-prone code. This little trick is
 // too cute for my taste, but it had to be done.
