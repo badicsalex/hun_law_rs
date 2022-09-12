@@ -19,11 +19,12 @@ use std::str::FromStr;
 use chrono::NaiveDate;
 use hun_law::{
     identifier::{
-        ActIdentifier, AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier,
+        range::IdentifierRangeFrom, ActIdentifier, AlphabeticIdentifier, NumericIdentifier,
+        PrefixedAlphabeticIdentifier,
     },
     reference::{
         builder::{ReferenceBuilder, ReferenceBuilderSetPart},
-        parts::{RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint},
+        parts::{RefPartArticle, RefPartParagraph, RefPartPoint, RefPartSubpoint},
         Reference,
     },
     structure::{

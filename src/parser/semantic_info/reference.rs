@@ -20,12 +20,12 @@ use hun_law_grammar::*;
 use super::abbreviation::AbbreviationCache;
 use crate::{
     identifier::{
-        ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
-        PrefixedAlphabeticIdentifier,
+        range::IdentifierRangeFrom, ActIdentifier, AlphabeticIdentifier, ArticleIdentifier,
+        NumericIdentifier, PrefixedAlphabeticIdentifier,
     },
     reference::{
         builder::{ReferenceBuilder, ReferenceBuilderSetPart},
-        parts::{RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint, RefPartSubpoint},
+        parts::{RefPartArticle, RefPartParagraph, RefPartPoint, RefPartSubpoint},
     },
     semantic_info::OutgoingReference,
 };

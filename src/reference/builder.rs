@@ -101,9 +101,9 @@ mod tests {
 
     use pretty_assertions::assert_eq;
 
-    use crate::{
-        identifier::{AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier},
-        reference::parts::{IdentifierRange, RefPartFrom},
+    use crate::identifier::{
+        range::{IdentifierRange, IdentifierRangeFrom},
+        AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier,
     };
 
     use super::*;
@@ -133,22 +133,14 @@ mod tests {
                     year: 2001,
                     number: 420,
                 }),
-                article: Some(RefPartArticle {
-                    start: "4:20".parse().unwrap(),
-                    end: "4:20".parse().unwrap()
-                }),
-                paragraph: Some(RefPartParagraph {
-                    start: "20".parse().unwrap(),
-                    end: "20".parse().unwrap()
-                }),
-                point: Some(RefPartPoint::Numeric(IdentifierRange {
-                    start: "20".parse().unwrap(),
-                    end: "20".parse().unwrap()
-                })),
-                subpoint: Some(RefPartSubpoint::Alphabetic(IdentifierRange {
-                    start: "sz".parse().unwrap(),
-                    end: "sz".parse().unwrap()
-                })),
+                article: Some(RefPartArticle::from_single("4:20".parse().unwrap())),
+                paragraph: Some(RefPartParagraph::from_single("20".parse().unwrap())),
+                point: Some(RefPartPoint::Numeric(IdentifierRange::from_single(
+                    "20".parse().unwrap()
+                ))),
+                subpoint: Some(RefPartSubpoint::Alphabetic(IdentifierRange::from_single(
+                    "sz".parse().unwrap()
+                ))),
             }
         );
         // Test reseting some of the fields, and also second build.
@@ -164,10 +156,10 @@ mod tests {
                     year: 2001,
                     number: 420,
                 }),
-                article: Some(RefPartArticle {
-                    start: "1:10".parse().unwrap(),
-                    end: "1:10/C".parse().unwrap()
-                }),
+                article: Some(RefPartArticle::from_range(
+                    "1:10".parse().unwrap(),
+                    "1:10/C".parse().unwrap(),
+                )),
                 ..Default::default()
             }
         );
@@ -182,14 +174,11 @@ mod tests {
         assert_eq!(
             ref3,
             Reference {
-                article: Some(RefPartArticle {
-                    start: "1".parse().unwrap(),
-                    end: "1".parse().unwrap()
-                }),
-                point: Some(RefPartPoint::Alphabetic(IdentifierRange {
-                    start: "a".parse().unwrap(),
-                    end: "x".parse().unwrap()
-                })),
+                article: Some(RefPartArticle::from_single("1".parse().unwrap())),
+                point: Some(RefPartPoint::from_range(
+                    AlphabeticIdentifier::from_str("a").unwrap(),
+                    AlphabeticIdentifier::from_str("x").unwrap(),
+                )),
                 ..Default::default()
             }
         );

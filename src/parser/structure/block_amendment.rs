@@ -24,10 +24,10 @@ use super::{
     sae::{NumericPointParser, ParagraphParser, SAEParser},
 };
 use crate::{
-    identifier::{ArticleIdentifier, NumericIdentifier},
+    identifier::{range::IdentifierRange, ArticleIdentifier, NumericIdentifier},
     parser::structure::sae::{AlphabeticPointParser, AlphabeticSubpointParser, SAEParseParams},
     reference::{
-        parts::{AnyReferencePart, IdentifierRange, RefPartPoint, RefPartSubpoint},
+        parts::{AnyReferencePart, RefPartPoint, RefPartSubpoint},
         Reference,
     },
     semantic_info::SpecialPhrase,

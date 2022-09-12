@@ -18,71 +18,10 @@ use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
 use crate::identifier::{
+    range::{IdentifierRange, IdentifierRangeFrom},
     ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
     PrefixedAlphabeticIdentifier,
 };
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
-#[serde(from = "IdentifierRangeSerdeHelper<T>")]
-#[serde(into = "IdentifierRangeSerdeHelper<T>")]
-pub struct IdentifierRange<T: Copy + Eq> {
-    pub(super) start: T,
-    pub(super) end: T,
-}
-
-impl<T: Copy + Eq> IdentifierRange<T> {
-    pub fn is_range(&self) -> bool {
-        self.start != self.end
-    }
-
-    pub fn first_in_range(&self) -> T {
-        self.start
-    }
-
-    pub fn last_in_range(&self) -> T {
-        self.end
-    }
-}
-
-impl<T: Ord + Copy> IdentifierRange<T> {
-    pub fn contains(&self, id: T) -> bool {
-        self.start >= id && self.end <= id
-    }
-}
-
-// I tried manually implementing Serialize and Deserialize for IdentifierRange,
-// But it was some 200 lines of very error-prone code. This little trick is
-// too cute for my taste, but it had to be done.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-enum IdentifierRangeSerdeHelper<T> {
-    Single(T),
-    Range { start: T, end: T },
-}
-
-impl<T: Copy + Eq> From<IdentifierRangeSerdeHelper<T>> for IdentifierRange<T> {
-    fn from(helper: IdentifierRangeSerdeHelper<T>) -> Self {
-        match helper {
-            IdentifierRangeSerdeHelper::Single(val) => Self {
-                start: val,
-                end: val,
-            },
-            IdentifierRangeSerdeHelper::Range { start, end } => Self { start, end },
-        }
-    }
-}
-impl<T: Copy + Eq> From<IdentifierRange<T>> for IdentifierRangeSerdeHelper<T> {
-    fn from(val: IdentifierRange<T>) -> Self {
-        if val.start == val.end {
-            Self::Single(val.start)
-        } else {
-            Self::Range {
-                start: val.start,
-                end: val.end,
-            }
-        }
-    }
-}
 
 pub type RefPartArticle = IdentifierRange<ArticleIdentifier>;
 pub type RefPartParagraph = IdentifierRange<NumericIdentifier>;
@@ -123,45 +62,26 @@ impl RefPartSubpoint {
     }
 }
 
-pub trait RefPartFrom<T: Copy>: Sized {
-    fn from_single(id: T) -> Self {
-        Self::from_range(id, id)
-    }
-
-    fn from_range(start: T, end: T) -> Self;
-}
-
-impl RefPartFrom<ArticleIdentifier> for RefPartArticle {
-    fn from_range(start: ArticleIdentifier, end: ArticleIdentifier) -> Self {
-        Self { start, end }
-    }
-}
-impl RefPartFrom<NumericIdentifier> for RefPartParagraph {
+impl IdentifierRangeFrom<NumericIdentifier> for RefPartPoint {
     fn from_range(start: NumericIdentifier, end: NumericIdentifier) -> Self {
-        Self { start, end }
+        Self::Numeric(IdentifierRange::from_range(start, end))
     }
 }
-impl RefPartFrom<NumericIdentifier> for RefPartPoint {
-    fn from_range(start: NumericIdentifier, end: NumericIdentifier) -> Self {
-        Self::Numeric(IdentifierRange { start, end })
-    }
-}
-impl RefPartFrom<AlphabeticIdentifier> for RefPartPoint {
+impl IdentifierRangeFrom<AlphabeticIdentifier> for RefPartPoint {
     fn from_range(start: AlphabeticIdentifier, end: AlphabeticIdentifier) -> Self {
-        Self::Alphabetic(IdentifierRange { start, end })
+        Self::Alphabetic(IdentifierRange::from_range(start, end))
     }
 }
-impl RefPartFrom<NumericIdentifier> for RefPartSubpoint {
+impl IdentifierRangeFrom<NumericIdentifier> for RefPartSubpoint {
     fn from_range(start: NumericIdentifier, end: NumericIdentifier) -> Self {
-        Self::Numeric(IdentifierRange { start, end })
+        Self::Numeric(IdentifierRange::from_range(start, end))
     }
 }
-impl RefPartFrom<PrefixedAlphabeticIdentifier> for RefPartSubpoint {
+impl IdentifierRangeFrom<PrefixedAlphabeticIdentifier> for RefPartSubpoint {
     fn from_range(start: PrefixedAlphabeticIdentifier, end: PrefixedAlphabeticIdentifier) -> Self {
-        Self::Alphabetic(IdentifierRange { start, end })
+        Self::Alphabetic(IdentifierRange::from_range(start, end))
     }
 }
-
 #[derive(Debug, Clone, PartialEq, Eq, FromVariants)]
 pub enum AnyReferencePart {
     Empty,

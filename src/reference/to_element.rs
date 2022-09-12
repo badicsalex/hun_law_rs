@@ -14,11 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use crate::structure::{
-    Act, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, NumericSubpoint, Paragraph,
+use crate::{
+    identifier::range::IdentifierRangeFrom,
+    structure::{
+        Act, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, NumericSubpoint, Paragraph,
+    },
 };
 
-use super::{parts::RefPartFrom, Reference};
+use super::Reference;
 
 pub trait ReferenceToElement {
     fn reference(&self) -> Reference;
@@ -36,7 +39,7 @@ impl ReferenceToElement for Act {
 impl ReferenceToElement for Article {
     fn reference(&self) -> Reference {
         Reference {
-            article: Some(RefPartFrom::from_single(self.identifier)),
+            article: Some(IdentifierRangeFrom::from_single(self.identifier)),
             ..Default::default()
         }
     }
@@ -48,7 +51,7 @@ impl ReferenceToElement for Paragraph {
         //       this shouldn't be a problem though, as this function is meant
         //       to be used with relative_to(), and that handles empty refs OK.
         Reference {
-            paragraph: self.identifier.map(RefPartFrom::from_single),
+            paragraph: self.identifier.map(IdentifierRangeFrom::from_single),
             ..Default::default()
         }
     }
@@ -57,7 +60,7 @@ impl ReferenceToElement for Paragraph {
 impl ReferenceToElement for AlphabeticPoint {
     fn reference(&self) -> Reference {
         Reference {
-            point: Some(RefPartFrom::from_single(self.identifier)),
+            point: Some(IdentifierRangeFrom::from_single(self.identifier)),
             ..Default::default()
         }
     }
@@ -66,7 +69,7 @@ impl ReferenceToElement for AlphabeticPoint {
 impl ReferenceToElement for NumericPoint {
     fn reference(&self) -> Reference {
         Reference {
-            point: Some(RefPartFrom::from_single(self.identifier)),
+            point: Some(IdentifierRangeFrom::from_single(self.identifier)),
             ..Default::default()
         }
     }
@@ -75,7 +78,7 @@ impl ReferenceToElement for NumericPoint {
 impl ReferenceToElement for AlphabeticSubpoint {
     fn reference(&self) -> Reference {
         Reference {
-            subpoint: Some(RefPartFrom::from_single(self.identifier)),
+            subpoint: Some(IdentifierRangeFrom::from_single(self.identifier)),
             ..Default::default()
         }
     }
@@ -84,7 +87,7 @@ impl ReferenceToElement for AlphabeticSubpoint {
 impl ReferenceToElement for NumericSubpoint {
     fn reference(&self) -> Reference {
         Reference {
-            subpoint: Some(RefPartFrom::from_single(self.identifier)),
+            subpoint: Some(IdentifierRangeFrom::from_single(self.identifier)),
             ..Default::default()
         }
     }

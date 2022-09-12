@@ -26,14 +26,14 @@ mod tests;
 use anyhow::{bail, ensure, Result};
 use serde::{Deserialize, Serialize};
 
-use crate::{identifier::ActIdentifier, reference::builder::ReferenceBuilderSetPart};
+use crate::{
+    identifier::{range::IdentifierRangeFrom, ActIdentifier},
+    reference::builder::ReferenceBuilderSetPart,
+};
 
 use self::{
     builder::ReferenceBuilder,
-    parts::{
-        AnyReferencePart, RefPartArticle, RefPartFrom, RefPartParagraph, RefPartPoint,
-        RefPartSubpoint,
-    },
+    parts::{AnyReferencePart, RefPartArticle, RefPartParagraph, RefPartPoint, RefPartSubpoint},
     unchecked::UncheckedReference,
 };
 
@@ -87,17 +87,19 @@ impl Reference {
             act: self.act,
             article: self
                 .article
-                .map(|x| RefPartFrom::from_single(x.first_in_range())),
+                .map(|x| IdentifierRangeFrom::from_single(x.first_in_range())),
             paragraph: self
                 .paragraph
-                .map(|x| RefPartFrom::from_single(x.first_in_range())),
+                .map(|x| IdentifierRangeFrom::from_single(x.first_in_range())),
             point: self.point.map(|x| match x {
-                RefPartPoint::Numeric(n) => RefPartFrom::from_single(n.first_in_range()),
-                RefPartPoint::Alphabetic(a) => RefPartFrom::from_single(a.first_in_range()),
+                RefPartPoint::Numeric(n) => IdentifierRangeFrom::from_single(n.first_in_range()),
+                RefPartPoint::Alphabetic(a) => IdentifierRangeFrom::from_single(a.first_in_range()),
             }),
             subpoint: self.subpoint.map(|x| match x {
-                RefPartSubpoint::Numeric(n) => RefPartFrom::from_single(n.first_in_range()),
-                RefPartSubpoint::Alphabetic(a) => RefPartFrom::from_single(a.first_in_range()),
+                RefPartSubpoint::Numeric(n) => IdentifierRangeFrom::from_single(n.first_in_range()),
+                RefPartSubpoint::Alphabetic(a) => {
+                    IdentifierRangeFrom::from_single(a.first_in_range())
+                }
             }),
         }
     }
@@ -107,17 +109,19 @@ impl Reference {
             act: self.act,
             article: self
                 .article
-                .map(|x| RefPartFrom::from_single(x.last_in_range())),
+                .map(|x| IdentifierRangeFrom::from_single(x.last_in_range())),
             paragraph: self
                 .paragraph
-                .map(|x| RefPartFrom::from_single(x.last_in_range())),
+                .map(|x| IdentifierRangeFrom::from_single(x.last_in_range())),
             point: self.point.map(|x| match x {
-                RefPartPoint::Numeric(n) => RefPartFrom::from_single(n.last_in_range()),
-                RefPartPoint::Alphabetic(a) => RefPartFrom::from_single(a.last_in_range()),
+                RefPartPoint::Numeric(n) => IdentifierRangeFrom::from_single(n.last_in_range()),
+                RefPartPoint::Alphabetic(a) => IdentifierRangeFrom::from_single(a.last_in_range()),
             }),
             subpoint: self.subpoint.map(|x| match x {
-                RefPartSubpoint::Numeric(n) => RefPartFrom::from_single(n.last_in_range()),
-                RefPartSubpoint::Alphabetic(a) => RefPartFrom::from_single(a.last_in_range()),
+                RefPartSubpoint::Numeric(n) => IdentifierRangeFrom::from_single(n.last_in_range()),
+                RefPartSubpoint::Alphabetic(a) => {
+                    IdentifierRangeFrom::from_single(a.last_in_range())
+                }
             }),
         }
     }

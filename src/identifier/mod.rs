@@ -19,6 +19,7 @@ mod alphabetic;
 mod article;
 mod numeric;
 mod prefixed_alphabetic;
+pub mod range;
 
 pub use act::ActIdentifier;
 pub use alphabetic::{AlphabeticIdentifier, HungarianIdentifierChar};

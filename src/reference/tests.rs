@@ -522,7 +522,7 @@ fn test_relative_to() {
 
 fn quick_convert_part<TR, TI>(s: &str) -> Option<TR>
 where
-    TR: RefPartFrom<TI>,
+    TR: IdentifierRangeFrom<TI>,
     TI: Copy + FromStr,
     <TI as FromStr>::Err: Debug,
 {
