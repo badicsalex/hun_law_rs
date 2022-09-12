@@ -27,7 +27,7 @@ pub use article::ArticleIdentifier;
 pub use numeric::NumericIdentifier;
 pub use prefixed_alphabetic::PrefixedAlphabeticIdentifier;
 
-pub trait IdentifierCommon: std::fmt::Debug + Clone + Copy + Sized + Eq {
+pub trait IdentifierCommon: std::fmt::Debug + Clone + Copy + Sized + Ord {
     fn is_first(&self) -> bool;
 
     /// Can the parameter be considered the previous identifier. Handles suffix transitions.
