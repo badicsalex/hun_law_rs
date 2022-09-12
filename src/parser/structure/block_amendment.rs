@@ -26,12 +26,13 @@ use crate::{
     parser::structure::sae::{AlphabeticPointParser, AlphabeticSubpointParser, SAEParseParams},
     reference::{
         parts::{AnyReferencePart, RefPartPoint, RefPartSubpoint},
+        structural::{StructuralReference, StructuralReferenceElement},
         Reference,
     },
     semantic_info::SpecialPhrase,
     structure::{
         Act, ActChild, Article, BlockAmendment, BlockAmendmentChildren, Paragraph,
-        ParagraphChildren, SAEBody,
+        ParagraphChildren, SAEBody, StructuralBlockAmendment,
     },
     util::{debug::WithElemContext, indentedline::IndentedLine},
 };
@@ -76,7 +77,7 @@ impl Paragraph {
             if let Some(special_phrase) = &self.semantic_info.special_phrase {
                 match special_phrase {
                     SpecialPhrase::BlockAmendment(ba) => {
-                        *children = ParagraphChildren::BlockAmendment(BlockAmendment {
+                        *children = BlockAmendment {
                             intro: std::mem::take(&mut quoted_block.intro),
                             children: convert_simple_block_amendment(
                                 &ba.position,
@@ -84,15 +85,20 @@ impl Paragraph {
                             )
                             .with_context(|| "Could not parse simple block amendment")?,
                             wrap_up: std::mem::take(&mut quoted_block.wrap_up),
-                        })
+                        }
+                        .into()
                     }
-                    SpecialPhrase::StructuralBlockAmendment(_) => {
-                        *children = ParagraphChildren::BlockAmendment(BlockAmendment {
+                    SpecialPhrase::StructuralBlockAmendment(sba) => {
+                        *children = StructuralBlockAmendment {
                             intro: std::mem::take(&mut quoted_block.intro),
-                            children: convert_structural_block_amendment(&quoted_block.lines)
-                                .with_context(|| "Could not parse structural block amendment")?,
+                            children: convert_structural_block_amendment(
+                                &sba.position,
+                                &quoted_block.lines,
+                            )
+                            .with_context(|| "Could not parse structural block amendment")?,
                             wrap_up: std::mem::take(&mut quoted_block.wrap_up),
-                        })
+                        }
+                        .into()
                     }
                     _ => {}
                 }
@@ -102,11 +108,16 @@ impl Paragraph {
     }
 }
 
-fn convert_structural_block_amendment(lines: &[IndentedLine]) -> Result<BlockAmendmentChildren> {
-    // TODO: Absolutely no checks on the result here, we are basically hoping for the best.
-    Ok(parse_complex_body(lines, ParsingContext::BlockAmendment)?
-        .1
-        .into())
+fn convert_structural_block_amendment(
+    position: &StructuralReference,
+    lines: &[IndentedLine],
+) -> Result<Vec<ActChild>> {
+    if let StructuralReferenceElement::Article(article_id) = position.structural_element {
+        convert_articles(article_id.first_in_range(), lines)
+    } else {
+        // TODO: Absolutely no checks on the result here, we are basically hoping for the best.
+        Ok(parse_complex_body(lines, ParsingContext::BlockAmendment)?.1)
+    }
 }
 
 fn convert_simple_block_amendment(
@@ -116,9 +127,6 @@ fn convert_simple_block_amendment(
     ensure!(!lines.is_empty());
 
     Ok(match position.get_last_part() {
-        AnyReferencePart::Article(article_id) => {
-            convert_articles(article_id.first_in_range(), lines)?.into()
-        }
         AnyReferencePart::Paragraph(id) => {
             ParagraphParser
                 .extract_multiple(lines, create_parse_params_paragraph(id))?
@@ -145,14 +153,14 @@ fn convert_simple_block_amendment(
                 .extract_multiple(lines, create_parse_params(id))?
                 .0
         }
-        AnyReferencePart::Act(_) | AnyReferencePart::Empty => bail!(
+        AnyReferencePart::Article(_) | AnyReferencePart::Act(_) | AnyReferencePart::Empty => bail!(
             "Invalid reference type in phrase during BlockAmendment conversion: {:?}",
             position
         ),
     })
 }
 
-fn convert_articles(first_id: ArticleIdentifier, lines: &[IndentedLine]) -> Result<Vec<Article>> {
+fn convert_articles(first_id: ArticleIdentifier, lines: &[IndentedLine]) -> Result<Vec<ActChild>> {
     let mut factory = ArticleParserFactory::new(ParsingContext::BlockAmendment);
     let mut result = Vec::new();
     let mut parser = factory
@@ -160,13 +168,13 @@ fn convert_articles(first_id: ArticleIdentifier, lines: &[IndentedLine]) -> Resu
         .ok_or_else(|| anyhow!("First line could not be parsed into an article header"))?;
     for line in &lines[1..] {
         if let Some(new_parser) = factory.try_create_from_header(line, None) {
-            result.push(parser.finish()?);
+            result.push(parser.finish()?.into());
             parser = new_parser;
         } else {
             parser.feed_line(line);
         }
     }
-    result.push(parser.finish()?);
+    result.push(parser.finish()?.into());
     Ok(result)
 }
 

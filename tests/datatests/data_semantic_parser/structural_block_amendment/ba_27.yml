@@ -14,10 +14,11 @@ expected_references:
       number: 100
     article: 316/A
 expected_special_phrase:
-  BlockAmendment:
+  StructuralBlockAmendment:
     position:
       act:
         year: 2012
         number: 100
-      article: 316/A
+      structural_element:
+        Article: 316/A
     pure_insertion: true

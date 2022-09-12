@@ -12,9 +12,8 @@ children:
         - body:
             intro: "A A Büntető Törvénykönyvről szóló 2012. évi C. törvény a következő 352/A–352/C. §-sal és az azokat megelőző alcímekkel egészül ki:"
             children:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 children:
-                  StructuralElement:
                     - Subtitle:
                         title: Határzár tiltott átlépése
                     - Article:

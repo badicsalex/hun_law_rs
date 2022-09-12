@@ -18,12 +18,13 @@ expected_references:
       number: 100
     article: 318/B
 expected_special_phrase:
-  BlockAmendment:
+  StructuralBlockAmendment:
     position:
       act:
         year: 2012
         number: 100
-      article:
-        start: 318/A
-        end: 318/B
+      structural_element:
+        Article:
+          start: 318/A
+          end: 318/B
     pure_insertion: true

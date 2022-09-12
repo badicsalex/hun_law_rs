@@ -14,10 +14,11 @@ expected_references:
       number: 5
     article: "6:130"
 expected_special_phrase:
-  BlockAmendment:
+  StructuralBlockAmendment:
     position:
       act:
         year: 2013
         number: 5
-      article: "6:130"
+      structural_element:
+        Article: "6:130"
     pure_insertion: false

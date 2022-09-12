@@ -102,7 +102,9 @@ macro_rules! impl_walk_sae {
                 match self {
                     ParagraphChildren::AlphabeticPoint(b) => b.$walk_fn(base, visitor),
                     ParagraphChildren::NumericPoint(b) => b.$walk_fn(base, visitor),
-                    ParagraphChildren::QuotedBlock(_) | ParagraphChildren::BlockAmendment(_) => {
+                    ParagraphChildren::QuotedBlock(_)
+                    | ParagraphChildren::BlockAmendment(_)
+                    | ParagraphChildren::StructuralBlockAmendment(_)=> {
                         Ok(())
                     }
                 }

@@ -191,7 +191,7 @@ pub fn extract_special_phrase(
             Some(convert_article_title_amendment(abbreviation_cache, x)?.into())
         }
         hun_law_grammar::Root_content::BlockAmendment(x) => {
-            Some(convert_block_amendment(abbreviation_cache, x)?.into())
+            Some(convert_block_amendment(abbreviation_cache, x)?)
         }
         hun_law_grammar::Root_content::BlockAmendmentStructural(x) => {
             Some(convert_structural_block_amendment(abbreviation_cache, x)?.into())

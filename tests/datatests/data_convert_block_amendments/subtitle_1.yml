@@ -12,11 +12,10 @@ children:
         - body:
             intro: "A Büntető Törvénykönyvről szóló 2012. évi C. törvény (a továbbiakban: Btk.) a 300. §-t megelőzően a következő alcímmel egészül ki:"
             children:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 children:
-                  StructuralElement:
-                    - Subtitle:
-                        title: Korrupciós bűncselekmény feljelentésének elmulasztása
+                  - Subtitle:
+                      title: Korrupciós bűncselekmény feljelentésének elmulasztása
           semantic_info:
             outgoing_references:
               - start: 40
@@ -52,18 +51,17 @@ children:
         - body:
             intro: "A Btk. XXVII. Fejezete a következő alcímmel és 300/A. §-sal egészül ki:"
             children:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 children:
-                  StructuralElement:
-                    - Subtitle:
-                        title: Értelmező rendelkezés
-                    - Article:
-                        identifier: 300/A
-                        children:
-                          - identifier: "1"
-                            body: E fejezet alkalmazásában kötelességszegés a kötelességnek előny adásához kötött teljesítése is.
-                          - identifier: "2"
-                            body: "A 290. § és a 291. § alkalmazásában külföldi gazdálkodó szervezet az a szervezet, amely a személyes joga szerint jogi személyiséggel rendelkezik és az adott szervezeti formában gazdasági tevékenység végzésére jogosult."
+                  - Subtitle:
+                      title: Értelmező rendelkezés
+                  - Article:
+                      identifier: 300/A
+                      children:
+                        - identifier: "1"
+                          body: E fejezet alkalmazásában kötelességszegés a kötelességnek előny adásához kötött teljesítése is.
+                        - identifier: "2"
+                          body: "A 290. § és a 291. § alkalmazásában külföldi gazdálkodó szervezet az a szervezet, amely a személyes joga szerint jogi személyiséggel rendelkezik és az adott szervezeti formában gazdasági tevékenység végzésére jogosult."
           semantic_info:
             outgoing_references:
               - start: 2

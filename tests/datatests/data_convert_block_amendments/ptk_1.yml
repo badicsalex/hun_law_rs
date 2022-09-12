@@ -29,10 +29,10 @@ children:
         - body:
             intro: "A Ptk. 6:130. §-a a következő szöveggel lép hatályba:"
             children:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 children:
-                  Article:
-                    - identifier: "6:130"
+                  - Article:
+                      identifier: "6:130"
                       title: Pénztartozás teljesítésének ideje
                       children:
                         - identifier: "1"
@@ -68,10 +68,11 @@ children:
                     number: 5
                   article: "6:130"
             special_phrase:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 position:
                   act:
                     year: 2013
                     number: 5
-                  article: "6:130"
+                  structural_element:
+                    Article: "6:130"
                 pure_insertion: false

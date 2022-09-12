@@ -12,10 +12,10 @@ children:
         - body:
             intro: "A Büntető Törvénykönyvről szóló 2012. évi C. törvény 370. §-a a következő szöveggel lép hatályba:"
             children:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 children:
-                  Article:
-                    - identifier: "370"
+                  - Article:
+                      identifier: "370"
                       children:
                         - identifier: "1"
                           body: "Aki idegen dolgot mástól azért vesz el, hogy azt jogtalanul eltulajdonítsa, lopást követ el."
@@ -121,10 +121,11 @@ children:
                     number: 100
                   article: "370"
             special_phrase:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 position:
                   act:
                     year: 2012
                     number: 100
-                  article: "370"
+                  structural_element:
+                    Article: "370"
                 pure_insertion: false

@@ -17,17 +17,23 @@
 use anyhow::{anyhow, bail, Result};
 use hun_law_grammar::*;
 
-use super::reference::convert_act_reference;
-use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
-use crate::reference::{
-    self, structural::StructuralReference, structural::StructuralReferenceElement,
+use super::{
+    abbreviation::AbbreviationCache,
+    reference::{convert_act_reference, GetOutgoingReferences},
 };
-use crate::semantic_info;
+use crate::{
+    reference::{
+        self,
+        parts::AnyReferencePart,
+        structural::{StructuralReference, StructuralReferenceElement},
+    },
+    semantic_info,
+};
 
 pub fn convert_block_amendment(
     abbreviation_cache: &AbbreviationCache,
     elem: &BlockAmendment,
-) -> Result<semantic_info::BlockAmendment> {
+) -> Result<semantic_info::SpecialPhrase> {
     let all_positions: Vec<_> = elem
         .get_outgoing_references(abbreviation_cache)?
         .into_iter()
@@ -47,10 +53,23 @@ pub fn convert_block_amendment(
         .ok_or_else(|| anyhow!("No references found in block amendment"))?;
     let position = reference::Reference::make_range(&first, &last)?;
 
-    Ok(semantic_info::BlockAmendment {
-        position,
-        pure_insertion: elem.amended_reference.is_none(),
-    })
+    if let AnyReferencePart::Article(article_id) = position.get_last_part() {
+        Ok(semantic_info::StructuralBlockAmendment {
+            position: StructuralReference {
+                act: position.act(),
+                book: None,
+                structural_element: StructuralReferenceElement::Article(article_id),
+            },
+            pure_insertion: elem.amended_reference.is_none(),
+        }
+        .into())
+    } else {
+        Ok(semantic_info::BlockAmendment {
+            position,
+            pure_insertion: elem.amended_reference.is_none(),
+        }
+        .into())
+    }
 }
 
 pub fn convert_structural_block_amendment(

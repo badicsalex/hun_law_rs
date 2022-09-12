@@ -255,6 +255,7 @@ pub enum ParagraphChildren {
     NumericPoint(Vec<NumericPoint>),
     QuotedBlock(Vec<QuotedBlock>),
     BlockAmendment(BlockAmendment),
+    StructuralBlockAmendment(StructuralBlockAmendment),
 }
 
 pub type AlphabeticPoint = SubArticleElement<AlphabeticIdentifier, AlphabeticPointChildren>;
@@ -300,13 +301,20 @@ pub struct BlockAmendment {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum BlockAmendmentChildren {
-    Article(Vec<Article>),
     Paragraph(Vec<Paragraph>),
     AlphabeticPoint(Vec<AlphabeticPoint>),
     NumericPoint(Vec<NumericPoint>),
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
     NumericSubpoint(Vec<NumericSubpoint>),
-    StructuralElement(Vec<ActChild>),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct StructuralBlockAmendment {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub intro: Option<String>,
+    pub children: Vec<ActChild>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wrap_up: Option<String>,
 }
 
 macro_rules! simple_dbg_ctx {

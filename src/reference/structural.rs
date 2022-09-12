@@ -16,7 +16,9 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::identifier::{ActIdentifier, ArticleIdentifier, NumericIdentifier};
+use crate::identifier::{
+    range::IdentifierRange, ActIdentifier, ArticleIdentifier, NumericIdentifier,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct StructuralReference {
@@ -37,4 +39,5 @@ pub enum StructuralReferenceElement {
     SubtitleAfterArticle(ArticleIdentifier),
     SubtitleBeforeArticle(ArticleIdentifier),
     SubtitleBeforeArticleInclusive(ArticleIdentifier),
+    Article(IdentifierRange<ArticleIdentifier>),
 }

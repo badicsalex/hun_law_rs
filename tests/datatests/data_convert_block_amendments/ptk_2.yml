@@ -29,10 +29,10 @@ children:
         - body:
             intro: "A Ptk. 3:305. §-a a következő szöveggel lép hatályba:"
             children:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 children:
-                  Article:
-                    - identifier: "3:305"
+                  - Article:
+                      identifier: "3:305"
                       # This is the main tested part, the fact that we skipped the empty line after the title.
                       title: Kötvény helyett részvény igénylése és a kötvény részvénnyé történő átváltozása
                       children:
@@ -58,10 +58,11 @@ children:
                     number: 5
                   article: "3:305"
             special_phrase:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 position:
                   act:
                     year: 2013
                     number: 5
-                  article: "3:305"
+                  structural_element:
+                    Article: "3:305"
                 pure_insertion: false

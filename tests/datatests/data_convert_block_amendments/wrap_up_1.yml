@@ -12,10 +12,10 @@ children:
         - body:
             intro: "A teszteléstről szóló 2020. évi I. törvény 1. § helyébe a következő rendelkezés lép:"
             children:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 children:
-                  Article:
-                    - identifier: "1"
+                  - Article:
+                      identifier: "1"
                       children:
                         - identifier: "1"
                           body:
@@ -54,10 +54,11 @@ children:
                     number: 1
                   article: "1"
             special_phrase:
-              BlockAmendment:
+              StructuralBlockAmendment:
                 position:
                   act:
                     year: 2020
                     number: 1
-                  article: "1"
+                  structural_element:
+                    Article: "1"
                 pure_insertion: false
