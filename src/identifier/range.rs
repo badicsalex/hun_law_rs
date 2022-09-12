@@ -40,7 +40,7 @@ impl<T: IdentifierCommon> IdentifierRange<T> {
     }
 
     pub fn contains(&self, id: T) -> bool {
-        self.start >= id && self.end <= id
+        self.start <= id && self.end >= id
     }
 }
 
