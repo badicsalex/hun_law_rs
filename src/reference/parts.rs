@@ -91,3 +91,58 @@ pub enum AnyReferencePart {
     Point(RefPartPoint),
     Subpoint(RefPartSubpoint),
 }
+
+impl AnyReferencePart {
+    pub fn act(&self) -> Option<ActIdentifier> {
+        if let Self::Act(result) = self {
+            Some(*result)
+        } else {
+            None
+        }
+    }
+    pub fn article(&self) -> Option<IdentifierRange<ArticleIdentifier>> {
+        if let Self::Article(result) = self {
+            Some(*result)
+        } else {
+            None
+        }
+    }
+    pub fn paragraph(&self) -> Option<IdentifierRange<Option<NumericIdentifier>>> {
+        if let Self::Paragraph(result) = self {
+            Some(IdentifierRange::from_range(
+                Some(result.first_in_range()),
+                Some(result.last_in_range()),
+            ))
+        } else {
+            None
+        }
+    }
+    pub fn numeric_point(&self) -> Option<IdentifierRange<NumericIdentifier>> {
+        if let Self::Point(RefPartPoint::Numeric(result)) = self {
+            Some(*result)
+        } else {
+            None
+        }
+    }
+    pub fn alphabetic_point(&self) -> Option<IdentifierRange<AlphabeticIdentifier>> {
+        if let Self::Point(RefPartPoint::Alphabetic(result)) = self {
+            Some(*result)
+        } else {
+            None
+        }
+    }
+    pub fn numeric_subpoint(&self) -> Option<IdentifierRange<NumericIdentifier>> {
+        if let Self::Subpoint(RefPartSubpoint::Numeric(result)) = self {
+            Some(*result)
+        } else {
+            None
+        }
+    }
+    pub fn alphabetic_subpoint(&self) -> Option<IdentifierRange<PrefixedAlphabeticIdentifier>> {
+        if let Self::Subpoint(RefPartSubpoint::Alphabetic(result)) = self {
+            Some(*result)
+        } else {
+            None
+        }
+    }
+}
