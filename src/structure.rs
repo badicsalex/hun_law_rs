@@ -98,6 +98,27 @@ pub enum ActChild {
     Article(Article),
 }
 
+impl Act {
+    pub fn articles(&self) -> impl Iterator<Item = &Article> {
+        self.children.iter().filter_map(|c| {
+            if let ActChild::Article(article) = c {
+                Some(article)
+            } else {
+                None
+            }
+        })
+    }
+    pub fn articles_mut(&mut self) -> impl Iterator<Item = &mut Article> {
+        self.children.iter_mut().filter_map(|c| {
+            if let ActChild::Article(article) = c {
+                Some(article)
+            } else {
+                None
+            }
+        })
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StructuralElement {
     pub identifier: NumericIdentifier,
@@ -192,13 +213,13 @@ where
     pub semantic_info: SemanticInfo,
 }
 
-impl<IT:IdentifierCommon, CT> SubArticleElement<IT, CT> {
+impl<IT: IdentifierCommon, CT> SubArticleElement<IT, CT> {
     pub fn is_empty(&self) -> bool {
         match &self.body {
             SAEBody::Text(t) => t.is_empty(),
             // TODO: What to do if there are no children?
             // TODO: What to do if all children are empty?
-            SAEBody::Children {..} => false,
+            SAEBody::Children { .. } => false,
         }
     }
 }

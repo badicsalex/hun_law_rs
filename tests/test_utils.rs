@@ -27,7 +27,7 @@ use colored::*;
 use hun_law::{
     identifier::ActIdentifier,
     parser::{mk_act_section::ActRawText, structure::parse_act_structure},
-    structure::{Act, ActChild, ParagraphChildren, SAEBody},
+    structure::{Act, ParagraphChildren, SAEBody},
     util::{indentedline::IndentedLine, singleton_yaml},
 };
 use serde::Serialize;
@@ -128,17 +128,15 @@ pub fn parse_txt_as_act(path: &Path) -> Result<Act> {
 // clean out the quoted blocks' contents, because we don't want to
 // pollute the test yamls with serialized indented lines
 pub fn clean_quoted_blocks(act: &mut Act) {
-    for act_child in &mut act.children {
-        if let ActChild::Article(article) = act_child {
-            for paragraph in &mut article.children {
-                if let SAEBody::Children {
-                    children: ParagraphChildren::QuotedBlock(qbs),
-                    ..
-                } = &mut paragraph.body
-                {
-                    for qb in qbs {
-                        qb.lines = vec![]
-                    }
+    for article in act.articles_mut() {
+        for paragraph in &mut article.children {
+            if let SAEBody::Children {
+                children: ParagraphChildren::QuotedBlock(qbs),
+                ..
+            } = &mut paragraph.body
+            {
+                for qb in qbs {
+                    qb.lines = vec![]
                 }
             }
         }
