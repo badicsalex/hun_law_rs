@@ -265,6 +265,32 @@ impl Reference {
             && ((self_last >= other_last) || (self_last.is_parent_of(&other_last)))
     }
 
+    pub fn parent(&self) -> Reference {
+        if self.subpoint.is_some() {
+            Self {
+                subpoint: None,
+                ..self.clone()
+            }
+        } else if self.point.is_some() {
+            Self {
+                point: None,
+                ..self.clone()
+            }
+        } else if self.paragraph.is_some() {
+            Self {
+                paragraph: None,
+                ..self.clone()
+            }
+        } else if self.article.is_some() {
+            Self {
+                article: None,
+                ..self.clone()
+            }
+        } else {
+            Default::default()
+        }
+    }
+
     pub fn relative_to(&self, other: &Reference) -> Result<Reference> {
         let result: UncheckedReference = if self.act.is_some() {
             self.into()

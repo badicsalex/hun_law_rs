@@ -522,6 +522,70 @@ fn test_relative_to() {
     .is_err());
 }
 
+#[test]
+fn test_parent() {
+    let base = Reference {
+        act: Some(ActIdentifier {
+            year: 2012,
+            number: 1,
+        }),
+        article: quick_convert_part("1"),
+        paragraph: quick_convert_part("1"),
+        point: quick_convert_part::<RefPartPoint, NumericIdentifier>("1"),
+        subpoint: quick_convert_part::<RefPartSubpoint, NumericIdentifier>("1"),
+    };
+    assert_eq!(
+        base.parent(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: quick_convert_part("1"),
+            paragraph: quick_convert_part("1"),
+            point: quick_convert_part::<RefPartPoint, NumericIdentifier>("1"),
+            ..Default::default()
+        }
+    );
+    assert_eq!(
+        base.parent().parent(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: quick_convert_part("1"),
+            paragraph: quick_convert_part("1"),
+            ..Default::default()
+        }
+    );
+    assert_eq!(
+        base.parent().parent().parent(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: quick_convert_part("1"),
+            ..Default::default()
+        }
+    );
+    assert_eq!(
+        base.parent().parent().parent().parent(),
+        Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            ..Default::default()
+        }
+    );
+    assert_eq!(
+        base.parent().parent().parent().parent().parent(),
+        Reference::default()
+    );
+}
+
 fn quick_convert_part<TR, TI>(s: &str) -> Option<TR>
 where
     TR: IdentifierRangeFrom<TI>,
