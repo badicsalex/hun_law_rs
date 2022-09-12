@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::fmt::Debug;
-
 use anyhow::{anyhow, bail, ensure, Context, Result};
 
 use super::{
@@ -24,7 +22,7 @@ use super::{
     sae::{NumericPointParser, ParagraphParser, SAEParser},
 };
 use crate::{
-    identifier::{range::IdentifierRange, ArticleIdentifier, NumericIdentifier},
+    identifier::{range::IdentifierRange, ArticleIdentifier, IdentifierCommon, NumericIdentifier},
     parser::structure::sae::{AlphabeticPointParser, AlphabeticSubpointParser, SAEParseParams},
     reference::{
         parts::{AnyReferencePart, RefPartPoint, RefPartSubpoint},
@@ -185,7 +183,7 @@ fn create_parse_params_paragraph(
 
 fn create_parse_params<T>(id: IdentifierRange<T>) -> SAEParseParams<T>
 where
-    T: Eq + Debug + Copy,
+    T: IdentifierCommon,
 {
     SAEParseParams {
         expected_identifier: Some(id.first_in_range()),

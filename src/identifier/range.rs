@@ -16,15 +16,17 @@
 
 use serde::{Deserialize, Serialize};
 
+use super::IdentifierCommon;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(from = "IdentifierRangeSerdeHelper<T>")]
 #[serde(into = "IdentifierRangeSerdeHelper<T>")]
-pub struct IdentifierRange<T: Copy + Eq> {
+pub struct IdentifierRange<T: IdentifierCommon> {
     pub(super) start: T,
     pub(super) end: T,
 }
 
-impl<T: Copy + Eq> IdentifierRange<T> {
+impl<T: IdentifierCommon> IdentifierRange<T> {
     pub fn is_range(&self) -> bool {
         self.start != self.end
     }
@@ -36,15 +38,13 @@ impl<T: Copy + Eq> IdentifierRange<T> {
     pub fn last_in_range(&self) -> T {
         self.end
     }
-}
 
-impl<T: Ord + Copy + Eq> IdentifierRange<T> {
     pub fn contains(&self, id: T) -> bool {
         self.start >= id && self.end <= id
     }
 }
 
-pub trait IdentifierRangeFrom<T: Copy>: Sized {
+pub trait IdentifierRangeFrom<T: IdentifierCommon>: Sized {
     fn from_single(id: T) -> Self {
         Self::from_range(id, id)
     }
@@ -52,7 +52,7 @@ pub trait IdentifierRangeFrom<T: Copy>: Sized {
     fn from_range(start: T, end: T) -> Self;
 }
 
-impl<T: Copy + Eq> IdentifierRangeFrom<T> for IdentifierRange<T> {
+impl<T: IdentifierCommon> IdentifierRangeFrom<T> for IdentifierRange<T> {
     fn from_range(start: T, end: T) -> Self {
         Self { start, end }
     }
@@ -68,7 +68,7 @@ enum IdentifierRangeSerdeHelper<T> {
     Range { start: T, end: T },
 }
 
-impl<T: Copy + Eq> From<IdentifierRangeSerdeHelper<T>> for IdentifierRange<T> {
+impl<T: IdentifierCommon> From<IdentifierRangeSerdeHelper<T>> for IdentifierRange<T> {
     fn from(helper: IdentifierRangeSerdeHelper<T>) -> Self {
         match helper {
             IdentifierRangeSerdeHelper::Single(val) => Self {
@@ -79,7 +79,7 @@ impl<T: Copy + Eq> From<IdentifierRangeSerdeHelper<T>> for IdentifierRange<T> {
         }
     }
 }
-impl<T: Copy + Eq> From<IdentifierRange<T>> for IdentifierRangeSerdeHelper<T> {
+impl<T: IdentifierCommon> From<IdentifierRange<T>> for IdentifierRangeSerdeHelper<T> {
     fn from(val: IdentifierRange<T>) -> Self {
         if val.start == val.end {
             Self::Single(val.start)

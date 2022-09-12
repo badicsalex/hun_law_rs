@@ -17,7 +17,9 @@ use std::{fmt::Debug, str::FromStr};
 
 use pretty_assertions::assert_eq;
 
-use crate::identifier::{AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier};
+use crate::identifier::{
+    AlphabeticIdentifier, IdentifierCommon, NumericIdentifier, PrefixedAlphabeticIdentifier,
+};
 
 use super::*;
 
@@ -523,7 +525,7 @@ fn test_relative_to() {
 fn quick_convert_part<TR, TI>(s: &str) -> Option<TR>
 where
     TR: IdentifierRangeFrom<TI>,
-    TI: Copy + FromStr,
+    TI: IdentifierCommon + FromStr,
     <TI as FromStr>::Err: Debug,
 {
     if s.is_empty() {
