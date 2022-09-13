@@ -140,7 +140,7 @@ pub struct Subtitle {
     pub title: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum StructuralElementType {
     // Example: NYOLCADIK KÖNYV
     Book,
