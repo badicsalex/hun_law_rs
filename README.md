@@ -9,18 +9,18 @@ It does the following things:
 * Separate Acts into structural elements (Articles, subpoints, etc.)
 * Parse internal and external references in legal text
 * Parse special phrases like amendments and repeals into easy-to-use objects
-* Generate plain text, JSON and YAML version of the parsed documents
+* Generate plain text, colored text, JSON and YAML version of the parsed documents
 
 ## Usage
 
-After cloning the repository, and building the project with `cargo build --release`, simply run `target/release/hun_law`:
+After cloning the repository, you can run it with `cargo run --release`:
 
 ```
-target/release/hun_law 2018/123
-target/release/hun_law -p act-lines -o plain 2013/31
+cargo run --release -- 2018/123
+cargo run --release -- -p act-lines -o plain 2013/31
 ```
 
-Please see the output of `--help` for all options
+Please see the output of `cargo run --release -- --help` for all options
 
 ## Contribution
 
