@@ -1,0 +1,15 @@
+---
+text:      "Az épített környezet alakításáról és védelméről szóló 1997. évi LXXVIII. törvény 62. § (1) bekezdése a következő 12.6. és 12.7. ponttal egészül ki:"
+positions: "                                                      <                        > <                 >                         <        >            "
+# The main point is that we don't have an expected special phrase
+expected_references:
+  - act:
+      year: 1997
+      number: 78
+  - act:
+      year: 1997
+      number: 78
+    article: '62'
+    paragraph: '1'
+  # This is still a misparse, but it's not a big problem I think.
+  - point: '7'

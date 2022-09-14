@@ -39,7 +39,9 @@ AnySimpleExpression =
     @:Abbreviation |
     @:AnyToken ;
 
-CompoundReference = [act_reference:ActReference] {references:Reference [ListSeparator]}+ | act_reference:ActReference;
+CompoundReference =
+    [act_reference:ActReference] references:Reference {ListSeparator references:Reference} |
+    act_reference:ActReference ;
 
 @position
 Reference =
@@ -83,7 +85,7 @@ ActId = year:Number "." "évi" number:Roman "." ActSuffix;
 ActSuffix = "törvén" {HunLower}+ | "tv.";
 
 
-ArticleReference = { @:ArticleReferencePart [ListSeparator] }+ ArticleSuffix;
+ArticleReference = @:ArticleReferencePart { ListSeparator @:ArticleReferencePart } ArticleSuffix;
 @position
 ArticleReferencePart = start:ArticleId ["." ArticleSuffix] Dash end:ArticleId "." | id:ArticleId ".";
 @string
@@ -96,7 +98,7 @@ ArticleSuffix = "§-" {HunLower}+ | "§" ;
 SingleArticleReference = part:ArticleReferencePart ArticleSuffix;
 
 
-ParagraphReference = { @:ParagraphReferencePart [ListSeparator] }+ ParagraphSuffix;
+ParagraphReference = @:ParagraphReferencePart { ListSeparator @:ParagraphReferencePart } ParagraphSuffix;
 @position
 ParagraphReferencePart = "(" start:ParagraphId ")" Dash "(" end:ParagraphId ")" | "(" id:ParagraphId ")";
 @string
@@ -106,7 +108,7 @@ ParagraphId = Number ['a'..'z'];
 ParagraphSuffix = "bekezdés" {HunLower};
 
 
-AlphabeticPointReference = { @:AlphabeticPointReferencePart [ListSeparator] }+ AlphabeticPointSuffix;
+AlphabeticPointReference =  @:AlphabeticPointReferencePart { ListSeparator @:AlphabeticPointReferencePart } AlphabeticPointSuffix;
 @position
 AlphabeticPointReferencePart = start:AlphabeticPointId [")"] Dash end:AlphabeticPointId ")" | id:AlphabeticPointId ")";
 @string
@@ -116,7 +118,7 @@ AlphabeticPointId = "ny" | "sz" | 'a'..'z';
 AlphabeticPointSuffix = "pont" {HunLower};
 
 
-NumericPointReference= { @:NumericPointReferencePart [ListSeparator] }+ NumericPointSuffix;
+NumericPointReference= @:NumericPointReferencePart { ListSeparator @:NumericPointReferencePart } NumericPointSuffix;
 @position
 NumericPointReferencePart = start:NumericPointId Dash end:NumericPointId "." | id:NumericPointId "." ;
 @string
@@ -126,7 +128,7 @@ NumericPointId = Number [["/"] 'a'..'z'];
 NumericPointSuffix = "pont" {HunLower};
 
 
-AlphabeticSubpointReference = { @:AlphabeticSubpointReferencePart [ListSeparator] }+ AlphabeticSubpointSuffix;
+AlphabeticSubpointReference = @:AlphabeticSubpointReferencePart { ListSeparator @:AlphabeticSubpointReferencePart } AlphabeticSubpointSuffix;
 @position
 AlphabeticSubpointReferencePart = start:AlphabeticSubpointId ")" Dash end:AlphabeticSubpointId ")" | id:AlphabeticSubpointId ")" ;
 @string
@@ -136,7 +138,7 @@ AlphabeticSubpointId = 'a'..'z' ['a'..'z'];
 AlphabeticSubpointSuffix = "alpont" {HunLower};
 
 
-NumericSubpointReference = { @:NumericSubpointReferencePart [ListSeparator] }+ NumericSubpointSuffix;
+NumericSubpointReference = @:NumericSubpointReferencePart { ListSeparator @:NumericSubpointReferencePart } NumericSubpointSuffix;
 @position
 NumericSubpointReferencePart = start:NumericSubpointId  Dash end:NumericSubpointId "." | id:NumericSubpointId ".";
 @string
@@ -319,7 +321,7 @@ EnforcementDate =
         AzUpper
     )
     [ Dash "a" exception_references:Reference ("foglaltak"|"foglalt"|"meghatározott") ("kivétellel"|"kivételével"|"kivételekkel") Dash ]
-    { references:Reference [ListSeparator] }
+    [ references:Reference { ListSeparator references:Reference } ]
     (
         date:Date |
         date:AfterPublication |
@@ -334,8 +336,8 @@ EnforcementDate =
 
 TextAmendment =
     AzAny ActTitle act_reference:ActReference
-    { references:Reference [ListSeparator] }+
-    { parts:TextAmendmentPart [ListSeparator] }+
+    references:Reference { ListSeparator references:Reference }
+    parts:TextAmendmentPart { ListSeparator parts:TextAmendmentPart}
     "lép" ["hatályba"] "."
     ;
 
@@ -366,7 +368,7 @@ ArticleTitleAmendment =
 Repeal =
     ("Nem lép hatályba" | "Hatályát veszti")
     Az ActTitle act_reference:ActReference
-    { references:Reference [ListSeparator] }+
+    references:Reference { ListSeparator references:Reference }
     { [Az] texts:Quote ["szövegrész"] [ListSeparator]}
     "."
     ;

@@ -1,0 +1,5 @@
+---
+text:      "A 12.6. és 12.7. pontok."
+positions: "              <       > "
+expected_references:
+  - point: "7"
