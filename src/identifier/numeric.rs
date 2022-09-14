@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::{fmt::Display, str::FromStr};
+use std::{
+    fmt::{Display, Formatter},
+    str::FromStr,
+};
 
 use anyhow::{anyhow, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
@@ -62,10 +65,10 @@ impl NumericIdentifier {
             Ok((s, None))
         }
     }
-    pub fn fmt_with_slash(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.suffix {
-            Some(suffix) => write!(f, "{:?}/{}", self.num, suffix.to_uppercase()),
-            None => write!(f, "{:?}", self.num),
+
+    pub fn with_slash(&self) -> NumericIdentifierWithSlash {
+        NumericIdentifierWithSlash { id: *self }
+    }
         }
     }
 }
@@ -107,7 +110,7 @@ impl FromStr for NumericIdentifier {
 }
 
 impl Display for NumericIdentifier {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self.suffix {
             Some(suffix) => write!(f, "{:?}{}", self.num, suffix),
             None => write!(f, "{:?}", self.num),
@@ -134,6 +137,20 @@ impl From<u16> for NumericIdentifier {
         Self {
             num: val,
             suffix: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct NumericIdentifierWithSlash {
+    id: NumericIdentifier,
+}
+
+impl Display for NumericIdentifierWithSlash {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self.id.suffix {
+            Some(suffix) => write!(f, "{:?}/{}", self.id.num, suffix.to_uppercase()),
+            None => write!(f, "{:?}", self.id.num),
         }
     }
 }

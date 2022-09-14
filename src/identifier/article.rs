@@ -69,13 +69,10 @@ impl FromStr for ArticleIdentifier {
 
 impl Display for ArticleIdentifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.book {
-            Some(book) => {
-                write!(f, "{:?}:", book)?;
-                self.identifier.fmt_with_slash(f)
-            }
-            None => self.identifier.fmt_with_slash(f),
+        if let Some(book) = self.book {
+            write!(f, "{:?}:", book)?;
         }
+        write!(f, "{}", self.identifier.with_slash())
     }
 }
 
