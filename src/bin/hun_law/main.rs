@@ -31,6 +31,7 @@ use hun_law::{
         structure::parse_act_structure,
     },
     structure::Act,
+    text_output::{TextOutput, TextOutputParams},
     util::singleton_yaml,
 };
 use log::info;
@@ -269,8 +270,7 @@ impl CliOutput for ActRawText {
 
 impl CliOutput for Act {
     fn cli_output_plain(self, _testing_tags: bool, target: &mut impl std::io::Write) -> Result<()> {
-        writeln!(target, "Sorry, no.")?;
-        Ok(())
+        self.write_as_text(target, TextOutputParams::default().indented())
     }
 }
 

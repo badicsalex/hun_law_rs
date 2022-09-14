@@ -16,7 +16,7 @@
 
 use std::fmt::Debug;
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, bail, Result};
 use chrono::NaiveDate;
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
@@ -126,6 +126,34 @@ pub struct StructuralElement {
     pub element_type: StructuralElementType,
 }
 
+impl StructuralElement {
+    pub fn header_string(&self) -> Result<String> {
+        Ok(match self.element_type {
+            StructuralElementType::Book => {
+                format!("{} KÖNYV", self.identifier.to_hungarian()?.to_uppercase())
+            }
+            StructuralElementType::Part { is_special } => {
+                if is_special {
+                    if self.identifier == 1.into() {
+                        "ÁLTALÁNOS RÉSZ"
+                    } else if self.identifier == 2.into() {
+                        "KÜLÖNÖS RÉSZ"
+                    } else if self.identifier == 3.into() {
+                        "ZÁRÓ RÉSZ"
+                    } else {
+                        bail!("Invalid special part")
+                    }
+                    .to_string()
+                } else {
+                    format!("{} RÉSZ", self.identifier.to_hungarian()?.to_uppercase())
+                }
+            }
+            StructuralElementType::Title => format!("{}. CÍM", self.identifier.to_roman()?),
+            StructuralElementType::Chapter => format!("{}. FEJEZET", self.identifier.to_roman()?),
+        })
+    }
+}
+
 // Separate type from structural elements because of the optional identifier
 // and the fact that there are some other special handling around it.
 
@@ -196,6 +224,12 @@ pub struct Article {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     pub children: Vec<Paragraph>,
+}
+
+impl Article {
+    pub fn header_string(&self) -> String {
+        format!("{}. §", self.identifier)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -363,5 +397,43 @@ impl DebugContextString for Subtitle {
     fn debug_ctx(&self) -> String {
         // TODO: Proper pretty format
         format!("{:?}", self)
+    }
+}
+
+pub trait SAEHeaderString {
+    fn header_string(&self) -> String;
+}
+
+impl SAEHeaderString for Paragraph {
+    fn header_string(&self) -> String {
+        if let Some(identifier) = self.identifier {
+            format!("({})", identifier)
+        } else {
+            "".to_string()
+        }
+    }
+}
+
+impl SAEHeaderString for NumericPoint {
+    fn header_string(&self) -> String {
+        format!("{}.", self.identifier.with_slash())
+    }
+}
+
+impl SAEHeaderString for AlphabeticPoint {
+    fn header_string(&self) -> String {
+        format!("{})", self.identifier)
+    }
+}
+
+impl SAEHeaderString for NumericSubpoint {
+    fn header_string(&self) -> String {
+        format!("{}.", self.identifier.with_slash())
+    }
+}
+
+impl SAEHeaderString for AlphabeticSubpoint {
+    fn header_string(&self) -> String {
+        format!("{})", self.identifier)
     }
 }

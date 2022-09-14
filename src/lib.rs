@@ -21,4 +21,5 @@ pub mod parser;
 pub mod reference;
 pub mod semantic_info;
 pub mod structure;
+pub mod text_output;
 pub mod util;

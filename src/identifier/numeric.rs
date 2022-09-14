@@ -23,7 +23,7 @@ use anyhow::{anyhow, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
 
 use super::{HungarianIdentifierChar, IdentifierCommon};
-use crate::util::{DIGITS, ROMAN_DIGITS};
+use crate::util::{hun_str::ToHungarianString, DIGITS, ROMAN_DIGITS};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
@@ -69,7 +69,21 @@ impl NumericIdentifier {
     pub fn with_slash(&self) -> NumericIdentifierWithSlash {
         NumericIdentifierWithSlash { id: *self }
     }
+
+    pub fn to_hungarian(&self) -> Result<String> {
+        let mut result = self.num.to_hungarian()?.to_string();
+        if let Some(suffix) = self.suffix {
+            result.push_str(&format!("/{}", suffix));
         }
+        Ok(result)
+    }
+    pub fn to_roman(&self) -> Result<String> {
+        let mut result = roman::to(self.num as i32)
+            .ok_or_else(|| anyhow!("Problem converting to roman numeral"))?;
+        if let Some(suffix) = self.suffix {
+            result.push_str(&format!("/{}", suffix));
+        }
+        Ok(result)
     }
 }
 
