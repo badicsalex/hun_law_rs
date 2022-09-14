@@ -20,6 +20,7 @@ use anyhow::Result;
 
 use crate::{
     identifier::IdentifierCommon,
+    semantic_info::{OutgoingReference, SemanticInfo},
     structure::{
         Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, Article,
         BlockAmendment, BlockAmendmentChildren, NumericPointChildren, NumericSubpointChildren,
@@ -33,6 +34,7 @@ pub struct TextOutputParams {
     pub width: usize,
     indentation_level: usize,
     indent_next_line: bool,
+    is_colored: bool,
 }
 
 pub trait TextOutput {
@@ -42,7 +44,14 @@ pub trait TextOutput {
 impl TextOutput for Act {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         // TODO: header
-        params.write_header(writer, &format!("{} {}", self.identifier, self.subject))?;
+        params.write_header(
+            writer,
+            &format!(
+                "{} {}",
+                params.colorize(self.identifier.to_string(), BOLD),
+                self.subject
+            ),
+        )?;
         params.write_newline(writer)?;
         params.write_newline(writer)?;
         params.write_wrapped_line(writer, &self.preamble)?;
@@ -72,9 +81,9 @@ impl TextOutput for ActChild {
 
 impl TextOutput for StructuralElement {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
-        params.write_wrapped_line(writer, &self.header_string()?)?;
+        params.write_wrapped_line(writer, &params.colorize(self.header_string()?, ITALIC))?;
         if !self.title.is_empty() {
-            params.write_wrapped_line(writer, &self.title)?;
+            params.write_wrapped_line(writer, &params.colorize(&self.title, ITALIC))?;
         }
         Ok(())
     }
@@ -83,9 +92,12 @@ impl TextOutput for StructuralElement {
 impl TextOutput for Subtitle {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         if let Some(identifier) = self.identifier {
-            params.write_wrapped_line(writer, &format!("{}. {}", identifier, self.title))?;
+            params.write_wrapped_line(
+                writer,
+                &params.colorize(format!("{}. {}", identifier, self.title), BOLD),
+            )?;
         } else {
-            params.write_wrapped_line(writer, &self.title)?;
+            params.write_wrapped_line(writer, &params.colorize(&self.title, BOLD))?;
         }
         Ok(())
     }
@@ -93,7 +105,10 @@ impl TextOutput for Subtitle {
 
 impl TextOutput for Article {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
-        params.write_header(writer, &format!("{:<10}", self.header_string()))?;
+        params.write_header(
+            writer,
+            &params.colorize(format!("{:<10}", self.header_string()), BOLD),
+        )?;
         let mut params = params.indented().indented();
         if let Some(title) = &self.title {
             params.write_wrapped_line(writer, &format!("     [{}]", title))?
@@ -111,22 +126,23 @@ where
 {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         params.write_header(writer, &format!("{:<5}", self.header_string()))?;
-        self.body.write_as_text(writer, params.indented())
-    }
-}
-
-impl<CT: TextOutput> TextOutput for SAEBody<CT> {
-    fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
-        match self {
+        let mut params = params.indented();
+        match &self.body {
             SAEBody::Text(text) => {
-                params.write_wrapped_line(writer, text)?;
+                params.write_wrapped_line(
+                    writer,
+                    &colorize_sae_string(text, &params, &self.semantic_info),
+                )?;
             }
             SAEBody::Children {
                 intro,
                 children,
                 wrap_up,
             } => {
-                params.write_wrapped_line(writer, intro)?;
+                params.write_wrapped_line(
+                    writer,
+                    &colorize_sae_string(intro, &params, &self.semantic_info),
+                )?;
                 children.write_as_text(writer, params.clone())?;
                 if let Some(wrap_up) = wrap_up {
                     params.write_wrapped_line(writer, wrap_up)?;
@@ -221,13 +237,14 @@ impl TextOutput for BlockAmendmentChildren {
 impl TextOutput for BlockAmendment {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         if let Some(intro) = &self.intro {
-            params.write_wrapped_line(writer, &format!("({})", intro))?;
+            params.write_wrapped_line(writer, &params.colorize(format!("({})", intro), ITALIC))?;
         };
         params.write_wrapped_line(writer, "„")?;
         self.children.write_as_text(writer, params.indented())?;
         params.write_wrapped_line(writer, "”")?;
         if let Some(wrap_up) = &self.wrap_up {
-            params.write_wrapped_line(writer, &format!("({})", wrap_up))?;
+            params
+                .write_wrapped_line(writer, &params.colorize(format!("({})", wrap_up), ITALIC))?;
         };
         Ok(())
     }
@@ -236,13 +253,14 @@ impl TextOutput for BlockAmendment {
 impl TextOutput for StructuralBlockAmendment {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         if let Some(intro) = &self.intro {
-            params.write_wrapped_line(writer, &format!("({})", intro))?;
+            params.write_wrapped_line(writer, &params.colorize(format!("({})", intro), ITALIC))?;
         };
         params.write_wrapped_line(writer, "„")?;
         self.children.write_as_text(writer, params.indented())?;
         params.write_wrapped_line(writer, "”")?;
         if let Some(wrap_up) = &self.wrap_up {
-            params.write_wrapped_line(writer, &format!("({})", wrap_up))?;
+            params
+                .write_wrapped_line(writer, &params.colorize(format!("({})", wrap_up), ITALIC))?;
         };
         Ok(())
     }
@@ -264,6 +282,7 @@ impl Default for TextOutputParams {
             width: 105,
             indentation_level: 0,
             indent_next_line: true,
+            is_colored: false,
         }
     }
 }
@@ -300,10 +319,65 @@ impl TextOutputParams {
         Ok(())
     }
 
+    fn colorize(&self, text: impl std::fmt::Display, code: &str) -> String {
+        if self.is_colored {
+            format!("\x1B[{}m{}\x1B[0m", code, text)
+        } else {
+            text.to_string()
+        }
+    }
+
     pub fn indented(&self) -> Self {
         Self {
             indentation_level: self.indentation_level + 1,
             ..self.clone()
         }
     }
+
+    pub fn colored(&self) -> Self {
+        Self {
+            is_colored: true,
+            ..self.clone()
+        }
+    }
 }
+
+fn colorize_sae_string(
+    text: &str,
+    params: &TextOutputParams,
+    semantic_info: &SemanticInfo,
+) -> String {
+    let default_color = if semantic_info.special_phrase.is_some() {
+        "33"
+    } else {
+        "0"
+    };
+    split_string_at_references(text, &semantic_info.outgoing_references)
+        .into_iter()
+        .map(|(t, c)| {
+            if c {
+                params.colorize(t, "36")
+            } else {
+                params.colorize(t, default_color)
+            }
+        })
+        .collect()
+}
+
+fn split_string_at_references<'a>(
+    text: &'a str,
+    outgoing_refs: &[OutgoingReference],
+) -> Vec<(&'a str, bool)> {
+    let mut result = Vec::new();
+    let mut prev_end = 0;
+    for outgoing_ref in outgoing_refs {
+        result.push((&text[prev_end..outgoing_ref.start], false));
+        result.push((&text[outgoing_ref.start..outgoing_ref.end], true));
+        prev_end = outgoing_ref.end;
+    }
+    result.push((&text[prev_end..], false));
+    result
+}
+
+const BOLD: &str = "1";
+const ITALIC: &str = "3";

@@ -48,7 +48,7 @@ struct HunLawArgs {
     issues: Vec<MkIssue>,
     /// Output format
     #[clap(value_enum, long, short = 't', default_value_t)]
-    output_format: OutputFromat,
+    output_format: OutputFormat,
     /// Do parsing only until and including this step
     #[clap(value_enum, long, short, default_value_t)]
     parse_until: ParsingStep,
@@ -67,12 +67,15 @@ struct HunLawArgs {
 }
 
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
-enum OutputFromat {
+enum OutputFormat {
     /// Plain text output
     #[clap(alias("txt"))]
     Plain,
     /// Plain text output with special markers for bold and not right-justified lines
     TestPlain,
+    /// Colored text output
+    #[clap(alias("color"))]
+    Colored,
     /// JSON output. Compact. Use YAML format if you need a human readable version
     Json,
     /// YAML output
@@ -80,7 +83,7 @@ enum OutputFromat {
     Yaml,
 }
 
-impl Default for OutputFromat {
+impl Default for OutputFormat {
     fn default() -> Self {
         Self::Yaml
     }
@@ -111,7 +114,11 @@ fn main() -> Result<()> {
     .format(|buf, record| writeln!(buf, "{:>5}: {}", record.level(), record.args()))
     .init();
 
-    let args = HunLawArgs::parse();
+    let mut args = HunLawArgs::parse();
+    if args.output_dir.is_none() && args.output_format == OutputFormat::Plain {
+        args.output_format = OutputFormat::Colored
+    }
+
     let mut everything_ok = true;
     for issue in &args.issues {
         let mk_name = format!("mk_{}_{}", issue.year, issue.issue);
@@ -149,10 +156,11 @@ fn get_output(filename: &str, args: &HunLawArgs) -> Result<Box<dyn std::io::Writ
     match &args.output_dir {
         Some(odir) => {
             let extension = match args.output_format {
-                OutputFromat::Plain => "txt",
-                OutputFromat::TestPlain => "txt",
-                OutputFromat::Json => "json",
-                OutputFromat::Yaml => "yml",
+                OutputFormat::Plain => "txt",
+                OutputFormat::TestPlain => "txt",
+                OutputFormat::Colored => "txt",
+                OutputFormat::Json => "json",
+                OutputFormat::Yaml => "yml",
             };
             let path = odir.join(format!("{}.{}", filename, extension));
             info!("Writing into {:?}", path);
@@ -211,20 +219,31 @@ fn process_single_act(
 }
 
 trait CliOutput: Sized + Serialize {
-    fn cli_output(self, output_type: OutputFromat, target: &mut impl std::io::Write) -> Result<()> {
+    fn cli_output(self, output_type: OutputFormat, target: &mut impl std::io::Write) -> Result<()> {
         match output_type {
-            OutputFromat::Plain => self.cli_output_plain(false, target)?,
-            OutputFromat::TestPlain => self.cli_output_plain(true, target)?,
-            OutputFromat::Json => serde_json::to_writer(target, &self)?,
-            OutputFromat::Yaml => singleton_yaml::to_writer(target, &self)?,
+            OutputFormat::Plain => self.cli_output_plain(false, false, target)?,
+            OutputFormat::Colored => self.cli_output_plain(false, true, target)?,
+            OutputFormat::TestPlain => self.cli_output_plain(true, false, target)?,
+            OutputFormat::Json => serde_json::to_writer(target, &self)?,
+            OutputFormat::Yaml => singleton_yaml::to_writer(target, &self)?,
         };
         Ok(())
     }
-    fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()>;
+    fn cli_output_plain(
+        self,
+        testing_tags: bool,
+        color: bool,
+        target: &mut impl std::io::Write,
+    ) -> Result<()>;
 }
 
 impl CliOutput for Vec<PageOfLines> {
-    fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()> {
+    fn cli_output_plain(
+        self,
+        testing_tags: bool,
+        color: bool,
+        target: &mut impl std::io::Write,
+    ) -> Result<()> {
         let num_pages = self.len();
         for (page_no, page) in self.into_iter().enumerate() {
             writeln!(
@@ -233,14 +252,19 @@ impl CliOutput for Vec<PageOfLines> {
                 page_no + 1,
                 num_pages,
             )?;
-            page.cli_output_plain(testing_tags, target)?;
+            page.cli_output_plain(testing_tags, color, target)?;
         }
         Ok(())
     }
 }
 
 impl CliOutput for PageOfLines {
-    fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()> {
+    fn cli_output_plain(
+        self,
+        testing_tags: bool,
+        _color: bool,
+        target: &mut impl std::io::Write,
+    ) -> Result<()> {
         for line in self.lines {
             writeln!(
                 target,
@@ -253,7 +277,12 @@ impl CliOutput for PageOfLines {
 }
 
 impl CliOutput for ActRawText {
-    fn cli_output_plain(self, testing_tags: bool, target: &mut impl std::io::Write) -> Result<()> {
+    fn cli_output_plain(
+        self,
+        testing_tags: bool,
+        _color: bool,
+        target: &mut impl std::io::Write,
+    ) -> Result<()> {
         writeln!(target, "Act ID: {} - {}", self.identifier, self.subject)?;
         writeln!(target, "Pub date: {:?}", self.publication_date)?;
         writeln!(target)?;
@@ -269,8 +298,15 @@ impl CliOutput for ActRawText {
 }
 
 impl CliOutput for Act {
-    fn cli_output_plain(self, _testing_tags: bool, target: &mut impl std::io::Write) -> Result<()> {
-        self.write_as_text(target, TextOutputParams::default().indented())
+    fn cli_output_plain(
+        self,
+        _testing_tags: bool,
+        color: bool,
+        target: &mut impl std::io::Write,
+    ) -> Result<()> {
+        let params = TextOutputParams::default().indented();
+        let params = if color { params.colored() } else { params };
+        self.write_as_text(target, params)
     }
 }
 
