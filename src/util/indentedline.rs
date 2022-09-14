@@ -44,7 +44,7 @@ impl IndentedLine {
     pub fn from_parts(parts: Vec<IndentedLinePart>, justified: bool) -> Self {
         let cached_content: String = parts.iter().map(|p| p.content).collect();
         let bold_character_count = parts.iter().filter(|p| p.bold).count();
-        let cached_bold = bold_character_count * 2 > parts.len();
+        let cached_bold = bold_character_count * 3 > parts.len() * 2;
         IndentedLine {
             parts,
             cached_content,
@@ -386,29 +386,56 @@ mod tests {
         assert!(!IndentedLine::from_parts(vec![ilp(25.0, 'a')], false).is_bold());
         assert!(IndentedLine::from_parts(vec![ilpb(25.0, 'a')], false).is_bold());
 
-        let half_bold = IndentedLine::from_parts(
-            vec![ilp(5.0, 'a'), ilp(5.0, 'b'), ilpb(5.0, 'c'), ilpb(1.0, 'd')],
+        let two_thirds_bold = IndentedLine::from_parts(
+            vec![
+                ilp(5.0, 'a'),
+                ilp(5.0, 'b'),
+                ilpb(5.0, 'c'),
+                ilpb(1.0, 'd'),
+                ilpb(5.0, 'e'),
+                ilpb(1.0, 'f'),
+            ],
             false,
         );
-        assert!(!half_bold.is_bold());
+        assert!(!two_thirds_bold.is_bold());
 
-        let more_than_half_bold = IndentedLine::from_parts(
+        let more_than_two_thirds_bold = IndentedLine::from_parts(
             vec![
                 ilp(25.0, 'a'),
                 ilp(5.0, 'b'),
                 ilpb(5.0, 'c'),
                 ilpb(1.0, 'd'),
+                ilpb(5.0, 'e'),
+                ilpb(1.0, 'f'),
                 ilpb(1.0, '2'),
             ],
             false,
         );
-        assert!(more_than_half_bold.is_bold());
+        assert!(more_than_two_thirds_bold.is_bold());
 
-        let spliced = IndentedLine::from_multiple(&[&half_bold, &more_than_half_bold]);
+        let spliced = IndentedLine::from_multiple(&[&two_thirds_bold, &more_than_two_thirds_bold]);
         assert!(spliced.is_bold());
         assert!(!spliced.slice(0, Some(-1)).is_bold());
         assert!(spliced.slice(1, Some(-1)).is_bold());
         assert!(spliced.slice(2, Some(5)).is_bold());
+    }
+
+    #[test]
+    fn test_boldness_sensitivity() {
+        // This is an actual line in "Btk.", and it _must not_ be bold.
+        let line = vec![
+            ilpb(56.6, '2'),
+            ilpb(4.82, '0'),
+            ilpb(4.82, '9'),
+            ilpb(4.82, '.'),
+            ilpb(3.05, ' '),
+            ilpb(0.93, '§'),
+            ilp(5.809, ' '),
+            ilp(23.92, 'A'),
+            ilp(5.507, 'k'),
+            ilp(4.220, 'i'),
+        ];
+        assert!(!IndentedLine::from_parts(line, false).is_bold())
     }
 
     #[test]
