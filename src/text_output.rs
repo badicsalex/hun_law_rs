@@ -73,7 +73,9 @@ impl TextOutput for ActChild {
 impl TextOutput for StructuralElement {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         params.write_wrapped_line(writer, &self.header_string()?)?;
-        params.write_wrapped_line(writer, &self.title)?;
+        if !self.title.is_empty() {
+            params.write_wrapped_line(writer, &self.title)?;
+        }
         Ok(())
     }
 }
