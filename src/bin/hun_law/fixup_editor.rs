@@ -19,12 +19,11 @@ use std::io::{Read, Seek, SeekFrom, Write};
 use anyhow::{anyhow, ensure, Result};
 use hun_law::{
     fixups::{Fixup, Fixups},
+    output::quick_display_indented_line,
     parser::mk_act_section::ActRawText,
     util::QuoteCheck,
 };
 use log::info;
-
-use crate::util::quick_display_indented_line;
 
 pub fn run_fixup_editor(act: &ActRawText, editor: &str) -> Result<()> {
     let mut temp_file = tempfile::Builder::new()

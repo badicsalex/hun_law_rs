@@ -15,7 +15,6 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 mod fixup_editor;
-pub mod util;
 
 use std::{fs::File, io::Write, path::PathBuf};
 
@@ -25,18 +24,14 @@ use fixup_editor::run_fixup_editor;
 use hun_law::{
     fixups::Fixups,
     mk_downloader::{download_mk_issue, MkIssue, DEFAULT_MK_CROP},
-    parser::pdf::{parse_pdf, PageOfLines},
+    output::{CliOutput, OutputFormat},
+    parser::pdf::parse_pdf,
     parser::{
         mk_act_section::{parse_mk_pages_into_acts, ActRawText},
         structure::parse_act_structure,
     },
-    structure::Act,
-    text_output::{TextOutput, TextOutputParams},
-    util::singleton_yaml,
 };
 use log::info;
-use serde::Serialize;
-use util::quick_display_indented_line;
 
 /// Hun-Law output generator
 ///
@@ -64,29 +59,6 @@ struct HunLawArgs {
     /// Cache directory used to store downloaded MK issue pdfs
     #[clap(long, short, default_value = "./cache")]
     cache_dir: PathBuf,
-}
-
-#[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
-enum OutputFormat {
-    /// Plain text output
-    #[clap(alias("txt"))]
-    Plain,
-    /// Plain text output with special markers for bold and not right-justified lines
-    TestPlain,
-    /// Colored text output
-    #[clap(alias("color"))]
-    Colored,
-    /// JSON output. Compact. Use YAML format if you need a human readable version
-    Json,
-    /// YAML output
-    #[clap(alias("yml"))]
-    Yaml,
-}
-
-impl Default for OutputFormat {
-    fn default() -> Self {
-        Self::Yaml
-    }
 }
 
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
@@ -216,98 +188,6 @@ fn process_single_act(
     act.add_semantic_info()?;
     act.convert_block_amendments()?;
     act.cli_output(args.output_format, output)
-}
-
-trait CliOutput: Sized + Serialize {
-    fn cli_output(self, output_type: OutputFormat, target: &mut impl std::io::Write) -> Result<()> {
-        match output_type {
-            OutputFormat::Plain => self.cli_output_plain(false, false, target)?,
-            OutputFormat::Colored => self.cli_output_plain(false, true, target)?,
-            OutputFormat::TestPlain => self.cli_output_plain(true, false, target)?,
-            OutputFormat::Json => serde_json::to_writer(target, &self)?,
-            OutputFormat::Yaml => singleton_yaml::to_writer(target, &self)?,
-        };
-        Ok(())
-    }
-    fn cli_output_plain(
-        self,
-        testing_tags: bool,
-        color: bool,
-        target: &mut impl std::io::Write,
-    ) -> Result<()>;
-}
-
-impl CliOutput for Vec<PageOfLines> {
-    fn cli_output_plain(
-        self,
-        testing_tags: bool,
-        color: bool,
-        target: &mut impl std::io::Write,
-    ) -> Result<()> {
-        let num_pages = self.len();
-        for (page_no, page) in self.into_iter().enumerate() {
-            writeln!(
-                target,
-                "\n------- page {:?}/{:?} -------\n",
-                page_no + 1,
-                num_pages,
-            )?;
-            page.cli_output_plain(testing_tags, color, target)?;
-        }
-        Ok(())
-    }
-}
-
-impl CliOutput for PageOfLines {
-    fn cli_output_plain(
-        self,
-        testing_tags: bool,
-        _color: bool,
-        target: &mut impl std::io::Write,
-    ) -> Result<()> {
-        for line in self.lines {
-            writeln!(
-                target,
-                "{}",
-                quick_display_indented_line(&line, testing_tags)
-            )?
-        }
-        Ok(())
-    }
-}
-
-impl CliOutput for ActRawText {
-    fn cli_output_plain(
-        self,
-        testing_tags: bool,
-        _color: bool,
-        target: &mut impl std::io::Write,
-    ) -> Result<()> {
-        writeln!(target, "Act ID: {} - {}", self.identifier, self.subject)?;
-        writeln!(target, "Pub date: {:?}", self.publication_date)?;
-        writeln!(target)?;
-        for line in self.body {
-            writeln!(
-                target,
-                "{}",
-                quick_display_indented_line(&line, testing_tags)
-            )?
-        }
-        Ok(())
-    }
-}
-
-impl CliOutput for Act {
-    fn cli_output_plain(
-        self,
-        _testing_tags: bool,
-        color: bool,
-        target: &mut impl std::io::Write,
-    ) -> Result<()> {
-        let params = TextOutputParams::default().indented();
-        let params = if color { params.colored() } else { params };
-        self.write_as_text(target, params)
-    }
 }
 
 fn confirm(s: &str) -> Result<bool> {
