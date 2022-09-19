@@ -1,0 +1,29 @@
+---
+text:      "A büntetőeljárásról szóló 2017. évi XC. törvény (a továbbiakban: új Be.) 4. §-a a következő (7)–(9) bekezdéssel kiegészülve lép hatályba:"
+positions: "                          <                   >                          <                                    >                          "
+expected_new_abbreviations:
+  új Be.:
+    year: 2017
+    number: 90
+expected_references:
+- act:
+    year: 2017
+    number: 90
+- act:
+    year: 2017
+    number: 90
+  article: '4'
+  paragraph:
+    start: '7'
+    end: '9'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2017
+        number: 90
+      article: '4'
+      paragraph:
+        start: '7'
+        end: '9'
+    pure_insertion: true

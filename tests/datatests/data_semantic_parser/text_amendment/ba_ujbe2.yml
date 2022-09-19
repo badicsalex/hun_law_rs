@@ -1,0 +1,27 @@
+---
+text:      "Az új Be. 13. § (3) bekezdése az „ügyszakának kijelölt bírája” szövegrész helyett az „ügyszakának bírája” szöveggel lép hatályba."
+positions: "   <    > <                 >                                                                                                    "
+abbreviations:
+  új Be.:
+    year: 2017
+    number: 90
+expected_references:
+- act:
+    year: 2017
+    number: 90
+- act:
+    year: 2017
+    number: 90
+  article: '13'
+  paragraph: '3'
+expected_special_phrase:
+  TextAmendment:
+    positions:
+    - act:
+        year: 2017
+        number: 90
+      article: '13'
+      paragraph: '3'
+    replacements:
+    - from: ügyszakának kijelölt bírája
+      to: ügyszakának bírája
