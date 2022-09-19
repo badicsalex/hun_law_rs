@@ -1,0 +1,10 @@
+- old: a) megtiltja a további foglalkoztatást, ha az alkalmazás vagy a foglalkoztatás a 3. § (1) bekezdés a) pontjának első
+  new: „a) megtiltja a további foglalkoztatást, ha az alkalmazás vagy a foglalkoztatás a 3. § (1) bekezdés a) pontjának első
+- old: „53/A. § Az építésügyi és építésfelügyeleti eljárásokban az eljáró hatóság és szakhatóság az eljárást és annak eljárási
+  new: 53/A. § Az építésügyi és építésfelügyeleti eljárásokban az eljáró hatóság és szakhatóság az eljárást és annak eljárási
+- old: c) 28. § (1) bekezdésében a „jogerős” szövegrész helyébe a „végleges szöveg,
+  new: c) 28. § (1) bekezdésében a „jogerős” szövegrész helyébe a „végleges” szöveg,
+- after:
+  - j) hatósági bizonyítvány kiállítása
+  old: során.
+  new: során.”
