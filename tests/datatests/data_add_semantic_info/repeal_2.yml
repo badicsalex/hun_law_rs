@@ -5,6 +5,10 @@ identifier:
 subject: A tesztelésről
 preamble: ""
 publication_date: 2345-06-07
+contained_abbreviations:
+  Teszttv.:
+    year: 2020
+    number: 1
 children:
   - Article:
       identifier: "1"
@@ -34,10 +38,9 @@ children:
                           article: "1"
                           paragraph: "3"
                     new_abbreviations:
-                      - act_id:
-                          year: 2020
-                          number: 1
-                        abbreviation: Teszttv.
+                      Teszttv.:
+                        year: 2020
+                        number: 1
                     special_phrase:
                       Repeal:
                         positions:
@@ -63,10 +66,9 @@ children:
                             number: 1
                           article: "2"
                     new_abbreviations:
-                      - act_id:
-                          year: 2020
-                          number: 1
-                        abbreviation: Teszttv.
+                      Teszttv.:
+                        year: 2020
+                        number: 1
                     special_phrase:
                       Repeal:
                         positions:
@@ -87,10 +89,9 @@ children:
                           article: "3"
                           paragraph: "1"
                     new_abbreviations:
-                      - act_id:
-                          year: 2020
-                          number: 1
-                        abbreviation: Teszttv.
+                      Teszttv.:
+                        year: 2020
+                        number: 1
                     special_phrase:
                       Repeal:
                         positions:
@@ -108,7 +109,6 @@ children:
                     year: 2020
                     number: 1
             new_abbreviations:
-              - act_id:
-                  year: 2020
-                  number: 1
-                abbreviation: Teszttv.
+              Teszttv.:
+                year: 2020
+                number: 1

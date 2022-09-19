@@ -5,6 +5,10 @@ identifier:
 subject: A tesztelésről
 preamble: ""
 publication_date: 2345-06-07
+contained_abbreviations:
+  Flt.:
+    year: 1991
+    number: 4
 children:
   - Article:
       identifier: "1"
@@ -19,10 +23,9 @@ children:
                     year: 1991
                     number: 4
             new_abbreviations:
-              - act_id:
-                  year: 1991
-                  number: 4
-                abbreviation: Flt.
+              Flt.:
+                year: 1991
+                number: 4
   - Article:
       identifier: "2"
       children:

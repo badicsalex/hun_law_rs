@@ -5,6 +5,10 @@ identifier:
 subject: A tesztelésről
 preamble: ""
 publication_date: 2345-06-07
+contained_abbreviations:
+  Tv.:
+    year: 2011
+    number: 75
 children:
   - Article:
       identifier: "1"
@@ -36,10 +40,9 @@ children:
                   point: "1"
                   subpoint: c
             new_abbreviations:
-              - act_id:
-                  year: 2011
-                  number: 75
-                abbreviation: Tv.
+              Tv.:
+                year: 2011
+                number: 75
             special_phrase:
               BlockAmendment:
                 position:

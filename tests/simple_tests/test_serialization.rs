@@ -44,6 +44,7 @@ fn get_test_act() -> Act {
         publication_date: NaiveDate::from_ymd(2345, 6, 7),
         subject: "A tesztelésről".into(),
         preamble: "A tesztelés nagyon fontos, és egyben kötelező".into(),
+        contained_abbreviations: [("Btk.".to_string(), ActIdentifier{year: 2012, number: 100})].into_iter().collect(),
         children: vec![
             StructuralElement {
                 identifier: "1".parse().unwrap(),
@@ -204,6 +205,10 @@ const YAML_SERIALIZED_ACT: &str = r#"identifier:
 subject: A tesztelésről
 preamble: A tesztelés nagyon fontos, és egyben kötelező
 publication_date: 2345-06-07
+contained_abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
 children:
 - StructuralElement:
     identifier: '1'
@@ -287,7 +292,6 @@ children:
 fn test_act_yaml_serialization() {
     let act = get_test_act();
     let yaml = singleton_yaml::to_string(&act).unwrap();
-    println!("{}", yaml);
     let roundtrip: Act = singleton_yaml::from_str(&yaml).unwrap();
     assert_eq!(act, roundtrip);
     assert_eq!(yaml, YAML_SERIALIZED_ACT);

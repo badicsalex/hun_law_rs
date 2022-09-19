@@ -33,6 +33,7 @@ pub fn parse_act_structure(raw_act: &ActRawText) -> Result<Act> {
         subject: raw_act.subject.clone(),
         preamble,
         publication_date: raw_act.publication_date,
+        contained_abbreviations: Default::default(),
         children,
     })
 }

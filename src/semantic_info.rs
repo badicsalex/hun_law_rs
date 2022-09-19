@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::collections::BTreeMap;
+
 use chrono::NaiveDate;
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
@@ -25,8 +27,8 @@ use crate::reference::{structural::StructuralReference, Reference};
 pub struct SemanticInfo {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub outgoing_references: Vec<OutgoingReference>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub new_abbreviations: Vec<ActIdAbbreviation>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub new_abbreviations: BTreeMap<String, ActIdentifier>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub special_phrase: Option<SpecialPhrase>,
 }
@@ -58,12 +60,6 @@ impl<'a> From<&'a OutgoingReference> for &'a Reference {
     fn from(oref: &'a OutgoingReference) -> Self {
         &oref.reference
     }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct ActIdAbbreviation {
-    pub act_id: ActIdentifier,
-    pub abbreviation: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, FromVariants)]

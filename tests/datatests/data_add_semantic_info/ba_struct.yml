@@ -5,6 +5,10 @@ identifier:
 subject: A tesztelésről
 preamble: ""
 publication_date: 2345-06-07
+contained_abbreviations:
+  Rvtv.:
+    year: 2020
+    number: 3
 children:
   - Article:
       identifier: "1"
@@ -19,10 +23,9 @@ children:
                     year: 2020
                     number: 3
             new_abbreviations:
-              - act_id:
-                  year: 2020
-                  number: 3
-                abbreviation: Rvtv.
+              Rvtv.:
+                year: 2020
+                number: 3
   - Article:
       identifier: "2"
       children:

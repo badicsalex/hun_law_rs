@@ -5,6 +5,13 @@ identifier:
 subject: A tesztelésről
 preamble: ""
 publication_date: 2345-06-07
+contained_abbreviations:
+  Eht.:
+    year: 2003
+    number: 100
+  Gyvt.:
+    year: 1997
+    number: 31
 children:
   - Article:
       identifier: "1"
@@ -19,10 +26,9 @@ children:
                     year: 1997
                     number: 31
             new_abbreviations:
-              - act_id:
-                  year: 1997
-                  number: 31
-                abbreviation: Gyvt.
+              Gyvt.:
+                year: 1997
+                number: 31
   - Article:
       identifier: "2"
       children:
@@ -36,10 +42,9 @@ children:
                     year: 2003
                     number: 100
             new_abbreviations:
-              - act_id:
-                  year: 2003
-                  number: 100
-                abbreviation: Eht.
+              Eht.:
+                year: 2003
+                number: 100
   - Article:
       identifier: "3"
       children:

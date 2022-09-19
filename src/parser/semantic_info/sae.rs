@@ -137,7 +137,7 @@ impl<'a> SemanticInfoAdder<'a> {
             .with_context(|| format!("Could not extract special phrase from '{}'", s))?;
         Ok(SemanticInfo {
             outgoing_references,
-            new_abbreviations,
+            new_abbreviations: new_abbreviations.into_iter().collect(),
             special_phrase,
         })
     }

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::fmt::Debug;
+use std::{collections::BTreeMap, fmt::Debug};
 
 use anyhow::{anyhow, bail, Result};
 use chrono::NaiveDate;
@@ -88,6 +88,8 @@ pub struct Act {
     pub subject: String,
     pub preamble: String,
     pub publication_date: NaiveDate,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub contained_abbreviations: BTreeMap<String, ActIdentifier>,
     pub children: Vec<ActChild>,
 }
 

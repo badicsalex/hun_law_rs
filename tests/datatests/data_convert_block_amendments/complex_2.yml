@@ -5,6 +5,10 @@ identifier:
 subject: A tesztelésről
 preamble: ""
 publication_date: 2345-06-07
+contained_abbreviations:
+  Atv.:
+    year: 1996
+    number: 116
 children:
   - Article:
       identifier: "1"
@@ -19,10 +23,9 @@ children:
                     year: 1996
                     number: 116
             new_abbreviations:
-              - act_id:
-                  year: 1996
-                  number: 116
-                abbreviation: Atv.
+              Atv.:
+                year: 1996
+                number: 116
   - Article:
       identifier: "2"
       children:

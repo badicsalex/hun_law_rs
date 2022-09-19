@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::{collections::HashMap, path::Path};
+use std::{collections::BTreeMap, path::Path};
 
 use datatest_stable::Result;
 use hun_law::{
     identifier::ActIdentifier,
     parser::semantic_info::{abbreviation::AbbreviationCache, sae::SemanticInfoAdder},
     reference::Reference,
-    semantic_info::{ActIdAbbreviation, OutgoingReference, SpecialPhrase},
+    semantic_info::{OutgoingReference, SpecialPhrase},
     util::singleton_yaml,
 };
 use serde::{Deserialize, Serialize};
@@ -36,10 +36,10 @@ declare_test!(dir = "data_semantic_parser", pattern = r"\.yml");
 struct TestCase {
     pub text: String,
     pub positions: String,
-    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
-    pub abbreviations: HashMap<String, ActIdentifier>,
-    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
-    pub expected_new_abbreviations: HashMap<String, ActIdentifier>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub abbreviations: BTreeMap<String, ActIdentifier>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub expected_new_abbreviations: BTreeMap<String, ActIdentifier>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub expected_references: Vec<Reference>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,13 +54,12 @@ pub fn run_test(path: &Path) -> Result<()> {
 
     let (expected_references, positions) =
         convert_references(&semantic_info.outgoing_references, &test_case.text);
-    let expected_new_abbreviations = convert_abbreviations(&semantic_info.new_abbreviations);
 
     let result = TestCase {
         text: test_case.text.clone(),
         positions,
         abbreviations: test_case.abbreviations.clone(),
-        expected_new_abbreviations,
+        expected_new_abbreviations: semantic_info.new_abbreviations,
         expected_references,
         expected_special_phrase: semantic_info.special_phrase,
     };
@@ -91,13 +90,4 @@ fn convert_references(
 
     let parsed_positions = String::from_utf8(parsed_positions).unwrap();
     (parsed_refs, parsed_positions)
-}
-
-fn convert_abbreviations(
-    new_abbreviations: &[ActIdAbbreviation],
-) -> HashMap<String, ActIdentifier> {
-    new_abbreviations
-        .iter()
-        .map(|a| (a.abbreviation.clone(), a.act_id))
-        .collect()
 }

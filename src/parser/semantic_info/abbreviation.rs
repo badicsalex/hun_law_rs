@@ -14,23 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use anyhow::{anyhow, Result};
 use derive_visitor::{visitor_enter_fn, Drive};
 use hun_law_grammar::*;
 
-use crate::{identifier::ActIdentifier, semantic_info::ActIdAbbreviation};
+use crate::identifier::ActIdentifier;
 
-pub fn get_new_abbreviations(root: &Root) -> Result<Vec<ActIdAbbreviation>> {
-    let mut result: Vec<Result<ActIdAbbreviation>> = Vec::new();
+pub fn get_new_abbreviations(root: &Root) -> Result<Vec<(String, ActIdentifier)>> {
+    let mut result: Vec<Result<(String, ActIdentifier)>> = Vec::new();
     let act_id_visitor = |abbrev: &ActIdWithFromNowOn| {
         if let Some(abbrev_elem) = &abbrev.abbreviation {
             result.push(
-                ActIdentifier::try_from(&abbrev.act_id).map(|act_id| ActIdAbbreviation {
-                    act_id,
-                    abbreviation: abbrev_elem.content.clone(),
-                }),
+                ActIdentifier::try_from(&abbrev.act_id)
+                    .map(|act_id| (abbrev_elem.content.clone(), act_id)),
             )
         }
     };
@@ -43,7 +41,7 @@ pub fn get_new_abbreviations(root: &Root) -> Result<Vec<ActIdAbbreviation>> {
 
 #[derive(Debug, Default)]
 pub struct AbbreviationCache {
-    cache: HashMap<String, ActIdentifier>,
+    cache: BTreeMap<String, ActIdentifier>,
 }
 
 impl AbbreviationCache {
@@ -51,14 +49,13 @@ impl AbbreviationCache {
         Default::default()
     }
 
-    pub fn add(&mut self, element: &ActIdAbbreviation) {
-        self.cache
-            .insert(element.abbreviation.clone(), element.act_id);
+    pub fn add(&mut self, abbreviation: String, act_id: ActIdentifier) {
+        self.cache.insert(abbreviation, act_id);
     }
 
-    pub fn add_multiple(&mut self, elements: &[ActIdAbbreviation]) {
-        for element in elements {
-            self.add(element);
+    pub fn add_multiple(&mut self, elements: &[(String, ActIdentifier)]) {
+        for (abbreviation, act_id) in elements {
+            self.add(abbreviation.clone(), *act_id);
         }
     }
 
@@ -70,9 +67,14 @@ impl AbbreviationCache {
     }
 }
 
-// Should only be used by integration tests, as a shorthand
-impl From<HashMap<String, ActIdentifier>> for AbbreviationCache {
-    fn from(cache: HashMap<String, ActIdentifier>) -> Self {
+impl From<BTreeMap<String, ActIdentifier>> for AbbreviationCache {
+    fn from(cache: BTreeMap<String, ActIdentifier>) -> Self {
         Self { cache }
+    }
+}
+
+impl From<AbbreviationCache> for BTreeMap<String, ActIdentifier> {
+    fn from(ac: AbbreviationCache) -> Self {
+        ac.cache
     }
 }
