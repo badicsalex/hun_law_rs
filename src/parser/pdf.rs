@@ -207,14 +207,40 @@ impl pdf_extract::OutputDev for PdfExtractor {
         width: f64,
         spacing: f64,
         font_size: f64,
+        cid: pdf_extract::CharCode,
         char: &str,
     ) -> Result<(), pdf_extract::OutputError> {
-        let transformed_width = (width * font_size + spacing) * trm.m11;
+        let width = (width * font_size + spacing) * trm.m11;
+        let width_of_space = self.width_of_space * trm.m11 * font_size;
         let x_start = trm.m31;
+        let y = trm.m32;
+
+        if cid < 256 && char.len() == 1 {
+            // TODO: horrible workaround for weird InDesign quirk, where in some cases,
+            // the casing is wrong for several characters in the ToUnicode map.
+            // Since all of these documents (I hope) have ActualText tags, this could be solved
+            // by handling the ActualText in the pdf extractor level.
+            let cid_char = LATIN2_CHARS[cid as usize];
+            let mut cid_str_buf = [0; 4];
+            let cid_str = cid_char.encode_utf8(&mut cid_str_buf);
+            if cid_char != '�' && cid_str.to_uppercase() == char.to_uppercase() {
+                if cid_char != ' ' && self.crop.is_inside(x_start, y) {
+                    self.pages.last_mut().unwrap().chars.push(PositionedChar {
+                        x: x_start,
+                        y,
+                        width,
+                        width_of_space,
+                        content: cid_char,
+                        bold: self.current_font_is_bold,
+                    });
+                }
+                return Ok(());
+            }
+        }
+
         // Horrible hack to separate ligatures into graphemes.
         // We don't really need to be exact, this 'x' information will probably not be used
-        let x_step = transformed_width / (char.chars().count() as f64);
-        let y = trm.m32;
+        let x_step = width / (char.chars().count() as f64);
 
         let new_positioned_chars_iter = char
             .chars()
@@ -222,8 +248,8 @@ impl pdf_extract::OutputDev for PdfExtractor {
             .map(|(i, raw_char)| PositionedChar {
                 x: x_start + x_step * (i as f64),
                 y,
-                width: transformed_width,
-                width_of_space: self.width_of_space * trm.m11 * font_size,
+                width,
+                width_of_space,
                 content: fix_character_coding_quirks(raw_char),
                 bold: self.current_font_is_bold,
             })
@@ -287,3 +313,20 @@ pub fn parse_pdf(buffer: &[u8], crop: CropBox) -> Result<Vec<PageOfLines>> {
     pdf_extract::output_doc(&document, &mut output)?;
     output.get_parsed_pages()
 }
+
+const LATIN2_CHARS: [char; 256] = [
+    '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�',
+    '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', ' ', '!', '\'', '#', '$', '%',
+    '&', '\"', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8',
+    '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+    'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^',
+    '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '�', '�', '�', '�', '�', '�',
+    '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�',
+    '�', '�', '�', '�', '�', '�', '�', '�', '�', 'Ą', '˘', 'Ł', '¤', 'Ľ', 'Ś', '§', '¨', 'Š', 'Ş',
+    'Ť', 'Ź', '�', 'Ž', 'Ż', '°', 'ą', '˛', 'ł', '´', 'ľ', 'ś', 'ˇ', '¸', 'š', 'ş', 'ť', 'ź', '˝',
+    'ž', 'ż', 'Ŕ', 'Á', 'Â', 'Ă', 'Ä', 'Ĺ', 'Ć', 'Ç', 'Č', 'É', 'Ę', 'Ë', 'Ě', 'Í', 'Î', 'Ď', 'Đ',
+    'Ń', 'Ň', 'Ó', 'Ô', 'Ő', 'Ö', '×', 'Ř', 'Ů', 'Ú', 'Ű', 'Ü', 'Ý', 'Ţ', 'ß', 'ŕ', 'á', 'â', 'ă',
+    'ä', 'ĺ', 'ć', 'ç', 'č', 'é', 'ę', 'ë', 'ě', 'í', 'î', 'ď', 'đ', 'ń', 'ň', 'ó', 'ô', 'ő', 'ö',
+    '÷', 'ř', 'ů', 'ú', 'ű', 'ü', 'ý', 'ţ', '˙',
+];
