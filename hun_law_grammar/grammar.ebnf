@@ -152,7 +152,7 @@ NumericSubpointSuffix = "alpont" {HunLower};
 Abbreviation = content:AbbreviationContent;
 @string
 @no_skip_ws
-AbbreviationContent = HunUpper {HunLower}+ (['.'] [' '] ("tv." | "vhr.") | '.');
+AbbreviationContent = HunUpper {HunLower}+ (['.'] [' '] ("Sztv." | "sztv." | "tv." | "vhr.") | '.');
 
 
 # No "@no_skip_ws" here or below, because we actually do want to trim the string

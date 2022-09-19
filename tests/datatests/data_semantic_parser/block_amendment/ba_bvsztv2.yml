@@ -1,0 +1,25 @@
+---
+text:      "A Bv. Sztv. 15. §-a a következő (1a) bekezdéssel egészül ki:"
+positions: "  <       > <                                  >            "
+abbreviations:
+  Bv. Sztv.:
+    year: 1995
+    number: 107
+expected_references:
+- act:
+    year: 1995
+    number: 107
+- act:
+    year: 1995
+    number: 107
+  article: '15'
+  paragraph: 1a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 1995
+        number: 107
+      article: '15'
+      paragraph: 1a
+    pure_insertion: true

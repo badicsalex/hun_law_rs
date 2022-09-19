@@ -1,0 +1,25 @@
+---
+text:      "A büntetés-végrehajtási szervezetről szóló 1995. évi CVII. törvény (a továbbiakban: Bv. Sztv.) 11. § (6) bekezdése helyébe a következő rendelkezés lép:"
+positions: "                                           <                     >                             <                 >                                     "
+expected_new_abbreviations:
+  Bv. Sztv.:
+    year: 1995
+    number: 107
+expected_references:
+- act:
+    year: 1995
+    number: 107
+- act:
+    year: 1995
+    number: 107
+  article: '11'
+  paragraph: '6'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 1995
+        number: 107
+      article: '11'
+      paragraph: '6'
+    pure_insertion: false
