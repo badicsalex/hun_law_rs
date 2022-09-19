@@ -1,10 +1,54 @@
 - old: a) megtiltja a további foglalkoztatást, ha az alkalmazás vagy a foglalkoztatás a 3. § (1) bekezdés a) pontjának első
   new: „a) megtiltja a további foglalkoztatást, ha az alkalmazás vagy a foglalkoztatás a 3. § (1) bekezdés a) pontjának első
+- old: „(2) Az atomenergia-felügyeleti szerv eljárásában hiánypótlásra felhívásnak több ízben helye van.
+  new: „(2) Az atomenergia-felügyeleti szerv eljárásában hiánypótlásra felhívásnak több ízben helye van.”
+- old: d) a döntés szóban nem közölhető.
+  new: d) a döntés szóban nem közölhető.”
+- old: xi) a radioaktív anyagok birtoklása, előállítása, termelése, kezelése, feldolgozása, forgalmazása, tárolása,
+  new: „xi) a radioaktív anyagok birtoklása, előállítása, termelése, kezelése, feldolgozása, forgalmazása, tárolása,
+- old: a) 11/A. § (2d) bekezdésében a „de legalább a (2c) bekezdésben meghatározott terület” szövegrész.”
+  new: a) 11/A. § (2d) bekezdésében a „de legalább a (2c) bekezdésben meghatározott terület” szövegrész.
 - old: „53/A. § Az építésügyi és építésfelügyeleti eljárásokban az eljáró hatóság és szakhatóság az eljárást és annak eljárási
   new: 53/A. § Az építésügyi és építésfelügyeleti eljárásokban az eljáró hatóság és szakhatóság az eljárást és annak eljárási
 - old: c) 28. § (1) bekezdésében a „jogerős” szövegrész helyébe a „végleges szöveg,
   new: c) 28. § (1) bekezdésében a „jogerős” szövegrész helyébe a „végleges” szöveg,
+- old: a) 7. § (9) bekezdésében a „jogerős” szövegrész helyébe a „végleges, a „jogerősen alkalmazott” szövegrész
+  new: a) 7. § (9) bekezdésében a „jogerős” szövegrész helyébe a „végleges”, a „jogerősen alkalmazott” szövegrész
+- old: „31. § (1) A Hatóság eljárásainak ügyintézési határideje – amennyiben e törvény eltérő szabályokat nem állapít
+  new: 31. § (1) A Hatóság eljárásainak ügyintézési határideje – amennyiben e törvény eltérő szabályokat nem állapít
+- old: a „jogerőre emelkedésének” szövegrész helyébe a véglegessé válásának” szöveg,
+  new: a „jogerőre emelkedésének” szövegrész helyébe a „véglegessé válásának” szöveg,
+- old: megállapított – 182. § (1) bekezdés g) pontja.”
+  new: megállapított – 182. § (1) bekezdés g) pontja.
+- old: g) 31/B. § (2d) bekezdésében a „jogerőre emelkedésétől” szövegrész helyébe a „véglegessé válásától szöveg,
+  new: g) 31/B. § (2d) bekezdésében a „jogerőre emelkedésétől” szövegrész helyébe a „véglegessé válásától” szöveg,
+- old: helyébe a közhírré teszi” szöveg,
+  new: helyébe a „közhírré teszi” szöveg,
+- old: vagyonvédelmi, valamint magánnyomozói tevékenységre vonatkozó közigazgatási hatósági eljárási szabályokat
+  new: vagyonvédelmi, valamint magánnyomozói tevékenységre vonatkozó közigazgatási hatósági eljárási szabályokat”
+- old: a „honlapján közhírré tesz” szöveg, a „hirdetmény” szövegrész helyébe a „közhírré tett közlemény szöveg,
+  new: a „honlapján közhírré tesz” szöveg, a „hirdetmény” szövegrész helyébe a „közhírré tett közlemény” szöveg,
+- old: '(1b) A klímavédelemért felelős hatóság ellenőrzésre jogosult alkalmazottja (a továbbiakban: ellenőr) az ellenőrzés,'
+  new: '„(1b) A klímavédelemért felelős hatóság ellenőrzésre jogosult alkalmazottja (a továbbiakban: ellenőr) az ellenőrzés,'
+- old: szerinti bűncselekményi kör tekintetében büntetlen előéletű.”
+  new: szerinti bűncselekményi kör tekintetében büntetlen előéletű.
+- old: 'szóló 2016. évi CL. törvény (a továbbiakban: Ákr.) szöveg,'
+  new: 'szóló 2016. évi CL. törvény (a továbbiakban: Ákr.)” szöveg,'
+- old: b) 17. § (2) bekezdésében a „jogerős” szövegrész helyébe a „véglegessé vált” szöveg, a bírósági” szövegrész
+  new: b) 17. § (2) bekezdésében a „jogerős” szövegrész helyébe a „véglegessé vált” szöveg, a „bírósági” szövegrész
 - after:
   - j) hatósági bizonyítvány kiállítása
   old: során.
   new: során.”
+- old: alá vett szöveg, a „lefoglalást” szövegrész helyébe a „zár alá vételt” szöveg
+  new: alá vett” szöveg, a „lefoglalást” szövegrész helyébe a „zár alá vételt” szöveg
+- old: (3) Ha harmadik személy javára a Földforgalmi törvényen, más törvényen vagy megállapodáson alapuló elővásárlási
+  new: „(3) Ha harmadik személy javára a Földforgalmi törvényen, más törvényen vagy megállapodáson alapuló elővásárlási
+- after:
+  - jóváhagyott információhordozók és feladathordozók tankönyvvé nyilvánításának rendjét
+  old: (rendeletben határozza meg.)
+  new: (rendeletben határozza meg.)”
+- old: p) a bizalmi felügyelet által vezetett nyilvántartás tartalmával és a bizalmi szolgáltatás nyújtásával összefüggő
+  new: „p) a bizalmi felügyelet által vezetett nyilvántartás tartalmával és a bizalmi szolgáltatás nyújtásával összefüggő
+- old: „81. § (1) A közlekedési hatóság a vasúti pálya és tartozékai, az üzemi létesítmények és a vasúti járművek üzem-
+  new: „(1) A közlekedési hatóság a vasúti pálya és tartozékai, az üzemi létesítmények és a vasúti járművek üzem-
