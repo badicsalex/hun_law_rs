@@ -39,25 +39,21 @@ use crate::{
 
 impl Act {
     pub fn convert_block_amendments(&mut self) -> Result<()> {
-        for act_child in &mut self.children {
-            if let ActChild::Article(article) = act_child {
-                article
-                    .convert_block_amendments()
-                    .with_elem_context("Could not convert block amendments", article)?;
-            }
-        }
-        Ok(())
+        self.articles_mut().try_for_each(|article| {
+            article
+                .convert_block_amendments()
+                .with_elem_context("Could not convert block amendments", article)
+        })
     }
 }
 
 impl Article {
     pub fn convert_block_amendments(&mut self) -> Result<()> {
-        for paragraph in &mut self.children {
+        self.children.iter_mut().try_for_each(|paragraph| {
             paragraph
                 .convert_block_amendments()
-                .with_elem_context("Could not convert block amendments", paragraph)?;
-        }
-        Ok(())
+                .with_elem_context("Could not convert block amendments", paragraph)
+        })
     }
 }
 
