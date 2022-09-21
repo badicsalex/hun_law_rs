@@ -279,18 +279,15 @@ impl<T: TextOutput> TextOutput for Vec<T> {
     }
 }
 
-impl Default for TextOutputParams {
-    fn default() -> Self {
+impl TextOutputParams {
+    pub fn new(width: usize, is_colored: bool) -> Self {
         Self {
-            width: 105,
+            width,
+            is_colored,
             indentation_level: 0,
             indent_next_line: true,
-            is_colored: false,
         }
     }
-}
-
-impl TextOutputParams {
     fn write_indent_if_needed(&self, writer: &mut impl Write) -> Result<()> {
         if self.indent_next_line {
             for _ in 0..self.indentation_level {
@@ -333,13 +330,6 @@ impl TextOutputParams {
     pub fn indented(&self) -> Self {
         Self {
             indentation_level: self.indentation_level + 1,
-            ..self.clone()
-        }
-    }
-
-    pub fn colored(&self) -> Self {
-        Self {
-            is_colored: true,
             ..self.clone()
         }
     }

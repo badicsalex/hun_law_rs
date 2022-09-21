@@ -59,6 +59,9 @@ struct HunLawArgs {
     /// Cache directory used to store downloaded MK issue pdfs
     #[clap(long, short, default_value = "./cache")]
     cache_dir: PathBuf,
+    /// Width of the word-wrapped text (applies to text output only)
+    #[clap(long, short, default_value = "105")]
+    width: usize,
 }
 
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
@@ -100,7 +103,7 @@ fn main() -> Result<()> {
         let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
         if args.parse_until == ParsingStep::PdfLines {
             let mut output = get_output(&mk_name, &args)?;
-            pages.cli_output(args.output_format, &mut output)?;
+            pages.cli_output(args.width, args.output_format, &mut output)?;
             continue;
         }
 
@@ -176,18 +179,18 @@ fn process_single_act(
     act_raw.remove_double_empty_lines();
 
     if args.parse_until == ParsingStep::ActLines {
-        return act_raw.cli_output(args.output_format, output);
+        return act_raw.cli_output(args.width, args.output_format, output);
     }
 
     let mut act = parse_act_structure(&act_raw)?;
 
     if args.parse_until == ParsingStep::Structure {
-        return act.cli_output(args.output_format, output);
+        return act.cli_output(args.width, args.output_format, output);
     }
 
     act.add_semantic_info()?;
     act.convert_block_amendments()?;
-    act.cli_output(args.output_format, output)
+    act.cli_output(args.width, args.output_format, output)
 }
 
 fn confirm(s: &str) -> Result<bool> {

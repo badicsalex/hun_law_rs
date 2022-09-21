@@ -53,11 +53,16 @@ impl Default for OutputFormat {
 }
 
 pub trait CliOutput: Sized + Serialize {
-    fn cli_output(self, output_type: OutputFormat, target: &mut impl Write) -> Result<()> {
+    fn cli_output(
+        self,
+        width: usize,
+        output_type: OutputFormat,
+        target: &mut impl Write,
+    ) -> Result<()> {
         match output_type {
-            OutputFormat::Plain => self.cli_output_plain(false, false, target)?,
-            OutputFormat::Colored => self.cli_output_plain(false, true, target)?,
-            OutputFormat::TestPlain => self.cli_output_plain(true, false, target)?,
+            OutputFormat::Plain => self.cli_output_plain(width, false, false, target)?,
+            OutputFormat::Colored => self.cli_output_plain(width, false, true, target)?,
+            OutputFormat::TestPlain => self.cli_output_plain(width, true, false, target)?,
             OutputFormat::Json => serde_json::to_writer(target, &self)?,
             OutputFormat::Yaml => singleton_yaml::to_writer(target, &self)?,
         };
@@ -65,6 +70,7 @@ pub trait CliOutput: Sized + Serialize {
     }
     fn cli_output_plain(
         self,
+        width: usize,
         testing_tags: bool,
         color: bool,
         target: &mut impl Write,
@@ -74,6 +80,7 @@ pub trait CliOutput: Sized + Serialize {
 impl CliOutput for Vec<PageOfLines> {
     fn cli_output_plain(
         self,
+        width: usize,
         testing_tags: bool,
         color: bool,
         target: &mut impl Write,
@@ -86,7 +93,7 @@ impl CliOutput for Vec<PageOfLines> {
                 page_no + 1,
                 num_pages,
             )?;
-            page.cli_output_plain(testing_tags, color, target)?;
+            page.cli_output_plain(width, testing_tags, color, target)?;
         }
         Ok(())
     }
@@ -95,6 +102,7 @@ impl CliOutput for Vec<PageOfLines> {
 impl CliOutput for PageOfLines {
     fn cli_output_plain(
         self,
+        _width: usize,
         testing_tags: bool,
         _color: bool,
         target: &mut impl Write,
@@ -113,6 +121,7 @@ impl CliOutput for PageOfLines {
 impl CliOutput for ActRawText {
     fn cli_output_plain(
         self,
+        _width: usize,
         testing_tags: bool,
         _color: bool,
         target: &mut impl Write,
@@ -134,12 +143,12 @@ impl CliOutput for ActRawText {
 impl CliOutput for Act {
     fn cli_output_plain(
         self,
+        width: usize,
         _testing_tags: bool,
         color: bool,
         target: &mut impl Write,
     ) -> Result<()> {
-        let params = TextOutputParams::default().indented();
-        let params = if color { params.colored() } else { params };
+        let params = TextOutputParams::new(width, color).indented();
         self.write_as_text(target, params)
     }
 }
