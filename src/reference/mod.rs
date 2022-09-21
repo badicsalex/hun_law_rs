@@ -23,6 +23,8 @@ pub mod unchecked;
 #[cfg(test)]
 mod tests;
 
+use std::fmt::Debug;
+
 use anyhow::{bail, ensure, Result};
 use serde::{Deserialize, Serialize};
 
@@ -43,7 +45,7 @@ use self::{
 /// - There are no 'gaps' in the parts, apart from a potentially missing paragraph
 ///   (in that case, it means the 'default paragraph' of the article
 /// - It might be a range, but the range part is always the last part of the reference
-#[derive(Debug, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Default, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(try_from = "UncheckedReference")]
 #[serde(into = "UncheckedReference")]
 pub struct Reference {
@@ -324,5 +326,20 @@ impl Reference {
             other.into()
         };
         result.try_into()
+    }
+}
+
+impl Debug for Reference {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut debug_struct = f.debug_struct("Reference");
+        self.act.map(|act| debug_struct.field("act", &act));
+        self.article
+            .map(|article| debug_struct.field("article", &article));
+        self.paragraph
+            .map(|paragraph| debug_struct.field("paragraph", &paragraph));
+        self.point.map(|point| debug_struct.field("point", &point));
+        self.subpoint
+            .map(|subpoint| debug_struct.field("subpoint", &subpoint));
+        debug_struct.finish()
     }
 }

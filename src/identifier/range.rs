@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use std::fmt::{Debug, Display};
+
 use serde::{Deserialize, Serialize};
 
 use super::IdentifierCommon;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(from = "IdentifierRangeSerdeHelper<T>")]
 #[serde(into = "IdentifierRangeSerdeHelper<T>")]
 pub struct IdentifierRange<T: IdentifierCommon> {
@@ -55,6 +57,19 @@ pub trait IdentifierRangeFrom<T: IdentifierCommon>: Sized {
 impl<T: IdentifierCommon> IdentifierRangeFrom<T> for IdentifierRange<T> {
     fn from_range(start: T, end: T) -> Self {
         Self { start, end }
+    }
+}
+
+impl<T: IdentifierCommon + Display> Debug for IdentifierRange<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.is_range() {
+            f.debug_struct("Range")
+                .field("start", &self.start)
+                .field("end", &self.end)
+                .finish()
+        } else {
+            Display::fmt(&self.start, f)
+        }
     }
 }
 
