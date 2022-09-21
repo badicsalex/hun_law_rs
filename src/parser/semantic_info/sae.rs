@@ -21,7 +21,7 @@ use crate::{
     identifier::IdentifierCommon,
     reference::Reference,
     semantic_info::{OutgoingReference, SemanticInfo, SpecialPhrase},
-    structure::{SAEBody, SubArticleElement},
+    structure::{ChildrenCommon, SAEBody, SubArticleElement},
     util::walker::SAEVisitorMut,
 };
 
@@ -47,7 +47,7 @@ pub struct SemanticInfoAdder<'a> {
 }
 
 impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
-    fn on_enter<IT: IdentifierCommon, CT>(
+    fn on_enter<IT: IdentifierCommon, CT: ChildrenCommon>(
         &mut self,
         _position: &Reference,
         element: &mut SubArticleElement<IT, CT>,
@@ -87,7 +87,7 @@ impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
         Ok(())
     }
 
-    fn on_exit<IT: IdentifierCommon, CT>(
+    fn on_exit<IT: IdentifierCommon, CT: ChildrenCommon>(
         &mut self,
         _position: &Reference,
         element: &mut SubArticleElement<IT, CT>,

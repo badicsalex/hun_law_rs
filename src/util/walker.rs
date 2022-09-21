@@ -18,8 +18,9 @@ use crate::{
     identifier::IdentifierCommon,
     reference::{to_element::ReferenceToElement, Reference},
     structure::{
-        Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, NumericPointChildren,
-        NumericSubpointChildren, ParagraphChildren, SAEBody, SubArticleElement,
+        Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, ChildrenCommon,
+        NumericPointChildren, NumericSubpointChildren, ParagraphChildren, SAEBody,
+        SubArticleElement,
     },
 };
 use anyhow::Result;
@@ -32,7 +33,7 @@ macro_rules! impl_walk_sae {
         /// SAEs in Block Amendments are not traversed into.
         pub trait $Visitor {
             /// Called on entering any SAE
-            fn on_enter<IT: IdentifierCommon, CT>(
+            fn on_enter<IT: IdentifierCommon, CT: ChildrenCommon>(
                 &mut self,
                 position: &Reference,
                 element: $($ref_type)* SubArticleElement<IT,CT>
@@ -42,7 +43,7 @@ macro_rules! impl_walk_sae {
             }
 
             /// Called on exiting a SAE which have children
-            fn on_exit<IT: IdentifierCommon, CT>(
+            fn on_exit<IT: IdentifierCommon, CT: ChildrenCommon>(
                 &mut self,
                 position: &Reference,
                 element: $($ref_type)* SubArticleElement<IT,CT>
@@ -83,7 +84,7 @@ macro_rules! impl_walk_sae {
         impl<IT, CT> $Trait for SubArticleElement<IT, CT>
         where
             Self: DebugContextString + ReferenceToElement,
-            CT: $Trait,
+            CT: ChildrenCommon + $Trait,
             IT: IdentifierCommon,
         {
             fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
@@ -202,7 +203,7 @@ mod tests {
     }
 
     impl SAEVisitor for TestVisitor {
-        fn on_enter<IT: IdentifierCommon, CT>(
+        fn on_enter<IT: IdentifierCommon, CT: ChildrenCommon>(
             &mut self,
             position: &Reference,
             element: &SubArticleElement<IT, CT>,
@@ -217,7 +218,7 @@ mod tests {
             Ok(())
         }
 
-        fn on_exit<IT: IdentifierCommon, CT>(
+        fn on_exit<IT: IdentifierCommon, CT: ChildrenCommon>(
             &mut self,
             position: &Reference,
             _element: &SubArticleElement<IT, CT>,
@@ -298,7 +299,7 @@ mod tests {
     struct TestVisitorMut {}
 
     impl SAEVisitorMut for TestVisitorMut {
-        fn on_enter<IT: IdentifierCommon, CT>(
+        fn on_enter<IT: IdentifierCommon, CT: ChildrenCommon>(
             &mut self,
             position: &Reference,
             element: &mut SubArticleElement<IT, CT>,
@@ -311,7 +312,7 @@ mod tests {
             Ok(())
         }
 
-        fn on_exit<IT: IdentifierCommon, CT>(
+        fn on_exit<IT: IdentifierCommon, CT: ChildrenCommon>(
             &mut self,
             _position: &Reference,
             element: &mut SubArticleElement<IT, CT>,

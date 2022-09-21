@@ -238,6 +238,7 @@ impl Article {
 pub struct SubArticleElement<IdentifierType, ChildrenType>
 where
     IdentifierType: IdentifierCommon,
+    ChildrenType: ChildrenCommon,
 {
     // Note: no serde(default) here, because IdentifierType doesn't usually have a default.
     // Except for paragraphs, which is an Option<NumericIdentifier>.
@@ -249,13 +250,19 @@ where
     pub semantic_info: SemanticInfo,
 }
 
-impl<IT: IdentifierCommon, CT> SubArticleElement<IT, CT> {
+pub trait ChildrenCommon {
+    fn is_empty(&self) -> bool;
+}
+
+impl<IT: IdentifierCommon, CT: ChildrenCommon> SubArticleElement<IT, CT> {
+    /// Returns true if:
+    /// - the body is text and it's empty,
+    /// - it does not have any children, or
+    /// - all its children is empty (recursively)
     pub fn is_empty(&self) -> bool {
         match &self.body {
             SAEBody::Text(t) => t.is_empty(),
-            // TODO: What to do if there are no children?
-            // TODO: What to do if all children are empty?
-            SAEBody::Children { .. } => false,
+            SAEBody::Children { children, .. } => children.is_empty(),
         }
     }
 }
@@ -294,11 +301,32 @@ pub enum ParagraphChildren {
     StructuralBlockAmendment(StructuralBlockAmendment),
 }
 
+impl ChildrenCommon for ParagraphChildren {
+    fn is_empty(&self) -> bool {
+        match self {
+            ParagraphChildren::AlphabeticPoint(x) => x.iter().all(|c| c.is_empty()),
+            ParagraphChildren::NumericPoint(x) => x.iter().all(|c| c.is_empty()),
+            ParagraphChildren::QuotedBlock(x) => x.is_empty(),
+            ParagraphChildren::BlockAmendment(x) => x.is_empty(),
+            ParagraphChildren::StructuralBlockAmendment(x) => x.is_empty(),
+        }
+    }
+}
+
 pub type AlphabeticPoint = SubArticleElement<AlphabeticIdentifier, AlphabeticPointChildren>;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum AlphabeticPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
     NumericSubpoint(Vec<NumericSubpoint>),
+}
+
+impl ChildrenCommon for AlphabeticPointChildren {
+    fn is_empty(&self) -> bool {
+        match self {
+            AlphabeticPointChildren::AlphabeticSubpoint(x) => x.iter().all(|c| c.is_empty()),
+            AlphabeticPointChildren::NumericSubpoint(x) => x.iter().all(|c| c.is_empty()),
+        }
+    }
 }
 
 pub type NumericPoint = SubArticleElement<NumericIdentifier, NumericPointChildren>;
@@ -307,15 +335,37 @@ pub enum NumericPointChildren {
     AlphabeticSubpoint(Vec<AlphabeticSubpoint>),
 }
 
+impl ChildrenCommon for NumericPointChildren {
+    fn is_empty(&self) -> bool {
+        match self {
+            NumericPointChildren::AlphabeticSubpoint(x) => x.iter().all(|c| c.is_empty()),
+        }
+    }
+}
+
 pub type AlphabeticSubpoint =
     SubArticleElement<PrefixedAlphabeticIdentifier, AlphabeticSubpointChildren>;
 // Creating different empty enums is necessary to distinguish between this class and NumericSubpoint
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AlphabeticSubpointChildren {}
 
+impl ChildrenCommon for AlphabeticSubpointChildren {
+    fn is_empty(&self) -> bool {
+        // This is an empty enum, the function shall never run.
+        match *self {}
+    }
+}
+
 pub type NumericSubpoint = SubArticleElement<NumericIdentifier, NumericSubpointChildren>;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NumericSubpointChildren {}
+
+impl ChildrenCommon for NumericSubpointChildren {
+    fn is_empty(&self) -> bool {
+        // This is an empty enum, the function shall never run.
+        match *self {}
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct QuotedBlock {
@@ -335,6 +385,12 @@ pub struct BlockAmendment {
     pub wrap_up: Option<String>,
 }
 
+impl BlockAmendment {
+    pub fn is_empty(&self) -> bool {
+        self.children.is_empty()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum BlockAmendmentChildren {
     Paragraph(Vec<Paragraph>),
@@ -344,6 +400,18 @@ pub enum BlockAmendmentChildren {
     NumericSubpoint(Vec<NumericSubpoint>),
 }
 
+impl ChildrenCommon for BlockAmendmentChildren {
+    fn is_empty(&self) -> bool {
+        match self {
+            BlockAmendmentChildren::Paragraph(x) => x.iter().all(|c| c.is_empty()),
+            BlockAmendmentChildren::AlphabeticPoint(x) => x.iter().all(|c| c.is_empty()),
+            BlockAmendmentChildren::NumericPoint(x) => x.iter().all(|c| c.is_empty()),
+            BlockAmendmentChildren::AlphabeticSubpoint(x) => x.iter().all(|c| c.is_empty()),
+            BlockAmendmentChildren::NumericSubpoint(x) => x.iter().all(|c| c.is_empty()),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StructuralBlockAmendment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -351,6 +419,13 @@ pub struct StructuralBlockAmendment {
     pub children: Vec<ActChild>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wrap_up: Option<String>,
+}
+
+impl StructuralBlockAmendment {
+    pub fn is_empty(&self) -> bool {
+        // TODO: This is not actually recursive.
+        self.children.is_empty()
+    }
 }
 
 macro_rules! simple_dbg_ctx {

@@ -26,7 +26,7 @@ use crate::{
         PrefixedAlphabeticIdentifier,
     },
     structure::{
-        AlphabeticPointChildren, AlphabeticSubpointChildren, NumericPointChildren,
+        AlphabeticPointChildren, AlphabeticSubpointChildren, ChildrenCommon, NumericPointChildren,
         NumericSubpointChildren, ParagraphChildren, SAEBody, SubArticleElement,
     },
     util::{indentedline::IndentedLine, QuoteCheck},
@@ -53,7 +53,7 @@ impl<TI: Debug> SAEParseParams<TI> {
 
 pub trait SAEParser: Debug {
     type IdentifierType: IdentifierCommon;
-    type ChildrenType;
+    type ChildrenType: ChildrenCommon;
 
     /// Parse the header into and identifier, and return it, along with the rest of the first line
     fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)>;

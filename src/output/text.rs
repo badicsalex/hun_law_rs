@@ -23,9 +23,9 @@ use crate::{
     semantic_info::{OutgoingReference, SemanticInfo},
     structure::{
         Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, Article,
-        BlockAmendment, BlockAmendmentChildren, NumericPointChildren, NumericSubpointChildren,
-        ParagraphChildren, QuotedBlock, SAEBody, SAEHeaderString, StructuralBlockAmendment,
-        StructuralElement, SubArticleElement, Subtitle,
+        BlockAmendment, BlockAmendmentChildren, ChildrenCommon, NumericPointChildren,
+        NumericSubpointChildren, ParagraphChildren, QuotedBlock, SAEBody, SAEHeaderString,
+        StructuralBlockAmendment, StructuralElement, SubArticleElement, Subtitle,
     },
 };
 
@@ -122,7 +122,7 @@ impl<IT, CT> TextOutput for SubArticleElement<IT, CT>
 where
     SubArticleElement<IT, CT>: SAEHeaderString,
     IT: IdentifierCommon,
-    CT: TextOutput,
+    CT: ChildrenCommon + TextOutput,
 {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         params.write_header(writer, &format!("{:<5}", self.header_string()))?;
