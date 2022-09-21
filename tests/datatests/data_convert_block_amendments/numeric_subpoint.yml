@@ -15,7 +15,7 @@ children:
               BlockAmendment:
                 intro: "Az MFB Zrt. – az (1) bekezdésben meghatározott körben – az alábbi pénzügyi szolgáltatási tevékenységeket végezheti: d) a 2. § b) és c) pontjában szereplő feladatához közvetlenül kapcsolódóan"
                 children:
-                  NumericPoint:
+                  NumericSubpoint:
                     - identifier: "1"
                       body: "pénzforgalmi szolgáltatások nyújtása – a pénzforgalmi számlavezetés kivételével – kizárólag jogi személy, egyéni cég és egyéni vállalkozó részére,"
           semantic_info:

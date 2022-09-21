@@ -23,7 +23,9 @@ use super::{
 };
 use crate::{
     identifier::{range::IdentifierRange, ArticleIdentifier, IdentifierCommon, NumericIdentifier},
-    parser::structure::sae::{AlphabeticPointParser, AlphabeticSubpointParser, SAEParseParams},
+    parser::structure::sae::{
+        AlphabeticPointParser, AlphabeticSubpointParser, NumericSubpointParser, SAEParseParams,
+    },
     reference::{
         parts::{AnyReferencePart, RefPartPoint, RefPartSubpoint},
         structural::{StructuralReference, StructuralReferenceElement},
@@ -139,7 +141,7 @@ fn convert_simple_block_amendment(
                 .0
         }
         AnyReferencePart::Subpoint(RefPartSubpoint::Numeric(id)) => {
-            NumericPointParser
+            NumericSubpointParser
                 .extract_multiple(lines, create_parse_params(id))?
                 .0
         }
