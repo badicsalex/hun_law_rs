@@ -114,6 +114,9 @@ impl TextOutput for Article {
             params.write_wrapped_line(writer, &format!("     [{}]", title))?
         }
         self.children.write_as_text(writer, params.clone())?;
+        if self.children.is_empty() {
+            params.write_newline(writer)?;
+        }
         Ok(())
     }
 }
