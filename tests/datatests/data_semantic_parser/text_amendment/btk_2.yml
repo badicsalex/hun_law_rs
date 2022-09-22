@@ -1,0 +1,57 @@
+---
+text:      "A Btk. 38. § (3) bekezdésében, 39. § (1) bekezdésében, 47. § (3) bekezdésében, 50. § (4) bekezdésében, az „ítéletében” szövegrész helyébe az „az ügydöntő határozatában” szöveg lép."
+positions: '  <  > <                    >  <                    >  <                    >  <                    >                                                                               '
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+- act:
+    year: 2012
+    number: 100
+- act:
+    year: 2012
+    number: 100
+  article: '38'
+  paragraph: '3'
+- act:
+    year: 2012
+    number: 100
+  article: '39'
+  paragraph: '1'
+- act:
+    year: 2012
+    number: 100
+  article: '47'
+  paragraph: '3'
+- act:
+    year: 2012
+    number: 100
+  article: '50'
+  paragraph: '4'
+expected_special_phrase:
+  TextAmendment:
+    positions:
+    - act:
+        year: 2012
+        number: 100
+      article: '38'
+      paragraph: '3'
+    - act:
+        year: 2012
+        number: 100
+      article: '39'
+      paragraph: '1'
+    - act:
+        year: 2012
+        number: 100
+      article: '47'
+      paragraph: '3'
+    - act:
+        year: 2012
+        number: 100
+      article: '50'
+      paragraph: '4'
+    replacements:
+    - from: ítéletében
+      to: az ügydöntő határozatában
