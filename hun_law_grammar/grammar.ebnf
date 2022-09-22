@@ -238,6 +238,7 @@ SubtitleToken = "alcímmel" | "alcímekkel" | "alcím-megjelölése" | "alcím-m
 ReferenceWithSubtitle =
     SubtitleToken "és" article:SingleArticleReference |
     article:SingleArticleReference "és" Az ["azt" | "azokat"] "megelőző" SubtitleToken |
+    Quote SubtitleToken |
     SubtitleToken ;
 
 AmendmentSuffix =

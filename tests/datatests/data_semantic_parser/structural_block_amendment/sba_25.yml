@@ -1,0 +1,20 @@
+---
+text:      "A Büntető Törvénykönyvről szóló 2012. évi C. törvény a 239/A. §-t követően a következő „Járművezetés az eltiltás hatálya alatt” alcímmel egészül ki:"
+positions: "                                <                  >   <        >                                                                                   "
+expected_references:
+- act:
+    year: 2012
+    number: 100
+- act:
+    year: 2012
+    number: 100
+  article: 239/A
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        SubtitleAfterArticle: 239/A
+    pure_insertion: true
