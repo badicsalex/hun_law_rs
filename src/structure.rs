@@ -493,7 +493,7 @@ impl SAEHeaderString for Paragraph {
 
 impl SAEHeaderString for NumericPoint {
     fn header_string(&self) -> String {
-        format!("{}.", self.identifier.with_slash())
+        format!("{}.", self.identifier)
     }
 }
 
@@ -505,7 +505,7 @@ impl SAEHeaderString for AlphabeticPoint {
 
 impl SAEHeaderString for NumericSubpoint {
     fn header_string(&self) -> String {
-        format!("{}.", self.identifier.with_slash())
+        format!("{}.", self.identifier)
     }
 }
 
