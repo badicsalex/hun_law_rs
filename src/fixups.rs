@@ -141,10 +141,11 @@ impl Fixup {
 
         // This is needed in the case of e.g. 'aaa' -> 'aa', where both prefix and postifx would be 2.
         let rest_of_old: String = self.old.chars().skip(prefix_len as usize).collect();
+        let rest_of_new: String = self.new.chars().skip(prefix_len as usize).collect();
         let postfix_len = rest_of_old
             .chars()
             .rev()
-            .zip(self.new.chars().rev())
+            .zip(rest_of_new.chars().rev())
             .take_while(|(o, n)| o == n)
             .count() as i64;
 
@@ -454,5 +455,27 @@ mod tests {
         assert!(result.indent() > 0.0);
         assert!(!result.is_bold());
         assert!(!result.is_justified());
+    }
+
+    #[test]
+    fn test_postfix_removal_bug() {
+        let fixup = Fixup {
+            after: vec![],
+            old: "abbbb".to_owned(),
+            new: "ab".to_owned(),
+        };
+        let line = IndentedLine::from_parts(
+            "abbbb"
+                .chars()
+                .map(|c| IndentedLinePart {
+                    dx: 4.8,
+                    content: c,
+                    bold: false,
+                })
+                .collect(),
+            false,
+        );
+        let new_line = fixup.apply_to_line(&line).unwrap();
+        assert_eq!(new_line.content(), "ab");
     }
 }
