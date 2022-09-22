@@ -1,0 +1,20 @@
+---
+text:      "A Btk. XXIII. Fejezete a következő alcímmel egészül ki:"
+positions: '  <  >                                                 '
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+- act:
+    year: 2012
+    number: 100
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      structural_element:
+        AtTheEndOfChapter: '23'
+    pure_insertion: true

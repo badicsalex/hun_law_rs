@@ -101,6 +101,15 @@ pub fn convert_subtitle_block_amendment(
         bail!("No article found at all for BlockAmendmentWithSubtitle")
     };
 
+    let structural_element = match structural_element {
+        StructuralReferenceElement::Part(id) => StructuralReferenceElement::AtTheEndOfPart(id),
+        StructuralReferenceElement::Title(id) => StructuralReferenceElement::AtTheEndOfTitle(id),
+        StructuralReferenceElement::Chapter(id) => {
+            StructuralReferenceElement::AtTheEndOfChapter(id)
+        }
+        _ => structural_element,
+    };
+
     let position = StructuralReference {
         act: Some(convert_act_reference(
             abbreviation_cache,

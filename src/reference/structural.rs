@@ -39,5 +39,8 @@ pub enum StructuralReferenceElement {
     SubtitleAfterArticle(ArticleIdentifier),
     SubtitleBeforeArticle(ArticleIdentifier),
     SubtitleBeforeArticleInclusive(ArticleIdentifier),
+    AtTheEndOfPart(NumericIdentifier),
+    AtTheEndOfTitle(NumericIdentifier),
+    AtTheEndOfChapter(NumericIdentifier),
     Article(IdentifierRange<ArticleIdentifier>),
 }
