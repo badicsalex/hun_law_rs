@@ -55,7 +55,7 @@ children:
                             article: "1"
                             paragraph: "3"
                 - identifier: b
-                  body: "2. §-a, valamint"
+                  body: "2. §-a, valamint a"
                   semantic_info:
                     outgoing_references:
                       - start: 0

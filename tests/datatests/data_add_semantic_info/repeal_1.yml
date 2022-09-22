@@ -90,7 +90,7 @@ children:
                             article: "91"
                             paragraph: "2"
                 - identifier: d
-                  body: "a Büntető Törvénykönyvről szóló 2012. évi C. törvény (a továbbiakban: Btk.) 1. §-a,"
+                  body: "a Büntető Törvénykönyvről szóló 2012. évi C. törvény (a továbbiakban: Btk.) 1. §-a, továbbá"
                   semantic_info:
                     outgoing_references:
                       - start: 40

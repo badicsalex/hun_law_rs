@@ -145,7 +145,16 @@ impl<'a> SemanticInfoAdder<'a> {
 
 fn assemble_to_be_parsed_text(prefix: &str, mut middle: &str, postfix: &str) -> String {
     // The order here matters, so as to handle the ", és"-style cases
-    for junk_str in [" és", " valamint", " illetve", " vagy", ";", ","] {
+    for junk_str in [
+        " a",
+        " és",
+        " valamint",
+        " illetve",
+        " vagy",
+        " továbbá",
+        ";",
+        ",",
+    ] {
         if let Some(new_middle) = middle.strip_suffix(junk_str) {
             middle = new_middle;
         }
