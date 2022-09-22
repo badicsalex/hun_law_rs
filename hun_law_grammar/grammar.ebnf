@@ -179,7 +179,7 @@ SubtitleReference = id:SubtitleId  "." SubtitleSuffix;
 SubtitleSuffix = "alcím" {HunLower};
 # !HunLower is there to prevent "alcímekkel" from matching
 @no_skip_ws
-SubtitleSuffixPossessive = "alcíme" !HunLower;
+SubtitleSuffixPossessive = ("alcíme"| "alcím címe" ) !HunLower ;
 
 @string
 ChapterId = Roman [["/"] 'A'..'Z'];

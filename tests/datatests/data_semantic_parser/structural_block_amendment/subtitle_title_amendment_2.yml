@@ -1,0 +1,16 @@
+---
+text:      "A büntetőeljárásról szóló 2017. évi XC. törvény „Kézbesítés postai úton, kézbesítési fikció” alcím címe helyébe a következő rendelkezés lép:"
+positions: '                          <                   >                                                                                             '
+expected_references:
+- act:
+    year: 2017
+    number: 90
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2017
+        number: 90
+      structural_element:
+        SubtitleTitle: Kézbesítés postai úton, kézbesítési fikció
+    pure_insertion: false
