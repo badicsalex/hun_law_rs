@@ -112,6 +112,7 @@ fn update_fixups<'a>(
             .collect();
         info!("Added fixup, old: '{}'", original_lines[change_pos]);
         info!("             new: '{}'", new_lines[change_pos]);
+        info!("     context len: {:?}", context_len);
         fixups.add(Fixup {
             after,
             old: original_lines[change_pos].to_owned(),
