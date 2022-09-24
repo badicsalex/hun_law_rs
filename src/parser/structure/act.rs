@@ -71,7 +71,7 @@ pub fn parse_complex_body(
                         .map(ParseState::StructuralElement)
                 })
                 .or_else(|| {
-                    SubtitleParserFactory::try_create_from_header(line, prev_line_is_empty)
+                    SubtitleParserFactory::try_create_from_header(line, prev_line_is_empty, context)
                         .map(ParseState::Subtitle)
                 })
                 .or_else(|| {

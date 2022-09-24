@@ -59,7 +59,9 @@ children:
                           - identifier: "3"
                             body: "Aki az (1) bekezdésben meghatározott bűncselekményt fegyveresen vagy felfegyverkezve tömegzavargás résztvevőjeként követi el, öt évtől tíz évig terjedő szabadságvesztéssel büntetendő."
                           - identifier: "4"
-                            body: "A büntetés tíz évtől húsz évig terjedő szabadságvesztés, ha a (2) vagy (3) bekezdésben meghatározott bűncselekmény halált okoz. Határzárral kapcsolatos építési munka akadályozása"
+                            body: A büntetés tíz évtől húsz évig terjedő szabadságvesztés, ha a (2) vagy (3) bekezdésben meghatározott bűncselekmény halált okoz.
+                    - Subtitle:
+                        title: Határzárral kapcsolatos építési munka akadályozása
                     - Article:
                         identifier: 352/C
                         children:

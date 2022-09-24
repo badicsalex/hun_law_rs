@@ -17,12 +17,15 @@ use lazy_regex::regex_captures;
 
 use crate::{identifier::NumericIdentifier, structure::Subtitle, util::indentedline::IndentedLine};
 
+use super::act::ParsingContext;
+
 pub enum SubtitleParserFactory {}
 
 impl SubtitleParserFactory {
     pub fn try_create_from_header(
         line: &IndentedLine,
         prev_line_is_empty: bool,
+        context: ParsingContext,
     ) -> Option<SubtitleParser> {
         if !line.is_bold() {
             None
@@ -33,7 +36,9 @@ impl SubtitleParserFactory {
                 identifier: Some(identifier.parse().ok()?),
                 title: title.to_string(),
             })
-        } else if prev_line_is_empty && line.content().chars().next()?.is_uppercase() {
+        } else if (prev_line_is_empty || context == ParsingContext::BlockAmendment)
+            && line.content().chars().next()?.is_uppercase()
+        {
             Some(SubtitleParser {
                 identifier: None,
                 title: line.content().to_string(),
