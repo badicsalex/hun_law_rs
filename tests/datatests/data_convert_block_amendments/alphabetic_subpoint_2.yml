@@ -1,0 +1,64 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+children:
+- Article:
+    identifier: '1'
+    children:
+    - body:
+        intro: 'A Büntető Törvénykönyvről szóló 2012. évi C. törvény 415. § (6) bekezdése helyébe a következő rendelkezés lép:'
+        children:
+          BlockAmendment:
+            children:
+              Paragraph:
+              - identifier: '6'
+                body:
+                  intro: E § alkalmazásában rossz minőségű a termék,
+                  children:
+                    AlphabeticPoint:
+                    - identifier: a
+                      body: ha a jogszabályban vagy az Európai Unió általános hatályú közvetlenül alkalmazandó jogi aktusában előírt biztonságossági vagy minőségi követelményeknek nem felel meg, vagy
+                    - identifier: b
+                      body:
+                        intro: az a) pontban meghatározott előírás hiányában akkor, ha
+                        children:
+                          AlphabeticSubpoint:
+                          - identifier: ba
+                            body: az emberi fogyasztás céljára előállított termék emberi fogyasztásra való alkalmatlanságát elfedték,
+                          - identifier: bb
+                            body: a termék minőségmegőrzési, fogyaszthatósági, illetve felhasználhatósági idejét jogellenesen meghosszabbították,
+                          - identifier: bc
+                            body: a terméket nem megengedett összetevő felhasználásával állították elő,
+                          - identifier: bd
+                            body: a terméket emberi fogyasztásra nem alkalmas anyagokból vagy termékekből állították elő emberi fogyasztás céljára, vagy
+                          - identifier: be
+                            body: a termék rendeltetésszerűen nem használható, vagy használhatósága jelentős mértékben csökkent.
+      semantic_info:
+        outgoing_references:
+        - start: 40
+          end: 63
+          reference:
+            act:
+              year: 2012
+              number: 100
+        - start: 64
+          end: 86
+          reference:
+            act:
+              year: 2012
+              number: 100
+            article: '415'
+            paragraph: '6'
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 2012
+                number: 100
+              article: '415'
+              paragraph: '6'
+            pure_insertion: false
