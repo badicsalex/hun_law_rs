@@ -45,24 +45,16 @@ CompoundReference =
 
 @position
 Reference =
-        article:ArticleReference
-        [paragraph:ParagraphReference]
-        [
-            (alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference)
-            [alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference]
-        ]
-    |
-        paragraph:ParagraphReference
-        [
-            (alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference)
-            [alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference]
-        ]
-    |
-        (alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference)
-        [alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference]
-    |
-        alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference
-    ;
+        article:ArticleReference >ReferenceWithParagraph |
+        article:ArticleReference [>ReferenceWithPoint] |
+        >ReferenceWithParagraph |
+        >ReferenceWithPoint |
+        >ReferenceWithSubpoint
+        ;
+
+ReferenceWithParagraph = paragraph:ParagraphReference [>ReferenceWithPoint];
+ReferenceWithPoint = (alphabetic_point:AlphabeticPointReference | numeric_point:NumericPointReference) [>ReferenceWithSubpoint];
+ReferenceWithSubpoint = alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference;
 
 ActReference =
     @:Abbreviation |
