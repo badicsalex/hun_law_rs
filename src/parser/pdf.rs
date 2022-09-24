@@ -25,7 +25,7 @@ const SAME_LINE_EPSILON: f64 = 0.2;
 const ADDITIONAL_EMPTY_LINE_THRESHOLD: f64 = 16.0;
 const DEFAULT_WIDTH_OF_SPACE: f64 = 0.25;
 const SPACE_DETECTION_THRESHOLD_RATIO: f64 = 0.5;
-const JUSTIFIED_DETECTION_THRESHOLD: f64 = 0.2;
+const JUSTIFIED_DETECTION_THRESHOLD_RATIO: f64 = 0.8;
 
 #[derive(Debug)]
 struct PositionedChar {
@@ -101,8 +101,10 @@ impl PdfExtractor {
             Some(x) => x,
             None => return EMPTY_LINE,
         };
-        let justified =
-            last_char.x + last_char.width + JUSTIFIED_DETECTION_THRESHOLD >= estimated_right_margin;
+        let justified = last_char.x
+            + last_char.width
+            + last_char.width_of_space * JUSTIFIED_DETECTION_THRESHOLD_RATIO
+            >= estimated_right_margin;
         let mut result = Vec::<IndentedLinePart>::new();
         let mut threshold_to_space = None;
         let mut prev_x = 0.0;
