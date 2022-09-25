@@ -269,7 +269,7 @@ impl<IT: IdentifierCommon, CT: ChildrenCommon> SubArticleElement<IT, CT> {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum SAEBody<ChildrenType> {
+pub enum SAEBody<ChildrenType: ChildrenCommon> {
     Text(String),
     Children {
         intro: String,
@@ -279,13 +279,13 @@ pub enum SAEBody<ChildrenType> {
     },
 }
 
-impl<T> From<&str> for SAEBody<T> {
+impl<T: ChildrenCommon> From<&str> for SAEBody<T> {
     fn from(s: &str) -> Self {
         SAEBody::Text(s.to_owned())
     }
 }
 
-impl<T> From<String> for SAEBody<T> {
+impl<T: ChildrenCommon> From<String> for SAEBody<T> {
     fn from(s: String) -> Self {
         SAEBody::Text(s)
     }
