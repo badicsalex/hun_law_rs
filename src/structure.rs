@@ -250,7 +250,7 @@ where
     pub semantic_info: SemanticInfo,
 }
 
-pub trait ChildrenCommon {
+pub trait ChildrenCommon: Clone + PartialEq + Eq {
     fn is_empty(&self) -> bool;
 }
 
