@@ -196,6 +196,11 @@ AnyStructuralReference =
     @:PartReference |
     @:TitleReference ;
 
+# ============ Other references ============
+
+AttachmentReference = id:Number "." AttachmentSuffix;
+@no_skip_ws
+AttachmentSuffix = "melléklet" {HunLower};
 
 # ============ BLOCK AMENDMENT PARSING ============
 
@@ -314,7 +319,7 @@ EnforcementDate =
         AzUpper
     )
     [ Dash "a" exception_references:Reference ("foglaltak"|"foglalt"|"meghatározott") ("kivétellel"|"kivételével"|"kivételekkel") Dash ]
-    [ references:Reference { ListSeparator references:Reference } ]
+    [ references:Reference { ListSeparator (references:Reference | AttachmentReference) } ]
     (
         date:Date |
         date:AfterPublication |

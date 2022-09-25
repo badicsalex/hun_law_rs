@@ -1,0 +1,47 @@
+# Attachment references are not actually processed, but the rest has to be extracted
+text:      "E törvény 1–130. §-a, 131. § a)–c), e) és h)–o) pontja, 132–279. §-a, 281–282. §-a és 1. melléklete 2021. január 1-jén lép hatályba."
+positions: '          <        >  <          >  <>    <          >  <          >  <          >                                                  '
+expected_references:
+- article:
+    start: '1'
+    end: '130'
+- article: '131'
+  point:
+    start: a
+    end: c
+- article: '131'
+  point: e
+- article: '131'
+  point:
+    start: h
+    end: o
+- article:
+    start: '132'
+    end: '279'
+- article:
+    start: '281'
+    end: '282'
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+    - article:
+        start: '1'
+        end: '130'
+    - article: '131'
+      point:
+        start: a
+        end: c
+    - article: '131'
+      point: e
+    - article: '131'
+      point:
+        start: h
+        end: o
+    - article:
+        start: '132'
+        end: '279'
+    - article:
+        start: '281'
+        end: '282'
+    date:
+      Date: 2021-01-01
