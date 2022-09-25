@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::{fmt::Display, str::FromStr};
+use std::{
+    fmt::{Debug, Display},
+    str::FromStr,
+};
 
 use anyhow::{bail, Error, Result};
 use serde::{Deserialize, Serialize};
@@ -23,7 +26,7 @@ use super::IdentifierCommon;
 
 pub type AlphabeticIdentifier = HungarianIdentifierChar;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
 pub enum HungarianIdentifierChar {
@@ -156,6 +159,12 @@ impl Display for HungarianIdentifierChar {
             HungarianIdentifierChar::Ty => write!(f, "ty"),
             HungarianIdentifierChar::Zs => write!(f, "zs"),
         }
+    }
+}
+
+impl Debug for HungarianIdentifierChar {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
     }
 }
 

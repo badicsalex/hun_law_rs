@@ -14,14 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::{fmt::Display, str::FromStr};
+use std::{
+    fmt::{Debug, Display},
+    str::FromStr,
+};
 
 use anyhow::{Error, Result};
 use serde::{Deserialize, Serialize};
 
 use super::{IdentifierCommon, NumericIdentifier};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
 pub struct ArticleIdentifier {
@@ -73,6 +76,12 @@ impl Display for ArticleIdentifier {
             write!(f, "{:?}:", book)?;
         }
         write!(f, "{}", self.identifier.with_slash())
+    }
+}
+
+impl Debug for ArticleIdentifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
     }
 }
 

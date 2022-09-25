@@ -14,14 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::{fmt::Display, str::FromStr};
+use std::{
+    fmt::{Debug, Display},
+    str::FromStr,
+};
 
 use anyhow::{anyhow, Error};
 use serde::{Deserialize, Serialize};
 
 use super::{HungarianIdentifierChar, IdentifierCommon};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
 pub struct PrefixedAlphabeticIdentifier {
@@ -81,8 +84,14 @@ impl Display for PrefixedAlphabeticIdentifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.prefix {
             Some(p) => write!(f, "{}{}", p, self.chr),
-            None => self.chr.fmt(f),
+            None => Display::fmt(&self.chr, f),
         }
+    }
+}
+
+impl Debug for PrefixedAlphabeticIdentifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
     }
 }
 

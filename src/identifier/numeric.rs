@@ -15,7 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use std::{
-    fmt::{Display, Formatter},
+    fmt::{Debug, Display, Formatter},
     str::FromStr,
 };
 
@@ -25,7 +25,7 @@ use serde::{Deserialize, Serialize};
 use super::{HungarianIdentifierChar, IdentifierCommon};
 use crate::util::{hun_str::ToHungarianString, DIGITS, ROMAN_DIGITS};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
 #[serde(try_from = "String")]
 pub struct NumericIdentifier {
@@ -129,6 +129,12 @@ impl Display for NumericIdentifier {
             Some(suffix) => write!(f, "{:?}{}", self.num, suffix),
             None => write!(f, "{:?}", self.num),
         }
+    }
+}
+
+impl Debug for NumericIdentifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
     }
 }
 
