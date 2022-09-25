@@ -234,7 +234,7 @@ impl Article {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SubArticleElement<IdentifierType, ChildrenType>
 where
     IdentifierType: IdentifierCommon,
@@ -252,6 +252,7 @@ where
 
 pub trait ChildrenCommon: Clone + PartialEq + Eq {
     fn is_empty(&self) -> bool;
+    fn parent_type_name() -> &'static str;
 }
 
 impl<IT: IdentifierCommon, CT: ChildrenCommon> SubArticleElement<IT, CT> {
@@ -311,6 +312,10 @@ impl ChildrenCommon for ParagraphChildren {
             ParagraphChildren::StructuralBlockAmendment(x) => x.is_empty(),
         }
     }
+
+    fn parent_type_name() -> &'static str {
+        "Paragraph"
+    }
 }
 
 pub type AlphabeticPoint = SubArticleElement<AlphabeticIdentifier, AlphabeticPointChildren>;
@@ -327,6 +332,10 @@ impl ChildrenCommon for AlphabeticPointChildren {
             AlphabeticPointChildren::NumericSubpoint(x) => x.iter().all(|c| c.is_empty()),
         }
     }
+
+    fn parent_type_name() -> &'static str {
+        "AlphabeticPoint"
+    }
 }
 
 pub type NumericPoint = SubArticleElement<NumericIdentifier, NumericPointChildren>;
@@ -341,6 +350,9 @@ impl ChildrenCommon for NumericPointChildren {
             NumericPointChildren::AlphabeticSubpoint(x) => x.iter().all(|c| c.is_empty()),
         }
     }
+    fn parent_type_name() -> &'static str {
+        "NumericPoint"
+    }
 }
 
 pub type AlphabeticSubpoint =
@@ -354,6 +366,9 @@ impl ChildrenCommon for AlphabeticSubpointChildren {
         // This is an empty enum, the function shall never run.
         match *self {}
     }
+    fn parent_type_name() -> &'static str {
+        "AlphabeticSubpoint"
+    }
 }
 
 pub type NumericSubpoint = SubArticleElement<NumericIdentifier, NumericSubpointChildren>;
@@ -364,6 +379,40 @@ impl ChildrenCommon for NumericSubpointChildren {
     fn is_empty(&self) -> bool {
         // This is an empty enum, the function shall never run.
         match *self {}
+    }
+    fn parent_type_name() -> &'static str {
+        "NumericSubpoint"
+    }
+}
+
+impl<IT, CT> Debug for SubArticleElement<IT, CT>
+where
+    IT: IdentifierCommon + std::fmt::Debug,
+    CT: ChildrenCommon + std::fmt::Debug,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut ds = f.debug_struct(CT::parent_type_name());
+        ds.field("identifier", &self.identifier);
+        match &self.body {
+            SAEBody::Text(text) => {
+                ds.field("body", text);
+            }
+            SAEBody::Children {
+                intro,
+                children,
+                wrap_up,
+            } => {
+                ds.field("intro", intro);
+                ds.field("children", children);
+                if let Some(wrap_up) = wrap_up {
+                    ds.field("wrap_up", &wrap_up);
+                };
+            }
+        }
+        if !self.semantic_info.is_empty() {
+            ds.field("si", &self.semantic_info);
+        }
+        ds.finish()
     }
 }
 
@@ -410,6 +459,10 @@ impl ChildrenCommon for BlockAmendmentChildren {
             BlockAmendmentChildren::NumericSubpoint(x) => x.iter().all(|c| c.is_empty()),
         }
     }
+
+    fn parent_type_name() -> &'static str {
+        "BlockAmendment"
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -440,16 +493,14 @@ macro_rules! simple_dbg_ctx {
 
 simple_dbg_ctx!(Act);
 simple_dbg_ctx!(Article);
-simple_dbg_ctx!(AlphabeticPoint);
-simple_dbg_ctx!(NumericPoint);
-simple_dbg_ctx!(AlphabeticSubpoint);
-simple_dbg_ctx!(NumericSubpoint);
-impl DebugContextString for Paragraph {
+
+impl<IT, CT> DebugContextString for SubArticleElement<IT, CT>
+where
+    IT: IdentifierCommon + std::fmt::Debug,
+    CT: ChildrenCommon,
+{
     fn debug_ctx(&self) -> String {
-        format!(
-            "Paragraph {}",
-            self.identifier.map_or("None".to_owned(), |i| i.to_string())
-        )
+        format!("{} {:?}", CT::parent_type_name(), self.identifier)
     }
 }
 
