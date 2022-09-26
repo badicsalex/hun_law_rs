@@ -73,6 +73,14 @@ impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
             }
             SAEBody::Children { intro, wrap_up, .. } => {
                 element.semantic_info = self.extract_semantic_info(intro)?;
+                if let Some(sp) = &element.semantic_info.special_phrase {
+                    match sp {
+                        // Only leave these in, the rest may not go into the intro section.
+                        SpecialPhrase::BlockAmendment(_)
+                        | SpecialPhrase::StructuralBlockAmendment(_) => (),
+                        _ => element.semantic_info.special_phrase = None,
+                    }
+                }
 
                 self.prefix_stack
                     .push(format!("{}{} ", self.prefix(), intro));
