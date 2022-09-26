@@ -77,6 +77,7 @@ pub fn parse_complex_body(
                 .or_else(|| {
                     article_parser_factory
                         .try_create_from_header(line, None)
+                        .ok()
                         .map(ParseState::Article)
                 })
         } else {

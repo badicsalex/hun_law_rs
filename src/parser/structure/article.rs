@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, bail, Result};
 use lazy_regex::regex;
 
 use super::{
@@ -46,32 +46,46 @@ impl ArticleParserFactory {
         &mut self,
         line: &IndentedLine,
         expected_identifier: Option<ArticleIdentifier>,
-    ) -> Option<ArticleParser> {
+    ) -> Result<ArticleParser> {
         if let Some(expected_indent) = self.article_header_indent {
             if !line.indent_less_or_eq(expected_indent) {
-                return None;
+                bail!(
+                    "Wrong indentation ({:?}>{:?})",
+                    line.indent(),
+                    expected_indent
+                );
             }
         }
 
-        let (identifier, rest) = line.parse_header::<ArticleIdentifier>(regex!(
-            "^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$"
-        ))?;
+        let (identifier, rest) = line
+            .parse_header::<ArticleIdentifier>(regex!(
+                "^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$"
+            ))
+            .ok_or_else(|| anyhow!("Line did not fit the regex"))?;
 
         if let Some(expected_id) = expected_identifier {
             if expected_id != identifier {
-                return None;
+                bail!(
+                    "Parsed identifier was not the expected one ({} != {})",
+                    identifier,
+                    expected_id
+                );
             }
         } else if let Some(last_id) = self.last_id {
             if !identifier.is_next_from(last_id) {
-                return None;
+                bail!(
+                    "Parsed identifier was not the expected one ({} not next from {})",
+                    identifier,
+                    last_id
+                );
             }
         } else if self.context == ParsingContext::FullAct && !identifier.is_first() {
-            return None;
+            bail!("Parsing a full act and article was not 1");
         }
 
         self.last_id = Some(identifier);
         self.article_header_indent = Some(line.indent());
-        Some(ArticleParser {
+        Ok(ArticleParser {
             identifier,
             lines: vec![rest],
             context: self.context,

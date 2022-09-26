@@ -163,9 +163,11 @@ fn convert_articles(first_id: ArticleIdentifier, lines: &[IndentedLine]) -> Resu
     let mut result = Vec::new();
     let mut parser = factory
         .try_create_from_header(&lines[0], Some(first_id))
-        .ok_or_else(|| anyhow!("First line could not be parsed into an article header"))?;
+        .with_context(|| {
+            anyhow!("First line of amendment could not be parsed into an article header",)
+        })?;
     for line in &lines[1..] {
-        if let Some(new_parser) = factory.try_create_from_header(line, None) {
+        if let Ok(new_parser) = factory.try_create_from_header(line, None) {
             result.push(parser.finish()?.into());
             parser = new_parser;
         } else {
