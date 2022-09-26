@@ -1,0 +1,12 @@
+text:      "Hatályát veszti a Büntető Törvénykönyvről szóló 1978. évi IV. törvény."
+positions: '                                                <                   > '
+expected_references:
+- act:
+    year: 1978
+    number: 4
+expected_special_phrase:
+  Repeal:
+    positions:
+    - act:
+        year: 1978
+        number: 4

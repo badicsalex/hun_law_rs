@@ -366,7 +366,7 @@ ArticleTitleAmendment =
 Repeal =
     ("Nem lép hatályba" | "Hatályát veszti")
     Az ActTitle act_reference:ActReference
-    references:Reference { ListSeparator references:Reference } [","]
+    [ references:Reference { ListSeparator references:Reference } [","] ]
     { [Az] texts:Quote ["szövegrész"] [ListSeparator]}
     "."
     ;

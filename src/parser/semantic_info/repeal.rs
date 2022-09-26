@@ -26,12 +26,16 @@ pub fn convert_repeal(
     abbreviation_cache: &AbbreviationCache,
     elem: &Repeal,
 ) -> Result<semantic_info::Repeal> {
-    let positions = elem
+    let mut positions: Vec<_> = elem
         .get_outgoing_references(abbreviation_cache)?
         .into_iter()
         .map(reference::Reference::from)
         .filter(|r| !r.is_act_only())
         .collect();
+    if positions.is_empty() {
+        let act_id = convert_act_reference(abbreviation_cache, &elem.act_reference)?;
+        positions.push(act_id.into());
+    }
 
     Ok(semantic_info::Repeal {
         positions,

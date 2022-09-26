@@ -343,3 +343,12 @@ impl Debug for Reference {
         debug_struct.finish()
     }
 }
+
+impl From<ActIdentifier> for Reference {
+    fn from(act: ActIdentifier) -> Self {
+        Reference {
+            act: Some(act),
+            ..Default::default()
+        }
+    }
+}
