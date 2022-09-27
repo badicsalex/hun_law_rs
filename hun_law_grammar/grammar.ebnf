@@ -36,7 +36,6 @@ ListOfSimpleExpressions = {contents:AnySimpleExpression}+;
 AnySimpleExpression =
     @:Quote |
     @:CompoundReference |
-    @:Abbreviation |
     @:AnyToken ;
 
 CompoundReference =
