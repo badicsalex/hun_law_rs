@@ -16,7 +16,7 @@
 
 use anyhow::{ensure, Result};
 use chrono::NaiveDate;
-use lazy_regex::regex_captures;
+use lazy_regex::{regex_captures, regex_is_match};
 use serde::Serialize;
 
 use crate::identifier::ActIdentifier;
@@ -221,12 +221,22 @@ pub fn parse_mk_pages_into_acts(pages: &[PageOfLines]) -> Result<Vec<ActRawText>
 
     let mut extractor = ActExtractor::new(publication_date);
     let mut extracting = false;
+    let mut seen_a_proper_header = false;
     for page in pages {
         for line in &page.lines {
+            // Thanks MK 2021/97 for your no act section error.
+            if !seen_a_proper_header
+                && line.is_bold()
+                && regex_is_match!("[0-9]+. évi [CLXVI]+. törvény", line.content())
+            {
+                extracting = true;
+            };
             if line_is_act_section_start(line) {
                 extracting = true;
+                seen_a_proper_header = true;
             } else if line_is_act_section_end(line) {
                 extracting = false;
+                seen_a_proper_header = true;
             } else if extracting {
                 extractor.feed_line(line);
             }
