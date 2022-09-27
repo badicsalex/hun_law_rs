@@ -1,0 +1,21 @@
+---
+text:      "A Polgári Törvénykönyvről szóló 2013. évi V. törvény (a továbbiakban: Ptk.) HARMADIK KÖNYV IV. Fejezete helyébe a következő Fejezet lép:"
+positions: '                                <                  >                                                                                    '
+expected_new_abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+- act:
+    year: 2013
+    number: 5
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      book: '3'
+      structural_element:
+        Chapter: '4'
+    pure_insertion: false

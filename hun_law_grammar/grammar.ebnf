@@ -174,17 +174,17 @@ SubtitleSuffixPossessive = ("alcíme"| "alcím címe" ) !HunLower ;
 
 @string
 ChapterId = Roman [["/"] 'A'..'Z'];
-ChapterReference = id:ChapterId  "." ChapterSuffix;
+ChapterReference = [book_id:HungarianOrdinalCapital ("Könyv" | "KÖNYV")] id:ChapterId  "." ChapterSuffix;
 @no_skip_ws
 ChapterSuffix = "Fejezet" {HunLower};
 
-PartReference = [book_id:HungarianOrdinalCapital "Könyv"] id:HungarianOrdinalCapital PartSuffix;
+PartReference = [book_id:HungarianOrdinalCapital ("Könyv" | "KÖNYV")] id:HungarianOrdinalCapital PartSuffix;
 @no_skip_ws
 PartSuffix = "Rész" {HunLower};
 
 @string
 TitleId = Roman [["/"] 'A'..'Z'];
-TitleReference = [book_id:HungarianOrdinalCapital "Könyv"] id:TitleId "." TitleSuffix;
+TitleReference = [book_id:HungarianOrdinalCapital ("Könyv" | "KÖNYV")] id:TitleId "." TitleSuffix;
 @no_skip_ws
 TitleSuffix = "Cím" {HunLower};
 
@@ -224,7 +224,7 @@ InsertionReference =
     ;
 
 TitleInsertionWithBook =
-    book_id:HungarianOrdinalCapital "Könyve"
+    book_id:HungarianOrdinalCapital ("Könyve" | "KÖNYVE")
     InsertionToken
     id:TitleId "." TitleSuffix;
 
@@ -245,7 +245,7 @@ AmendmentSuffixWithSubtitle =
     "helyébe a következő" ["rendelkezés és"] "alcím" ["és rendelkezés"] ("lép" | "lépnek") ;
 
 AmendmentSuffixWithStructural =
-    "helyébe a következő" ["cím" | "fejezet" | "rész"] "lép" ;
+    "helyébe a következő" ["cím" | "fejezet" | "Fejezet" | "rész"] "lép" ;
 
 InsertionSuffix =
     "egészül ki" |
@@ -429,6 +429,10 @@ HungarianOrdinal = "első" | "második" | "harmadik" | "negyedik" | "ötödik" |
 HungarianOrdinalCapital = "Első" | "Második" | "Harmadik" | "Negyedik" | "Ötödik" |
     "Hatodik" | "Hetedik"| "Nyolcadik" | "Kilencedik" | "Tizedik" |
     "Tizenegyedik" | "Tizenkettedik" | "Tizenharmadik" | "Tizennegyedik" | "Tizenötödik" |
-    "Tizenhatodik" | "Tizenhetedik" | "Tizennyolcadik" | "Tizenkilencedik";
+    "Tizenhatodik" | "Tizenhetedik" | "Tizennyolcadik" | "Tizenkilencedik" |
+    "ELSŐ" | "MÁSODIK" | "HARMADIK" | "NEGYEDIK" | "ÖTÖDIK" |
+    "HATODIK" | "HETEDIK"| "NYOLCADIK" | "KILENCEDIK" | "TIZEDIK" |
+    "TIZENEGYEDIK" | "TIZENKETTEDIK" | "TIZENHARMADIK" | "TIZENNEGYEDIK" | "TIZENÖTÖDIK" |
+    "TIZENHATODIK" | "TIZENHETEDIK" | "TIZENNYOLCADIK" | "TIZENKILENCEDIK" ;
 
 Dash = "−" | "–" | "-" ;

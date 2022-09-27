@@ -42,7 +42,11 @@ impl TryFrom<&ChapterReference> for StructuralReference {
     fn try_from(value: &ChapterReference) -> Result<Self, Self::Error> {
         Ok(Self {
             act: None,
-            book: None,
+            book: if let Some(book_id) = &value.book_id {
+                Some(StructuralElementType::Book.parse_identifier(book_id)?)
+            } else {
+                None
+            },
             structural_element: StructuralReferenceElement::Chapter(
                 StructuralElementType::Chapter.parse_identifier(&value.id)?,
             ),
