@@ -1,0 +1,19 @@
+---
+text:      "Hatályát veszti a Ptk. HARMADIK KÖNYV XXI. Címe."
+positions: "                  <  >                          "
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+- act:
+    year: 2013
+    number: 5
+expected_special_phrase:
+  StructuralRepeal:
+    position:
+      act:
+        year: 2013
+        number: 5
+      structural_element:
+        Title: '21'
