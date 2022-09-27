@@ -207,12 +207,12 @@ impl pdf_extract::OutputDev for PdfExtractor {
         &mut self,
         trm: &pdf_extract::Transform,
         width: f64,
-        spacing: f64,
+        _spacing: f64,
         font_size: f64,
         cid: pdf_extract::CharCode,
         char: &str,
     ) -> Result<(), pdf_extract::OutputError> {
-        let width = (width * font_size + spacing) * trm.m11;
+        let width = (width * font_size) * trm.m11;
         let width_of_space = self.width_of_space * trm.m11 * font_size;
         let x_start = trm.m31;
         let y = trm.m32;
