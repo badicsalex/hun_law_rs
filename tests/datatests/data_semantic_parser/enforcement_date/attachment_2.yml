@@ -1,0 +1,167 @@
+# Attachment references are not actually processed, but the rest has to be extracted
+text:      "Az 1. § (1) bekezdése, a 2–9. §, a 13. §, a 19. §, a 26. §, a 27. §, a 41. §, a 44. § 1., 2., 5., 7., 9., 13., 14., 19. és 20. pontja, a 46–53. §, az 56–61. §, a 63. § (1) bekezdése, a 66. §, a 67. §, a 69. §, a 71–73. §, a 75–77. §, a 78. § (2) bekezdése, a 80. §, a 82. §, a 83. § (1) bekezdése, a 84. § a)–h) és l) pontja, a 85. § d) pontja, a 86–136. §, a 140–156. §, a 157. § (1) bekezdése, a 158–182. §, a 183. § a) és b) pontja, a 184. §, a 186. §, a 189. §, a 190. §, a 192. §, az 1. melléklet, valamint a 3–6. melléklet 2020. december 26-án lép hatályba."
+positions: '   <                >    <    >    <   >    <   >    <   >    <   >    <   >    <      >  <>  <>  <>  <>  < >  < >  < >    <        >    <      >     <      >    <                 >    <   >    <   >    <   >    <      >    <      >    <                 >    <   >    <   >    <                 >    <         >    <       >    <             >    <       >    <        >    <                  >    <        >    <       >    <       >    <    >    <    >    <    >    <    >    <    >                                                                               '
+expected_references:
+- article: '1'
+  paragraph: '1'
+- article:
+    start: '2'
+    end: '9'
+- article: '13'
+- article: '19'
+- article: '26'
+- article: '27'
+- article: '41'
+- article: '44'
+  point: '1'
+- article: '44'
+  point: '2'
+- article: '44'
+  point: '5'
+- article: '44'
+  point: '7'
+- article: '44'
+  point: '9'
+- article: '44'
+  point: '13'
+- article: '44'
+  point: '14'
+- article: '44'
+  point: '19'
+- article: '44'
+  point: '20'
+- article:
+    start: '46'
+    end: '53'
+- article:
+    start: '56'
+    end: '61'
+- article: '63'
+  paragraph: '1'
+- article: '66'
+- article: '67'
+- article: '69'
+- article:
+    start: '71'
+    end: '73'
+- article:
+    start: '75'
+    end: '77'
+- article: '78'
+  paragraph: '2'
+- article: '80'
+- article: '82'
+- article: '83'
+  paragraph: '1'
+- article: '84'
+  point:
+    start: a
+    end: h
+- article: '84'
+  point: l
+- article: '85'
+  point: d
+- article:
+    start: '86'
+    end: '136'
+- article:
+    start: '140'
+    end: '156'
+- article: '157'
+  paragraph: '1'
+- article:
+    start: '158'
+    end: '182'
+- article: '183'
+  point: a
+- article: '183'
+  point: b
+- article: '184'
+- article: '186'
+- article: '189'
+- article: '190'
+- article: '192'
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+    - article: '1'
+      paragraph: '1'
+    - article:
+        start: '2'
+        end: '9'
+    - article: '13'
+    - article: '19'
+    - article: '26'
+    - article: '27'
+    - article: '41'
+    - article: '44'
+      point: '1'
+    - article: '44'
+      point: '2'
+    - article: '44'
+      point: '5'
+    - article: '44'
+      point: '7'
+    - article: '44'
+      point: '9'
+    - article: '44'
+      point: '13'
+    - article: '44'
+      point: '14'
+    - article: '44'
+      point: '19'
+    - article: '44'
+      point: '20'
+    - article:
+        start: '46'
+        end: '53'
+    - article:
+        start: '56'
+        end: '61'
+    - article: '63'
+      paragraph: '1'
+    - article: '66'
+    - article: '67'
+    - article: '69'
+    - article:
+        start: '71'
+        end: '73'
+    - article:
+        start: '75'
+        end: '77'
+    - article: '78'
+      paragraph: '2'
+    - article: '80'
+    - article: '82'
+    - article: '83'
+      paragraph: '1'
+    - article: '84'
+      point:
+        start: a
+        end: h
+    - article: '84'
+      point: l
+    - article: '85'
+      point: d
+    - article:
+        start: '86'
+        end: '136'
+    - article:
+        start: '140'
+        end: '156'
+    - article: '157'
+      paragraph: '1'
+    - article:
+        start: '158'
+        end: '182'
+    - article: '183'
+      point: a
+    - article: '183'
+      point: b
+    - article: '184'
+    - article: '186'
+    - article: '189'
+    - article: '190'
+    - article: '192'
+    date:
+      Date: 2020-12-26

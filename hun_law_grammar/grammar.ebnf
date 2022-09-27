@@ -197,7 +197,7 @@ AnyStructuralReference =
 
 # ============ Other references ============
 
-AttachmentReference = id:Number "." AttachmentSuffix;
+AttachmentReference = (start:Number Dash end:Number | id:Number) "." AttachmentSuffix;
 @no_skip_ws
 AttachmentSuffix = "melléklet" {HunLower};
 
