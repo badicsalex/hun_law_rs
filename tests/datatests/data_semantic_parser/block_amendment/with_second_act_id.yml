@@ -1,0 +1,32 @@
+---
+text:      "A Ptk. 3:189. § (3) bekezdése helyébe a következő rendelkezés lép, és a Ptk. 3:189. §-a a következő (4) bekezdéssel egészül ki:"
+positions: '  <  > <                    >                                                <                                    >            '
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+- act:
+    year: 2013
+    number: 5
+- act:
+    year: 2013
+    number: 5
+  article: 3:189
+  paragraph: '3'
+- act:
+    year: 2013
+    number: 5
+  article: 3:189
+  paragraph: '4'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      article: 3:189
+      paragraph:
+        start: '3'
+        end: '4'
+    pure_insertion: false
