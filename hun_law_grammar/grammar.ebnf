@@ -161,7 +161,7 @@ BeforeArticle = [Az] @:SingleArticleReference ("megelőzően" | "megelőző" );
 SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffixPossessive;
 
 @string
-RawTitle = {!(["című"] SubtitleSuffixPossessive) AnyToken};
+RawTitle = {!(["című"] SubtitleSuffixPossessive) !"§" AnyToken};
 
 @string
 SubtitleId = Number [["/"] 'A'..'Z'];
@@ -233,7 +233,7 @@ SubtitleToken = "alcímmel" | "alcímekkel" | "alcím-megjelölése" | "alcím-m
 
 ReferenceWithSubtitle =
     SubtitleToken "és" article:SingleArticleReference |
-    article:SingleArticleReference "és" Az ["azt" | "azokat"] "megelőző" SubtitleToken |
+    article:SingleArticleReference "és" Az ["azt" | "azokat" | "§-t"] "megelőző" SubtitleToken |
     Quote SubtitleToken |
     SubtitleToken ;
 

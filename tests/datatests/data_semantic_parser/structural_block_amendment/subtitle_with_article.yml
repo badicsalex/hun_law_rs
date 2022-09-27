@@ -1,0 +1,24 @@
+---
+text:      "A Vtv. 30. §-a és a §-t megelőző alcím címe helyébe a következő rendelkezés lép:"
+positions: '  <  > <     >                                                                  '
+abbreviations:
+  Vtv.:
+    year: 2005
+    number: 183
+expected_references:
+- act:
+    year: 2005
+    number: 183
+- act:
+    year: 2005
+    number: 183
+  article: '30'
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2005
+        number: 183
+      structural_element:
+        SubtitleBeforeArticleInclusive: '30'
+    pure_insertion: false
