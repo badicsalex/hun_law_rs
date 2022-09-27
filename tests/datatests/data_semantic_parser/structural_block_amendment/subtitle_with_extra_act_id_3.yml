@@ -1,0 +1,34 @@
+---
+text:      "A Cnytv. 46. §-a helyébe a következő rendelkezés lép, és a Cnytv. 19. alcíme a következő 46/A. és 46/B. §-sal egészül ki:"
+positions: '  <    > <     >                                                                         <   >    <         >            '
+abbreviations:
+  Cnytv.:
+    year: 2011
+    number: 181
+expected_references:
+- act:
+    year: 2011
+    number: 181
+- act:
+    year: 2011
+    number: 181
+  article: '46'
+- act:
+    year: 2011
+    number: 181
+  article: 46/A
+- act:
+    year: 2011
+    number: 181
+  article: 46/B
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 181
+      structural_element:
+        Article:
+          start: '46'
+          end: 46/B
+    pure_insertion: false

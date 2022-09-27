@@ -1,0 +1,30 @@
+---
+text:      "A Bjt. 134. §-a helyébe a következő rendelkezés lép, és a Bjt. 53. alcíme a következő 134/A. §-sal egészül ki:"
+positions: '  <  > <      >                                                                       <          >            '
+abbreviations:
+  Bjt.:
+    year: 2011
+    number: 162
+expected_references:
+- act:
+    year: 2011
+    number: 162
+- act:
+    year: 2011
+    number: 162
+  article: '134'
+- act:
+    year: 2011
+    number: 162
+  article: 134/A
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 162
+      structural_element:
+        Article:
+          start: '134'
+          end: 134/A
+    pure_insertion: false

@@ -268,7 +268,12 @@ BlockAmendment = AzAny ActTitle act_reference:ActReference [position:StructuralP
         # non-subtitle cases
         amended_reference:Reference AmendmentSuffix ":" |
         inserted_reference:InsertionReference InsertionSuffix ":" |
-        amended_reference:Reference AmendmentSuffix [","] ("és" | "valamint" | "egyidejűleg") inserted_reference:InsertionReference InsertionSuffix ":"
+        (
+            amended_reference:Reference AmendmentSuffix [","] ("és" | "valamint" | "egyidejűleg")
+            # this is usually the exact same as in the beginning
+            [ [ActReference] StructuralPositionReference ]
+            inserted_reference:InsertionReference InsertionSuffix ":"
+        )
     );
 
 BlockAmendmentWithSubtitle = AzAny ActTitle act_reference:ActReference [position:StructuralPositionReference]

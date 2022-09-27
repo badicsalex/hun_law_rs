@@ -1,0 +1,32 @@
+---
+text:      "A Szüt. 15. §-a helyébe a következő rendelkezés lép és a Szüt. „A szabadalmi ügyvivő kötelezettségei” alcíme a következő 15/A-15/D. §-sal egészül ki:"
+positions: '  <   > <     >                                                                                                          <              >            '
+abbreviations:
+  Szüt.:
+    year: 1995
+    number: 32
+expected_references:
+- act:
+    year: 1995
+    number: 32
+- act:
+    year: 1995
+    number: 32
+  article: '15'
+- act:
+    year: 1995
+    number: 32
+  article:
+    start: 15/A
+    end: 15/D
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 1995
+        number: 32
+      structural_element:
+        Article:
+          start: '15'
+          end: 15/D
+    pure_insertion: false
