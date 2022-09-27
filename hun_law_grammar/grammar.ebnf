@@ -259,6 +259,7 @@ StructuralPositionReference =
 # This rule means: skip everything until an ActReference,
 # except if the found reference continues with "hatálybalépésével összefüggő"
 # in that case, just continue skipping
+@memoize
 ActTitle =
     { !(ActReference !"hatálybalépésével összefüggő") AnyToken };
 
