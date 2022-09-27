@@ -1,0 +1,25 @@
+---
+text:      "A mezőgazdasági, agrár-vidékfejlesztési, valamint halászati támogatásokhoz és egyéb intézkedésekhez kapcsolódó eljárás egyes kérdéseiről szóló 2007. évi XVII. törvény (a továbbiakban: Eljárási Tv.) 25. § (1) bekezdése helyébe a következő rendelkezés lép:"
+positions: '                                                                                                                                               <                     >                                <                 >                                     '
+expected_new_abbreviations:
+  Eljárási Tv.:
+    year: 2007
+    number: 17
+expected_references:
+- act:
+    year: 2007
+    number: 17
+- act:
+    year: 2007
+    number: 17
+  article: '25'
+  paragraph: '1'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2007
+        number: 17
+      article: '25'
+      paragraph: '1'
+    pure_insertion: false
