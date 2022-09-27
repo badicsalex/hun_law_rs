@@ -21,7 +21,7 @@ use serde::Serialize;
 
 use crate::util::indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE};
 
-const SAME_LINE_EPSILON: f64 = 0.2;
+const SAME_LINE_EPSILON: f64 = 0.5;
 const ADDITIONAL_EMPTY_LINE_THRESHOLD: f64 = 16.0;
 const DEFAULT_WIDTH_OF_SPACE: f64 = 0.25;
 const SPACE_DETECTION_THRESHOLD_RATIO: f64 = 0.5;
