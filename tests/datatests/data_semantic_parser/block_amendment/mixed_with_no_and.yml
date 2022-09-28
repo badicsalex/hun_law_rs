@@ -1,0 +1,32 @@
+---
+text:      "Az Mt. 163. § (2) bekezdése helyébe a következő rendelkezés lép, a § a következő (3) bekezdéssel egészül ki:"
+positions: '   < > <                  >                                                      <             >            '
+abbreviations:
+  Mt.:
+    year: 2012
+    number: 1
+expected_references:
+- act:
+    year: 2012
+    number: 1
+- act:
+    year: 2012
+    number: 1
+  article: '163'
+  paragraph: '2'
+- act:
+    year: 2012
+    number: 1
+  article: '163'
+  paragraph: '3'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 1
+      article: '163'
+      paragraph:
+        start: '2'
+        end: '3'
+    pure_insertion: false
