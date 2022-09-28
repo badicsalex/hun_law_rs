@@ -94,7 +94,7 @@ impl TextOutput for Subtitle {
         if let Some(identifier) = self.identifier {
             params.write_wrapped_line(
                 writer,
-                &params.colorize(format!("{}. {}", identifier, self.title), BOLD),
+                &params.colorize(format!("{}. {}", identifier.with_slash(), self.title), BOLD),
             )?;
         } else {
             params.write_wrapped_line(writer, &params.colorize(&self.title, BOLD))?;
