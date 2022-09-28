@@ -1,0 +1,15 @@
+---
+text:      "A temetőkről és a temetkezésről szóló 1999. évi XLIII. törvény a következő alcímmel egészül ki:"
+positions: '                                      <                      >                                 '
+expected_references:
+- act:
+    year: 1999
+    number: 43
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 1999
+        number: 43
+      structural_element: AtTheEndOfAct
+    pure_insertion: true

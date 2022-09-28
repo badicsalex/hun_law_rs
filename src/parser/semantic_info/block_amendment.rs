@@ -93,12 +93,17 @@ pub fn convert_subtitle_block_amendment(
     abbreviation_cache: &AbbreviationCache,
     elem: &BlockAmendmentWithSubtitle,
 ) -> Result<semantic_info::StructuralBlockAmendment> {
+    let pure_insertion = elem.is_insertion.is_some();
     let structural_element = if let Some(article) = &elem.reference.article {
         StructuralReferenceElement::SubtitleBeforeArticleInclusive(article.try_into()?)
     } else if let Some(spr) = &elem.position {
         spr.try_into()?
+    } else if pure_insertion {
+        // This is a best effort thing and _might_ be caused by problems with the
+        // grammar, but unfortunately this really is somewhat common
+        StructuralReferenceElement::AtTheEndOfAct
     } else {
-        bail!("No article found at all for BlockAmendmentWithSubtitle")
+        bail!("No article found at all for amendment-type BlockAmendmentWithSubtitle")
     };
 
     let structural_element = match structural_element {
@@ -120,7 +125,7 @@ pub fn convert_subtitle_block_amendment(
     };
     Ok(semantic_info::StructuralBlockAmendment {
         position,
-        pure_insertion: elem.is_insertion.is_some(),
+        pure_insertion,
     })
 }
 

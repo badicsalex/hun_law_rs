@@ -42,5 +42,6 @@ pub enum StructuralReferenceElement {
     AtTheEndOfPart(NumericIdentifier),
     AtTheEndOfTitle(NumericIdentifier),
     AtTheEndOfChapter(NumericIdentifier),
+    AtTheEndOfAct,
     Article(IdentifierRange<ArticleIdentifier>),
 }
