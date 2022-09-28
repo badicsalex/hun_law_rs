@@ -1,0 +1,24 @@
+---
+text:      "Az Mt. a 9. §-t követően a következő 5/A. alcím címmel egészül ki:"
+positions: '   < >   <    >                                                   '
+abbreviations:
+  Mt.:
+    year: 2012
+    number: 1
+expected_references:
+- act:
+    year: 2012
+    number: 1
+- act:
+    year: 2012
+    number: 1
+  article: '9'
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 1
+      structural_element:
+        SubtitleAfterArticle: '9'
+    pure_insertion: true
