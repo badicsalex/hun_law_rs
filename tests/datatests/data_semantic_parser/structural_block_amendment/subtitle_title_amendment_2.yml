@@ -13,4 +13,5 @@ expected_special_phrase:
         number: 90
       structural_element:
         SubtitleTitle: Kézbesítés postai úton, kézbesítési fikció
+      title_only: true
     pure_insertion: false

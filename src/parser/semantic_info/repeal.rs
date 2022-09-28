@@ -54,6 +54,7 @@ pub fn convert_structural_repeal(
         )?),
         book: None,
         structural_element: (&elem.reference).try_into()?,
+        title_only: false,
     };
     Ok(semantic_info::StructuralRepeal { position })
 }

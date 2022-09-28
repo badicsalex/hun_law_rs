@@ -26,67 +26,52 @@ impl TryFrom<&AnyStructuralReference> for StructuralReference {
     type Error = anyhow::Error;
 
     fn try_from(value: &AnyStructuralReference) -> Result<Self, Self::Error> {
-        match value {
-            AnyStructuralReference::ChapterReference(x) => x.try_into(),
-            AnyStructuralReference::PartReference(x) => x.try_into(),
-            AnyStructuralReference::SubtitleReference(x) => x.try_into(),
-            AnyStructuralReference::SubtitleTitle(x) => x.try_into(),
-            AnyStructuralReference::TitleReference(x) => x.try_into(),
-        }
+        Ok(Self {
+            act: None,
+            book: if let Some(book_id) = &value.book_id {
+                Some(StructuralElementType::Book.parse_identifier(book_id)?)
+            } else {
+                None
+            },
+            structural_element: match &value.reference {
+                AnyStructuralReference_reference::ChapterReference(x) => x.try_into()?,
+                AnyStructuralReference_reference::PartReference(x) => x.try_into()?,
+                AnyStructuralReference_reference::SubtitleReference(x) => x.try_into()?,
+                AnyStructuralReference_reference::SubtitleTitle(x) => x.try_into()?,
+                AnyStructuralReference_reference::TitleReference(x) => x.try_into()?,
+            },
+            title_only: value.title_only.is_some(),
+        })
     }
 }
 
-impl TryFrom<&ChapterReference> for StructuralReference {
+impl TryFrom<&ChapterReference> for StructuralReferenceElement {
     type Error = anyhow::Error;
 
     fn try_from(value: &ChapterReference) -> Result<Self, Self::Error> {
-        Ok(Self {
-            act: None,
-            book: if let Some(book_id) = &value.book_id {
-                Some(StructuralElementType::Book.parse_identifier(book_id)?)
-            } else {
-                None
-            },
-            structural_element: StructuralReferenceElement::Chapter(
-                StructuralElementType::Chapter.parse_identifier(&value.id)?,
-            ),
-        })
+        Ok(StructuralReferenceElement::Chapter(
+            StructuralElementType::Chapter.parse_identifier(&value.id)?,
+        ))
     }
 }
 
-impl TryFrom<&PartReference> for StructuralReference {
+impl TryFrom<&PartReference> for StructuralReferenceElement {
     type Error = anyhow::Error;
 
     fn try_from(value: &PartReference) -> Result<Self, Self::Error> {
-        Ok(Self {
-            act: None,
-            book: if let Some(book_id) = &value.book_id {
-                Some(StructuralElementType::Book.parse_identifier(book_id)?)
-            } else {
-                None
-            },
-            structural_element: StructuralReferenceElement::Part(
-                StructuralElementType::Part { is_special: false }.parse_identifier(&value.id)?,
-            ),
-        })
+        Ok(StructuralReferenceElement::Part(
+            StructuralElementType::Part { is_special: false }.parse_identifier(&value.id)?,
+        ))
     }
 }
 
-impl TryFrom<&TitleReference> for StructuralReference {
+impl TryFrom<&TitleReference> for StructuralReferenceElement {
     type Error = anyhow::Error;
 
     fn try_from(value: &TitleReference) -> Result<Self, Self::Error> {
-        Ok(Self {
-            act: None,
-            book: if let Some(book_id) = &value.book_id {
-                Some(StructuralElementType::Book.parse_identifier(book_id)?)
-            } else {
-                None
-            },
-            structural_element: StructuralReferenceElement::Title(
-                StructuralElementType::Title.parse_identifier(&value.id)?,
-            ),
-        })
+        Ok(StructuralReferenceElement::Title(
+            StructuralElementType::Title.parse_identifier(&value.id)?,
+        ))
     }
 }
 
@@ -100,23 +85,20 @@ impl TryFrom<&TitleInsertionWithBook> for StructuralReference {
             structural_element: StructuralReferenceElement::Title(
                 StructuralElementType::Title.parse_identifier(&value.id)?,
             ),
+            title_only: false,
         })
     }
 }
 
-impl TryFrom<&SubtitleReference> for StructuralReference {
+impl TryFrom<&SubtitleReference> for StructuralReferenceElement {
     type Error = anyhow::Error;
 
     fn try_from(value: &SubtitleReference) -> Result<Self, Self::Error> {
-        Ok(Self {
-            act: None,
-            book: None,
-            structural_element: StructuralReferenceElement::SubtitleId(value.id.parse()?),
-        })
+        Ok(StructuralReferenceElement::SubtitleId(value.id.parse()?))
     }
 }
 
-impl TryFrom<&SubtitleTitle> for StructuralReference {
+impl TryFrom<&SubtitleTitle> for StructuralReferenceElement {
     type Error = anyhow::Error;
 
     fn try_from(value: &SubtitleTitle) -> Result<Self, Self::Error> {
@@ -124,11 +106,7 @@ impl TryFrom<&SubtitleTitle> for StructuralReference {
             SubtitleTitle_title::Quote(x) => x,
             SubtitleTitle_title::RawTitle(x) => x,
         };
-        Ok(Self {
-            act: None,
-            book: None,
-            structural_element: StructuralReferenceElement::SubtitleTitle(id.clone()),
-        })
+        Ok(StructuralReferenceElement::SubtitleTitle(id.clone()))
     }
 }
 

@@ -27,6 +27,8 @@ pub struct StructuralReference {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub book: Option<NumericIdentifier>,
     pub structural_element: StructuralReferenceElement,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub title_only: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

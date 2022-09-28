@@ -59,6 +59,7 @@ pub fn convert_block_amendment(
                 act: position.act(),
                 book: None,
                 structural_element: StructuralReferenceElement::Article(article_id),
+                title_only: false,
             },
             pure_insertion: elem.amended_reference.is_none(),
         }
@@ -122,6 +123,7 @@ pub fn convert_subtitle_block_amendment(
         )?),
         book: None,
         structural_element,
+        title_only: false,
     };
     Ok(semantic_info::StructuralBlockAmendment {
         position,

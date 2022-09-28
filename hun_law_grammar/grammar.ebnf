@@ -158,7 +158,7 @@ ListSeparator = ((["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," |
 
 AfterArticle = [Az] @:SingleArticleReference ("követően" | "követő" );
 BeforeArticle = [Az] @:SingleArticleReference ("megelőzően" | "megelőző" );
-SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffixPossessive;
+SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffix;
 
 @string
 RawTitle = {!(["című"] SubtitleSuffixPossessive) !"§" AnyToken};
@@ -168,32 +168,40 @@ SubtitleId = Number [["/"] 'A'..'Z'];
 SubtitleReference = id:SubtitleId  "." SubtitleSuffix;
 @no_skip_ws
 SubtitleSuffix = "alcím" {HunLower};
+
 # !HunLower is there to prevent "alcímekkel" from matching
 @no_skip_ws
 SubtitleSuffixPossessive = ("alcíme"| "alcím címe" ) !HunLower ;
 
 @string
 ChapterId = Roman [["/"] 'A'..'Z'];
-ChapterReference = [book_id:HungarianOrdinalCapital ("Könyv" | "KÖNYV")] id:ChapterId  "." ChapterSuffix;
+ChapterReference = id:ChapterId  "." ChapterSuffix;
 @no_skip_ws
 ChapterSuffix = "Fejezet" {HunLower};
 
-PartReference = [book_id:HungarianOrdinalCapital ("Könyv" | "KÖNYV")] id:HungarianOrdinalCapital PartSuffix;
+PartReference = id:HungarianOrdinalCapital PartSuffix;
 @no_skip_ws
 PartSuffix = "Rész" {HunLower};
 
 @string
 TitleId = Roman [["/"] 'A'..'Z'];
-TitleReference = [book_id:HungarianOrdinalCapital ("Könyv" | "KÖNYV")] id:TitleId "." TitleSuffix;
+TitleReference = id:TitleId "." TitleSuffix;
 @no_skip_ws
 TitleSuffix = "Cím" {HunLower};
 
+@no_skip_ws
+TitleOnlyToken = "címe" ['i'];
+
 AnyStructuralReference =
-    @:SubtitleReference |
-    @:SubtitleTitle |
-    @:ChapterReference |
-    @:PartReference |
-    @:TitleReference ;
+    [book_id:HungarianOrdinalCapital ("Könyv" | "KÖNYV")]
+    (
+        reference:SubtitleReference |
+        reference:SubtitleTitle |
+        reference:ChapterReference |
+        reference:PartReference |
+        reference:TitleReference
+    )
+    [title_only:TitleOnlyToken];
 
 # ============ Other references ============
 
@@ -228,6 +236,7 @@ TitleInsertionWithBook =
     InsertionToken
     id:TitleId "." TitleSuffix;
 
+# Note: conflicts with "TitleOnly" stuff due to the last term
 @no_skip_ws
 SubtitleToken = "alcímmel" | "alcímekkel" | "alcím-megjelölése" | "alcím-megjelölés" |  "alcíme" | "alcím" [" cím" {HunLower}];
 
@@ -285,7 +294,6 @@ BlockAmendmentWithSubtitle = AzAny ActTitle act_reference:ActReference [position
 
 BlockAmendmentStructural = AzAny ActTitle act_reference:ActReference
     (
-        # structural cases
         reference:AnyStructuralReference AmendmentSuffix ":" |
         reference:AnyStructuralReference AmendmentSuffixWithStructural ":" |
         InsertionToken reference:AnyStructuralReference is_insertion:InsertionSuffix ":" |
