@@ -312,7 +312,7 @@ DayInMonth =
     ;
 
 InlineRepeal =
-    ", és"
+    [","] "és"
     [("ez a" | "e") "törvény"]
     @:Date
     ["a"] "hatályát veszti"
