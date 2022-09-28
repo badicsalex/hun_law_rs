@@ -1,3 +1,4 @@
+use anyhow::{bail, Result};
 // Copyright (C) 2022, Alex Badics
 //
 // This file is part of Hun-Law.
@@ -59,10 +60,17 @@ impl SubtitleParser {
     pub fn feed_line(&mut self, line: &IndentedLine) {
         line.append_to(&mut self.title);
     }
-    pub fn finish(self) -> Subtitle {
-        Subtitle {
+    pub fn finish(self) -> Result<Subtitle> {
+        if self.title.len() > 1000 {
+            bail!(
+                "Probable corrupted read: way too long ({:?}) subtitle title detected: {}...",
+                self.title.len(),
+                self.title.chars().take(100).collect::<String>()
+            )
+        }
+        Ok(Subtitle {
             identifier: self.identifier,
             title: self.title,
-        }
+        })
     }
 }

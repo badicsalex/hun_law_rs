@@ -88,7 +88,7 @@ pub fn parse_complex_body(
                 ParseState::Preamble => (),
                 ParseState::Article(parser) => children.push(parser.finish()?.into()),
                 ParseState::StructuralElement(parser) => children.push(parser.finish().into()),
-                ParseState::Subtitle(parser) => children.push(parser.finish().into()),
+                ParseState::Subtitle(parser) => children.push(parser.finish()?.into()),
             }
             state = new_state;
         } else {
@@ -107,7 +107,7 @@ pub fn parse_complex_body(
         ParseState::Preamble => bail!("Parsing ended with preamble state"),
         ParseState::Article(parser) => children.push(parser.finish()?.into()),
         ParseState::StructuralElement(parser) => children.push(parser.finish().into()),
-        ParseState::Subtitle(parser) => children.push(parser.finish().into()),
+        ParseState::Subtitle(parser) => children.push(parser.finish()?.into()),
     }
 
     if context != ParsingContext::FullAct {
