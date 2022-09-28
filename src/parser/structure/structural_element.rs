@@ -48,16 +48,16 @@ impl StructuralElementParserFactory {
         Some(StructuralElementParser {
             identifier: self.element_type.parse_identifier(identifier_str).ok()?,
             title: String::new(),
-            element_type: self.element_type.clone(),
+            element_type: self.element_type,
         })
     }
 }
 
 #[derive(Debug)]
 pub struct StructuralElementParser {
-    identifier: NumericIdentifier,
-    title: String,
-    element_type: StructuralElementType,
+    pub identifier: NumericIdentifier,
+    pub title: String,
+    pub element_type: StructuralElementType,
 }
 
 impl StructuralElementParser {

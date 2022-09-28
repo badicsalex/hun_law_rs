@@ -20,6 +20,8 @@ use super::{
     act::{parse_complex_body, ParsingContext},
     article::ArticleParserFactory,
     sae::{NumericPointParser, ParagraphParser, SAEParser},
+    structural_element::{StructuralElementParser, StructuralElementParserFactory},
+    subtitle::SubtitleParserFactory,
 };
 use crate::{
     identifier::{range::IdentifierRange, ArticleIdentifier, IdentifierCommon, NumericIdentifier},
@@ -34,7 +36,7 @@ use crate::{
     semantic_info::SpecialPhrase,
     structure::{
         Act, ActChild, Article, BlockAmendment, BlockAmendmentChildren, Paragraph,
-        ParagraphChildren, SAEBody, StructuralBlockAmendment,
+        ParagraphChildren, SAEBody, StructuralBlockAmendment, StructuralElementType,
     },
     util::{debug::WithElemContext, indentedline::IndentedLine},
 };
@@ -112,6 +114,8 @@ fn convert_structural_block_amendment(
 ) -> Result<Vec<ActChild>> {
     if let StructuralReferenceElement::Article(article_id) = position.structural_element {
         convert_articles(article_id.first_in_range(), lines)
+    } else if position.title_only {
+        convert_title_only_block_amendment(position, lines)
     } else {
         // TODO: Absolutely no checks on the result here, we are basically hoping for the best.
         Ok(parse_complex_body(lines, ParsingContext::BlockAmendment)?.1)
@@ -176,6 +180,79 @@ fn convert_articles(first_id: ArticleIdentifier, lines: &[IndentedLine]) -> Resu
     }
     result.push(parser.finish()?.into());
     Ok(result)
+}
+
+fn convert_title_only_block_amendment(
+    position: &StructuralReference,
+    lines: &[IndentedLine],
+) -> Result<Vec<ActChild>> {
+    let result: ActChild = match position.structural_element {
+        StructuralReferenceElement::Part(identifier) => convert_title_only_se(
+            identifier,
+            StructuralElementType::Part { is_special: false },
+            lines,
+        ),
+        StructuralReferenceElement::Title(identifier) => {
+            convert_title_only_se(identifier, StructuralElementType::Title, lines)
+        }
+        StructuralReferenceElement::Chapter(identifier) => {
+            convert_title_only_se(identifier, StructuralElementType::Chapter, lines)
+        }
+        StructuralReferenceElement::SubtitleId(_)
+        | StructuralReferenceElement::SubtitleTitle(_)
+        | StructuralReferenceElement::SubtitleAfterArticle(_)
+        | StructuralReferenceElement::SubtitleBeforeArticle(_)
+        | StructuralReferenceElement::SubtitleBeforeArticleInclusive(_) => {
+            convert_subtitle_only_se(lines)?
+        }
+        StructuralReferenceElement::AtTheEndOfPart(_)
+        | StructuralReferenceElement::AtTheEndOfTitle(_)
+        | StructuralReferenceElement::AtTheEndOfChapter(_)
+        | StructuralReferenceElement::AtTheEndOfAct
+        | StructuralReferenceElement::Article(_) => bail!(
+            "Invalid strucutral reference for a title only amendment: {:?}",
+            position
+        ),
+    };
+    Ok(vec![result])
+}
+
+fn convert_title_only_se(
+    identifier: NumericIdentifier,
+    element_type: StructuralElementType,
+    lines: &[IndentedLine],
+) -> ActChild {
+    let mut parser = if let Some(parser) =
+        StructuralElementParserFactory::new(element_type).try_create_from_header(&lines[0])
+    {
+        parser
+    } else {
+        let mut parser = StructuralElementParser {
+            identifier,
+            title: "".to_string(),
+            element_type,
+        };
+        parser.feed_line(&lines[0]);
+        parser
+    };
+    for line in &lines[1..] {
+        parser.feed_line(line);
+    }
+    parser.finish().into()
+}
+
+fn convert_subtitle_only_se(lines: &[IndentedLine]) -> Result<ActChild> {
+    let mut parser = SubtitleParserFactory::try_create_from_header(
+        &lines[0],
+        true,
+        ParsingContext::BlockAmendment,
+    )
+    .ok_or_else(|| anyhow!("Title-only subtitle amendment could not be parsed into a subtitle"))?;
+
+    for line in &lines[1..] {
+        parser.feed_line(line);
+    }
+    Ok(parser.finish()?.into())
 }
 
 fn create_parse_params_paragraph(

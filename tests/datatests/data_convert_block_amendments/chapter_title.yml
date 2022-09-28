@@ -1,0 +1,68 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+children:
+- Article:
+    identifier: '1'
+    children:
+    - body:
+        intro: 'A mozgóképről szóló 2004. évi II. törvény IV. Fejezetének címe helyébe a következő rendelkezés lép:'
+        children:
+          StructuralBlockAmendment:
+            children:
+            - StructuralElement:
+                identifier: '4'
+                title: A KÖZTERÜLETEK ÉS AZ ÁLLAM TULAJDONÁBAN ÁLLÓ EGYÉB INGATLANOK FILMFORGATÁSI CÉLÚ HASZNÁLATA
+                element_type: Chapter
+      semantic_info:
+        outgoing_references:
+        - start: 25
+          end: 49
+          reference:
+            act:
+              year: 2004
+              number: 2
+        special_phrase:
+          StructuralBlockAmendment:
+            position:
+              act:
+                year: 2004
+                number: 2
+              structural_element:
+                Chapter: '4'
+              title_only: true
+            pure_insertion: false
+- Article:
+    identifier: '2'
+    children:
+    - body:
+        intro: 'A mozgóképről szóló 2004. évi II. törvény V. Fejezetének címe helyébe a következő rendelkezés lép:'
+        children:
+          StructuralBlockAmendment:
+            children:
+            - StructuralElement:
+                identifier: '5'
+                title: DOLGOK
+                element_type: Chapter
+      semantic_info:
+        outgoing_references:
+        - start: 25
+          end: 49
+          reference:
+            act:
+              year: 2004
+              number: 2
+        special_phrase:
+          StructuralBlockAmendment:
+            position:
+              act:
+                year: 2004
+                number: 2
+              structural_element:
+                Chapter: '5'
+              title_only: true
+            pure_insertion: false
