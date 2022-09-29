@@ -96,28 +96,33 @@ fn main() -> Result<()> {
 
     let mut everything_ok = true;
     for issue in &args.issues {
-        let mk_name = format!("mk_{}_{}", issue.year, issue.issue);
-        info!("Processing {}", mk_name);
-        let body = download_mk_issue(issue, &args.cache_dir)?;
-        info!("{:?} bytes", body.len());
-        let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
-        if args.parse_until == ParsingStep::PdfLines {
-            let mut output = get_output(&mk_name, &args)?;
-            pages.cli_output(args.width, args.output_format, &mut output)?;
-            continue;
-        }
-
-        for act in parse_mk_pages_into_acts(&pages)? {
-            let mut output = get_output(&act.identifier.to_string(), &args)?;
-            let process_result = if args.interactive {
-                process_single_act_interactive(act, &args, &mut output)
-            } else {
-                process_single_act(act, &args, &mut output)
-            };
-            if let Err(error) = process_result {
-                log::error!("{:?}", error);
-                everything_ok = false;
+        if let Err(e) = || -> Result<()> {
+            let mk_name = format!("mk_{}_{}", issue.year, issue.issue);
+            info!("Processing {}", mk_name);
+            let body = download_mk_issue(issue, &args.cache_dir)?;
+            info!("{:?} bytes", body.len());
+            let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
+            if args.parse_until == ParsingStep::PdfLines {
+                let mut output = get_output(&mk_name, &args)?;
+                pages.cli_output(args.width, args.output_format, &mut output)?;
+                return Ok(());
             }
+
+            for act in parse_mk_pages_into_acts(&pages)? {
+                let mut output = get_output(&act.identifier.to_string(), &args)?;
+                let process_result = if args.interactive {
+                    process_single_act_interactive(act, &args, &mut output)
+                } else {
+                    process_single_act(act, &args, &mut output)
+                };
+                if let Err(error) = process_result {
+                    log::error!("{:?}", error);
+                    everything_ok = false;
+                }
+            }
+            Ok(())
+        }() {
+            println!("{:#?}", e);
         }
     }
     if everything_ok {

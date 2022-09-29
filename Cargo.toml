@@ -21,7 +21,10 @@ from_variants = "1.0"
 hun_law_grammar = { path = "hun_law_grammar" }
 lazy-regex = "2.3"
 log = "0.4.14"
-pdf-extract-fhl = { path = "../pdf-extract-fhl" }
+euclid = "0.22.7"
+#pdf = { git = "https://github.com/pdf-rs/pdf", features= ["euclid"] }
+pdf_encoding = "0.3"
+pdf = { path = "../pdf/pdf", features= ["euclid"] }
 phf = "0.11"
 regex = "1"
 roman = "0.1"
