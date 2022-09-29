@@ -20,7 +20,6 @@ pub fn fix_character_coding_quirks(c: char) -> char {
         'õ' => 'ő', // Note the ~ on top of the first ő
         'Û' => 'Ű', // Note the ^ on top of the first ű
         'û' => 'ű', // Note the ^ on top of the first ű
-        //'\u{a0}' => ' ',
         _ => c,
     }
 }

@@ -63,7 +63,6 @@ impl ActualTextCollector {
     }
 
     pub fn finish(self, collector: &mut CharCollector) -> Result<()> {
-        println!("Actual text'd: {}", self.actual_text);
         if let Some(params) = self.params {
             collector.render_multiple_characters(
                 params.x,

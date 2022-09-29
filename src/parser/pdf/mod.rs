@@ -101,8 +101,6 @@ fn parse_bmc_as_actual_text(
     if tag.to_string() != "/Span" {
         return None;
     }
-    //println!("BMC ATC: {:?}", properties?.into_dictionary().ok()?.get("ActualText"));
-    //let actual_text = "xxx".to_string();
     let actual_text = properties?
     .into_dictionary()
     .ok()?
@@ -135,7 +133,6 @@ fn render_page(
     for op in contents.operations(pdf_file)? {
         match op {
             pdf::content::Op::BeginMarkedContent { tag, properties } => {
-                println!("{} {:?}", tag, properties);
                 let mct = if let Some(atc) = parse_bmc_as_actual_text(tag, properties) {
                     actual_text = Some(atc);
                     MarkedContentType::ActualText
@@ -145,7 +142,6 @@ fn render_page(
                 marked_content_stack.push(mct);
             }
             pdf::content::Op::EndMarkedContent => {
-                println!("{:?}", op);
                 let mct = marked_content_stack
                     .pop()
                     .ok_or_else(|| anyhow!("Marked content stack was empty when popped"))?;

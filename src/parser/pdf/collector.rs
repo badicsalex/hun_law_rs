@@ -120,10 +120,6 @@ impl CharCollector {
         let width_of_space = self.width_of_space * scaling;
         let content = fix_character_coding_quirks(c);
         if !content.is_whitespace() && self.crop.is_inside(x, y) {
-            println!(
-                "Char: {} x: {} y: {} w: {} ws: {}",
-                content, x, y, width, width_of_space
-            );
             self.chars.push(PositionedChar {
                 x,
                 y,
