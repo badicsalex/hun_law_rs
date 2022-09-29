@@ -14,17 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{anyhow, bail, Result};
-use euclid::Transform2D;
+use anyhow::{bail, Result};
 use log::debug;
-use pdf::{content::PdfSpace, primitive::PdfString};
 
 use crate::util::indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE};
 
 use super::{
     font::{FastFont, ToUnicodeResult},
     state::State,
-    util::{compare_float_for_sorting, fix_character_coding_quirks}, CropBox, PageOfLines,
+    util::{compare_float_for_sorting, fix_character_coding_quirks},
+    CropBox, PageOfLines,
 };
 
 const SAME_LINE_EPSILON: f32 = 0.5;
@@ -120,7 +119,7 @@ impl CharCollector {
     ) -> Result<()> {
         let width_of_space = self.width_of_space * scaling;
         let content = fix_character_coding_quirks(c);
-        if !content.is_ascii_whitespace() && self.crop.is_inside(x, y) {
+        if !content.is_whitespace() && self.crop.is_inside(x, y) {
             println!(
                 "Char: {} x: {} y: {} w: {} ws: {}",
                 content, x, y, width, width_of_space
@@ -137,33 +136,25 @@ impl CharCollector {
         Ok(())
     }
 
-    fn render_multiple_characters(
+    pub fn render_multiple_characters(
         &mut self,
         x: f32,
         y: f32,
-        w0: f32,
-        horizontal_scale: f32,
+        width: f32,
+        scaling: f32,
         chars: &str,
     ) -> Result<()> {
         // Horrible hack to separate ligatures into graphemes.
         // We don't really need to be exact, this 'x' information will probably not be used
-        let x_step = w0 / (chars.chars().count() as f32);
+        let x_step = width / (chars.chars().count() as f32);
         for (i, c) in chars.chars().enumerate() {
-            self.render_character(x + i as f32 * x_step, y, x_step, horizontal_scale, c)?
+            self.render_character(x + i as f32 * x_step, y, x_step, scaling, c)?
         }
         Ok(())
     }
 
-    fn render_cid(&mut self, state: &mut State, font: &FastFont, cid: u32) -> Result<()> {
-        let rendering_pre_matrix = Transform2D::<f32, PdfSpace, PdfSpace>::new(
-            state.horizontal_scale * state.font_size,
-            0.0,
-            0.0,
-            state.font_size,
-            0.0,
-            state.rise,
-        );
-        let rendering_matrix = rendering_pre_matrix.then(&state.text_matrix); /* TODO: .then(CTM) */
+    pub fn render_cid(&mut self, state: &mut State, font: &FastFont, cid: u32) -> Result<()> {
+        let rendering_matrix = state.rendering_matrix();
         let w0 = font.widths.get(cid as usize) / 1000.0;
         let spacing = state.char_spacing + if cid == 32 { state.word_spacing } else { 0.0 };
         match font.to_unicode(cid) {
@@ -187,28 +178,6 @@ impl CharCollector {
         state.advance(tx);
         Ok(())
     }
-
-    pub fn render_text(&mut self, state: &mut State, text: PdfString) -> Result<()> {
-        let data = text.as_bytes();
-        let font = state
-            .font
-            .as_ref()
-            .ok_or_else(|| anyhow!("Trying to draw text without a font"))?
-            .clone();
-        if font.is_cid {
-            data.chunks_exact(2).try_for_each(|s| -> Result<()> {
-                let cid = u16::from_be_bytes(s.try_into()?);
-                self.render_cid(state, &font, cid as u32)?;
-                Ok(())
-            })?;
-        } else {
-            data.iter()
-                .try_for_each(|cid| self.render_cid(state, &font, *cid as u32))?;
-        }
-
-        Ok(())
-    }
-
     pub fn font_changed(&mut self, font: &FastFont) -> Result<()> {
         self.width_of_space = font.widths.get(32) / 1000.;
         if self.width_of_space == 0.0 || self.width_of_space == 1.0 {

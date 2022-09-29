@@ -64,4 +64,17 @@ impl State {
     pub fn advance(&mut self, delta: f32) {
         self.text_matrix = Transform2D::translation(delta, 0.0).then(&self.text_matrix);
     }
+
+    pub fn rendering_matrix(&self) -> Transform2D<f32, PdfSpace, PdfSpace> {
+        let rendering_pre_matrix = Transform2D::<f32, PdfSpace, PdfSpace>::new(
+            self.horizontal_scale * self.font_size,
+            0.0,
+            0.0,
+            self.font_size,
+            0.0,
+            self.rise,
+        );
+        /* TODO: .then(CTM) */
+        rendering_pre_matrix.then(&self.text_matrix)
+    }
 }

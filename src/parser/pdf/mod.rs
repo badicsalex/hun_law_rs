@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+mod actual_text;
 mod collector;
 mod font;
 mod state;
@@ -21,11 +22,18 @@ mod util;
 
 use anyhow::{anyhow, Result};
 use euclid::Transform2D;
-use pdf::object::{PageRc, Resolve};
+use pdf::{
+    object::{PageRc, Resolve},
+    primitive::{Name, PdfString, Primitive},
+};
 use serde::Serialize;
 
-use self::{collector::CharCollector, font::FontCache, state::State};
-use crate::util::indentedline::IndentedLine;
+use self::{
+    collector::CharCollector,
+    font::{FastFont, FontCache},
+    state::State,
+};
+use crate::{parser::pdf::actual_text::ActualTextCollector, util::indentedline::IndentedLine};
 
 /// Box in PDF coorinates
 ///
@@ -61,6 +69,57 @@ pub struct PageOfLines {
     pub lines: Vec<IndentedLine>,
 }
 
+fn render_text(
+    state: &mut State,
+    text: PdfString,
+    mut render_cid: impl FnMut(&mut State, &FastFont, u32) -> Result<()>,
+) -> Result<()> {
+    let data = text.as_bytes();
+    let font = state
+        .font
+        .as_ref()
+        .ok_or_else(|| anyhow!("Trying to draw text without a font"))?
+        .clone();
+    if font.is_cid {
+        data.chunks_exact(2).try_for_each(|s| -> Result<()> {
+            let cid = u16::from_be_bytes(s.try_into()?);
+            render_cid(state, &font, cid as u32)?;
+            Ok(())
+        })?;
+    } else {
+        data.iter()
+            .try_for_each(|cid| render_cid(state, &font, *cid as u32))?;
+    }
+
+    Ok(())
+}
+
+fn parse_bmc_as_actual_text(
+    tag: Name,
+    properties: Option<Primitive>,
+) -> Option<ActualTextCollector> {
+    if tag.to_string() != "/Span" {
+        return None;
+    }
+    //println!("BMC ATC: {:?}", properties?.into_dictionary().ok()?.get("ActualText"));
+    //let actual_text = "xxx".to_string();
+    let actual_text = properties?
+    .into_dictionary()
+    .ok()?
+    .get("ActualText")?
+    .as_string()
+    .ok()?
+    .to_string_lossy()
+    .ok()?;
+    Some(ActualTextCollector::new(actual_text))
+}
+
+#[derive(Debug, PartialEq, Eq)]
+enum MarkedContentType {
+    ActualText,
+    Other,
+}
+
 fn render_page(
     page: PageRc,
     pdf_file: &impl Resolve,
@@ -71,11 +130,32 @@ fn render_page(
     let resources = page.resources()?;
     let mut state = State::default();
     let mut state_stack = Vec::new();
+    let mut marked_content_stack = Vec::new();
+    let mut actual_text = None;
     for op in contents.operations(pdf_file)? {
         match op {
-            pdf::content::Op::BeginMarkedContent { .. } => (),
-            pdf::content::Op::EndMarkedContent => (),
-            pdf::content::Op::MarkedContentPoint { .. } => (),
+            pdf::content::Op::BeginMarkedContent { tag, properties } => {
+                println!("{} {:?}", tag, properties);
+                let mct = if let Some(atc) = parse_bmc_as_actual_text(tag, properties) {
+                    actual_text = Some(atc);
+                    MarkedContentType::ActualText
+                } else {
+                    MarkedContentType::Other
+                };
+                marked_content_stack.push(mct);
+            }
+            pdf::content::Op::EndMarkedContent => {
+                println!("{:?}", op);
+                let mct = marked_content_stack
+                    .pop()
+                    .ok_or_else(|| anyhow!("Marked content stack was empty when popped"))?;
+                if mct == MarkedContentType::ActualText {
+                    if let Some(actual_text) = actual_text {
+                        actual_text.finish(collector)?;
+                    }
+                    actual_text = None;
+                }
+            }
             pdf::content::Op::Save => state_stack.push(state.clone()),
             pdf::content::Op::Restore => {
                 state = state_stack
@@ -132,13 +212,29 @@ fn render_page(
                 );
             }
             pdf::content::Op::TextDraw { text } => {
-                collector.render_text(&mut state, text)?;
+                if let Some(actual_text) = &mut actual_text {
+                    render_text(&mut state, text, |state, font, cid| {
+                        actual_text.render_cid(state, font, cid)
+                    })?;
+                } else {
+                    render_text(&mut state, text, |state, font, cid| {
+                        collector.render_cid(state, font, cid)
+                    })?;
+                }
             }
             pdf::content::Op::TextDrawAdjusted { array } => {
                 for item in array {
                     match item {
                         pdf::content::TextDrawAdjusted::Text(text) => {
-                            collector.render_text(&mut state, text)?
+                            if let Some(actual_text) = &mut actual_text {
+                                render_text(&mut state, text, |state, font, cid| {
+                                    actual_text.render_cid(state, font, cid)
+                                })?;
+                            } else {
+                                render_text(&mut state, text, |state, font, cid| {
+                                    collector.render_cid(state, font, cid)
+                                })?;
+                            }
                         }
                         pdf::content::TextDrawAdjusted::Spacing(delta) => {
                             state.advance(
