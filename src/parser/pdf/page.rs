@@ -200,7 +200,7 @@ where
             Op::EndText => (),
             Op::CharSpacing { char_space } => self.state.char_spacing = char_space,
             Op::WordSpacing { word_space } => self.state.word_spacing = word_space,
-            Op::TextScaling { horiz_scale } => self.state.horizontal_scale = horiz_scale,
+            Op::TextScaling { horiz_scale } => self.state.horizontal_scale = horiz_scale * 0.01,
             Op::Leading { leading } => self.state.leading = leading,
             Op::TextRise { rise } => self.state.rise = rise,
             Op::MoveTextPosition { translation } => {
