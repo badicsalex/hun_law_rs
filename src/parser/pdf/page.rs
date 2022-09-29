@@ -19,7 +19,7 @@ use std::rc::Rc;
 use anyhow::{anyhow, Result};
 use euclid::Transform2D;
 use pdf::{
-    content::Op,
+    content::{Op, TextDrawAdjusted},
     font::Font,
     object::{MaybeRef, PageRc, Resolve, Resources},
     primitive::PdfString,
@@ -140,7 +140,7 @@ where
     fn handle_op(&mut self, op: Op) -> Result<()> {
         match op {
             // --- Marked content ---
-            pdf::content::Op::BeginMarkedContent { tag, properties } => {
+            Op::BeginMarkedContent { tag, properties } => {
                 let mct = if let Some(atc) = ActualTextCollector::from_bmc_params(tag, properties) {
                     self.actual_text_collector = Some(atc);
                     MarkedContentType::ActualText
@@ -149,7 +149,7 @@ where
                 };
                 self.marked_content_stack.push(mct);
             }
-            pdf::content::Op::EndMarkedContent => {
+            Op::EndMarkedContent => {
                 let mct = self
                     .marked_content_stack
                     .pop()
@@ -163,8 +163,8 @@ where
             }
 
             // --- State stack ---
-            pdf::content::Op::Save => self.state_stack.push(self.state.clone()),
-            pdf::content::Op::Restore => {
+            Op::Save => self.state_stack.push(self.state.clone()),
+            Op::Restore => {
                 self.state = self
                     .state_stack
                     .pop()
@@ -172,7 +172,7 @@ where
             }
 
             // --- Font stuff ---
-            pdf::content::Op::GraphicsState { name } => {
+            Op::GraphicsState { name } => {
                 if let Some((font_ref, size)) = self
                     .resources()?
                     .graphics_states
@@ -183,7 +183,7 @@ where
                     self.set_font(&*self.pdf_file.get(font_ref)?, size)?;
                 }
             }
-            pdf::content::Op::TextFont { name, size } => {
+            Op::TextFont { name, size } => {
                 let resources = self.resources()?;
                 let font = resources
                     .fonts
@@ -193,28 +193,26 @@ where
             }
 
             // --- Positioning ---
-            pdf::content::Op::BeginText => {
+            Op::BeginText => {
                 self.state.text_matrix = Transform2D::identity();
                 self.state.line_matrix = Transform2D::identity();
             }
-            pdf::content::Op::EndText => (),
-            pdf::content::Op::CharSpacing { char_space } => self.state.char_spacing = char_space,
-            pdf::content::Op::WordSpacing { word_space } => self.state.word_spacing = word_space,
-            pdf::content::Op::TextScaling { horiz_scale } => {
-                self.state.horizontal_scale = horiz_scale
-            }
-            pdf::content::Op::Leading { leading } => self.state.leading = leading,
-            pdf::content::Op::TextRise { rise } => self.state.rise = rise,
-            pdf::content::Op::MoveTextPosition { translation } => {
+            Op::EndText => (),
+            Op::CharSpacing { char_space } => self.state.char_spacing = char_space,
+            Op::WordSpacing { word_space } => self.state.word_spacing = word_space,
+            Op::TextScaling { horiz_scale } => self.state.horizontal_scale = horiz_scale,
+            Op::Leading { leading } => self.state.leading = leading,
+            Op::TextRise { rise } => self.state.rise = rise,
+            Op::MoveTextPosition { translation } => {
                 self.state.set_both_matrices(
                     Transform2D::translation(translation.x, translation.y)
                         .then(&self.state.line_matrix),
                 );
             }
-            pdf::content::Op::SetTextMatrix { matrix } => {
+            Op::SetTextMatrix { matrix } => {
                 self.state.set_both_matrices(matrix.into());
             }
-            pdf::content::Op::TextNewline => {
+            Op::TextNewline => {
                 self.state.set_both_matrices(
                     Transform2D::translation(0.0, -self.state.leading)
                         .then(&self.state.line_matrix),
@@ -222,16 +220,16 @@ where
             }
 
             // --- Actual text ---
-            pdf::content::Op::TextDraw { text } => {
+            Op::TextDraw { text } => {
                 self.render_text(text)?;
             }
-            pdf::content::Op::TextDrawAdjusted { array } => {
+            Op::TextDrawAdjusted { array } => {
                 for item in array {
                     match item {
-                        pdf::content::TextDrawAdjusted::Text(text) => {
+                        TextDrawAdjusted::Text(text) => {
                             self.render_text(text)?;
                         }
-                        pdf::content::TextDrawAdjusted::Spacing(delta) => {
+                        TextDrawAdjusted::Spacing(delta) => {
                             self.state.advance(
                                 -delta * self.state.horizontal_scale * self.state.font_size
                                     / 1000.0,
