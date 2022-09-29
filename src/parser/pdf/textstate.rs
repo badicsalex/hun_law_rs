@@ -23,8 +23,7 @@ use pdf::content::PdfSpace;
 use super::font::FastFont;
 
 #[derive(Clone, Debug)]
-pub struct State {
-    // Text
+pub struct TextState {
     pub text_matrix: Transform2D<f32, PdfSpace, PdfSpace>,
     pub line_matrix: Transform2D<f32, PdfSpace, PdfSpace>,
     pub char_spacing: f32,
@@ -34,11 +33,9 @@ pub struct State {
     pub font: Option<Rc<FastFont>>,
     pub font_size: f32,
     pub rise: f32,
-    // Graphics
-    pub graphics_matrix: Transform2D<f32, PdfSpace, PdfSpace>,
 }
 
-impl Default for State {
+impl Default for TextState {
     fn default() -> Self {
         Self {
             text_matrix: Transform2D::identity(),
@@ -50,12 +47,11 @@ impl Default for State {
             font: None,
             font_size: 0.0,
             rise: 0.0,
-            graphics_matrix: Transform2D::identity(),
         }
     }
 }
 
-impl State {
+impl TextState {
     pub fn set_both_matrices(&mut self, m: Transform2D<f32, PdfSpace, PdfSpace>) {
         self.text_matrix = m;
         self.line_matrix = m;
@@ -63,6 +59,16 @@ impl State {
 
     pub fn advance(&mut self, delta: f32) {
         self.text_matrix = Transform2D::translation(delta, 0.0).then(&self.text_matrix);
+    }
+
+    pub fn advance_by_char(&mut self, cid: u32) {
+        let w0 = self
+            .font
+            .as_ref()
+            .map_or(0.0, |font| font.widths.get(cid as usize) / 1000.0);
+        let spacing = self.char_spacing + if cid == 32 { self.word_spacing } else { 0.0 };
+        let tx = (w0 * self.font_size + spacing) * self.horizontal_scale;
+        self.advance(tx);
     }
 
     pub fn rendering_matrix(&self) -> Transform2D<f32, PdfSpace, PdfSpace> {

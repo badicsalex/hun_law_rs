@@ -15,8 +15,9 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::Result;
+use pdf::primitive::{Name, Primitive};
 
-use super::{collector::CharCollector, font::FastFont, state::State};
+use super::{collector::CharCollector, font::FastFont, textstate::TextState};
 
 #[derive(Debug)]
 pub struct ActualTextCollector {
@@ -40,7 +41,7 @@ impl ActualTextCollector {
         }
     }
 
-    pub fn render_cid(&mut self, state: &mut State, font: &FastFont, cid: u32) -> Result<()> {
+    pub fn render_cid(&mut self, state: &mut TextState, font: &FastFont, cid: u32) -> Result<()> {
         let rendering_matrix = state.rendering_matrix();
         let w0 = font.widths.get(cid as usize) / 1000.0;
 
@@ -55,15 +56,12 @@ impl ActualTextCollector {
         if let Some(params) = &mut self.params {
             params.width = (rendering_matrix.m31 - params.x) + w0 * rendering_matrix.m11
         };
-
-        let spacing = state.char_spacing + if cid == 32 { state.word_spacing } else { 0.0 };
-        let tx = (w0 * state.font_size + spacing) * state.horizontal_scale;
-        state.advance(tx);
+        state.advance_by_char(cid);
         Ok(())
     }
 
-    pub fn finish(self, collector: &mut CharCollector) -> Result<()> {
-        if let Some(params) = self.params {
+    pub fn finish(&self, collector: &mut CharCollector) -> Result<()> {
+        if let Some(params) = &self.params {
             collector.render_multiple_characters(
                 params.x,
                 params.y,
@@ -75,5 +73,20 @@ impl ActualTextCollector {
             // XXX: Or not OK?
             Ok(())
         }
+    }
+
+    pub fn from_bmc_params(tag: Name, properties: Option<Primitive>) -> Option<Self> {
+        if tag.to_string() != "/Span" {
+            return None;
+        }
+        let actual_text = properties?
+            .into_dictionary()
+            .ok()?
+            .get("ActualText")?
+            .as_string()
+            .ok()?
+            .to_string_lossy()
+            .ok()?;
+        Some(ActualTextCollector::new(actual_text))
     }
 }
