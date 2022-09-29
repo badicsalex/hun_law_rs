@@ -21,8 +21,8 @@ use euclid::Transform2D;
 use pdf::{
     content::{Op, TextDrawAdjusted},
     font::Font,
-    object::{MaybeRef, PageRc, Resolve, Resources},
-    primitive::PdfString,
+    object::{MaybeRef, PageRc, Resolve, Resources, XObject},
+    primitive::{Name, PdfString},
 };
 
 use super::{
@@ -41,6 +41,7 @@ where
     pdf_file: &'a TR,
     font_cache: &'a mut FontCache,
     collector: &'a mut CharCollector,
+    resources: Option<MaybeRef<Resources>>,
 
     state: TextState,
     state_stack: Vec<TextState>,
@@ -67,6 +68,7 @@ where
         collector: &'a mut CharCollector,
     ) -> Result<Self> {
         Ok(Self {
+            resources: page.resources.clone(),
             page,
             pdf_file,
             font_cache,
@@ -97,8 +99,7 @@ where
     }
 
     fn resources(&self) -> Result<MaybeRef<Resources>> {
-        self.page
-            .resources
+        self.resources
             .as_ref()
             .cloned()
             .ok_or_else(|| anyhow!("No resources in PDF"))
@@ -134,6 +135,41 @@ where
         self.collector.font_changed(&fast_font)?;
         self.state.font = Some(fast_font);
         self.state.font_size = size;
+        Ok(())
+    }
+
+    fn handle_xobject(&mut self, name: Name) -> Result<()> {
+        let resources = self.resources()?;
+        let xobject_ref = resources
+            .xobjects
+            .get(&name)
+            .ok_or_else(|| anyhow!("Xobject not found in PDF: {}", name))?;
+        let xobject = self.pdf_file.get(*xobject_ref)?;
+        let xfo = if let XObject::Form(xfo) = &*xobject {
+            xfo
+        } else {
+            // TODO: Maybe the other types will be interesting
+            return Ok(());
+        };
+
+        // Save some stuff on this function's stack
+        let saved_resources = self.resources.clone();
+        if let Some(resources) = xfo.dict().resources.clone() {
+            self.resources = Some(resources);
+        }
+        self.state_stack.push(self.state.clone());
+
+        // Recurse
+        for op in xfo.operations(self.pdf_file)? {
+            self.handle_op(op)?
+        }
+
+        // Load back the stuff
+        self.state = self
+            .state_stack
+            .pop()
+            .ok_or_else(|| anyhow!("State stack empty after Form rendering"))?;
+        self.resources = saved_resources;
         Ok(())
     }
 
@@ -238,6 +274,12 @@ where
                     }
                 }
             }
+
+            // --- Xobject ---
+            Op::XObject { name } => {
+                self.handle_xobject(name)?;
+            }
+
             _ => {}
         };
         Ok(())
