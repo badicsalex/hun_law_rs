@@ -81,7 +81,19 @@ impl FastFont {
                 self.process_base_encoding(&pdf_encoding::MACROMAN)
             }
             pdf::encoding::BaseEncoding::WinAnsiEncoding => {
-                self.process_base_encoding(&pdf_encoding::WINANSI)
+                let mut tmp = [0u8; 4];
+                for cid in 0..255 {
+                    if let Some(c) = pdf_encoding::WINANSI.get(cid) {
+                        self.add_mapping(cid as u32, c.encode_utf8(&mut tmp));
+                    } else if cid > 30 {
+                        // This is a quirk in WinAnsi encoding: some of these
+                        // characters are not explicitly defined, but they
+                        // are displayed as bullets with the acutal WinAPI
+                        // Unfortunately this character is present in some
+                        // documents.
+                        self.add_mapping(cid as u32, "\u{2022}")
+                    }
+                }
             }
             pdf::encoding::BaseEncoding::MacExpertEncoding => {
                 self.process_base_encoding(&pdf_encoding::MACEXPERT)
