@@ -1,0 +1,20 @@
+---
+text:      "A munka törvénykönyvéről szóló 2012. évi I. törvény 204. §-a az alábbiak szerint módosul:"
+positions: '                               <                  > <      >                             '
+expected_references:
+- act:
+    year: 2012
+    number: 1
+- act:
+    year: 2012
+    number: 1
+  article: '204'
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 1
+      structural_element:
+        Article: '204'
+    pure_insertion: false
