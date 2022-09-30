@@ -211,7 +211,9 @@ AttachmentSuffix = "melléklet" {HunLower};
 
 # ============ BLOCK AMENDMENT PARSING ============
 
-InsertionToken = "a következő";
+AmendmentCombinatorJunk = {"és" | "valamint" | "ezzel" | "egyidejűleg"};
+
+InsertionToken = AmendmentCombinatorJunk "a következő";
 
 @position
 InsertionReference =
@@ -279,7 +281,7 @@ BlockAmendment = AzAny ActTitle act_reference:ActReference [position:StructuralP
         amended_reference:Reference AmendmentSuffix ":" |
         inserted_reference:InsertionReference InsertionSuffix ":" |
         (
-            amended_reference:Reference AmendmentSuffix [","] ["és" | "valamint" | "egyidejűleg"]
+            amended_reference:Reference AmendmentSuffix [","]  AmendmentCombinatorJunk
             # this is usually the exact same as in the beginning
             [[Az] ActReference] [StructuralPositionReference]
             inserted_reference:InsertionReference InsertionSuffix ":"
