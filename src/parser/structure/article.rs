@@ -118,12 +118,12 @@ impl ArticleParser {
         let children: Vec<Paragraph> = if let Ok((extracted, wrap_up)) = ParagraphParser
             .extract_multiple(
                 &self.lines,
-                SAEParseParams {
+                &SAEParseParams {
                     check_children_count: true,
                     parse_wrap_up: false,
-                    expected_identifier: None,
                     context: self.context,
                 },
+                None,
             ) {
             assert!(wrap_up.is_none());
             extracted

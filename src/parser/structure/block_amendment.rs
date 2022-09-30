@@ -24,7 +24,7 @@ use super::{
     subtitle::SubtitleParserFactory,
 };
 use crate::{
-    identifier::{range::IdentifierRange, ArticleIdentifier, IdentifierCommon, NumericIdentifier},
+    identifier::{ArticleIdentifier, NumericIdentifier},
     parser::structure::sae::{
         AlphabeticPointParser, AlphabeticSubpointParser, NumericSubpointParser, SAEParseParams,
     },
@@ -131,28 +131,28 @@ fn convert_simple_block_amendment(
     Ok(match position.get_last_part() {
         AnyReferencePart::Paragraph(id) => {
             ParagraphParser
-                .extract_multiple(lines, create_parse_params_paragraph(id))?
+                .extract_multiple(lines, &BA_PARSE_PARAMS, Some(Some(id.first_in_range())))?
                 .0
         }
         AnyReferencePart::Point(RefPartPoint::Numeric(id)) => {
             NumericPointParser
-                .extract_multiple(lines, create_parse_params(id))?
+                .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
                 .0
         }
         AnyReferencePart::Point(RefPartPoint::Alphabetic(id)) => {
             AlphabeticPointParser
-                .extract_multiple(lines, create_parse_params(id))?
+                .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
                 .0
         }
         AnyReferencePart::Subpoint(RefPartSubpoint::Numeric(id)) => {
             NumericSubpointParser
-                .extract_multiple(lines, create_parse_params(id))?
+                .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
                 .0
         }
         AnyReferencePart::Subpoint(RefPartSubpoint::Alphabetic(id)) => {
             let prefix = id.first_in_range().get_prefix();
             AlphabeticSubpointParser { prefix }
-                .extract_multiple(lines, create_parse_params(id))?
+                .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
                 .0
         }
         AnyReferencePart::Article(_) | AnyReferencePart::Act(_) | AnyReferencePart::Empty => bail!(
@@ -255,25 +255,8 @@ fn convert_subtitle_only_se(lines: &[IndentedLine]) -> Result<ActChild> {
     Ok(parser.finish()?.into())
 }
 
-fn create_parse_params_paragraph(
-    id: IdentifierRange<NumericIdentifier>,
-) -> SAEParseParams<Option<NumericIdentifier>> {
-    SAEParseParams {
-        expected_identifier: Some(Some(id.first_in_range())),
-        parse_wrap_up: false,
-        check_children_count: false,
-        context: ParsingContext::BlockAmendment,
-    }
-}
-
-fn create_parse_params<T>(id: IdentifierRange<T>) -> SAEParseParams<T>
-where
-    T: IdentifierCommon,
-{
-    SAEParseParams {
-        expected_identifier: Some(id.first_in_range()),
-        parse_wrap_up: false,
-        check_children_count: false,
-        context: ParsingContext::BlockAmendment,
-    }
-}
+const BA_PARSE_PARAMS: SAEParseParams = SAEParseParams {
+    parse_wrap_up: false,
+    check_children_count: false,
+    context: ParsingContext::BlockAmendment,
+};

@@ -33,19 +33,17 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct SAEParseParams<TI: Debug> {
+pub struct SAEParseParams {
     pub parse_wrap_up: bool,
     pub check_children_count: bool,
-    pub expected_identifier: Option<TI>,
     pub context: ParsingContext,
 }
 
-impl<TI: Debug> SAEParseParams<TI> {
+impl SAEParseParams {
     fn children_parsing_default(context: ParsingContext) -> Self {
         Self {
             parse_wrap_up: true,
             check_children_count: true,
-            expected_identifier: None,
             context,
         }
     }
@@ -66,7 +64,7 @@ pub trait SAEParser: Debug {
         identifier: &Self::IdentifierType,
         previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
-        context: ParsingContext,
+        params: &SAEParseParams,
     ) -> Result<(Self::ChildrenType, Option<String>)>;
 
     /// Parse a single instance.
@@ -86,7 +84,7 @@ pub trait SAEParser: Debug {
                     &identifier,
                     previous_nonempty_line,
                     &body[i..],
-                    context,
+                    &SAEParseParams::children_parsing_default(context),
                 ) {
                     return Ok(
                         SubArticleElement::<Self::IdentifierType, Self::ChildrenType> {
@@ -121,7 +119,8 @@ pub trait SAEParser: Debug {
     fn extract_multiple<T>(
         &self,
         lines: &[IndentedLine],
-        params: SAEParseParams<Self::IdentifierType>,
+        params: &SAEParseParams,
+        expected_identifier: Option<Self::IdentifierType>,
     ) -> Result<(T, Option<String>)>
     where
         T: From<Vec<SubArticleElement<Self::IdentifierType, Self::ChildrenType>>>,
@@ -129,7 +128,7 @@ pub trait SAEParser: Debug {
         let (mut identifier, first_line_rest) = self
             .parse_header(&lines[0])
             .ok_or_else(|| anyhow!("Invalid header for {:?}: '{}'", self, lines[0].content()))?;
-        if let Some(ei) = params.expected_identifier {
+        if let Some(ei) = expected_identifier {
             ensure!(
                 identifier == ei,
                 "Parsed identifier is different than expected"
@@ -245,18 +244,12 @@ impl SAEParser for ParagraphParser {
         _identifier: &Self::IdentifierType,
         previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
-        context: ParsingContext,
+        params: &SAEParseParams,
     ) -> Result<(Self::ChildrenType, Option<String>)> {
         QuotedBlockParser
             .extract_multiple(previous_nonempty_line, body)
-            .or_else(|_| {
-                NumericPointParser
-                    .extract_multiple(body, SAEParseParams::children_parsing_default(context))
-            })
-            .or_else(|_| {
-                AlphabeticPointParser
-                    .extract_multiple(body, SAEParseParams::children_parsing_default(context))
-            })
+            .or_else(|_| NumericPointParser.extract_multiple(body, params, None))
+            .or_else(|_| AlphabeticPointParser.extract_multiple(body, params, None))
     }
 }
 
@@ -276,10 +269,9 @@ impl SAEParser for NumericPointParser {
         _identifier: &Self::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
-        context: ParsingContext,
+        params: &SAEParseParams,
     ) -> Result<(Self::ChildrenType, Option<String>)> {
-        AlphabeticSubpointParser { prefix: None }
-            .extract_multiple(body, SAEParseParams::children_parsing_default(context))
+        AlphabeticSubpointParser { prefix: None }.extract_multiple(body, params, None)
     }
 }
 
@@ -299,15 +291,15 @@ impl SAEParser for AlphabeticPointParser {
         identifier: &Self::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
-        context: ParsingContext,
+        params: &SAEParseParams,
     ) -> Result<(Self::ChildrenType, Option<String>)> {
         NumericSubpointParser
-            .extract_multiple(body, SAEParseParams::children_parsing_default(context))
+            .extract_multiple(body, params, None)
             .or_else(|_| {
                 AlphabeticSubpointParser {
                     prefix: Some(*identifier),
                 }
-                .extract_multiple(body, SAEParseParams::children_parsing_default(context))
+                .extract_multiple(body, params, None)
             })
     }
 }
@@ -328,7 +320,7 @@ impl SAEParser for NumericSubpointParser {
         _identifier: &Self::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
-        _context: ParsingContext,
+        _params: &SAEParseParams,
     ) -> Result<(Self::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
     }
@@ -358,7 +350,7 @@ impl SAEParser for AlphabeticSubpointParser {
         _identifier: &Self::IdentifierType,
         _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
-        _context: ParsingContext,
+        _params: &SAEParseParams,
     ) -> Result<(Self::ChildrenType, Option<String>)> {
         Err(anyhow!("Subpoints can't have children"))
     }
