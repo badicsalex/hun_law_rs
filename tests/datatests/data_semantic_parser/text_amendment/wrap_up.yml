@@ -1,0 +1,27 @@
+---
+text:      "A Teszt tv. 18/A. § (3) bekezdés záró szövegrészében a „köteles a beszámoló könyvvizsgálatát elvégeztetni” szövegrész helyébe az „a beszámoló könyvvizsgálatát a számviteli szétválasztásra vonatkozóan elvégezteti” szöveg lép."
+positions: '  <       > <                  >                                                                                                                                                                                                '
+abbreviations:
+  Teszt tv.:
+    year: 2042
+    number: 420
+expected_references:
+- act:
+    year: 2042
+    number: 420
+- act:
+    year: 2042
+    number: 420
+  article: 18/A
+  paragraph: '3'
+expected_special_phrase:
+  TextAmendment:
+    positions:
+    - act:
+        year: 2042
+        number: 420
+      article: 18/A
+      paragraph: '3'
+    replacements:
+    - from: köteles a beszámoló könyvvizsgálatát elvégeztetni
+      to: a beszámoló könyvvizsgálatát a számviteli szétválasztásra vonatkozóan elvégezteti

@@ -351,10 +351,12 @@ EnforcementDate =
     ;
 
 # ============ TEXT AMENDMENT PARSING ==============
+@no_skip_ws
+IntroWrapupToken = ("nyitó" | "záró" ) Whitespace "szövegrész" {HunLower};
 
 TextAmendment =
     AzAny ActTitle act_reference:ActReference
-    references:Reference { ListSeparator references:Reference } [","]
+    { references:Reference [IntroWrapupToken] [ListSeparator] }+
     parts:TextAmendmentPart { ListSeparator parts:TextAmendmentPart} [","]
     "lép" ["hatályba"] "."
     ;

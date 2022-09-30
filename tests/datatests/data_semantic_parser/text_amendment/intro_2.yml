@@ -1,0 +1,241 @@
+---
+text:      "A Teszt tv. 11/G. § (4) bekezdésében, 15. § (8) bekezdésében, 17. § (2) bekezdésében, 17/C. § (2) bekezdés nyitó szövegrészében és a) pont nyitó szövegrészében, b) pont nyitó szövegrészében és ba) alpontjában, c) és d) pontjában és e) pont nyitó szövegrészében, 17/D. § (1) bekezdésében, (2) bekezdés a) pontjában és (6) bekezdésében, 17/E. § (7) bekezdésében, 17/H. § (5) bekezdés b) pontjában, 17/S. § (6) és (9) bekezdésében, (11) bekezdés a)–c) pontjában és 17/T. § (1) és (4) bekezdésében az „a szövetkezeti hitelintézet” szövegrész helyébe az „az integrált hitelintézet” szöveg lép."
+positions: '  <       > <                      >  <                    >  <                    >  <                  >                         <     >                       <     >                         <             >  <>    <          >    <     >                       <                      >  <                       >    <              >  <                      >  <                               >  <         >    <              >  <                           >    <         >    <              >                                                                                               '
+abbreviations:
+  Teszt tv.:
+    year: 2042
+    number: 420
+expected_references:
+- act:
+    year: 2042
+    number: 420
+- act:
+    year: 2042
+    number: 420
+  article: 11/G
+  paragraph: '4'
+- act:
+    year: 2042
+    number: 420
+  article: '15'
+  paragraph: '8'
+- act:
+    year: 2042
+    number: 420
+  article: '17'
+  paragraph: '2'
+- act:
+    year: 2042
+    number: 420
+  article: 17/C
+  paragraph: '2'
+- act:
+    year: 2042
+    number: 420
+  article: 17/C
+  paragraph: '2'
+  point: a
+- act:
+    year: 2042
+    number: 420
+  article: 17/C
+  paragraph: '2'
+  point: b
+- act:
+    year: 2042
+    number: 420
+  article: 17/C
+  paragraph: '2'
+  point: b
+  subpoint: ba
+- act:
+    year: 2042
+    number: 420
+  article: 17/C
+  paragraph: '2'
+  point: c
+- act:
+    year: 2042
+    number: 420
+  article: 17/C
+  paragraph: '2'
+  point: d
+- act:
+    year: 2042
+    number: 420
+  article: 17/C
+  paragraph: '2'
+  point: e
+- act:
+    year: 2042
+    number: 420
+  article: 17/D
+  paragraph: '1'
+- act:
+    year: 2042
+    number: 420
+  article: 17/D
+  paragraph: '2'
+  point: a
+- act:
+    year: 2042
+    number: 420
+  article: 17/D
+  paragraph: '6'
+- act:
+    year: 2042
+    number: 420
+  article: 17/E
+  paragraph: '7'
+- act:
+    year: 2042
+    number: 420
+  article: 17/H
+  paragraph: '5'
+  point: b
+- act:
+    year: 2042
+    number: 420
+  article: 17/S
+  paragraph: '6'
+- act:
+    year: 2042
+    number: 420
+  article: 17/S
+  paragraph: '9'
+- act:
+    year: 2042
+    number: 420
+  article: 17/S
+  paragraph: '11'
+  point:
+    start: a
+    end: c
+- act:
+    year: 2042
+    number: 420
+  article: 17/T
+  paragraph: '1'
+- act:
+    year: 2042
+    number: 420
+  article: 17/T
+  paragraph: '4'
+expected_special_phrase:
+  TextAmendment:
+    positions:
+    - act:
+        year: 2042
+        number: 420
+      article: 11/G
+      paragraph: '4'
+    - act:
+        year: 2042
+        number: 420
+      article: '15'
+      paragraph: '8'
+    - act:
+        year: 2042
+        number: 420
+      article: '17'
+      paragraph: '2'
+    - act:
+        year: 2042
+        number: 420
+      article: 17/C
+      paragraph: '2'
+    - act:
+        year: 2042
+        number: 420
+      article: 17/C
+      paragraph: '2'
+      point: a
+    - act:
+        year: 2042
+        number: 420
+      article: 17/C
+      paragraph: '2'
+      point: b
+    - act:
+        year: 2042
+        number: 420
+      article: 17/C
+      paragraph: '2'
+      point: b
+      subpoint: ba
+    - act:
+        year: 2042
+        number: 420
+      article: 17/C
+      paragraph: '2'
+      point: c
+    - act:
+        year: 2042
+        number: 420
+      article: 17/C
+      paragraph: '2'
+      point: d
+    - act:
+        year: 2042
+        number: 420
+      article: 17/C
+      paragraph: '2'
+      point: e
+    - act:
+        year: 2042
+        number: 420
+      article: 17/D
+      paragraph: '1'
+    - act:
+        year: 2042
+        number: 420
+      article: 17/D
+      paragraph: '2'
+      point: a
+    - act:
+        year: 2042
+        number: 420
+      article: 17/D
+      paragraph: '6'
+    - act:
+        year: 2042
+        number: 420
+      article: 17/E
+      paragraph: '7'
+    - act:
+        year: 2042
+        number: 420
+      article: 17/H
+      paragraph: '5'
+      point: b
+    - act:
+        year: 2042
+        number: 420
+      article: 17/S
+      paragraph: '6'
+    - act:
+        year: 2042
+        number: 420
+      article: 17/S
+      paragraph: '9'
+    - act:
+        year: 2042
+        number: 420
+      article: 17/S
+      paragraph: '11'
+      point:
+        start: a
+        end: c
+    - act:
+        year: 2042
+        number: 420
+      article: 17/T
+      paragraph: '1'
+    - act:
+        year: 2042
+        number: 420
+      article: 17/T
+      paragraph: '4'
+    replacements:
+    - from: a szövetkezeti hitelintézet
+      to: az integrált hitelintézet
