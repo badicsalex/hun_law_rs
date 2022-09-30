@@ -1,0 +1,29 @@
+---
+text:      "Az Mt. 158. § (1)–(2) bekezdése az alábbi szöveggel lép hatályba:"
+positions: '   < > <                      >                                  '
+abbreviations:
+  Mt.:
+    year: 2012
+    number: 1
+expected_references:
+- act:
+    year: 2012
+    number: 1
+- act:
+    year: 2012
+    number: 1
+  article: '158'
+  paragraph:
+    start: '1'
+    end: '2'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 1
+      article: '158'
+      paragraph:
+        start: '1'
+        end: '2'
+    pure_insertion: false

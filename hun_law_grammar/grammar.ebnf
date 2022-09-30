@@ -212,8 +212,9 @@ AttachmentSuffix = "melléklet" {HunLower};
 # ============ BLOCK AMENDMENT PARSING ============
 
 AmendmentCombinatorJunk = {"és" | "valamint" | "ezzel" | "egyidejűleg"};
+TheFollowing = "a következő" | "az alábbi";
 
-InsertionToken = AmendmentCombinatorJunk "a következő";
+InsertionToken = AmendmentCombinatorJunk TheFollowing;
 
 @position
 InsertionReference =
@@ -250,14 +251,14 @@ ReferenceWithSubtitle =
     SubtitleToken ;
 
 AmendmentSuffix =
-    "helyébe a következő" ("rendelkezés lép" | "rendelkezések lépnek") |
-    "a következő szöveggel lép hatályba" ;
+    "helyébe" TheFollowing ("rendelkezés lép" | "rendelkezések lépnek") |
+    TheFollowing "szöveggel lép hatályba" ;
 
 AmendmentSuffixWithSubtitle =
-    "helyébe a következő" ["rendelkezés és"] "alcím" ["és rendelkezés"] ("lép" | "lépnek") ;
+    "helyébe" TheFollowing ["rendelkezés és"] "alcím" ["és rendelkezés"] ("lép" | "lépnek") ;
 
 AmendmentSuffixWithStructural =
-    "helyébe a következő" ["cím" | "fejezet" | "Fejezet" | "rész"] "lép" ;
+    "helyébe" TheFollowing ["cím" | "fejezet" | "Fejezet" | "rész"] "lép" ;
 
 InsertionSuffix =
     "egészül ki" |
