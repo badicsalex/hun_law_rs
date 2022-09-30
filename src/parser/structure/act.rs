@@ -117,6 +117,19 @@ pub fn parse_complex_body(
         );
     }
 
+    for child in &children {
+        if let ActChild::Subtitle(st) = child {
+            if st.title.len() > 1000 {
+                bail!(
+                    "Probable corrupted read: way too long ({:?}) subtitle title detected (Last article id: {:?}): {}...",
+                    st.title.len(),
+                    article_parser_factory.last_id,
+                    st.title.chars().take(100).collect::<String>()
+                )
+            }
+        }
+    }
+
     Ok((preamble, children))
 }
 

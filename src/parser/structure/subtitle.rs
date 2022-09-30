@@ -1,4 +1,3 @@
-use anyhow::{bail, Result};
 // Copyright (C) 2022, Alex Badics
 //
 // This file is part of Hun-Law.
@@ -14,6 +13,8 @@ use anyhow::{bail, Result};
 //
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
+
+use anyhow::Result;
 use lazy_regex::regex_captures;
 
 use crate::{identifier::NumericIdentifier, structure::Subtitle, util::indentedline::IndentedLine};
@@ -61,13 +62,6 @@ impl SubtitleParser {
         line.append_to(&mut self.title);
     }
     pub fn finish(self) -> Result<Subtitle> {
-        if self.title.len() > 1000 {
-            bail!(
-                "Probable corrupted read: way too long ({:?}) subtitle title detected: {}...",
-                self.title.len(),
-                self.title.chars().take(100).collect::<String>()
-            )
-        }
         Ok(Subtitle {
             identifier: self.identifier,
             title: self.title,

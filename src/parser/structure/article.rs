@@ -28,7 +28,7 @@ use crate::{
 };
 
 pub struct ArticleParserFactory {
-    last_id: Option<ArticleIdentifier>,
+    pub last_id: Option<ArticleIdentifier>,
     article_header_indent: Option<f64>,
     context: ParsingContext,
 }
