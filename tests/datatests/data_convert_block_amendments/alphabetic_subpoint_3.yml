@@ -1,0 +1,71 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+contained_abbreviations:
+  Mt.:
+    year: 2012
+    number: 1
+children:
+- Article:
+    identifier: '1'
+    children:
+    - body:
+        intro: 'A munka törvénykönyvéről szóló 2012. évi I. törvény (a továbbiakban: Mt.) 140. §-a helyébe a következő rendelkezés lép:'
+        children:
+          StructuralBlockAmendment:
+            children:
+            - Article:
+                identifier: '140'
+                children:
+                - identifier: '1'
+                  body:
+                    intro: Vasárnapi munkavégzés esetén ötven százalék bérpótlék (vasárnapi pótlék) jár,
+                    children:
+                      AlphabeticPoint:
+                      - identifier: a
+                        body: ha a munkavállaló a rendes munkaidőben történő munkavégzésre kizárólag a 101. § (1) bekezdés d), e) vagy i) pontban meghatározott feltételek alapján kötelezhető, továbbá
+                      - identifier: b
+                        body:
+                          intro: a rendkívüli munkaidőre
+                          children:
+                            AlphabeticSubpoint:
+                              - identifier: ba
+                                body: a 101. § (1) bekezdés d), e) vagy i) pontban meghatározott munkavállalónak,
+                              - identifier: bb 
+                                body: ha a munkavállaló a 101. § (1) bekezdés alapján rendes munkaidőben történő munkavégzésre nem kötelezhető.
+                - identifier: '2'
+                  body: A munkavállalót munkaszüneti napon történő munkavégzés esetén száz százalék bérpótlék illeti meg.
+                - identifier: '3'
+                  body: A (2) bekezdés szerinti bérpótlék jár a húsvét- vagy a pünkösdvasárnap, vagy a vasárnapra eső munkaszüneti napon történő munkavégzés esetén.
+      semantic_info:
+        outgoing_references:
+        - start: 38
+          end: 61
+          reference:
+            act:
+              year: 2012
+              number: 1
+        - start: 85
+          end: 94
+          reference:
+            act:
+              year: 2012
+              number: 1
+            article: '140'
+        new_abbreviations:
+          Mt.:
+            year: 2012
+            number: 1
+        special_phrase:
+          StructuralBlockAmendment:
+            position:
+              act:
+                year: 2012
+                number: 1
+              structural_element:
+                Article: '140'
+            pure_insertion: false

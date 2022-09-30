@@ -49,6 +49,29 @@ impl SAEParseParams {
     }
 }
 
+#[derive(Debug, Clone)]
+pub struct ExtractMultipleResult<T> {
+    pub elements: T,
+    pub parent_wrap_up: Option<String>,
+    pub rest_of_wrap_up: Vec<IndentedLine>,
+}
+
+#[derive(Debug, Clone)]
+pub struct ParseResult<IT, CT>
+where
+    IT: IdentifierCommon,
+    CT: ChildrenCommon,
+{
+    pub element: SubArticleElement<IT, CT>,
+    pub rest_of_wrap_up: Vec<IndentedLine>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RestOfWrapUpMode {
+    KeepIt,
+    GiveIt,
+}
+
 pub trait SAEParser: Debug {
     type IdentifierType: IdentifierCommon;
     type ChildrenType: ChildrenCommon;
@@ -65,7 +88,7 @@ pub trait SAEParser: Debug {
         previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
         params: &SAEParseParams,
-    ) -> Result<(Self::ChildrenType, Option<String>)>;
+    ) -> Result<ExtractMultipleResult<Self::ChildrenType>>;
 
     /// Parse a single instance.
     fn parse(
@@ -73,30 +96,44 @@ pub trait SAEParser: Debug {
         identifier: Self::IdentifierType,
         body: &[IndentedLine],
         context: ParsingContext,
-    ) -> Result<SubArticleElement<Self::IdentifierType, Self::ChildrenType>> {
+        wrap_up_mode: RestOfWrapUpMode,
+    ) -> Result<ParseResult<Self::IdentifierType, Self::ChildrenType>> {
         let mut intro = String::new();
         let mut quote_checker = QuoteCheck::default();
         let mut previous_nonempty_line = None;
         for i in 0..body.len() {
             quote_checker.update(&body[i])?;
             if !quote_checker.beginning_is_quoted {
-                if let Ok((children, wrap_up)) = self.try_extract_children(
+                if let Ok(extracted) = self.try_extract_children(
                     &identifier,
                     previous_nonempty_line,
                     &body[i..],
                     &SAEParseParams::children_parsing_default(context),
                 ) {
-                    return Ok(
-                        SubArticleElement::<Self::IdentifierType, Self::ChildrenType> {
+                    let mut wrap_up = extracted.parent_wrap_up;
+                    let mut rest_of_wrap_up = extracted.rest_of_wrap_up;
+                    if wrap_up_mode == RestOfWrapUpMode::KeepIt {
+                        for l in rest_of_wrap_up {
+                            if let Some(wrap_up) = &mut wrap_up {
+                                l.append_to(wrap_up);
+                            } else {
+                                wrap_up = Some(l.content().to_owned())
+                            }
+                        }
+                        rest_of_wrap_up = Vec::new();
+                    }
+                    return Ok(ParseResult {
+                        element: SubArticleElement::<Self::IdentifierType, Self::ChildrenType> {
                             identifier,
                             body: SAEBody::Children {
                                 intro,
-                                children,
+                                children: extracted.elements,
                                 wrap_up,
                             },
                             semantic_info: Default::default(),
                         },
-                    );
+                        rest_of_wrap_up,
+                    });
                 }
             }
             let line = &body[i];
@@ -106,13 +143,21 @@ pub trait SAEParser: Debug {
             }
         }
         quote_checker.check_end()?;
-        Ok(
-            SubArticleElement::<Self::IdentifierType, Self::ChildrenType> {
+        let mut rest_of_wrap_up = Vec::new();
+        if context == ParsingContext::BlockAmendment && wrap_up_mode == RestOfWrapUpMode::GiveIt {
+            if let Some(wrap_up_split) = body.iter().position(|l| !l.is_justified()) {
+                intro = IndentedLine::join(&body[..wrap_up_split + 1]);
+                rest_of_wrap_up = body[wrap_up_split + 1..].into();
+            }
+        }
+        Ok(ParseResult {
+            element: SubArticleElement::<Self::IdentifierType, Self::ChildrenType> {
                 identifier,
                 body: intro.into(),
                 semantic_info: Default::default(),
             },
-        )
+            rest_of_wrap_up,
+        })
     }
 
     /// Extract multiple instances from the text. Fails if the first line is not a header
@@ -121,7 +166,7 @@ pub trait SAEParser: Debug {
         lines: &[IndentedLine],
         params: &SAEParseParams,
         expected_identifier: Option<Self::IdentifierType>,
-    ) -> Result<(T, Option<String>)>
+    ) -> Result<ExtractMultipleResult<T>>
     where
         T: From<Vec<SubArticleElement<Self::IdentifierType, Self::ChildrenType>>>,
     {
@@ -138,7 +183,7 @@ pub trait SAEParser: Debug {
         }
         let mut quote_checker = QuoteCheck::default();
         quote_checker.update(&first_line_rest)?;
-        let mut result: Vec<_> = Vec::new();
+        let mut elements: Vec<_> = Vec::new();
         let mut body: Vec<IndentedLine> = vec![first_line_rest];
         let header_indent = lines[0].indent();
 
@@ -150,7 +195,10 @@ pub trait SAEParser: Debug {
                 None
             };
             if let Some((new_identifier, rest)) = new_header {
-                result.push(self.parse(identifier, &body, params.context)?);
+                elements.push(
+                    self.parse(identifier, &body, params.context, RestOfWrapUpMode::KeepIt)?
+                        .element,
+                );
                 identifier = new_identifier;
                 body = vec![rest];
             } else if !line.is_empty() {
@@ -158,14 +206,23 @@ pub trait SAEParser: Debug {
             }
         }
         quote_checker.check_end()?;
-        let mut wrap_up = None;
-        // This is a stupid heuristic: we hope line-broken points are indented, while
-        // the wrapup will be at the same level as the headers.
+        let mut parent_wrap_up = None;
+        let mut rest_of_wrap_up = Vec::new();
         if params.parse_wrap_up {
-            let wrap_up_split = match params.context {
+            match params.context {
                 ParsingContext::FullAct => {
-                    // Indentation-driven split
-                    body.iter().position(|l| l.indent_less_or_eq(header_indent))
+                    // This is a stupid heuristic: we hope line-broken points are indented, while
+                    // the wrapup will be at the same level as the headers.
+                    let wrap_up_split =
+                        body.iter().position(|l| l.indent_less_or_eq(header_indent));
+                    if let Some(wrap_up_split) = wrap_up_split {
+                        let wrap_up_lines = body.split_off(wrap_up_split);
+                        parent_wrap_up = Some(IndentedLine::join(&wrap_up_lines));
+                    }
+                    elements.push(
+                        self.parse(identifier, &body, params.context, RestOfWrapUpMode::KeepIt)?
+                            .element,
+                    );
                 }
                 ParsingContext::BlockAmendment => {
                     // We have no proper indentations in block amendments, so we try to
@@ -181,27 +238,32 @@ pub trait SAEParser: Debug {
                     // ...
                     //
                     // In this case, we would split off the subpoints from b), which is not intended.
-
-                    body.iter()
-                        .enumerate()
-                        .rev()
-                        .skip(1) // Last line can be justified or not, it's not going to be a split point.
-                        .find(|(_, l)| !l.is_justified())
-                        .map(|(i, _)| i + 1) // Split point is _after_ the found non-justified line
+                    let parse_result =
+                        self.parse(identifier, &body, params.context, RestOfWrapUpMode::GiveIt)?;
+                    elements.push(parse_result.element);
+                    let mut wrap_up = parse_result.rest_of_wrap_up;
+                    if let Some(wrap_up_split) = wrap_up.iter().position(|l| !l.is_justified()) {
+                        rest_of_wrap_up = wrap_up.split_off(wrap_up_split + 1);
+                    }
+                    if !wrap_up.is_empty() {
+                        parent_wrap_up = Some(IndentedLine::join(&wrap_up));
+                    }
                 }
             };
-            if let Some(wrap_up_split) = wrap_up_split {
-                let wrap_up_lines = body.split_off(wrap_up_split);
-                wrap_up = Some(IndentedLine::join(&wrap_up_lines));
-            }
+        } else {
+            elements.push(
+                self.parse(identifier, &body, params.context, RestOfWrapUpMode::KeepIt)?
+                    .element,
+            );
         }
-
-        result.push(self.parse(identifier, &body, params.context)?);
-
         if params.check_children_count {
-            ensure!(result.len() > 1, "Not enough children could be parsed");
+            ensure!(elements.len() > 1, "Not enough children could be parsed");
         }
-        Ok((result.into(), wrap_up))
+        Ok(ExtractMultipleResult {
+            elements: elements.into(),
+            parent_wrap_up,
+            rest_of_wrap_up,
+        })
     }
 
     /// Parse the header line, and return it, along with the rest of the line.
@@ -242,7 +304,7 @@ impl SAEParser for ParagraphParser {
         previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
         params: &SAEParseParams,
-    ) -> Result<(Self::ChildrenType, Option<String>)> {
+    ) -> Result<ExtractMultipleResult<Self::ChildrenType>> {
         QuotedBlockParser
             .extract_multiple(previous_nonempty_line, body)
             .or_else(|_| NumericPointParser.extract_multiple(body, params, None))
@@ -267,7 +329,7 @@ impl SAEParser for NumericPointParser {
         _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
         params: &SAEParseParams,
-    ) -> Result<(Self::ChildrenType, Option<String>)> {
+    ) -> Result<ExtractMultipleResult<Self::ChildrenType>> {
         AlphabeticSubpointParser { prefix: None }.extract_multiple(body, params, None)
     }
 }
@@ -289,7 +351,7 @@ impl SAEParser for AlphabeticPointParser {
         _previous_nonempty_line: Option<&IndentedLine>,
         body: &[IndentedLine],
         params: &SAEParseParams,
-    ) -> Result<(Self::ChildrenType, Option<String>)> {
+    ) -> Result<ExtractMultipleResult<Self::ChildrenType>> {
         NumericSubpointParser
             .extract_multiple(body, params, None)
             .or_else(|_| {
@@ -318,7 +380,7 @@ impl SAEParser for NumericSubpointParser {
         _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
         _params: &SAEParseParams,
-    ) -> Result<(Self::ChildrenType, Option<String>)> {
+    ) -> Result<ExtractMultipleResult<Self::ChildrenType>> {
         Err(anyhow!("Subpoints can't have children"))
     }
 }
@@ -348,7 +410,7 @@ impl SAEParser for AlphabeticSubpointParser {
         _previous_nonempty_line: Option<&IndentedLine>,
         _body: &[IndentedLine],
         _params: &SAEParseParams,
-    ) -> Result<(Self::ChildrenType, Option<String>)> {
+    ) -> Result<ExtractMultipleResult<Self::ChildrenType>> {
         Err(anyhow!("Subpoints can't have children"))
     }
 }

@@ -19,7 +19,7 @@ use lazy_regex::regex;
 
 use super::{
     act::ParsingContext,
-    sae::{ParagraphParser, SAEParseParams, SAEParser},
+    sae::{ParagraphParser, RestOfWrapUpMode, SAEParseParams, SAEParser},
 };
 use crate::{
     identifier::{ArticleIdentifier, IdentifierCommon},
@@ -115,20 +115,24 @@ impl ArticleParser {
         if self.lines[0].is_empty() {
             self.lines.remove(0);
         }
-        let children: Vec<Paragraph> = if let Ok((extracted, wrap_up)) = ParagraphParser
-            .extract_multiple(
-                &self.lines,
-                &SAEParseParams {
-                    check_children_count: true,
-                    parse_wrap_up: false,
-                    context: self.context,
-                },
-                None,
-            ) {
-            assert!(wrap_up.is_none());
-            extracted
+        let extracted = ParagraphParser.extract_multiple(
+            &self.lines,
+            &SAEParseParams {
+                check_children_count: true,
+                parse_wrap_up: false,
+                context: self.context,
+            },
+            None,
+        );
+        let children: Vec<Paragraph> = if let Ok(extracted) = extracted {
+            assert!(extracted.parent_wrap_up.is_none());
+            extracted.elements
         } else {
-            vec![ParagraphParser.parse(None, &self.lines, self.context)?]
+            vec![
+                ParagraphParser
+                    .parse(None, &self.lines, self.context, RestOfWrapUpMode::KeepIt)?
+                    .element,
+            ]
         };
         Ok(Article {
             identifier: self.identifier,

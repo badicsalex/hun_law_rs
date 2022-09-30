@@ -49,7 +49,9 @@ children:
                                           body: lakást vagy hasonló helyiséget az elkövetővel közösen használó sérelmére vagy
                                         - identifier: bi
                                           body: erdőben jogellenes fakivágással
-                            wrap_up: követik el.
+                                    # Note: This is ambigous whether it should be part of the point or subpoint
+                                    #       in this case it's a misparse, but oh well.
+                                    wrap_up: követik el.
                         - identifier: "3"
                           body:
                             intro: "A büntetés bűntett miatt három évig terjedő szabadságvesztés, ha"

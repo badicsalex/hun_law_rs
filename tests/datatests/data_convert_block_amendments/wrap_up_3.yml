@@ -1,0 +1,62 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+children:
+- Article:
+    identifier: '1'
+    children:
+    - body:
+        intro: 'A teszteléstről szóló 2020. évi I. törvény 1. § helyébe a következő rendelkezés lép:'
+        children:
+          StructuralBlockAmendment:
+            children:
+            - Article:
+                identifier: '1'
+                children:
+                - body:
+                    intro: Ha egy felsorolas utan tobb NJ sor van,
+                    children:
+                      AlphabeticPoint:
+                      - identifier: a
+                        body: pont 1
+                      - identifier: b
+                        body: pont 2
+                      - identifier: c
+                        body:
+                          intro: pont 3
+                          children:
+                            AlphabeticSubpoint:
+                            - identifier: ca
+                              body: alpont a
+                            - identifier: cb
+                              body: 'alpont b'
+                          wrap_up: es tobb
+                    wrap_up: nem sorkizart pont van, a wrap_up field helyesen ki lesz toltve.
+      semantic_info:
+        outgoing_references:
+        - start: 26
+          end: 49
+          reference:
+            act:
+              year: 2020
+              number: 1
+        - start: 50
+          end: 55
+          reference:
+            act:
+              year: 2020
+              number: 1
+            article: '1'
+        special_phrase:
+          StructuralBlockAmendment:
+            position:
+              act:
+                year: 2020
+                number: 1
+              structural_element:
+                Article: '1'
+            pure_insertion: false

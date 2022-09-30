@@ -1,0 +1,12 @@
+
+           1. § A teszteléstről szóló 2020. évi I. törvény 1. § helyébe a következő rendelkezés lép:
+                „1. § Ha egy felsorolas utan tobb NJ sor van,
+                a) pont 1
+                b) pont 2
+                c) pont 3
+                ca) alpont a
+<NJ>            cb) alpont b
+<NJ>            es tobb
+<NJ>            nem sorkizart pont van,
+                a wrap_up field helyesen ki lesz toltve.
+                ”

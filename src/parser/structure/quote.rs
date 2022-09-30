@@ -21,6 +21,8 @@ use crate::{
     util::{indentedline::IndentedLine, QuoteCheck},
 };
 
+use super::sae::ExtractMultipleResult;
+
 pub struct QuotedBlockParser;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -39,7 +41,7 @@ impl QuotedBlockParser {
         &self,
         previous_nonempty_line: Option<&IndentedLine>,
         lines: &[IndentedLine],
-    ) -> Result<(ParagraphChildren, Option<String>)> {
+    ) -> Result<ExtractMultipleResult<ParagraphChildren>> {
         let mut state = QuotedBlockParseState::Start;
         let mut blocks = Vec::new();
         let mut wrap_up = String::new();
@@ -180,13 +182,14 @@ impl QuotedBlockParser {
             bail!("Quoted block parser didn't find any blocks");
         }
 
-        Ok((
-            blocks.into(),
-            if wrap_up.is_empty() {
+        Ok(ExtractMultipleResult {
+            elements: blocks.into(),
+            parent_wrap_up: if wrap_up.is_empty() {
                 None
             } else {
                 Some(wrap_up)
             },
-        ))
+            rest_of_wrap_up: Vec::new(),
+        })
     }
 }

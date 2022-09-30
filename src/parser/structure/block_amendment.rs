@@ -132,28 +132,28 @@ fn convert_simple_block_amendment(
         AnyReferencePart::Paragraph(id) => {
             ParagraphParser
                 .extract_multiple(lines, &BA_PARSE_PARAMS, Some(Some(id.first_in_range())))?
-                .0
+                .elements
         }
         AnyReferencePart::Point(RefPartPoint::Numeric(id)) => {
             NumericPointParser
                 .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
-                .0
+                .elements
         }
         AnyReferencePart::Point(RefPartPoint::Alphabetic(id)) => {
             AlphabeticPointParser
                 .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
-                .0
+                .elements
         }
         AnyReferencePart::Subpoint(RefPartSubpoint::Numeric(id)) => {
             NumericSubpointParser
                 .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
-                .0
+                .elements
         }
         AnyReferencePart::Subpoint(RefPartSubpoint::Alphabetic(id)) => {
             let prefix = id.first_in_range().get_prefix();
             AlphabeticSubpointParser { prefix }
                 .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
-                .0
+                .elements
         }
         AnyReferencePart::Article(_) | AnyReferencePart::Act(_) | AnyReferencePart::Empty => bail!(
             "Invalid reference type in phrase during BlockAmendment conversion: {:?}",
