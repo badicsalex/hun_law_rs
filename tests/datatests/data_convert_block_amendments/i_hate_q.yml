@@ -1,0 +1,128 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+contained_abbreviations:
+  Mt.:
+    year: 2012
+    number: 1
+children:
+- Article:
+    identifier: '1'
+    children:
+    - body: 'Létezik a munka törvénykönyvéről szóló 2012. évi I. törvény (a továbbiakban: Mt.).'
+      semantic_info:
+        outgoing_references:
+        - start: 47
+          end: 70
+          reference:
+            act:
+              year: 2012
+              number: 1
+        new_abbreviations:
+          Mt.:
+            year: 2012
+            number: 1
+- Article:
+    identifier: '2'
+    children:
+    - body:
+        intro: 'Az Mt. 135. § (1)–(3) bekezdése helyébe a következő rendelkezések lépnek:'
+        children:
+          BlockAmendment:
+            children:
+              Paragraph:
+              - identifier: '1'
+                body:
+                  intro: A felek megállapodása vagy kollektív szerződés
+                  children:
+                    AlphabeticPoint:
+                    - identifier: a
+                      body: a 87. §-ban,
+                    - identifier: b
+                      body: a 96. § (2) bekezdésében,
+                    - identifier: c
+                      body: a 122. § (5) bekezdésében,
+                    - identifier: d
+                      body: a 126. § (4) bekezdésében,
+                    - identifier: e
+                      body: a 127. § (1)–(2) és (4) bekezdésében,
+                    - identifier: f
+                      body: a 134. §-ban
+                  wrap_up: foglaltaktól nem térhet el.
+              - identifier: '2'
+                body:
+                  intro: Kollektív szerződés
+                  children:
+                    AlphabeticPoint:
+                    - identifier: a
+                      body: a 86-ban,
+                    - identifier: b
+                      body: a 88–93. §-ban,
+                    - identifier: c
+                      body: a 95. §-ban,
+                    - identifier: d
+                      body: a 96. § (3) bekezdésében,
+                    - identifier: e
+                      body: a 97. § (1) bekezdésében,
+                    - identifier: f
+                      body: a 99. §-ban,
+                    - identifier: g
+                      body: a 101–108. §-ban,
+                    - identifier: h
+                      body: a 109. § (2)–(3) bekezdésében,
+                    - identifier: i
+                      body: a 111. §-ban,
+                    - identifier: j
+                      body: a 113–121. §-ban,
+                    - identifier: k
+                      body: a 122. § (3) bekezdésében,
+                    - identifier: l
+                      body: a 123. § (6) bekezdésében,
+                    - identifier: m
+                      body: a 124. §-ban,
+                    - identifier: n
+                      body: a 125. §-ban,
+                    - identifier: o
+                      body: a 126. § (1)–(3) és (5) bekezdésében,
+                    - identifier: p
+                      body: a 127. § (5) bekezdésében,
+                    - identifier: r
+                      body: a 128–133. §-ban
+                    - identifier: s
+                      body: a 135. § (3) bekezdés második fordulatában
+                  wrap_up: foglaltaktól csak a munkavállaló javára térhet el.
+              - identifier: '3'
+                body: Kollektív szerződés rendelkezése alapján legfeljebb évi háromszáz óra rendkívüli munkaidő rendelhető el. Ezt meghaladóan a munkáltató és a munkavállaló írásbeli megállapodása alapján naptári évenként legfeljebb száz óra rendkívüli munkaidő rendelhető el (önként vállalt túlmunka). A munkavállaló a megállapodást a naptári év végére mondhatja fel.
+      semantic_info:
+        outgoing_references:
+        - start: 3
+          end: 6
+          reference:
+            act:
+              year: 2012
+              number: 1
+        - start: 7
+          end: 35
+          reference:
+            act:
+              year: 2012
+              number: 1
+            article: '135'
+            paragraph:
+              start: '1'
+              end: '3'
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 2012
+                number: 1
+              article: '135'
+              paragraph:
+                start: '1'
+                end: '3'
+            pure_insertion: false

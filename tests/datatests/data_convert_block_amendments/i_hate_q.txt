@@ -1,0 +1,35 @@
+<NJ>       1. §     Létezik a munka törvénykönyvéről szóló 2012. évi I. törvény (a továbbiakban: Mt.).
+<NJ>       2. §     Az Mt. 135. § (1)–(3) bekezdése helyébe a következő rendelkezések lépnek:
+<NJ>                „(1) A felek megállapodása vagy kollektív szerződés
+<NJ>                a) a 87. §-ban,
+<NJ>                b) a 96. § (2) bekezdésében,
+<NJ>                c) a 122. § (5) bekezdésében,
+<NJ>                d) a 126. § (4) bekezdésében,
+<NJ>                e) a 127. § (1)–(2) és (4) bekezdésében,
+<NJ>                f) a 134. §-ban
+<NJ>                foglaltaktól nem térhet el.
+<NJ>                (2) Kollektív szerződés
+<NJ>                a) a 86-ban,
+<NJ>                b) a 88–93. §-ban,
+<NJ>                c) a 95. §-ban,
+<NJ>                d) a 96. § (3) bekezdésében,
+<NJ>                e) a 97. § (1) bekezdésében,
+<NJ>                f) a 99. §-ban,
+<NJ>                g) a 101–108. §-ban,
+<NJ>                h) a 109. § (2)–(3) bekezdésében,
+<NJ>                i) a 111. §-ban,
+<NJ>
+<NJ>                j) a 113–121. §-ban,
+<NJ>                k) a 122. § (3) bekezdésében,
+<NJ>                l) a 123. § (6) bekezdésében,
+<NJ>                m) a 124. §-ban,
+<NJ>                n) a 125. §-ban,
+<NJ>                o) a 126. § (1)–(3) és (5) bekezdésében,
+<NJ>                p) a 127. § (5) bekezdésében,
+<NJ>                r) a 128–133. §-ban
+<NJ>                s) a 135. § (3) bekezdés második fordulatában
+<NJ>                foglaltaktól csak a munkavállaló javára térhet el.
+                    (3) Kollektív szerződés rendelkezése alapján legfeljebb évi háromszáz óra rendkívüli munkaidő rendelhető el. Ezt
+                    meghaladóan a munkáltató és a munkavállaló írásbeli megállapodása alapján naptári évenként legfeljebb száz óra
+                    rendkívüli munkaidő rendelhető el (önként vállalt túlmunka). A munkavállaló a megállapodást a naptári év végére
+<NJ>                mondhatja fel.”

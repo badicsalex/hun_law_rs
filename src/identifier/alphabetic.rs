@@ -84,7 +84,9 @@ impl PartialOrd for HungarianIdentifierChar {
 impl IdentifierCommon for HungarianIdentifierChar {
     fn is_next_from(&self, other: Self) -> bool {
         match (*self, other) {
-            (Self::Latin(s), Self::Latin(o)) => s > o && (s - o == 1),
+            (Self::Latin(s), Self::Latin(o)) if s > o && (s - o == 1) => true,
+            // The guy who wrote 2018. évi CXVI. törvény thinks 'q' is not part of the latin alphabet.
+            (Self::Latin(b'r'), Self::Latin(b'p')) => true,
             (Self::Cs, Self::Latin(b'c')) => true,
             (Self::Dz, Self::Latin(b'd')) => true,
             (Self::Gy, Self::Latin(b'g')) => true,
