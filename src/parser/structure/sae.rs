@@ -192,10 +192,7 @@ pub trait SAEParser: Debug {
             };
             if let Some(wrap_up_split) = wrap_up_split {
                 let wrap_up_lines = body.split_off(wrap_up_split);
-                wrap_up = Some(wrap_up_lines.into_iter().fold(String::new(), |mut s, l| {
-                    l.append_to(&mut s);
-                    s
-                }))
+                wrap_up = Some(IndentedLine::join(&wrap_up_lines));
             }
         }
 

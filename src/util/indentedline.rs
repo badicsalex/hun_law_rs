@@ -200,6 +200,14 @@ impl IndentedLine {
         s.push_str(self.content());
     }
 
+    /// Repeatedly calls append_to on the iterable
+    pub fn join<'a>(s: impl IntoIterator<Item = &'a Self>) -> String {
+        s.into_iter().fold(String::new(), |mut s, l| {
+            l.append_to(&mut s);
+            s
+        })
+    }
+
     /// Returns the indentation at a specific char index.
     /// Indexes past length return the indent of the last character.
     pub fn indent_at(&self, from: i64) -> f64 {
