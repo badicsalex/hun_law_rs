@@ -22,18 +22,18 @@ children:
                     children:
                       AlphabeticPoint:
                       - identifier: a
-                        body: pont 1
+                        body: van egy pont 1
                       - identifier: b
-                        body: pont 2
+                        body: van egy pont 2
                       - identifier: c
                         body:
-                          intro: pont 3
+                          intro: van egy pont 3
                           children:
                             AlphabeticSubpoint:
                             - identifier: ca
-                              body: alpont a
+                              body: van egy alpont a
                             - identifier: cb
-                              body: 'alpont b'
+                              body: van egy alpont b
                           wrap_up: es tobb
                     wrap_up: nem sorkizart pont van, a wrap_up field helyesen ki lesz toltve.
       semantic_info:

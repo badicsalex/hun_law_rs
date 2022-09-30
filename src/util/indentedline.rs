@@ -175,7 +175,13 @@ impl IndentedLine {
         self.indent() < other + INDENT_SIMILARITY_THRESHOLD
     }
 
-    pub fn parse_header<T: FromStr>(&self, regex: &Regex) -> Option<(T, IndentedLine)> {
+    /// Parse a potential header with the given regex and identifier type.
+    /// If the rest of the line starts with anything in the blacklist, return None
+    pub fn parse_header<T: FromStr>(
+        &self,
+        regex: &Regex,
+        blacklist: &'static [&'static str],
+    ) -> Option<(T, IndentedLine)> {
         let content = self.content();
         let mut capture_locations = regex.capture_locations();
         // This is called for its side-effects, and the '?' is important.
@@ -189,6 +195,9 @@ impl IndentedLine {
         let (content_from, content_to) =
             capture_locations.get(capture_locations.len() - 1).unwrap();
         let rest = self.slice_bytes(content_from, Some(content_to));
+        if blacklist.iter().any(|bli| rest.content().starts_with(bli)) {
+            return None;
+        }
         Some((identifier, rest))
     }
 

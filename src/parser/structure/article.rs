@@ -58,9 +58,10 @@ impl ArticleParserFactory {
         }
 
         let (identifier, rest) = line
-            .parse_header::<ArticleIdentifier>(regex!(
-                "^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$"
-            ))
+            .parse_header::<ArticleIdentifier>(
+                regex!("^(([0-9]+:)?([0-9]+(/[A-Z])?))\\. ?§ +(.*)$"),
+                &[],
+            )
             .ok_or_else(|| anyhow!("Line did not fit the regex"))?;
 
         if let Some(expected_id) = expected_identifier {

@@ -294,7 +294,8 @@ impl SAEParser for ParagraphParser {
     type ChildrenType = ParagraphChildren;
 
     fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
-        let (id, rest) = line.parse_header(regex!("^\\(([0-9]+[a-z]?)\\) +(.*)$"))?;
+        let (id, rest) =
+            line.parse_header(regex!("^\\(([0-9]+[a-z]?)\\) +(.*)$"), &["bekezdés"])?;
         Some((Some(id), rest))
     }
 
@@ -320,7 +321,7 @@ impl SAEParser for NumericPointParser {
     type ChildrenType = NumericPointChildren;
 
     fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
-        line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\. +(.*)$"))
+        line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\. +(.*)$"), &["pont", "alpont"])
     }
 
     fn try_extract_children(
@@ -342,7 +343,10 @@ impl SAEParser for AlphabeticPointParser {
     type ChildrenType = AlphabeticPointChildren;
 
     fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
-        line.parse_header(regex!("^([a-z]|cs|dz|gy|ly|ny|sz|ty)\\) +(.*)$"))
+        line.parse_header(
+            regex!("^([a-z]|cs|dz|gy|ly|ny|sz|ty)\\) +(.*)$"),
+            &["pont", "alpont"],
+        )
     }
 
     fn try_extract_children(
@@ -371,7 +375,7 @@ impl SAEParser for NumericSubpointParser {
     type ChildrenType = NumericSubpointChildren;
 
     fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
-        line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\. +(.*)$"))
+        line.parse_header(regex!("^([0-9]+(/?[a-z])?)\\. +(.*)$"), &["pont", "alpont"])
     }
 
     fn try_extract_children(
@@ -395,8 +399,10 @@ impl SAEParser for AlphabeticSubpointParser {
     type ChildrenType = AlphabeticSubpointChildren;
 
     fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
-        let (result, rest) =
-            line.parse_header::<PrefixedAlphabeticIdentifier>(regex!("^([a-z]?[a-z])\\) +(.*)$"))?;
+        let (result, rest) = line.parse_header::<PrefixedAlphabeticIdentifier>(
+            regex!("^([a-z]?[a-z])\\) +(.*)$"),
+            &["pont", "alpont"],
+        )?;
         if result.prefix_is(self.prefix) {
             Some((result, rest))
         } else {
