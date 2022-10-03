@@ -70,8 +70,7 @@ impl Fixups {
 
     pub fn save(&self) -> Result<()> {
         create_dir_all(
-            &self
-                .fixup_path
+            self.fixup_path
                 .parent()
                 .ok_or_else(|| anyhow!("No parent for fixup_path"))?,
         )?;

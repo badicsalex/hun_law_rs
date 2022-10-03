@@ -108,9 +108,9 @@ where
     fn render_cid(&mut self, cid: u32) -> Result<()> {
         let font = self.font()?;
         if let Some(actual_text) = &mut self.actual_text_collector {
-            actual_text.render_cid(&mut self.state, &*font, cid)
+            actual_text.render_cid(&mut self.state, &font, cid)
         } else {
-            self.collector.render_cid(&mut self.state, &*font, cid)
+            self.collector.render_cid(&mut self.state, &font, cid)
         }
     }
 
@@ -225,7 +225,7 @@ where
                     .fonts
                     .get(&name)
                     .ok_or_else(|| anyhow!("Did not find font resource"))?;
-                self.set_font(&*font, size)?;
+                self.set_font(font, size)?;
             }
 
             // --- Positioning ---

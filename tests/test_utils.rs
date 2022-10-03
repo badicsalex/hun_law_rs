@@ -51,7 +51,7 @@ impl Display for PrettyDiff {
 
         for (idx, group) in diff.grouped_ops(3).iter().enumerate() {
             if idx > 0 {
-                println!("{:-^1$}", "-", 80);
+                writeln!(f, "{:-^1$}", "-", 80)?;
             }
             for op in group {
                 for change in diff.iter_inline_changes(op) {
