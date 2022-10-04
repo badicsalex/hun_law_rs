@@ -428,7 +428,9 @@ NumberWithDot = @:Number "." ;
 Number = {'0'..'9'}+ ;
 @string
 @no_skip_ws
-Roman = {'I' | 'V' | 'X' | 'L' | 'C' | 'D' | 'M'}+ ; # TODO: actual grammar for this.
+Roman = { RomanNumeralChar }+ ; # TODO: actual grammar for this.
+@char
+RomanNumeralChar = 'I' | 'V' | 'X' | 'L' | 'C' | 'D' | 'M' ;
 
 @no_skip_ws
 Word = {HunLower | HunUpper | '-'}+ ;
@@ -436,10 +438,12 @@ Word = {HunLower | HunUpper | '-'}+ ;
 Date = year:Number "." month:Month day:Number ("-án" | "-jén" | "-én" | ". napján");
 
 @string
+@no_skip_ws
 Month = "január" | "február" | "március" | "április" | "május" | "június" |
     "július" | "augusztus" | "szeptember" | "október" | "november" | "december";
 
 @string
+@no_skip_ws
 HungarianOrdinal = "első" | "második" | "harmadik" | "negyedik" | "ötödik" |
     "hatodik" | "hetedik"| "nyolcadik" | "kilencedik" | "tizedik" |
     "tizenegyedik" | "tizenkettedik" | "tizenharmadik" | "tizennegyedik" | "tizenötödik" |
@@ -448,6 +452,7 @@ HungarianOrdinal = "első" | "második" | "harmadik" | "negyedik" | "ötödik" |
     "hatvanadik" | "hetvenedik" | "nyolcvanadik" | "kilencvenedik";
 
 @string
+@no_skip_ws
 HungarianOrdinalCapital = "Első" | "Második" | "Harmadik" | "Negyedik" | "Ötödik" |
     "Hatodik" | "Hetedik"| "Nyolcadik" | "Kilencedik" | "Tizedik" |
     "Tizenegyedik" | "Tizenkettedik" | "Tizenharmadik" | "Tizennegyedik" | "Tizenötödik" |
@@ -457,4 +462,5 @@ HungarianOrdinalCapital = "Első" | "Második" | "Harmadik" | "Negyedik" | "Öt�
     "TIZENEGYEDIK" | "TIZENKETTEDIK" | "TIZENHARMADIK" | "TIZENNEGYEDIK" | "TIZENÖTÖDIK" |
     "TIZENHATODIK" | "TIZENHETEDIK" | "TIZENNYOLCADIK" | "TIZENKILENCEDIK" ;
 
-Dash = "−" | "–" | "-" ;
+@char
+Dash = '−' | '–' | '-' ;
