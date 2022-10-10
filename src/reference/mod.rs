@@ -28,16 +28,15 @@ use std::fmt::{Debug, Write};
 use anyhow::{anyhow, bail, ensure, Result};
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    identifier::{range::IdentifierRangeFrom, ActIdentifier},
-    reference::builder::ReferenceBuilderSetPart,
-    util::compact_string::CompactString,
-};
-
 use self::{
     builder::ReferenceBuilder,
     parts::{AnyReferencePart, RefPartArticle, RefPartParagraph, RefPartPoint, RefPartSubpoint},
     unchecked::UncheckedReference,
+};
+use crate::{
+    identifier::{range::IdentifierRangeFrom, ActIdentifier},
+    reference::builder::ReferenceBuilderSetPart,
+    util::compact_string::CompactString,
 };
 
 /// Reference to an Act, article or SAE. Possibly relative.

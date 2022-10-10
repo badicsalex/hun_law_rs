@@ -21,13 +21,12 @@ use std::io::Write;
 use anyhow::Result;
 use serde::Serialize;
 
+use self::text::{TextOutput, TextOutputParams};
 use crate::{
     parser::{mk_act_section::ActRawText, pdf::PageOfLines},
     structure::Act,
     util::{indentedline::IndentedLine, singleton_yaml},
 };
-
-use self::text::{TextOutput, TextOutputParams};
 
 #[derive(clap::ValueEnum, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OutputFormat {

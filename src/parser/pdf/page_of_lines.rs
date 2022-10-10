@@ -17,12 +17,11 @@
 use anyhow::Result;
 use serde::Serialize;
 
-use crate::util::indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE};
-
 use super::{
     collector::{CharCollector, PositionedChar},
     util::compare_float_for_sorting,
 };
+use crate::util::indentedline::{IndentedLine, IndentedLinePart, EMPTY_LINE};
 
 const SAME_LINE_EPSILON: f32 = 0.5;
 const ADDITIONAL_EMPTY_LINE_THRESHOLD: f32 = 16.0;

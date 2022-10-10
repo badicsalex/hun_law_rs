@@ -17,14 +17,6 @@
 use anyhow::{Context, Result};
 use hun_law_grammar::PegParser;
 
-use crate::{
-    identifier::IdentifierCommon,
-    reference::Reference,
-    semantic_info::{OutgoingReference, SemanticInfo, SpecialPhrase},
-    structure::{ChildrenCommon, SAEBody, SubArticleElement},
-    util::walker::SAEVisitorMut,
-};
-
 use super::{
     abbreviation::{get_new_abbreviations, AbbreviationCache},
     article_title_amendment::convert_article_title_amendment,
@@ -36,6 +28,13 @@ use super::{
     reference::GetOutgoingReferences,
     repeal::{convert_repeal, convert_structural_repeal},
     text_amendment::convert_text_amendment,
+};
+use crate::{
+    identifier::IdentifierCommon,
+    reference::Reference,
+    semantic_info::{OutgoingReference, SemanticInfo, SpecialPhrase},
+    structure::{ChildrenCommon, SAEBody, SubArticleElement},
+    util::walker::SAEVisitorMut,
 };
 
 #[derive(Debug)]

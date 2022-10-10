@@ -17,7 +17,6 @@
 use std::rc::Rc;
 
 use euclid::Transform2D;
-
 use pdf::content::PdfSpace;
 
 use super::font::FastFont;

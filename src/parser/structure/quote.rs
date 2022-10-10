@@ -16,12 +16,11 @@
 
 use anyhow::{bail, ensure, Result};
 
+use super::sae::ExtractMultipleResult;
 use crate::{
     structure::{ParagraphChildren, QuotedBlock},
     util::{indentedline::IndentedLine, QuoteCheck},
 };
-
-use super::sae::ExtractMultipleResult;
 
 pub struct QuotedBlockParser;
 

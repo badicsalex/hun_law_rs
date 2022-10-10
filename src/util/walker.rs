@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use anyhow::Result;
+
+use super::debug::{DebugContextString, WithElemContext};
 use crate::{
     identifier::IdentifierCommon,
     reference::{to_element::ReferenceToElement, Reference},
@@ -23,9 +26,6 @@ use crate::{
         SubArticleElement,
     },
 };
-use anyhow::Result;
-
-use super::debug::{DebugContextString, WithElemContext};
 
 macro_rules! impl_walk_sae {
     ($Trait:ident, $Visitor:ident, $walk_fn: tt, $($ref_type: tt)*) => {

@@ -16,13 +16,12 @@
 
 use anyhow::Result;
 
-use crate::identifier::ActIdentifier;
-
 use super::{
     parts::{RefPartArticle, RefPartParagraph, RefPartPoint, RefPartSubpoint},
     unchecked::UncheckedReference,
     Reference,
 };
+use crate::identifier::ActIdentifier;
 
 #[derive(Debug, Default, Clone)]
 pub struct ReferenceBuilder {
@@ -101,12 +100,11 @@ mod tests {
 
     use pretty_assertions::assert_eq;
 
+    use super::*;
     use crate::identifier::{
         range::{IdentifierRange, IdentifierRangeFrom},
         AlphabeticIdentifier, NumericIdentifier, PrefixedAlphabeticIdentifier,
     };
-
-    use super::*;
 
     #[test]
     fn test_builder_happy_cases() {

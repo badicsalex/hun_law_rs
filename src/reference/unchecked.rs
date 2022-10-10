@@ -15,15 +15,13 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{anyhow, ensure, Result};
-
 use serde::{Deserialize, Serialize};
-
-use crate::identifier::ActIdentifier;
 
 use super::{
     parts::{RefPartArticle, RefPartParagraph, RefPartPoint, RefPartSubpoint},
     Reference,
 };
+use crate::identifier::ActIdentifier;
 
 /// Helper to create Reference instances from parts.
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]

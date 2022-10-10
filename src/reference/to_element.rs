@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
+use super::Reference;
 use crate::{
     identifier::range::IdentifierRangeFrom,
     structure::{
         Act, AlphabeticPoint, AlphabeticSubpoint, Article, NumericPoint, NumericSubpoint, Paragraph,
     },
 };
-
-use super::Reference;
 
 pub trait ReferenceToElement {
     fn reference(&self) -> Reference;

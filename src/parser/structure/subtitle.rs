@@ -17,9 +17,8 @@
 use anyhow::Result;
 use lazy_regex::regex_captures;
 
-use crate::{identifier::NumericIdentifier, structure::Subtitle, util::indentedline::IndentedLine};
-
 use super::act::ParsingContext;
+use crate::{identifier::NumericIdentifier, structure::Subtitle, util::indentedline::IndentedLine};
 
 pub enum SubtitleParserFactory {}
 

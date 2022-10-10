@@ -16,9 +16,8 @@
 
 use anyhow::Result;
 
-use crate::structure::Act;
-
 use self::sae::SemanticInfoAdder;
+use crate::structure::Act;
 
 pub mod abbreviation;
 pub mod article_title_amendment;
@@ -45,12 +44,11 @@ mod tests {
     use chrono::NaiveDate;
     use pretty_assertions::assert_eq;
 
+    use super::*;
     use crate::{
         identifier::ActIdentifier,
         structure::{Article, Paragraph},
     };
-
-    use super::*;
 
     #[test]
     fn test_add_semantic_abbrevs() {

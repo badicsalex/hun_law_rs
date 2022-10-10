@@ -17,11 +17,10 @@ use std::{fmt::Debug, str::FromStr};
 
 use pretty_assertions::assert_eq;
 
+use super::*;
 use crate::identifier::{
     AlphabeticIdentifier, IdentifierCommon, NumericIdentifier, PrefixedAlphabeticIdentifier,
 };
-
-use super::*;
 
 #[test]
 fn test_make_range() {
