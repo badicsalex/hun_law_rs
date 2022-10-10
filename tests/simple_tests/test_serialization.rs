@@ -61,7 +61,7 @@ fn get_test_act() -> Act {
                 identifier: "1:1".parse().unwrap(),
                 title: Some("Az egyetlen cikk, aminek cime van.".into()),
                 children: vec![Paragraph {
-                    identifier: None,
+                    identifier: Default::default(),
                     body: "Meg szövege".into(),
                     semantic_info: Default::default(),
                 }],
@@ -72,12 +72,12 @@ fn get_test_act() -> Act {
                 title: None,
                 children: vec![
                     Paragraph {
-                        identifier: Some(1.into()),
+                        identifier: 1.into(),
                         body: "Valami valami hosszu szoveg csak azert hogy leteszteljuk hogy a yaml szerializacio mennyire nez ki jol igy. Remelhetoleg nem tori tobb sorba.".into(),
                         semantic_info: Default::default(),
                     },
                     Paragraph {
-                        identifier: Some(2.into()),
+                        identifier: 2.into(),
                         body: SAEBody::Children {
                             intro: "Egy felsorolás legyen".into(),
                             wrap_up: Some("minden esetben.".into()),
@@ -137,7 +137,7 @@ fn get_test_act() -> Act {
                 identifier: "2:1".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
-                    identifier: None,
+                    identifier: Default::default(),
                     body: "Nothing fancy yet".into(),
                     semantic_info: Default::default(),
                 }],
@@ -158,7 +158,7 @@ fn get_test_act() -> Act {
                 identifier: "2:1/A".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
-                    identifier: None,
+                    identifier: Default::default(),
                     body: "Added after the fact".into(),
                     semantic_info: Default::default(),
                 }],
@@ -168,7 +168,7 @@ fn get_test_act() -> Act {
                 identifier: "2:2".parse().unwrap(),
                 title: None,
                 children: vec![Paragraph {
-                    identifier: Some(1.into()),
+                    identifier: 1.into(),
                     body: SAEBody::Children {
                         intro: "This can legally be after 2:1/A. Also, ".into(),
                         wrap_up: Some("Can also be amended".into()),

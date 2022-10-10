@@ -68,13 +68,13 @@ mod tests {
                 title: Some("Az egyetlen cikk, aminek cime van.".into()),
                 children: vec![
                     Paragraph {
-                        identifier: Some(1.into()),
+                        identifier: 1.into(),
                         body: "Létezik a csodákról szóló 2022. évi XXII. törvény (a továbbiakban: Cstv.)."
                             .into(),
                         semantic_info: Default::default(),
                     },
                     Paragraph {
-                        identifier: Some(2.into()),
+                        identifier: 2.into(),
                         body: "A Cstv. 5. §-a fontos.".into(),
                         semantic_info: Default::default(),
                     },
@@ -106,7 +106,7 @@ mod tests {
         );
 
         test_act.articles_mut().next().unwrap().children[0] = Paragraph {
-            identifier: Some(1.into()),
+            identifier: 1.into(),
             body: "I am kill.".into(),
             semantic_info: Default::default(),
         };
@@ -126,7 +126,7 @@ mod tests {
         );
 
         test_act.articles_mut().next().unwrap().children[0] = Paragraph {
-            identifier: Some(1.into()),
+            identifier: 1.into(),
             body: "Létezik a csodákról szóló 2033. évi XXXIII. törvény (a továbbiakban: Cstv.)."
                 .into(),
             semantic_info: Default::default(),

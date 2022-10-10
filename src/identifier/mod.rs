@@ -18,6 +18,7 @@ mod act;
 mod alphabetic;
 mod article;
 mod numeric;
+mod paragraph;
 mod prefixed_alphabetic;
 pub mod range;
 
@@ -25,6 +26,7 @@ pub use act::ActIdentifier;
 pub use alphabetic::{AlphabeticIdentifier, HungarianIdentifierChar};
 pub use article::ArticleIdentifier;
 pub use numeric::NumericIdentifier;
+pub use paragraph::ParagraphIdentifier;
 pub use prefixed_alphabetic::PrefixedAlphabeticIdentifier;
 
 pub trait IdentifierCommon: std::fmt::Debug + Clone + Copy + Sized + Ord {
@@ -35,27 +37,6 @@ pub trait IdentifierCommon: std::fmt::Debug + Clone + Copy + Sized + Ord {
 
     fn is_empty(&self) -> bool {
         false
-    }
-}
-
-// TODO: Hacks until we have better IDs or something.
-impl IdentifierCommon for Option<NumericIdentifier> {
-    fn is_first(&self) -> bool {
-        match self {
-            Some(x) => x.is_first(),
-            None => false,
-        }
-    }
-
-    fn is_next_from(&self, other: Self) -> bool {
-        match (self, other) {
-            (Some(x), Some(o)) => x.is_next_from(o),
-            _ => false,
-        }
-    }
-
-    fn is_empty(&self) -> bool {
-        self.is_none()
     }
 }
 

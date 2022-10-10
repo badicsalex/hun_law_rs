@@ -107,12 +107,9 @@ impl AnyReferencePart {
             None
         }
     }
-    pub fn paragraph(&self) -> Option<IdentifierRange<Option<NumericIdentifier>>> {
+    pub fn paragraph(&self) -> Option<IdentifierRange<NumericIdentifier>> {
         if let Self::Paragraph(result) = self {
-            Some(IdentifierRange::from_range(
-                Some(result.first_in_range()),
-                Some(result.last_in_range()),
-            ))
+            Some(*result)
         } else {
             None
         }

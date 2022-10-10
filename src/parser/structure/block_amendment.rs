@@ -131,7 +131,7 @@ fn convert_simple_block_amendment(
     Ok(match position.get_last_part() {
         AnyReferencePart::Paragraph(id) => {
             ParagraphParser
-                .extract_multiple(lines, &BA_PARSE_PARAMS, Some(Some(id.first_in_range())))?
+                .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range().into()))?
                 .elements
         }
         AnyReferencePart::Point(RefPartPoint::Numeric(id)) => {

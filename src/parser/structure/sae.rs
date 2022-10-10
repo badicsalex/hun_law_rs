@@ -23,7 +23,7 @@ use super::{act::ParsingContext, quote::QuotedBlockParser};
 use crate::{
     identifier::{
         AlphabeticIdentifier, HungarianIdentifierChar, IdentifierCommon, NumericIdentifier,
-        PrefixedAlphabeticIdentifier,
+        ParagraphIdentifier, PrefixedAlphabeticIdentifier,
     },
     structure::{
         AlphabeticPointChildren, AlphabeticSubpointChildren, ChildrenCommon, NumericPointChildren,
@@ -290,13 +290,13 @@ pub trait SAEParser: Debug {
 pub struct ParagraphParser;
 
 impl SAEParser for ParagraphParser {
-    type IdentifierType = Option<NumericIdentifier>;
+    type IdentifierType = ParagraphIdentifier;
     type ChildrenType = ParagraphChildren;
 
     fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
         let (id, rest) =
             line.parse_header(regex!("^\\(([0-9]+[a-z]?)\\) +(.*)$"), &["bekezdés"])?;
-        Some((Some(id), rest))
+        Some((id, rest))
     }
 
     fn try_extract_children(

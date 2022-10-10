@@ -24,7 +24,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     identifier::{
         ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, IdentifierCommon,
-        NumericIdentifier, PrefixedAlphabeticIdentifier,
+        NumericIdentifier, ParagraphIdentifier, PrefixedAlphabeticIdentifier,
     },
     semantic_info::SemanticInfo,
     util::{debug::DebugContextString, hun_str::FromHungarianString, indentedline::IndentedLine},
@@ -243,6 +243,7 @@ where
     // Note: no serde(default) here, because IdentifierType doesn't usually have a default.
     // Except for paragraphs, which is an Option<NumericIdentifier>.
     // Fortunately (?) serde automatically adds "default" to Option type fields.
+    // (See the absolute _madness_ in serde::__private::de::missing_field)
     #[serde(skip_serializing_if = "IdentifierCommon::is_empty")]
     pub identifier: IdentifierType,
     pub body: SAEBody<ChildrenType>,
@@ -292,7 +293,7 @@ impl<T: ChildrenCommon> From<String> for SAEBody<T> {
     }
 }
 
-pub type Paragraph = SubArticleElement<Option<NumericIdentifier>, ParagraphChildren>;
+pub type Paragraph = SubArticleElement<ParagraphIdentifier, ParagraphChildren>;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, FromVariants)]
 pub enum ParagraphChildren {
     AlphabeticPoint(Vec<AlphabeticPoint>),
@@ -534,10 +535,10 @@ pub trait SAEHeaderString {
 
 impl SAEHeaderString for Paragraph {
     fn header_string(&self) -> String {
-        if let Some(identifier) = self.identifier {
-            format!("({})", identifier)
+        if self.identifier.is_empty() {
+            String::new()
         } else {
-            "".to_string()
+            format!("({})", self.identifier)
         }
     }
 }

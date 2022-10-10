@@ -22,7 +22,7 @@ use super::{
     sae::{ParagraphParser, RestOfWrapUpMode, SAEParseParams, SAEParser},
 };
 use crate::{
-    identifier::{ArticleIdentifier, IdentifierCommon},
+    identifier::{ArticleIdentifier, IdentifierCommon, ParagraphIdentifier},
     structure::{Article, Paragraph},
     util::indentedline::IndentedLine,
 };
@@ -131,7 +131,12 @@ impl ArticleParser {
         } else {
             vec![
                 ParagraphParser
-                    .parse(None, &self.lines, self.context, RestOfWrapUpMode::KeepIt)?
+                    .parse(
+                        ParagraphIdentifier::default(),
+                        &self.lines,
+                        self.context,
+                        RestOfWrapUpMode::KeepIt,
+                    )?
                     .element,
             ]
         };
