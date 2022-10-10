@@ -17,10 +17,13 @@
 use from_variants::FromVariants;
 use serde::{Deserialize, Serialize};
 
-use crate::identifier::{
-    range::{IdentifierRange, IdentifierRangeFrom},
-    ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
-    PrefixedAlphabeticIdentifier,
+use crate::{
+    identifier::{
+        range::{IdentifierRange, IdentifierRangeFrom},
+        ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, NumericIdentifier,
+        PrefixedAlphabeticIdentifier,
+    },
+    util::compact_string::CompactString,
 };
 
 pub type RefPartArticle = IdentifierRange<ArticleIdentifier>;
@@ -35,11 +38,47 @@ pub enum RefPartPoint {
     Alphabetic(IdentifierRange<AlphabeticIdentifier>),
 }
 
+impl CompactString for RefPartPoint {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Numeric(x) => x.fmt_compact_string(f),
+            Self::Alphabetic(x) => x.fmt_compact_string(f),
+        }
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> anyhow::Result<Self> {
+        let s = s.as_ref();
+        if let Ok(i) = CompactString::from_compact_string(s) {
+            Ok(Self::Numeric(i))
+        } else {
+            Ok(Self::Alphabetic(CompactString::from_compact_string(s)?))
+        }
+    }
+}
+
 impl RefPartPoint {
     pub fn is_range(&self) -> bool {
         match self {
             RefPartPoint::Numeric(x) => x.is_range(),
             RefPartPoint::Alphabetic(x) => x.is_range(),
+        }
+    }
+}
+
+impl CompactString for RefPartSubpoint {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Numeric(x) => x.fmt_compact_string(f),
+            Self::Alphabetic(x) => x.fmt_compact_string(f),
+        }
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> anyhow::Result<Self> {
+        let s = s.as_ref();
+        if let Ok(i) = CompactString::from_compact_string(s) {
+            Ok(Self::Numeric(i))
+        } else {
+            Ok(Self::Alphabetic(CompactString::from_compact_string(s)?))
         }
     }
 }

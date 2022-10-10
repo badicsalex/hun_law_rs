@@ -19,10 +19,11 @@ use std::{
     str::FromStr,
 };
 
-use anyhow::{anyhow, Error};
+use anyhow::{anyhow, Error, Result};
 use serde::{Deserialize, Serialize};
 
 use super::{HungarianIdentifierChar, IdentifierCommon};
+use crate::util::compact_string::CompactString;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
@@ -106,6 +107,16 @@ impl TryFrom<String> for PrefixedAlphabeticIdentifier {
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
         value.parse()
+    }
+}
+
+impl CompactString for PrefixedAlphabeticIdentifier {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
+        s.as_ref().parse()
     }
 }
 

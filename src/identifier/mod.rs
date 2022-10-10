@@ -29,7 +29,9 @@ pub use numeric::NumericIdentifier;
 pub use paragraph::ParagraphIdentifier;
 pub use prefixed_alphabetic::PrefixedAlphabeticIdentifier;
 
-pub trait IdentifierCommon: std::fmt::Debug + Clone + Copy + Sized + Ord {
+use crate::util::compact_string::CompactString;
+
+pub trait IdentifierCommon: std::fmt::Debug + Clone + Copy + Sized + Ord + CompactString {
     fn is_first(&self) -> bool;
 
     /// Can the parameter be considered the previous identifier. Handles suffix transitions.

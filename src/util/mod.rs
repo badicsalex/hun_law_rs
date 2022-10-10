@@ -16,6 +16,7 @@
 
 use anyhow::{ensure, Result};
 
+pub mod compact_string;
 pub mod debug;
 pub mod hun_str;
 pub mod indentedline;

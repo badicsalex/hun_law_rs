@@ -23,7 +23,9 @@ use anyhow::{anyhow, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
 
 use super::{HungarianIdentifierChar, IdentifierCommon};
-use crate::util::{hun_str::ToHungarianString, DIGITS, ROMAN_DIGITS};
+use crate::util::{
+    compact_string::CompactString, hun_str::ToHungarianString, DIGITS, ROMAN_DIGITS,
+};
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
@@ -141,6 +143,16 @@ impl Debug for NumericIdentifier {
 impl From<NumericIdentifier> for String {
     fn from(val: NumericIdentifier) -> Self {
         val.to_string()
+    }
+}
+
+impl CompactString for NumericIdentifier {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
+        s.as_ref().parse()
     }
 }
 

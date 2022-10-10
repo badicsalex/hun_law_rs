@@ -23,6 +23,7 @@ use anyhow::{Error, Result};
 use serde::{Deserialize, Serialize};
 
 use super::{IdentifierCommon, NumericIdentifier};
+use crate::util::compact_string::CompactString;
 
 #[derive(Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 // Transparent is needed for the missing "identifier" field functionality
@@ -99,6 +100,16 @@ impl TryFrom<String> for ParagraphIdentifier {
     }
 }
 
+impl CompactString for ParagraphIdentifier {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
+        s.as_ref().parse()
+    }
+}
+
 impl From<u16> for ParagraphIdentifier {
     fn from(v: u16) -> Self {
         Self(Some(v.into()))
@@ -136,5 +147,24 @@ mod tests {
                 > ParagraphIdentifier(Some("50".parse().unwrap()))
         );
         assert!(ParagraphIdentifier(None) < ParagraphIdentifier(Some("50".parse().unwrap())));
+    }
+
+    #[test]
+    fn test_compact_string() {
+        let tst_full = ParagraphIdentifier(Some("12a".parse().unwrap()));
+        assert_eq!(&tst_full.compact_string().to_string(), "12a");
+        assert_eq!(
+            tst_full,
+            ParagraphIdentifier::from_compact_string("12a").unwrap()
+        );
+
+        let tst_empty = ParagraphIdentifier(None);
+        assert_eq!(&tst_empty.compact_string().to_string(), "");
+        assert_eq!(
+            tst_empty,
+            ParagraphIdentifier::from_compact_string("").unwrap()
+        );
+
+        assert!(ParagraphIdentifier::from_compact_string("a").is_err());
     }
 }

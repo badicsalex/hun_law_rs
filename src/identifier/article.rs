@@ -23,6 +23,7 @@ use anyhow::{Error, Result};
 use serde::{Deserialize, Serialize};
 
 use super::{IdentifierCommon, NumericIdentifier};
+use crate::util::compact_string::CompactString;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(into = "String")]
@@ -99,6 +100,30 @@ impl TryFrom<String> for ArticleIdentifier {
     }
 }
 
+impl CompactString for ArticleIdentifier {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if let Some(book) = self.book {
+            write!(f, "{:?}.", book)?;
+        }
+        self.identifier.fmt_compact_string(f)
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
+        let s = s.as_ref();
+        if let Some((book_str, id_str)) = s.split_once('.') {
+            Ok(Self {
+                book: Some(book_str.parse()?),
+                identifier: CompactString::from_compact_string(id_str)?,
+            })
+        } else {
+            Ok(Self {
+                book: None,
+                identifier: CompactString::from_compact_string(s)?,
+            })
+        }
+    }
+}
+
 impl From<u16> for ArticleIdentifier {
     fn from(val: u16) -> Self {
         Self {
@@ -145,5 +170,24 @@ mod tests {
             ArticleIdentifier::from_str("3:12/X").unwrap()
                 < ArticleIdentifier::from_str("3:15/B").unwrap()
         );
+    }
+
+    #[test]
+    fn test_compact_string() {
+        let tst_full = ArticleIdentifier::from_str("2:12/B").unwrap();
+        assert_eq!(&tst_full.compact_string().to_string(), "2.12b");
+        assert_eq!(
+            tst_full,
+            ArticleIdentifier::from_compact_string("2.12b").unwrap()
+        );
+
+        let tst_no_book = ArticleIdentifier::from_str("12/B").unwrap();
+        assert_eq!(&tst_no_book.compact_string().to_string(), "12b");
+        assert_eq!(
+            tst_no_book,
+            ArticleIdentifier::from_compact_string("12b").unwrap()
+        );
+
+        assert!(ArticleIdentifier::from_compact_string("a").is_err());
     }
 }

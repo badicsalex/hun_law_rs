@@ -23,6 +23,7 @@ use anyhow::{bail, Error, Result};
 use serde::{Deserialize, Serialize};
 
 use super::IdentifierCommon;
+use crate::util::compact_string::CompactString;
 
 pub type AlphabeticIdentifier = HungarianIdentifierChar;
 
@@ -199,6 +200,16 @@ impl Display for UppercaseHungarianIdentifierChar {
             HungarianIdentifierChar::Ty => write!(f, "TY"),
             HungarianIdentifierChar::Zs => write!(f, "ZS"),
         }
+    }
+}
+
+impl CompactString for HungarianIdentifierChar {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(self, f)
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
+        s.as_ref().parse()
     }
 }
 

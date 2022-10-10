@@ -23,14 +23,15 @@ pub mod unchecked;
 #[cfg(test)]
 mod tests;
 
-use std::fmt::Debug;
+use std::fmt::{Debug, Write};
 
-use anyhow::{bail, ensure, Result};
+use anyhow::{anyhow, bail, ensure, Result};
 use serde::{Deserialize, Serialize};
 
 use crate::{
     identifier::{range::IdentifierRangeFrom, ActIdentifier},
     reference::builder::ReferenceBuilderSetPart,
+    util::compact_string::CompactString,
 };
 
 use self::{
@@ -350,5 +351,50 @@ impl From<ActIdentifier> for Reference {
             act: Some(act),
             ..Default::default()
         }
+    }
+}
+
+impl CompactString for Reference {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.act.fmt_compact_string(f)?;
+        f.write_char('_')?;
+        self.article.fmt_compact_string(f)?;
+        f.write_char('_')?;
+        self.paragraph.fmt_compact_string(f)?;
+        f.write_char('_')?;
+        self.point.fmt_compact_string(f)?;
+        f.write_char('_')?;
+        self.subpoint.fmt_compact_string(f)?;
+        Ok(())
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
+        let mut iter = s.as_ref().split('_');
+        let act = iter
+            .next()
+            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
+        let article = iter
+            .next()
+            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
+        let paragraph = iter
+            .next()
+            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
+        let point = iter
+            .next()
+            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
+        let subpoint = iter
+            .next()
+            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
+        if iter.next().is_some() {
+            bail!("Too many parts in Reference::from_compact_string")
+        }
+        let result = UncheckedReference {
+            act: CompactString::from_compact_string(act)?,
+            article: CompactString::from_compact_string(article)?,
+            paragraph: CompactString::from_compact_string(paragraph)?,
+            point: CompactString::from_compact_string(point)?,
+            subpoint: CompactString::from_compact_string(subpoint)?,
+        };
+        result.try_into()
     }
 }

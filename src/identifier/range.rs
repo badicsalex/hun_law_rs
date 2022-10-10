@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::fmt::{Debug, Display};
+use std::fmt::{Debug, Display, Formatter, Write};
 
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use super::IdentifierCommon;
+use crate::util::compact_string::CompactString;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(from = "IdentifierRangeSerdeHelper<T>")]
@@ -61,7 +63,7 @@ impl<T: IdentifierCommon> IdentifierRangeFrom<T> for IdentifierRange<T> {
 }
 
 impl<T: IdentifierCommon + Display> Debug for IdentifierRange<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if self.is_range() {
             f.debug_struct("Range")
                 .field("start", &self.start)
@@ -69,6 +71,29 @@ impl<T: IdentifierCommon + Display> Debug for IdentifierRange<T> {
                 .finish()
         } else {
             Display::fmt(&self.start, f)
+        }
+    }
+}
+
+impl<T: IdentifierCommon> CompactString for IdentifierRange<T> {
+    fn fmt_compact_string(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        self.start.fmt_compact_string(f)?;
+        if self.is_range() {
+            f.write_char('-')?;
+            self.end.fmt_compact_string(f)?;
+        }
+        Ok(())
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
+        let s = s.as_ref();
+        if let Some((left, right)) = s.split_once('-') {
+            Ok(Self::from_range(
+                CompactString::from_compact_string(left)?,
+                CompactString::from_compact_string(right)?,
+            ))
+        } else {
+            Ok(Self::from_single(CompactString::from_compact_string(s)?))
         }
     }
 }
@@ -104,5 +129,29 @@ impl<T: IdentifierCommon> From<IdentifierRange<T>> for IdentifierRangeSerdeHelpe
                 end: val.end,
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use pretty_assertions::assert_eq;
+
+    use super::*;
+    use crate::identifier::NumericIdentifier;
+
+    #[test]
+    fn test_compact_string() {
+        let single = IdentifierRange::from_single(NumericIdentifier::from(5));
+        assert_eq!(&single.compact_string().to_string(), "5");
+        assert_eq!(single, IdentifierRange::from_compact_string("5").unwrap());
+        let range =
+            IdentifierRange::from_range(NumericIdentifier::from(5), NumericIdentifier::from(10));
+        assert_eq!(&range.compact_string().to_string(), "5-10");
+        assert_eq!(range, IdentifierRange::from_compact_string("5-10").unwrap());
+
+        assert!(IdentifierRange::<NumericIdentifier>::from_compact_string("a").is_err());
+        assert!(IdentifierRange::<NumericIdentifier>::from_compact_string("a-10").is_err());
+        assert!(IdentifierRange::<NumericIdentifier>::from_compact_string("10-a").is_err());
+        assert!(IdentifierRange::<NumericIdentifier>::from_compact_string("1-10-5").is_err());
     }
 }

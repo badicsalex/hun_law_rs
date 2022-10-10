@@ -16,9 +16,11 @@
 
 use std::{fmt::Display, str::FromStr};
 
-use anyhow::{anyhow, Error};
+use anyhow::{anyhow, Error, Result};
 use lazy_regex::regex_captures;
 use serde::{Deserialize, Serialize};
+
+use crate::util::compact_string::CompactString;
 
 #[derive(
     Debug, Default, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize,
@@ -60,6 +62,24 @@ impl FromStr for ActIdentifier {
         try_classic(s)
             .or_else(|| try_decimal(s))
             .ok_or_else(|| anyhow!("Unknown act identifier format: {}", s))
+    }
+}
+
+impl CompactString for ActIdentifier {
+    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}.{}", self.year, self.number)
+    }
+
+    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
+        let s = s.as_ref();
+        if let Some((year, number)) = s.split_once('.') {
+            Ok(Self {
+                year: year.parse()?,
+                number: number.parse()?,
+            })
+        } else {
+            Err(anyhow!("Invalid compact act string: {}", s))
+        }
     }
 }
 
@@ -111,5 +131,16 @@ mod tests {
             number: 420,
         };
         assert_eq!(roundtrip_test, roundtrip_test.to_string().parse().unwrap());
+    }
+
+    #[test]
+    fn test_compact_string() {
+        let tst = ActIdentifier::from_str("2012/420").unwrap();
+        assert_eq!(&tst.compact_string().to_string(), "2012.420");
+        assert_eq!(tst, ActIdentifier::from_compact_string("2012.420").unwrap());
+        assert!(ActIdentifier::from_compact_string("2012").is_err());
+        assert!(ActIdentifier::from_compact_string("a").is_err());
+        assert!(ActIdentifier::from_compact_string("2012.a").is_err());
+        assert!(ActIdentifier::from_compact_string("a.420").is_err());
     }
 }
