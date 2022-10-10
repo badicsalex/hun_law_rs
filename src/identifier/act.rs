@@ -50,15 +50,15 @@ impl FromStr for ActIdentifier {
                 number: roman::from(number)?,
             })
         }
-        fn try_slash(s: &str) -> Option<ActIdentifier> {
-            let (_, year, number) = regex_captures!("([0-9]{4})/([0-9]+)", s)?;
+        fn try_decimal(s: &str) -> Option<ActIdentifier> {
+            let (_, year, number) = regex_captures!("([0-9]{4})[/_\\.-]([0-9]+)", s)?;
             Some(ActIdentifier {
                 year: year.parse().ok()?,
                 number: number.parse().ok()?,
             })
         }
         try_classic(s)
-            .or_else(|| try_slash(s))
+            .or_else(|| try_decimal(s))
             .ok_or_else(|| anyhow!("Unknown act identifier format: {}", s))
     }
 }
@@ -73,6 +73,27 @@ mod tests {
     fn test_act_identifier_parsing() {
         assert_eq!(
             "2012/123".parse::<ActIdentifier>().unwrap(),
+            ActIdentifier {
+                year: 2012,
+                number: 123,
+            }
+        );
+        assert_eq!(
+            "2012.123".parse::<ActIdentifier>().unwrap(),
+            ActIdentifier {
+                year: 2012,
+                number: 123,
+            }
+        );
+        assert_eq!(
+            "2012-123".parse::<ActIdentifier>().unwrap(),
+            ActIdentifier {
+                year: 2012,
+                number: 123,
+            }
+        );
+        assert_eq!(
+            "2012_123".parse::<ActIdentifier>().unwrap(),
             ActIdentifier {
                 year: 2012,
                 number: 123,
