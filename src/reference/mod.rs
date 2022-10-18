@@ -75,6 +75,10 @@ impl Reference {
         self.act
     }
 
+    pub fn article(&self) -> Option<RefPartArticle> {
+        self.article
+    }
+
     pub fn without_act(&self) -> Reference {
         // This is done without going through an UncheckedReference because
         // there is no way to create an invalid Reference like this.
