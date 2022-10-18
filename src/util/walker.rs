@@ -21,8 +21,8 @@ use crate::{
     identifier::IdentifierCommon,
     reference::{to_element::ReferenceToElement, Reference},
     structure::{
-        Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, ChildrenCommon,
-        NumericPointChildren, NumericSubpointChildren, ParagraphChildren, SAEBody,
+        Act, ActChild, AlphabeticPointChildren, AlphabeticSubpointChildren, Article,
+        ChildrenCommon, NumericPointChildren, NumericSubpointChildren, ParagraphChildren, SAEBody,
         SubArticleElement,
     },
 };
@@ -74,10 +74,16 @@ macro_rules! impl_walk_sae {
         impl $Trait for ActChild {
             fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
                 if let ActChild::Article(article) = self {
-                    article.children.$walk_fn(&article.reference().relative_to(base)?, visitor)
+                    article.$walk_fn(base, visitor)
                 } else {
                     Ok(())
                 }
+            }
+        }
+
+        impl $Trait for Article {
+            fn $walk_fn<V: $Visitor>($($ref_type)* self, base: &Reference, visitor: &mut V) -> Result<()> {
+                self.children.$walk_fn(&self.reference().relative_to(base)?, visitor)
             }
         }
 

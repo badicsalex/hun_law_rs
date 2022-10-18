@@ -42,6 +42,7 @@ pub fn get_new_abbreviations(root: &Root) -> Result<Vec<(String, ActIdentifier)>
 #[derive(Debug, Default)]
 pub struct AbbreviationCache {
     cache: BTreeMap<String, ActIdentifier>,
+    has_changed: bool,
 }
 
 impl AbbreviationCache {
@@ -50,7 +51,15 @@ impl AbbreviationCache {
     }
 
     pub fn add(&mut self, abbreviation: String, act_id: ActIdentifier) {
-        self.cache.insert(abbreviation, act_id);
+        if let Some(v) = self.cache.get_mut(&abbreviation) {
+            if *v != act_id {
+                *v = act_id;
+                self.has_changed = true;
+            }
+        } else {
+            self.cache.insert(abbreviation, act_id);
+            self.has_changed = true;
+        }
     }
 
     pub fn add_multiple(&mut self, elements: &[(String, ActIdentifier)]) {
@@ -65,16 +74,96 @@ impl AbbreviationCache {
             .ok_or_else(|| anyhow!("{} not found in the abbreviations cache", abbreviation))
             .cloned()
     }
+
+    pub fn has_changed(&self) -> bool {
+        self.has_changed
+    }
 }
 
 impl From<BTreeMap<String, ActIdentifier>> for AbbreviationCache {
     fn from(cache: BTreeMap<String, ActIdentifier>) -> Self {
-        Self { cache }
+        Self {
+            cache,
+            has_changed: false,
+        }
     }
 }
 
 impl From<AbbreviationCache> for BTreeMap<String, ActIdentifier> {
     fn from(ac: AbbreviationCache) -> Self {
         ac.cache
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use pretty_assertions::assert_eq;
+
+    use super::*;
+
+    #[test]
+    fn test_abbreviation_cache() {
+        let mut cache = AbbreviationCache::new();
+        cache.add(
+            "Lol.".into(),
+            ActIdentifier {
+                year: 2012,
+                number: 13,
+            },
+        );
+        cache.add(
+            "Tv.".into(),
+            ActIdentifier {
+                year: 2012,
+                number: 14,
+            },
+        );
+        cache.add(
+            "Lol.".into(),
+            ActIdentifier {
+                year: 2019,
+                number: 19,
+            },
+        );
+        assert!(cache.has_changed());
+        let data = BTreeMap::<String, ActIdentifier>::from(cache);
+        assert_eq!(data.len(), 2);
+        assert_eq!(
+            data.get("Tv."),
+            Some(&ActIdentifier {
+                year: 2012,
+                number: 14
+            })
+        );
+
+        let mut new_cache = AbbreviationCache::from(data.clone());
+        assert!(!new_cache.has_changed());
+        new_cache.add(
+            "Tv.".into(),
+            ActIdentifier {
+                year: 2012,
+                number: 14,
+            },
+        );
+        assert!(!new_cache.has_changed());
+        new_cache.add(
+            "Tv.".into(),
+            ActIdentifier {
+                year: 2017,
+                number: 17,
+            },
+        );
+        assert!(new_cache.has_changed());
+
+        let mut new_cache2 = AbbreviationCache::from(data);
+        assert!(!new_cache2.has_changed());
+        new_cache2.add(
+            "Xd.".into(),
+            ActIdentifier {
+                year: 2042,
+                number: 42,
+            },
+        );
+        assert!(new_cache2.has_changed());
     }
 }

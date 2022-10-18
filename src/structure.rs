@@ -119,6 +119,12 @@ impl Act {
             }
         })
     }
+    pub fn article(&self, article_id: ArticleIdentifier) -> Option<&Article> {
+        self.articles().find(|a| a.identifier == article_id)
+    }
+    pub fn article_mut(&mut self, article_id: ArticleIdentifier) -> Option<&mut Article> {
+        self.articles_mut().find(|a| a.identifier == article_id)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
