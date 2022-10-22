@@ -172,7 +172,7 @@ pub trait SAEParser: Debug {
     {
         let (mut identifier, first_line_rest) = self
             .parse_header(&lines[0])
-            .ok_or_else(|| anyhow!("Invalid header for {:?}: '{}'", self, lines[0].content()))?;
+            .ok_or_else(|| anyhow!("Invalid header for {self:?}: '{}'", lines[0].content()))?;
         if let Some(ei) = expected_identifier {
             ensure!(
                 identifier == ei,

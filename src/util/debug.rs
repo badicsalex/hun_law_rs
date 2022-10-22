@@ -31,6 +31,6 @@ where
     E: Send + Sync + 'static,
 {
     fn with_elem_context(self, msg: &str, elem: &impl DebugContextString) -> Result<T, Error> {
-        self.with_context(|| format!("{} in {}", msg, elem.debug_ctx()))
+        self.with_context(|| format!("{msg} in {}", elem.debug_ctx()))
     }
 }

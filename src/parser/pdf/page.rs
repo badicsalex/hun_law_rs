@@ -143,7 +143,7 @@ where
         let xobject_ref = resources
             .xobjects
             .get(&name)
-            .ok_or_else(|| anyhow!("Xobject not found in PDF: {}", name))?;
+            .ok_or_else(|| anyhow!("Xobject not found in PDF: {name}"))?;
         let xobject = self.pdf_file.get(*xobject_ref)?;
         let xfo = if let XObject::Form(xfo) = &*xobject {
             xfo

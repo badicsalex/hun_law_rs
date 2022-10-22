@@ -49,11 +49,8 @@ impl ArticleParserFactory {
     ) -> Result<ArticleParser> {
         if let Some(expected_indent) = self.article_header_indent {
             if !line.indent_less_or_eq(expected_indent) {
-                bail!(
-                    "Wrong indentation ({:?}>{:?})",
-                    line.indent(),
-                    expected_indent
-                );
+                let line_indent = line.indent();
+                bail!("Wrong indentation ({line_indent:?}>{expected_indent:?})");
             }
         }
 
@@ -66,19 +63,11 @@ impl ArticleParserFactory {
 
         if let Some(expected_id) = expected_identifier {
             if expected_id != identifier {
-                bail!(
-                    "Parsed identifier was not the expected one ({} != {})",
-                    identifier,
-                    expected_id
-                );
+                bail!("Parsed identifier was not the expected one ({identifier} != {expected_id})");
             }
         } else if let Some(last_id) = self.last_id {
             if !identifier.is_next_from(last_id) {
-                bail!(
-                    "Parsed identifier was not the expected one ({} not next from {})",
-                    identifier,
-                    last_id
-                );
+                bail!("Parsed identifier was not the expected one ({identifier} not next from {last_id})");
             }
         } else if self.context == ParsingContext::FullAct && !identifier.is_first() {
             bail!("Parsing a full act and article was not 1");

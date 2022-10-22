@@ -75,7 +75,7 @@ fn generate_hun_strs() -> Vec<String> {
             if let Some(text) = special_values.get(&value) {
                 result.push(text.to_string());
             } else {
-                result.push(format!("{}{}", tens_text, ones_text));
+                result.push(format!("{tens_text}{ones_text}"));
             }
         }
     }
@@ -109,7 +109,7 @@ fn regen_phf() {
         "pub const INT_TO_STR_HUN: [&str; 101] = [{}];",
         numerals
             .iter()
-            .map(|s| format!("{:?}, ", s))
+            .map(|s| format!("{s:?}, "))
             .collect::<String>()
     )
     .unwrap();

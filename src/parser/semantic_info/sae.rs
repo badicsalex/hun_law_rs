@@ -81,11 +81,10 @@ impl<'a> SAEVisitorMut for SemanticInfoAdder<'a> {
                     }
                 }
 
-                self.prefix_stack
-                    .push(format!("{}{} ", self.prefix(), intro));
+                self.prefix_stack.push(format!("{}{intro} ", self.prefix()));
                 self.postfix_stack
                     .push(if let Some(wrap_up_contents) = &wrap_up {
-                        format!(" {}{}", wrap_up_contents, self.postfix())
+                        format!(" {wrap_up_contents}{}", self.postfix())
                     } else {
                         self.postfix().to_owned()
                     });
@@ -141,7 +140,7 @@ impl<'a> SemanticInfoAdder<'a> {
             .collect();
 
         let special_phrase = extract_special_phrase(self.abbreviation_cache, &parsed)
-            .with_context(|| format!("Could not extract special phrase from '{}'", s))?;
+            .with_context(|| format!("Could not extract special phrase from '{s}'"))?;
         Ok(SemanticInfo {
             outgoing_references,
             new_abbreviations: new_abbreviations.into_iter().collect(),
@@ -168,12 +167,12 @@ fn assemble_to_be_parsed_text(prefix: &str, mut middle: &str, postfix: &str) -> 
     }
     if postfix.is_empty() {
         if middle.ends_with(['.', ':', '!', '?']) {
-            format!("{}{}", prefix, middle)
+            format!("{prefix}{middle}")
         } else {
-            format!("{}{}.", prefix, middle)
+            format!("{prefix}{middle}.")
         }
     } else {
-        format!("{}{}{}", prefix, middle, postfix)
+        format!("{prefix}{middle}{postfix}")
     }
 }
 

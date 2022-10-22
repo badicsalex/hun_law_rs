@@ -70,7 +70,7 @@ pub fn download_mk_issue(issue: &MkIssue, cache_dir: &Path) -> Result<Vec<u8>> {
     if let Ok(cached_result) = fs::read(&file_path) {
         return Ok(cached_result);
     }
-    info!("Downloading {} into {:?}", issue.url(), file_path);
+    info!("Downloading {} into {file_path:?}", issue.url());
     let http_response = ureq::get(&issue.url()).call()?;
     let mut http_body: Vec<u8> = vec![];
     http_response.into_reader().read_to_end(&mut http_body)?;

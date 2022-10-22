@@ -52,7 +52,7 @@ impl Act {
         let base_reference = self.reference();
         let article = self
             .article_mut(article_id)
-            .ok_or_else(|| anyhow!("Could not find article {} in act {}", article_id, act_id,))?;
+            .ok_or_else(|| anyhow!("Could not find article {article_id} in act {act_id}"))?;
         article.walk_saes_mut(&base_reference, &mut visitor)?;
         let abbreviations_changed = abbreviation_cache.has_changed().into();
         self.contained_abbreviations = abbreviation_cache.into();

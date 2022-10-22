@@ -100,11 +100,8 @@ fn update_fixups<'a>(
                 count == 1
             })
             .ok_or_else(|| {
-                anyhow!(
-                    "Could not find big enough context for '{}' on line {:?}",
-                    original_lines[change_pos],
-                    change_pos,
-                )
+                let l = &original_lines[change_pos];
+                anyhow!("Could not find big enough context for '{l}' on line {change_pos:?}",)
             })?;
         let after = original_lines[change_pos - context_len..change_pos]
             .iter()
@@ -112,7 +109,7 @@ fn update_fixups<'a>(
             .collect();
         info!("Added fixup, old: '{}'", original_lines[change_pos]);
         info!("             new: '{}'", new_lines[change_pos]);
-        info!("     context len: {:?}", context_len);
+        info!("     context len: {context_len:?}");
         fixups.add(Fixup {
             after,
             old: original_lines[change_pos].to_owned(),

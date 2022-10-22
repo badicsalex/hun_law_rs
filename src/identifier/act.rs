@@ -61,7 +61,7 @@ impl FromStr for ActIdentifier {
         }
         try_classic(s)
             .or_else(|| try_decimal(s))
-            .ok_or_else(|| anyhow!("Unknown act identifier format: {}", s))
+            .ok_or_else(|| anyhow!("Unknown act identifier format: {s}"))
     }
 }
 
@@ -78,7 +78,7 @@ impl CompactString for ActIdentifier {
                 number: number.parse()?,
             })
         } else {
-            Err(anyhow!("Invalid compact act string: {}", s))
+            Err(anyhow!("Invalid compact act string: {s}"))
         }
     }
 }

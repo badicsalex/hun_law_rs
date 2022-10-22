@@ -55,7 +55,7 @@ impl Fixups {
     pub fn load_from(act_id: ActIdentifier, base_dir: PathBuf) -> Result<Self> {
         let fixup_path = base_dir
             .join(act_id.year.to_string())
-            .join(format!("{}.yml", act_id));
+            .join(format!("{act_id}.yml"));
         let fixups = if fixup_path.exists() {
             singleton_yaml::from_reader(File::open(&fixup_path)?)?
         } else {
@@ -109,9 +109,8 @@ impl Fixup {
             .count();
         ensure!(
             found_places == 1,
-            "Replacement 'old' text ('{}') found too many ({:?}) times.",
+            "Replacement 'old' text ('{}') found too many ({found_places:?}) times.",
             self.old,
-            found_places
         );
 
         lines[position] = self
@@ -284,12 +283,9 @@ mod tests {
             let indent = line.indent_at(i as i64);
             assert!(
                 previous_indent < indent,
-                "Indentation was not strictly monotonic at char {:?} ({}) of {}. Previous: {:?}, Current: {:?}",
-                i,
+                "Indentation was not strictly monotonic at char {i:?} ({}) of {}. Previous: {previous_indent:?}, Current: {indent:?}",
                 line.content().chars().nth(i).unwrap(),
                 line.content(),
-                previous_indent,
-                indent,
 
             );
             previous_indent = indent;

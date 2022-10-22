@@ -71,7 +71,7 @@ impl AbbreviationCache {
     pub fn resolve(&self, abbreviation: &str) -> Result<ActIdentifier> {
         self.cache
             .get(abbreviation)
-            .ok_or_else(|| anyhow!("{} not found in the abbreviations cache", abbreviation))
+            .ok_or_else(|| anyhow!("{abbreviation} not found in the abbreviations cache"))
             .cloned()
     }
 

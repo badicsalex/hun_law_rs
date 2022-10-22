@@ -30,14 +30,14 @@ impl FromHungarianString for NaiveDate {
     fn from_hungarian(s: &str) -> Result<Self> {
         // This is not a performance critical part, so I won't bother with 'optimizing' this regex
         let (_, year, month, day) = regex_captures!(r"^(\d{4}). ([^ ]+) (\d{1,2}).", s)
-            .ok_or_else(|| anyhow!("Could not parse date string {}", s))?;
+            .ok_or_else(|| anyhow!("Could not parse date string {s}"))?;
 
         NaiveDate::from_ymd_opt(
             year.parse()?,
             text_to_month_hun(month)?.into(),
             day.parse()?,
         )
-        .ok_or_else(|| anyhow!("Invalid date: {}", s))
+        .ok_or_else(|| anyhow!("Invalid date: {s}"))
     }
 }
 
@@ -51,7 +51,7 @@ macro_rules! hun_str_for_num {
             fn from_hungarian(s: &str) -> Result<Self> {
                 match generated::STR_TO_INT_HUN.get(s) {
                     Some(v) => Ok(*v as $t),
-                    None => Err(anyhow!("Invalid hungarian numeral string: {}", s)),
+                    None => Err(anyhow!("Invalid hungarian numeral string: {s}")),
                 }
             }
         }
@@ -61,8 +61,7 @@ macro_rules! hun_str_for_num {
                 match generated::INT_TO_STR_HUN.get(self as usize) {
                     Some(v) => Ok(v),
                     None => Err(anyhow!(
-                        "Number out of range for int->hun conversion: {:?}",
-                        self
+                        "Number out of range for int->hun conversion: {self:?}"
                     )),
                 }
             }
@@ -87,7 +86,7 @@ pub fn text_to_month_hun(s: &str) -> Result<u8> {
         "október" => Ok(10),
         "november" => Ok(11),
         "december" => Ok(12),
-        _ => Err(anyhow!("Invalid month name {}", s)),
+        _ => Err(anyhow!("Invalid month name {s}")),
     }
 }
 

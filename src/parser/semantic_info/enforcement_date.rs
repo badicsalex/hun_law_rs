@@ -95,7 +95,7 @@ fn convert_date(gdate: &Date) -> Result<NaiveDate> {
         text_to_month_hun(&gdate.month)?.into(),
         gdate.day.parse()?,
     )
-    .ok_or_else(|| anyhow!("Invalid date from grammar: {:?}", gdate))
+    .ok_or_else(|| anyhow!("Invalid date from grammar: {gdate:?}"))
 }
 
 impl TryFrom<&DayInMonth> for EnforcementDateType {

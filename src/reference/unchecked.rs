@@ -60,7 +60,7 @@ impl UncheckedReference {
             [false, false, _, true, _] => Ok(()),
             // Just subpoint. In this case paragraph is not allowed, as point would be a gap
             [false, false, false, false, true] => Ok(()),
-            _ => Err(anyhow!("Invalid reference part combination: {:?}", self)),
+            _ => Err(anyhow!("Invalid reference part combination: {self:?}")),
         }
     }
 

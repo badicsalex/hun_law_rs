@@ -88,9 +88,8 @@ impl CliOutput for Vec<PageOfLines> {
         for (page_no, page) in self.into_iter().enumerate() {
             writeln!(
                 target,
-                "\n------- page {:?}/{:?} -------\n",
+                "\n------- page {:?}/{num_pages:?} -------\n",
                 page_no + 1,
-                num_pages,
             )?;
             page.cli_output_plain(width, testing_tags, color, target)?;
         }

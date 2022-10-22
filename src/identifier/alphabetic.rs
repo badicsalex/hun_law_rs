@@ -120,7 +120,7 @@ impl TryFrom<char> for HungarianIdentifierChar {
         if ('a'..='z').contains(&value) {
             Ok(Self::Latin(value as u8))
         } else {
-            bail!("{} is not a valid latin or hungarian character.", value)
+            bail!("{value} is not a valid latin or hungarian character.")
         }
     }
 }
@@ -141,10 +141,7 @@ impl FromStr for HungarianIdentifierChar {
             "sz" | "Sz" | "SZ" => Ok(Self::Sz),
             "ty" | "Ty" | "TY" => Ok(Self::Ty),
             "zs" | "Zs" | "ZS" => Ok(Self::Zs),
-            _ => bail!(
-                "{} is not a valid latin or hungarian character string.",
-                value
-            ),
+            _ => bail!("{value} is not a valid latin or hungarian character string."),
         }
     }
 }

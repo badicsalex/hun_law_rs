@@ -111,7 +111,7 @@ impl TextOutput for Article {
         )?;
         let mut params = params.indented().indented();
         if let Some(title) = &self.title {
-            params.write_wrapped_line(writer, &format!("     [{}]", title))?
+            params.write_wrapped_line(writer, &format!("     [{title}]"))?
         }
         self.children.write_as_text(writer, params.clone())?;
         if self.children.is_empty() {
@@ -240,14 +240,13 @@ impl TextOutput for BlockAmendmentChildren {
 impl TextOutput for BlockAmendment {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         if let Some(intro) = &self.intro {
-            params.write_wrapped_line(writer, &params.colorize(format!("({})", intro), ITALIC))?;
+            params.write_wrapped_line(writer, &params.colorize(format!("({intro})"), ITALIC))?;
         };
         params.write_wrapped_line(writer, "„")?;
         self.children.write_as_text(writer, params.indented())?;
         params.write_wrapped_line(writer, "”")?;
         if let Some(wrap_up) = &self.wrap_up {
-            params
-                .write_wrapped_line(writer, &params.colorize(format!("({})", wrap_up), ITALIC))?;
+            params.write_wrapped_line(writer, &params.colorize(format!("({wrap_up})"), ITALIC))?;
         };
         Ok(())
     }
@@ -256,14 +255,13 @@ impl TextOutput for BlockAmendment {
 impl TextOutput for StructuralBlockAmendment {
     fn write_as_text(&self, writer: &mut impl Write, mut params: TextOutputParams) -> Result<()> {
         if let Some(intro) = &self.intro {
-            params.write_wrapped_line(writer, &params.colorize(format!("({})", intro), ITALIC))?;
+            params.write_wrapped_line(writer, &params.colorize(format!("({intro})"), ITALIC))?;
         };
         params.write_wrapped_line(writer, "„")?;
         self.children.write_as_text(writer, params.indented())?;
         params.write_wrapped_line(writer, "”")?;
         if let Some(wrap_up) = &self.wrap_up {
-            params
-                .write_wrapped_line(writer, &params.colorize(format!("({})", wrap_up), ITALIC))?;
+            params.write_wrapped_line(writer, &params.colorize(format!("({wrap_up})"), ITALIC))?;
         };
         Ok(())
     }
@@ -321,7 +319,7 @@ impl TextOutputParams {
 
     fn colorize(&self, text: impl std::fmt::Display, code: &str) -> String {
         if self.is_colored {
-            format!("\x1B[{}m{}\x1B[0m", code, text)
+            format!("\x1B[{code}m{text}\x1B[0m")
         } else {
             text.to_string()
         }

@@ -221,7 +221,7 @@ impl StructuralElementType {
             "ÁLTALÁNOS" => Ok(1.into()),
             "KÜLÖNÖS" => Ok(2.into()),
             "ZÁRÓ" => Ok(3.into()),
-            _ => Err(anyhow!("{} is not a special part", id)),
+            _ => Err(anyhow!("{id} is not a special part")),
         }
     }
 }
@@ -524,14 +524,14 @@ impl DebugContextString for ActChild {
 impl DebugContextString for StructuralElement {
     fn debug_ctx(&self) -> String {
         // TODO: Proper pretty format
-        format!("{:?}", self)
+        format!("{self:?}")
     }
 }
 
 impl DebugContextString for Subtitle {
     fn debug_ctx(&self) -> String {
         // TODO: Proper pretty format
-        format!("{:?}", self)
+        format!("{self:?}")
     }
 }
 

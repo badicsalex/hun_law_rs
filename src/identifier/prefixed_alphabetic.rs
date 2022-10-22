@@ -73,10 +73,7 @@ impl FromStr for PrefixedAlphabeticIdentifier {
                     chr: c.next().unwrap().try_into()?,
                 })
             }
-            _ => Err(anyhow!(
-                "{} is not a valid prefixed alphabetic identifier",
-                s
-            )),
+            _ => Err(anyhow!("{s} is not a valid prefixed alphabetic identifier")),
         }
     }
 }
@@ -84,7 +81,7 @@ impl FromStr for PrefixedAlphabeticIdentifier {
 impl Display for PrefixedAlphabeticIdentifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.prefix {
-            Some(p) => write!(f, "{}{}", p, self.chr),
+            Some(prefix) => write!(f, "{prefix}{}", self.chr),
             None => Display::fmt(&self.chr, f),
         }
     }

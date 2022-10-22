@@ -39,7 +39,7 @@ impl NumericIdentifier {
     pub fn from_roman(s: &str) -> Result<Self> {
         let (num_str, suffix) = Self::split_suffix(s, &ROMAN_DIGITS)?;
         let num = roman::from(num_str)
-            .ok_or_else(|| anyhow!("{} is not a valid suffixed roman numeral", s))?
+            .ok_or_else(|| anyhow!("{s} is not a valid suffixed roman numeral"))?
             as u16;
         Ok(Self { num, suffix })
     }
@@ -75,7 +75,7 @@ impl NumericIdentifier {
     pub fn to_hungarian(&self) -> Result<String> {
         let mut result = self.num.to_hungarian()?.to_string();
         if let Some(suffix) = self.suffix {
-            result.push_str(&format!("/{}", suffix));
+            result.push_str(&format!("/{suffix}"));
         }
         Ok(result)
     }
@@ -83,7 +83,7 @@ impl NumericIdentifier {
         let mut result = roman::to(self.num as i32)
             .ok_or_else(|| anyhow!("Problem converting to roman numeral"))?;
         if let Some(suffix) = self.suffix {
-            result.push_str(&format!("/{}", suffix));
+            result.push_str(&format!("/{suffix}"));
         }
         Ok(result)
     }
@@ -113,11 +113,7 @@ impl FromStr for NumericIdentifier {
     /// Convert a possibly suffixed value to an identifier.
     fn from_str(value: &str) -> Result<Self, Self::Err> {
         let (num_str, suffix) = Self::split_suffix(value, &DIGITS)?;
-        ensure!(
-            !num_str.is_empty(),
-            "{} does not start with a number",
-            value
-        );
+        ensure!(!num_str.is_empty(), "{value} does not start with a number");
         Ok(Self {
             num: num_str.parse()?,
             suffix,
@@ -128,7 +124,7 @@ impl FromStr for NumericIdentifier {
 impl Display for NumericIdentifier {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self.suffix {
-            Some(suffix) => write!(f, "{:?}{}", self.num, suffix),
+            Some(suffix) => write!(f, "{:?}{suffix}", self.num),
             None => write!(f, "{:?}", self.num),
         }
     }

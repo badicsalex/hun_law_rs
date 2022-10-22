@@ -80,7 +80,7 @@ impl FromStr for ArticleIdentifier {
 impl Display for ArticleIdentifier {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if let Some(book) = self.book {
-            write!(f, "{:?}:", book)?;
+            write!(f, "{book:?}:")?;
         }
         write!(f, "{}", self.identifier.with_slash())
     }
@@ -109,7 +109,7 @@ impl TryFrom<String> for ArticleIdentifier {
 impl CompactString for ArticleIdentifier {
     fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if let Some(book) = self.book {
-            write!(f, "{:?}.", book)?;
+            write!(f, "{book:?}.")?;
         }
         self.identifier.fmt_compact_string(f)
     }

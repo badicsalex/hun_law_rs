@@ -155,10 +155,9 @@ fn convert_simple_block_amendment(
                 .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range()))?
                 .elements
         }
-        AnyReferencePart::Article(_) | AnyReferencePart::Act(_) | AnyReferencePart::Empty => bail!(
-            "Invalid reference type in phrase during BlockAmendment conversion: {:?}",
-            position
-        ),
+        AnyReferencePart::Article(_) | AnyReferencePart::Act(_) | AnyReferencePart::Empty => {
+            bail!("Invalid reference type in phrase during BlockAmendment conversion: {position:?}")
+        }
     })
 }
 
@@ -209,10 +208,9 @@ fn convert_title_only_block_amendment(
         | StructuralReferenceElement::AtTheEndOfTitle(_)
         | StructuralReferenceElement::AtTheEndOfChapter(_)
         | StructuralReferenceElement::AtTheEndOfAct
-        | StructuralReferenceElement::Article(_) => bail!(
-            "Invalid strucutral reference for a title only amendment: {:?}",
-            position
-        ),
+        | StructuralReferenceElement::Article(_) => {
+            bail!("Invalid strucutral reference for a title only amendment: {position:?}")
+        }
     };
     Ok(vec![result])
 }

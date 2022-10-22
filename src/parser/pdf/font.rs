@@ -48,8 +48,8 @@ impl FastFont {
     pub fn convert(font: &Font, resolve: &impl Resolve) -> Result<Self> {
         let widths = font
             .widths(resolve)
-            .map_err(|e| anyhow!("{}", e))?
-            .ok_or_else(|| anyhow!("No widths in font {:?}", font))?;
+            .map_err(|e| anyhow!("{e}"))?
+            .ok_or_else(|| anyhow!("No widths in font {font:?}"))?;
         let mut result = Self {
             cmap: Default::default(),
             smap: Default::default(),
@@ -60,7 +60,7 @@ impl FastFont {
         };
         let encoding = font
             .encoding()
-            .ok_or_else(|| anyhow!("No encoding in font {:?}", font))?
+            .ok_or_else(|| anyhow!("No encoding in font {font:?}"))?
             .clone();
         result.process_encoding(&encoding)?;
         if let Some(to_unicode) = font.to_unicode(resolve).transpose()? {
@@ -94,7 +94,7 @@ impl FastFont {
                 self.is_identity = true;
             }
             BaseEncoding::None => {}
-            _ => bail!("Unsupported encoding: {:?}", encoding),
+            _ => bail!("Unsupported encoding: {encoding:?}"),
         };
         for (c, s) in encoding.differences.iter() {
             if let Some(uc) = glyphname_to_unicode(s) {

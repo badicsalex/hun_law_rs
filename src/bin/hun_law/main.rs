@@ -98,7 +98,7 @@ fn main() -> Result<()> {
     for issue in &args.issues {
         if let Err(e) = || -> Result<()> {
             let mk_name = format!("mk_{}_{}", issue.year, issue.issue);
-            info!("Processing {}", mk_name);
+            info!("Processing {mk_name}");
             let body = download_mk_issue(issue, &args.cache_dir)?;
             info!("{:?} bytes", body.len());
             let pages = parse_pdf(&body, DEFAULT_MK_CROP.clone())?;
@@ -116,13 +116,13 @@ fn main() -> Result<()> {
                     process_single_act(act, &args, &mut output)
                 };
                 if let Err(error) = process_result {
-                    log::error!("{:?}", error);
+                    log::error!("{error:?}");
                     everything_ok = false;
                 }
             }
             Ok(())
         }() {
-            println!("{:#?}", e);
+            println!("{e:#?}");
         }
     }
     if everything_ok {
@@ -142,12 +142,12 @@ fn get_output(filename: &str, args: &HunLawArgs) -> Result<Box<dyn std::io::Writ
                 OutputFormat::Json => "json",
                 OutputFormat::Yaml => "yml",
             };
-            let path = odir.join(format!("{}.{}", filename, extension));
+            let path = odir.join(format!("{filename}.{extension}"));
             info!("Writing into {:?}", path);
             Ok(Box::new(File::create(path)?))
         }
         None => {
-            println!("------ {} ------", filename);
+            println!("------ {filename} ------");
             Ok(Box::new(std::io::stdout()))
         }
     }
@@ -159,7 +159,7 @@ fn process_single_act_interactive(
     output: &mut impl std::io::Write,
 ) -> Result<()> {
     while let Err(error) = process_single_act(act_raw.clone(), args, output) {
-        log::error!("{:?}", error);
+        log::error!("{error:?}");
         if confirm("Try to fix issue in editor?")? {
             // TODO: Remove this duplicate code somehow
             let mut act_fixed_up = act_raw.clone();
@@ -199,7 +199,7 @@ fn process_single_act(
 }
 
 fn confirm(s: &str) -> Result<bool> {
-    eprint!("{} [Y/n]", s);
+    eprint!("{s} [Y/n]");
     let mut buf = String::new();
     std::io::stdin().read_line(&mut buf)?;
     buf.make_ascii_lowercase();
