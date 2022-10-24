@@ -21,7 +21,7 @@ use std::{
 
 use anyhow::{anyhow, bail, Result};
 use pdf::{
-    encoding::Encoding as PdfEncoding,
+    encoding::{BaseEncoding, Encoding as PdfEncoding},
     font::{Font, ToUnicodeMap, Widths},
     object::Resolve,
 };
@@ -71,16 +71,10 @@ impl FastFont {
 
     fn process_encoding(&mut self, encoding: &PdfEncoding) -> Result<()> {
         match encoding.base {
-            pdf::encoding::BaseEncoding::StandardEncoding => {
-                self.process_base_encoding(&pdf_encoding::STANDARD)
-            }
-            pdf::encoding::BaseEncoding::SymbolEncoding => {
-                self.process_base_encoding(&pdf_encoding::SYMBOL)
-            }
-            pdf::encoding::BaseEncoding::MacRomanEncoding => {
-                self.process_base_encoding(&pdf_encoding::MACROMAN)
-            }
-            pdf::encoding::BaseEncoding::WinAnsiEncoding => {
+            BaseEncoding::StandardEncoding => self.process_base_encoding(&pdf_encoding::STANDARD),
+            BaseEncoding::SymbolEncoding => self.process_base_encoding(&pdf_encoding::SYMBOL),
+            BaseEncoding::MacRomanEncoding => self.process_base_encoding(&pdf_encoding::MACROMAN),
+            BaseEncoding::WinAnsiEncoding => {
                 let mut tmp = [0u8; 4];
                 for cid in 0..255 {
                     if let Some(c) = pdf_encoding::WINANSI.get(cid) {
@@ -95,12 +89,11 @@ impl FastFont {
                     }
                 }
             }
-            pdf::encoding::BaseEncoding::MacExpertEncoding => {
-                self.process_base_encoding(&pdf_encoding::MACEXPERT)
-            }
-            pdf::encoding::BaseEncoding::IdentityH => {
+            BaseEncoding::MacExpertEncoding => self.process_base_encoding(&pdf_encoding::MACEXPERT),
+            BaseEncoding::IdentityH => {
                 self.is_identity = true;
             }
+            BaseEncoding::None => {}
             _ => bail!("Unsupported encoding: {:?}", encoding),
         };
         for (c, s) in encoding.differences.iter() {
