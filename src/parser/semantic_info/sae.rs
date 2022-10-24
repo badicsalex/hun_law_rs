@@ -15,7 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 use anyhow::{Context, Result};
-use hun_law_grammar::PegParser;
+use hun_law_grammar::grammar_parse;
 
 use super::{
     abbreviation::{get_new_abbreviations, AbbreviationCache},
@@ -129,7 +129,7 @@ impl<'a> SemanticInfoAdder<'a> {
         // check for not any(s in text for s in (")", "§", "törvén", "hely", "hatály", "Hatály"))
 
         let s = assemble_to_be_parsed_text(self.prefix(), middle, self.postfix());
-        let parsed = hun_law_grammar::Root::parse(&s)?;
+        let parsed = grammar_parse(&s)?;
         let new_abbreviations = get_new_abbreviations(&parsed)?;
         self.abbreviation_cache.add_multiple(&new_abbreviations);
         let outgoing_references = parsed
