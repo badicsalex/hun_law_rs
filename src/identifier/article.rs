@@ -33,6 +33,12 @@ pub struct ArticleIdentifier {
     identifier: NumericIdentifier,
 }
 
+impl ArticleIdentifier {
+    pub fn from_book_and_id(book: Option<u8>, identifier: NumericIdentifier) -> Self {
+        Self { book, identifier }
+    }
+}
+
 impl IdentifierCommon for ArticleIdentifier {
     fn is_next_from(&self, other: Self) -> bool {
         match (self.book, other.book) {

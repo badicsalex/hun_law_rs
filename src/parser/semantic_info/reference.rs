@@ -357,7 +357,6 @@ macro_rules! impl_rcp {
     };
 }
 
-impl_rcp!(ArticleReferencePart, RefPartArticle, ArticleIdentifier);
 impl_rcp!(ParagraphReferencePart, RefPartParagraph, NumericIdentifier);
 impl_rcp!(NumericPointReferencePart, RefPartPoint, NumericIdentifier);
 impl_rcp!(
@@ -376,6 +375,37 @@ impl_rcp!(
     PrefixedAlphabeticIdentifier,
 );
 
+impl TryFrom<&ArticleReferencePart> for RefPartArticle {
+    type Error = anyhow::Error;
+
+    fn try_from(element: &ArticleReferencePart) -> Result<Self, Self::Error> {
+        let book = element.book.as_ref().map(|b| b.parse::<u8>()).transpose()?;
+        if let Some(id) = &element.id_without_book {
+            let article_id = ArticleIdentifier::from_book_and_id(book, id.parse()?);
+            Ok(RefPartArticle::from_single(article_id))
+        } else if let (Some(start), Some(end)) = (&element.start, &element.end) {
+            let start_id = ArticleIdentifier::from_book_and_id(book, start.parse()?);
+            let end_id = ArticleIdentifier::from_book_and_id(book, end.parse()?);
+            Ok(RefPartArticle::from_range(start_id, end_id))
+        } else {
+            Err(anyhow!("Grammar somehow produced an invalid combination"))
+        }
+    }
+}
+
+impl FeedReferenceBuilder<ArticleReferencePart> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &ArticleReferencePart) -> Result<()> {
+        self.set_part(
+            element.position.start,
+            element.position.end,
+            RefPartArticle::try_from(element)?,
+        );
+        Ok(())
+    }
+}
+
+impl RefPartInGrammar for ArticleReferencePart {}
+
 impl FeedReferenceBuilder<StructuralPositionReference> for OutgoingReferenceBuilder<'_> {
     fn feed(&mut self, element: &StructuralPositionReference) -> Result<()> {
         match element {
@@ -388,15 +418,11 @@ impl FeedReferenceBuilder<StructuralPositionReference> for OutgoingReferenceBuil
 
 impl FeedReferenceBuilder<SingleArticleReference> for OutgoingReferenceBuilder<'_> {
     fn feed(&mut self, element: &SingleArticleReference) -> Result<()> {
-        if let Some(id) = &element.part.id {
-            let part = RefPartArticle::from_single(id.parse()?);
-            self.set_part(element.position.start, element.position.end, part);
-        } else if let (Some(start), Some(end)) = (&element.part.start, &element.part.end) {
-            let part = RefPartArticle::from_range(start.parse()?, end.parse()?);
-            self.set_part(element.position.start, element.position.end, part);
-        } else {
-            bail!("Grammar somehow produced an invalid combination")
-        }
+        self.set_part(
+            element.position.start,
+            element.position.end,
+            RefPartArticle::try_from(&element.part)?,
+        );
         self.record_one()?;
         Ok(())
     }
@@ -414,15 +440,7 @@ impl TryFrom<&SingleArticleReference> for ArticleIdentifier {
     fn try_from(value: &SingleArticleReference) -> Result<Self, Self::Error> {
         // Only the first part of the range is parsed, as it's more of an insertion point
         // Maybe TODO?
-        let id = value
-            .part
-            .id
-            .as_ref()
-            .or(value.part.start.as_ref())
-            .ok_or_else(|| {
-                anyhow!("Grammar somehow produced a single article reference with no id or start")
-            })?;
-        id.parse()
+        Ok(RefPartArticle::try_from(&value.part)?.first_in_range())
     }
 }
 

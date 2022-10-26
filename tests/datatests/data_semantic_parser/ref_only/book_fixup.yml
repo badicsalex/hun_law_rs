@@ -1,0 +1,17 @@
+---
+text:      "A  a Polgári Törvénykönyvről szóló 2013. évi V. törvény (a továbbiakban: Ptk.) 2:42–54. §-át kell alkalmazni."
+positions: '                                   <                  >                        <           >                 '
+expected_new_abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+- act:
+    year: 2013
+    number: 5
+- act:
+    year: 2013
+    number: 5
+  article:
+    start: 2:42
+    end: 2:54

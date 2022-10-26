@@ -78,10 +78,15 @@ ActSuffix = "törvén" {HunLower}+ | "tv.";
 
 ArticleReference = @:ArticleReferencePart { ListSeparator @:ArticleReferencePart } ArticleSuffix;
 @position
-ArticleReferencePart = start:ArticleId ["." ArticleSuffix] Dash end:ArticleId "." | id:ArticleId ".";
+ArticleReferencePart =
+    [book:Number ":" ]
+    (
+        start:ArticleId ["." ArticleSuffix] Dash [Number ":" ] end:ArticleId "." |
+        id_without_book:ArticleId "."
+    );
 @string
 @no_skip_ws
-ArticleId = ([Number ":" ] Number ["/" 'A'..'Z']);
+ArticleId = (Number ["/" 'A'..'Z']);
 @no_skip_ws
 ArticleSuffix = "§-" {HunLower}+ | "§" ;
 
