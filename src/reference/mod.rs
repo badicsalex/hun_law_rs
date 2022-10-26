@@ -34,7 +34,10 @@ use self::{
     unchecked::UncheckedReference,
 };
 use crate::{
-    identifier::{range::IdentifierRangeFrom, ActIdentifier},
+    identifier::{
+        range::{IdentifierRange, IdentifierRangeFrom},
+        ActIdentifier, ArticleIdentifier,
+    },
     reference::builder::ReferenceBuilderSetPart,
     util::compact_string::CompactString,
 };
@@ -352,6 +355,16 @@ impl From<ActIdentifier> for Reference {
     fn from(act: ActIdentifier) -> Self {
         Reference {
             act: Some(act),
+            ..Default::default()
+        }
+    }
+}
+
+impl From<(ActIdentifier, IdentifierRange<ArticleIdentifier>)> for Reference {
+    fn from((act, article): (ActIdentifier, IdentifierRange<ArticleIdentifier>)) -> Self {
+        Reference {
+            act: Some(act),
+            article: Some(article),
             ..Default::default()
         }
     }
