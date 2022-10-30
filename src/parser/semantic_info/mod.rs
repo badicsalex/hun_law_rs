@@ -107,13 +107,16 @@ mod tests {
                         body: "Létezik a csodákról szóló 2022. évi XXII. törvény (a továbbiakban: Cstv.)."
                             .into(),
                         semantic_info: Default::default(),
+                        last_change: None,
                     },
                     Paragraph {
                         identifier: 2.into(),
                         body: "A Cstv. 5. §-a fontos.".into(),
                         semantic_info: Default::default(),
+                        last_change: None,
                     },
                 ],
+                last_change: None,
             }
             .into()],
         };
@@ -145,6 +148,7 @@ mod tests {
             identifier: 1.into(),
             body: "I am kill.".into(),
             semantic_info: Default::default(),
+            last_change: None,
         };
         let abbrevs_changed = test_act.add_semantic_info().unwrap();
         assert_eq!(test_act.contained_abbreviations, expected_abbreviations);
@@ -167,6 +171,7 @@ mod tests {
             body: "Létezik a csodákról szóló 2033. évi XXXIII. törvény (a továbbiakban: Cstv.)."
                 .into(),
             semantic_info: Default::default(),
+            last_change: None,
         };
         let abbrevs_changed = test_act.add_semantic_info().unwrap();
         let expected_abbreviations = [(
@@ -214,8 +219,10 @@ mod tests {
                             body: "Létezik a csodákról szóló 2022. évi XXII. törvény (a továbbiakban: Cstv.)."
                                 .into(),
                             semantic_info: Default::default(),
+                            last_change: None,
                         },
                     ],
+                    last_change: None,
                 }
                 .into(),
                 Article {
@@ -227,8 +234,10 @@ mod tests {
                             body: "A Cstv. 5. §-a fontos."
                                 .into(),
                             semantic_info: Default::default(),
+                            last_change: None,
                         },
                     ],
+                    last_change: None,
                 }
                 .into(),
             ],

@@ -133,6 +133,7 @@ impl ArticleParser {
             identifier: self.identifier,
             title,
             children,
+            last_change: None,
         })
     }
 

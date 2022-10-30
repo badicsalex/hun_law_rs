@@ -131,6 +131,7 @@ pub trait SAEParser: Debug {
                                 wrap_up,
                             },
                             semantic_info: Default::default(),
+                            last_change: None,
                         },
                         rest_of_wrap_up,
                     });
@@ -155,6 +156,7 @@ pub trait SAEParser: Debug {
                 identifier,
                 body: intro.into(),
                 semantic_info: Default::default(),
+                last_change: None,
             },
             rest_of_wrap_up,
         })

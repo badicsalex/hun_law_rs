@@ -50,11 +50,13 @@ fn get_test_act() -> Act {
                 identifier: "1".parse().unwrap(),
                 title: "Egyszerű dolgok".into(),
                 element_type: StructuralElementType::Book,
+                last_change: None,
             }
             .into(),
             Subtitle {
                 identifier: None,
                 title: "Alcim id nelkul".into(),
+                last_change: None,
             }
             .into(),
             Article {
@@ -64,7 +66,9 @@ fn get_test_act() -> Act {
                     identifier: Default::default(),
                     body: "Meg szövege".into(),
                     semantic_info: Default::default(),
+                last_change: None,
                 }],
+                last_change: None,
             }
             .into(),
             Article {
@@ -75,6 +79,7 @@ fn get_test_act() -> Act {
                         identifier: 1.into(),
                         body: "Valami valami hosszu szoveg csak azert hogy leteszteljuk hogy a yaml szerializacio mennyire nez ki jol igy. Remelhetoleg nem tori tobb sorba.".into(),
                         semantic_info: Default::default(),
+                        last_change: None,
                     },
                     Paragraph {
                         identifier: 2.into(),
@@ -86,6 +91,7 @@ fn get_test_act() -> Act {
                                     identifier: "a".parse().unwrap(),
                                     body: "többelemű".into(),
                                     semantic_info: Default::default(),
+                                    last_change: None,
                                 },
                                 AlphabeticPoint {
                                     identifier: "b".parse().unwrap(),
@@ -97,40 +103,48 @@ fn get_test_act() -> Act {
                                                 identifier: "ba".parse().unwrap(),
                                                 body: "átláthatatlan".into(),
                                                 semantic_info: Default::default(),
+                                                last_change: None,
                                             },
                                             AlphabeticSubpoint {
                                                 identifier: "bb".parse().unwrap(),
                                                 body: "komplex".into(),
                                                 semantic_info: Default::default(),
+                                                last_change: None,
                                             },
                                         ]
                                         .into(),
                                     },
                                     semantic_info: Default::default(),
+                                    last_change: None,
                                 },
                             ]
                             .into(),
                         },
                         semantic_info: Default::default(),
+                        last_change: None,
                     },
                 ],
+                last_change: None,
             }
             .into(),
             StructuralElement {
                 identifier: "2".parse().unwrap(),
                 title: "Amended stuff in english".into(),
                 element_type: StructuralElementType::Book,
+                last_change: None,
             }
             .into(),
             StructuralElement {
                 identifier: "1".parse().unwrap(),
                 title: "Az eleje".into(),
                 element_type: StructuralElementType::Part { is_special: false },
+                last_change: None,
             }
             .into(),
             Subtitle {
                 identifier: Some("1".parse().unwrap()),
                 title: "Alcim id-vel".into(),
+                last_change: None,
             }
             .into(),
             Article {
@@ -140,18 +154,22 @@ fn get_test_act() -> Act {
                     identifier: Default::default(),
                     body: "Nothing fancy yet".into(),
                     semantic_info: Default::default(),
+                    last_change: None,
                 }],
+                last_change: None,
             }
             .into(),
             StructuralElement {
                 identifier: "1/A".parse().unwrap(),
                 title: "A hozzaadott".into(),
                 element_type: StructuralElementType::Part { is_special: false },
+                last_change: None,
             }
             .into(),
             Subtitle {
                 identifier: Some("1/A".parse().unwrap()),
                 title: "Alcim amendelt id-vel".into(),
+                last_change: None,
             }
             .into(),
             Article {
@@ -161,7 +179,9 @@ fn get_test_act() -> Act {
                     identifier: Default::default(),
                     body: "Added after the fact".into(),
                     semantic_info: Default::default(),
+                    last_change: None,
                 }],
+                last_change: None,
             }
             .into(),
             Article {
@@ -177,22 +197,27 @@ fn get_test_act() -> Act {
                                 identifier: 1.into(),
                                 body: "Paragraphs".into(),
                                 semantic_info: Default::default(),
+                                last_change: None,
                             },
                             NumericPoint {
                                 identifier: "1a".parse().unwrap(),
                                 body: "Numeric points".into(),
                                 semantic_info: Default::default(),
+                                last_change: None,
                             },
                             NumericPoint {
                                 identifier: 2.into(),
                                 body: "Alphabetic points".into(),
                                 semantic_info: Default::default(),
+                                last_change: None,
                             },
                         ]
                         .into(),
                     },
                     semantic_info: Default::default(),
+                    last_change: None,
                 }],
+                last_change: None,
             }
             .into(),
         ],

@@ -26,6 +26,7 @@ use crate::{
         ActIdentifier, AlphabeticIdentifier, ArticleIdentifier, IdentifierCommon,
         NumericIdentifier, ParagraphIdentifier, PrefixedAlphabeticIdentifier,
     },
+    reference::Reference,
     semantic_info::SemanticInfo,
     util::{debug::DebugContextString, hun_str::FromHungarianString, indentedline::IndentedLine},
 };
@@ -132,6 +133,8 @@ pub struct StructuralElement {
     pub identifier: NumericIdentifier,
     pub title: String,
     pub element_type: StructuralElementType,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_change: Option<LastChange>,
 }
 
 impl StructuralElement {
@@ -174,6 +177,8 @@ pub struct Subtitle {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identifier: Option<NumericIdentifier>,
     pub title: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_change: Option<LastChange>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -232,6 +237,8 @@ pub struct Article {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     pub children: Vec<Paragraph>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_change: Option<LastChange>,
 }
 
 impl Article {
@@ -255,6 +262,8 @@ where
     pub body: SAEBody<ChildrenType>,
     #[serde(default, skip_serializing_if = "SemanticInfo::is_empty")]
     pub semantic_info: SemanticInfo,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_change: Option<LastChange>,
 }
 
 pub trait ChildrenCommon: Clone + PartialEq + Eq {
@@ -486,6 +495,14 @@ impl StructuralBlockAmendment {
         // TODO: This is not actually recursive.
         self.children.is_empty()
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct LastChange {
+    pub date: NaiveDate,
+    /// The act part that casued the change. None means
+    /// something automatic (like auto-repealing amendments)
+    pub cause: Option<Reference>,
 }
 
 macro_rules! simple_dbg_ctx {

@@ -69,6 +69,7 @@ impl StructuralElementParser {
             identifier: self.identifier,
             title: self.title,
             element_type: self.element_type,
+            last_change: None,
         }
     }
 }

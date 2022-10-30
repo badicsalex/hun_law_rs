@@ -64,6 +64,7 @@ impl SubtitleParser {
         Ok(Subtitle {
             identifier: self.identifier,
             title: self.title,
+            last_change: None,
         })
     }
 }
