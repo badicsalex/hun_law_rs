@@ -14,12 +14,114 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::fmt::{Debug, Write};
+use std::fmt::{Debug, Display, Write};
 
 use anyhow::{anyhow, bail, Result};
 
-use super::{unchecked::UncheckedReference, Reference};
+use super::{
+    parts::{RefPartPoint, RefPartSubpoint},
+    unchecked::UncheckedReference,
+    Reference,
+};
 use crate::util::compact_string::CompactString;
+
+impl Display for Reference {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if let Some(act) = self.act {
+            write!(f, "{}", act)?;
+            if self.article.is_some() {
+                f.write_char(' ')?
+            }
+        }
+        if let Some(article) = self.article {
+            if !article.is_range() {
+                write!(f, "{}.", article.first_in_range())?;
+            } else {
+                write!(
+                    f,
+                    "{}–{}.",
+                    article.first_in_range(),
+                    article.last_in_range()
+                )?;
+            }
+            if self.paragraph.is_some() || self.point.is_some() {
+                f.write_str(" § ")?;
+            } else {
+                f.write_str(" §-a")?;
+            }
+        }
+        if let Some(paragraph) = self.paragraph {
+            if !paragraph.is_range() {
+                write!(f, "({})", paragraph.first_in_range())?;
+            } else {
+                write!(
+                    f,
+                    "({})–({})",
+                    paragraph.first_in_range(),
+                    paragraph.last_in_range()
+                )?;
+            }
+            if self.point.is_some() {
+                f.write_str(" bekezdés ")?;
+            } else {
+                f.write_str(" bekezdése")?;
+            }
+        }
+        if let Some(point) = self.point {
+            match point {
+                RefPartPoint::Numeric(point) => {
+                    if !point.is_range() {
+                        write!(f, "{}.", point.first_in_range())?;
+                    } else {
+                        write!(f, "{}–{}.", point.first_in_range(), point.last_in_range())?;
+                    }
+                }
+                RefPartPoint::Alphabetic(point) => {
+                    if !point.is_range() {
+                        write!(f, "{})", point.first_in_range())?;
+                    } else {
+                        write!(f, "{})–{})", point.first_in_range(), point.last_in_range())?;
+                    }
+                }
+            }
+            if self.subpoint.is_some() {
+                f.write_str(" pont ")?;
+            } else {
+                f.write_str(" pontja")?;
+            }
+        }
+        if let Some(subpoint) = self.subpoint {
+            match subpoint {
+                RefPartSubpoint::Numeric(subpoint) => {
+                    if !subpoint.is_range() {
+                        write!(f, "{}.", subpoint.first_in_range())?;
+                    } else {
+                        write!(
+                            f,
+                            "{}–{}.",
+                            subpoint.first_in_range(),
+                            subpoint.last_in_range()
+                        )?;
+                    }
+                }
+                RefPartSubpoint::Alphabetic(subpoint) => {
+                    if !subpoint.is_range() {
+                        write!(f, "{})", subpoint.first_in_range())?;
+                    } else {
+                        write!(
+                            f,
+                            "{})–{})",
+                            subpoint.first_in_range(),
+                            subpoint.last_in_range()
+                        )?;
+                    }
+                }
+            }
+            f.write_str(" alpontja")?;
+        }
+        Ok(())
+    }
+}
 
 impl Debug for Reference {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -88,10 +190,10 @@ mod tests {
 
     use pretty_assertions::assert_eq;
 
-    use crate::{identifier::{
+    use crate::identifier::{
         range::IdentifierRangeFrom, ActIdentifier, AlphabeticIdentifier, IdentifierCommon,
-        NumericIdentifier,
-    }, reference::parts::{RefPartPoint, RefPartSubpoint}};
+        NumericIdentifier, PrefixedAlphabeticIdentifier,
+    };
 
     use super::*;
     fn quick_convert_part<TR, TI>(s: &str) -> Option<TR>
@@ -107,6 +209,62 @@ mod tests {
         } else {
             Some(TR::from_single(s.parse().unwrap()))
         }
+    }
+
+    #[test]
+    fn test_display_string() {
+        let mut base = Reference {
+            act: Some(ActIdentifier {
+                year: 2012,
+                number: 1,
+            }),
+            article: quick_convert_part("1"),
+            paragraph: quick_convert_part("2"),
+            point: quick_convert_part::<RefPartPoint, NumericIdentifier>("3"),
+            subpoint: quick_convert_part::<RefPartSubpoint, PrefixedAlphabeticIdentifier>("a"),
+        };
+        assert_eq!(
+            &format!("{}", base),
+            "2012. évi I. törvény 1. § (2) bekezdés 3. pont a) alpontja"
+        );
+        assert_eq!(
+            &format!("{}", base.parent()),
+            "2012. évi I. törvény 1. § (2) bekezdés 3. pontja"
+        );
+        assert_eq!(
+            &format!("{}", base.parent().parent()),
+            "2012. évi I. törvény 1. § (2) bekezdése"
+        );
+        assert_eq!(
+            &format!("{}", base.parent().parent().parent()),
+            "2012. évi I. törvény 1. §-a"
+        );
+        assert_eq!(
+            &format!("{}", base.parent().parent().parent().parent()),
+            "2012. évi I. törvény"
+        );
+
+        base.article = quick_convert_part("1:123/B");
+        base.point = quick_convert_part::<RefPartPoint, AlphabeticIdentifier>("a");
+        base.subpoint = quick_convert_part::<RefPartSubpoint, NumericIdentifier>("2/a");
+        assert_eq!(
+            &format!("{}", base),
+            "2012. évi I. törvény 1:123/B. § (2) bekezdés a) pont 2a. alpontja"
+        );
+        assert_eq!(
+            &format!("{}", base.parent()),
+            "2012. évi I. törvény 1:123/B. § (2) bekezdés a) pontja"
+        );
+
+        let some_missing = Reference {
+            article: quick_convert_part("1"),
+            point: quick_convert_part::<RefPartPoint, AlphabeticIdentifier>("a-x"),
+            ..Default::default()
+        };
+
+        assert_eq!(&format!("{}", some_missing), "1. § a)–x) pontja");
+
+        assert_eq!(&format!("{}", Reference::default()), "");
     }
 
     #[test]
