@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use std::{fmt::Display, str::FromStr};
+use std::{
+    fmt::{Debug, Display},
+    str::FromStr,
+};
 
 use anyhow::{anyhow, Error, Result};
 use lazy_regex::regex_captures;
@@ -22,9 +25,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::util::compact_string::CompactString;
 
-#[derive(
-    Debug, Default, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize,
-)]
+#[derive(Default, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct ActIdentifier {
     pub year: i16,
     pub number: i32,
@@ -38,6 +39,12 @@ impl Display for ActIdentifier {
             self.year,
             roman::to(self.number).unwrap()
         )
+    }
+}
+
+impl Debug for ActIdentifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.fmt_compact_string(f)
     }
 }
 
