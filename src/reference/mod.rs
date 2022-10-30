@@ -20,12 +20,11 @@ pub mod structural;
 pub mod to_element;
 pub mod unchecked;
 
+pub mod string;
 #[cfg(test)]
 mod tests;
 
-use std::fmt::{Debug, Write};
-
-use anyhow::{anyhow, bail, ensure, Result};
+use anyhow::{bail, ensure, Result};
 use serde::{Deserialize, Serialize};
 
 use self::{
@@ -39,7 +38,6 @@ use crate::{
         ActIdentifier, ArticleIdentifier,
     },
     reference::builder::ReferenceBuilderSetPart,
-    util::compact_string::CompactString,
 };
 
 /// Reference to an Act, article or SAE. Possibly relative.
@@ -336,21 +334,6 @@ impl Reference {
     }
 }
 
-impl Debug for Reference {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut debug_struct = f.debug_struct("Reference");
-        self.act.map(|act| debug_struct.field("act", &act));
-        self.article
-            .map(|article| debug_struct.field("article", &article));
-        self.paragraph
-            .map(|paragraph| debug_struct.field("paragraph", &paragraph));
-        self.point.map(|point| debug_struct.field("point", &point));
-        self.subpoint
-            .map(|subpoint| debug_struct.field("subpoint", &subpoint));
-        debug_struct.finish()
-    }
-}
-
 impl From<ActIdentifier> for Reference {
     fn from(act: ActIdentifier) -> Self {
         Reference {
@@ -367,50 +350,5 @@ impl From<(ActIdentifier, IdentifierRange<ArticleIdentifier>)> for Reference {
             article: Some(article),
             ..Default::default()
         }
-    }
-}
-
-impl CompactString for Reference {
-    fn fmt_compact_string(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.act.fmt_compact_string(f)?;
-        f.write_char('_')?;
-        self.article.fmt_compact_string(f)?;
-        f.write_char('_')?;
-        self.paragraph.fmt_compact_string(f)?;
-        f.write_char('_')?;
-        self.point.fmt_compact_string(f)?;
-        f.write_char('_')?;
-        self.subpoint.fmt_compact_string(f)?;
-        Ok(())
-    }
-
-    fn from_compact_string(s: impl AsRef<str>) -> Result<Self> {
-        let mut iter = s.as_ref().split('_');
-        let act = iter
-            .next()
-            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
-        let article = iter
-            .next()
-            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
-        let paragraph = iter
-            .next()
-            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
-        let point = iter
-            .next()
-            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
-        let subpoint = iter
-            .next()
-            .ok_or_else(|| anyhow!("Not enough parts in Reference::from_compact_string"))?;
-        if iter.next().is_some() {
-            bail!("Too many parts in Reference::from_compact_string")
-        }
-        let result = UncheckedReference {
-            act: CompactString::from_compact_string(act)?,
-            article: CompactString::from_compact_string(article)?,
-            paragraph: CompactString::from_compact_string(paragraph)?,
-            point: CompactString::from_compact_string(point)?,
-            subpoint: CompactString::from_compact_string(subpoint)?,
-        };
-        result.try_into()
     }
 }
