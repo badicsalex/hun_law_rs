@@ -22,7 +22,7 @@ use std::{
 use anyhow::{anyhow, bail, Result};
 use pdf::{
     encoding::{BaseEncoding, Encoding as PdfEncoding},
-    font::{Font, ToUnicodeMap, Widths, FontData},
+    font::{Font, FontData, ToUnicodeMap, Widths},
     object::Resolve,
 };
 use pdf_encoding::glyphname_to_unicode;
@@ -101,9 +101,9 @@ impl FastFont {
             _ => bail!("Unsupported encoding: {encoding:?}"),
         };
         for (c, s) in encoding.differences.iter() {
-            if let Some(uc) = glyphname_to_unicode(s) {
-                self.add_mapping(*c, uc);
-            }
+            // unwrap_or_default() is there, because according to AGL "standard",
+            // if we cannot find a character, it shall be mapped to an empty string.
+            self.add_mapping(*c, glyphname_to_unicode(s).unwrap_or_default());
         }
         Ok(())
     }
@@ -124,7 +124,7 @@ impl FastFont {
     }
 
     fn add_mapping(&mut self, cid: u32, s: &str) {
-        if cid > 1000 || s.chars().count() > 1 {
+        if cid > 1000 || s.chars().count() != 1 {
             self.smap.insert(cid, s.to_string());
             return;
         }
