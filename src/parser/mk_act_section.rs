@@ -155,7 +155,9 @@ impl ActExtractor {
         if body.len() > 4
             && body[body.len() - 3].is_empty()
             && (body.last().unwrap().content() == "köztársasági elnök az Országgyűlés elnöke"
-                || body.last().unwrap().content() == "köztársasági elnök az Országgyűlés alelnöke")
+                || body.last().unwrap().content() == "köztársasági elnök az Országgyűlés alelnöke"
+                || body.last().unwrap().content()
+                    == "az Országgyűlés elnöke, az Országgyűlés alelnöke,")
         {
             body.truncate(body.len() - 3);
             self.current_act.publication_date = self.publication_date;
