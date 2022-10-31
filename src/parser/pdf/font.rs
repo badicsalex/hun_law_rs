@@ -22,7 +22,7 @@ use std::{
 use anyhow::{anyhow, bail, Result};
 use pdf::{
     encoding::{BaseEncoding, Encoding as PdfEncoding},
-    font::{Font, ToUnicodeMap, Widths},
+    font::{Font, ToUnicodeMap, Widths, FontData},
     object::Resolve,
 };
 use pdf_encoding::glyphname_to_unicode;
@@ -53,7 +53,11 @@ impl FastFont {
         let mut result = Self {
             cmap: Default::default(),
             smap: Default::default(),
-            is_cid: font.is_cid(),
+            // See https://github.com/pdf-rs/pdf/issues/156
+            is_cid: matches!(
+                font.data,
+                FontData::Type0(_) | FontData::CIDFontType0(_) | FontData::CIDFontType2(_)
+            ),
             is_identity: false,
             name: font.name.as_ref().map(|n| n.to_string()),
             widths,
