@@ -1,0 +1,7 @@
+# Exceptions are not parsed on purpose right now
+text:      "E törvény a (2) bekezdésben foglalt kivétellel 2011. január 1-jén lép hatályba."
+positions: "                                                                               "
+expected_special_phrase:
+  EnforcementDate:
+    date:
+      Date: 2011-01-01
