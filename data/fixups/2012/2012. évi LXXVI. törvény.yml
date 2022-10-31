@@ -1,0 +1,14 @@
+- old: ',,(9) Az ingatlan-nyilvántartásról szóló 1997. évi CXLI. törvény módosításáról szóló 2005. évi CXXII. törvény erejénél'
+  new: „(9) Az ingatlan-nyilvántartásról szóló 1997. évi CXLI. törvény módosításáról szóló 2005. évi CXXII. törvény erejénél
+- old: ',,(3) A (2) bekezdés alapján tulajdonba adott ingatlanokon fennálló elidegenítési és terhelési tilalmat az ingatlan'
+  new: „(3) A (2) bekezdés alapján tulajdonba adott ingatlanokon fennálló elidegenítési és terhelési tilalmat az ingatlan
+- after:
+  - (2) A nemzeti vagyonról szóló 2011. évi CXCVI. törvény 2. számú melléklet III. fejezetének 1. alcíme az alábbi 31. ponttal
+  old: 'egészül ki:'
+  new: 'egészül ki [HUN_LAW TODO: melléklet kiegészítések] :'
+- old: 'alcímmel egészül ki:'
+  new: 'alcímmel egészül ki [HUN_LAW TODO: Nem félkövér alcím]:'
+- after:
+  - (2) A nemzetközi bűnügyi jogsegélyről szóló 1996. évi XXXVIII. törvény VII. Fejezete a következő alcímmel és 85. §-sal
+  old: 'egészül ki:'
+  new: 'egészül ki [HUN_LAW TODO: Nem félkövér alcím]:'
