@@ -1,0 +1,44 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+children:
+- Article:
+    identifier: '1'
+    children:
+    - body:
+        intro: 'Az információs önrendelkezési jogról és az információszabadságról szóló 2011. évi CXII. törvény 83. § (14) bekezdése a következő szöveggel lép hatályba:'
+        children:
+          BlockAmendment:
+            children:
+              Paragraph:
+              - identifier: '14'
+                body: Az elektronikus hírközlésről szóló 2003. évi C. törvény 12/A. § (4) bekezdésében az „az adatvédelméről” szövegrész helyébe a „az információs önrendelkezési jogról és az információszabadságról” szöveg lép.
+      semantic_info:
+        outgoing_references:
+        - start: 84
+          end: 110
+          reference:
+            act:
+              year: 2011
+              number: 112
+        - start: 111
+          end: 133
+          reference:
+            act:
+              year: 2011
+              number: 112
+            article: '83'
+            paragraph: '14'
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 2011
+                number: 112
+              article: '83'
+              paragraph: '14'
+            pure_insertion: false

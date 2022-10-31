@@ -1,0 +1,4 @@
+    1. § Az információs önrendelkezési jogról és az információszabadságról szóló 2011. évi CXII. törvény 83. § (14) bekezdése
+         a következő szöveggel lép hatályba:
+         „(14) Az elektronikus hírközlésről szóló 2003. évi C. törvény 12/A. § (4) bekezdésében az „az adatvédelméről”
+         szövegrész helyébe a „az információs önrendelkezési jogról és az információszabadságról” szöveg lép.”

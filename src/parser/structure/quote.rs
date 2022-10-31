@@ -55,7 +55,7 @@ impl QuotedBlockParser {
             match state {
                 QuotedBlockParseState::Start => {
                     if line.content().starts_with(['„', '“']) {
-                        if line.content().ends_with('”') {
+                        if line.content().ends_with('”') && !quote_checker.end_is_quoted {
                             blocks.push(QuotedBlock {
                                 intro: None,
                                 lines: vec![line.slice(1, Some(-1))],
@@ -83,7 +83,7 @@ impl QuotedBlockParser {
                 QuotedBlockParseState::WaitingForQuotedBlock => {
                     if !line.is_empty() {
                         if line.content().starts_with(['„', '“']) {
-                            if line.content().ends_with('”') {
+                            if line.content().ends_with('”') && !quote_checker.end_is_quoted {
                                 blocks.push(QuotedBlock {
                                     intro: None,
                                     lines: vec![line.slice(1, Some(-1))],
