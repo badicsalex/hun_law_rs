@@ -96,7 +96,7 @@ impl CharCollector {
         let rendering_matrix = state.rendering_matrix();
         let w0 = font.widths.get(cid as usize) / 1000.0;
         match font.to_unicode(cid) {
-            ToUnicodeResult::Unknown => bail!("Unknown CID: {cid}"),
+            ToUnicodeResult::Unknown => bail!("Unknown CID: {cid} (font: {:?})", font),
             ToUnicodeResult::Char(c) => self.render_character(
                 rendering_matrix.m31,
                 rendering_matrix.m32,
