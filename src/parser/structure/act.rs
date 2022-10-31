@@ -119,7 +119,8 @@ pub fn parse_complex_body(
 
     for child in &children {
         if let ActChild::Subtitle(st) = child {
-            if st.title.len() > 1000 {
+            // 2011. évi CCI. törvény has a legit 1135 character subtitle.
+            if st.title.len() > 1500 {
                 bail!(
                     "Probable corrupted read: way too long ({:?}) subtitle title detected (Last article id: {:?}): {}...",
                     st.title.len(),
