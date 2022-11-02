@@ -166,7 +166,7 @@ BeforeArticle = [Az] @:SingleArticleReference ("megelőzően" | "megelőző" );
 SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffix;
 
 @string
-RawTitle = {!(["című"] SubtitleSuffixPossessive) !"§" AnyToken};
+RawTitle = CapitalizedWord {!(["című"] SubtitleSuffixPossessive) AnyToken};
 
 @string
 SubtitleId = Number [["/"] 'A'..'Z'];
@@ -439,6 +439,9 @@ RomanNumeralChar = 'I' | 'V' | 'X' | 'L' | 'C' | 'D' | 'M' ;
 
 @no_skip_ws
 Word = {HunLower | HunUpper | '-'}+ ;
+
+@no_skip_ws
+CapitalizedWord = {HunUpper | HunUpper | '-'}+ ;
 
 Date = year:Number "." month:Month day:Number ("-án" | "-jén" | "-én" | ". napján");
 
