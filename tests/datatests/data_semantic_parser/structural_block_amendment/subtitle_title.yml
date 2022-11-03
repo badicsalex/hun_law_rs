@@ -16,5 +16,5 @@ expected_special_phrase:
         year: 2013
         number: 5
       structural_element:
-        AtTheEndOfTitle: '8'
+        InTitle: '8'
     pure_insertion: true

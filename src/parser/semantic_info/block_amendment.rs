@@ -102,17 +102,15 @@ pub fn convert_subtitle_block_amendment(
     } else if pure_insertion {
         // This is a best effort thing and _might_ be caused by problems with the
         // grammar, but unfortunately this really is somewhat common
-        StructuralReferenceElement::AtTheEndOfAct
+        StructuralReferenceElement::EndOfAct
     } else {
         bail!("No article found at all for amendment-type BlockAmendmentWithSubtitle")
     };
 
     let structural_element = match structural_element {
-        StructuralReferenceElement::Part(id) => StructuralReferenceElement::AtTheEndOfPart(id),
-        StructuralReferenceElement::Title(id) => StructuralReferenceElement::AtTheEndOfTitle(id),
-        StructuralReferenceElement::Chapter(id) => {
-            StructuralReferenceElement::AtTheEndOfChapter(id)
-        }
+        StructuralReferenceElement::Part(id) => StructuralReferenceElement::InPart(id),
+        StructuralReferenceElement::Title(id) => StructuralReferenceElement::InTitle(id),
+        StructuralReferenceElement::Chapter(id) => StructuralReferenceElement::InChapter(id),
         _ => structural_element,
     };
 

@@ -16,5 +16,5 @@ expected_special_phrase:
         year: 2012
         number: 100
       structural_element:
-        AtTheEndOfChapter: '23'
+        InChapter: '23'
     pure_insertion: true

@@ -11,5 +11,5 @@ expected_special_phrase:
       act:
         year: 1999
         number: 43
-      structural_element: AtTheEndOfAct
+      structural_element: EndOfAct
     pure_insertion: true
