@@ -26,6 +26,8 @@ pub struct StructuralReference {
     pub act: Option<ActIdentifier>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub book: Option<NumericIdentifier>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parent: Option<StructuralReferenceParent>,
     pub structural_element: StructuralReferenceElement,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub title_only: bool,
@@ -39,11 +41,35 @@ pub enum StructuralReferenceElement {
     SubtitleId(NumericIdentifier),
     SubtitleTitle(String),
     SubtitleAfterArticle(ArticleIdentifier),
+    /// Only the subtitle before the article (for amendment purposes)
     SubtitleBeforeArticle(ArticleIdentifier),
+    /// Both the subtitle and the article that follows (for amendments)
     SubtitleBeforeArticleInclusive(ArticleIdentifier),
-    InPart(NumericIdentifier),
-    InTitle(NumericIdentifier),
-    InChapter(NumericIdentifier),
-    EndOfAct,
+    /// All we know is that it's a subtitle, and its position is defined by
+    /// the parent. Should only be used with pure insertions.
+    SubtitleUnknown,
     Article(IdentifierRange<ArticleIdentifier>),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum StructuralReferenceParent {
+    Part(NumericIdentifier),
+    Title(NumericIdentifier),
+    Chapter(NumericIdentifier),
+    SubtitleId(NumericIdentifier),
+    SubtitleTitle(String),
+}
+
+impl From<StructuralReferenceParent> for StructuralReferenceElement {
+    fn from(srp: StructuralReferenceParent) -> Self {
+        match srp {
+            StructuralReferenceParent::Part(x) => StructuralReferenceElement::Part(x),
+            StructuralReferenceParent::Title(x) => StructuralReferenceElement::Title(x),
+            StructuralReferenceParent::Chapter(x) => StructuralReferenceElement::Chapter(x),
+            StructuralReferenceParent::SubtitleId(x) => StructuralReferenceElement::SubtitleId(x),
+            StructuralReferenceParent::SubtitleTitle(x) => {
+                StructuralReferenceElement::SubtitleTitle(x)
+            }
+        }
+    }
 }

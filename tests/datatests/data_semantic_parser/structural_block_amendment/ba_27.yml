@@ -19,6 +19,8 @@ expected_special_phrase:
       act:
         year: 2012
         number: 100
+      parent:
+        SubtitleTitle: Terrorcselekmény
       structural_element:
         Article: 316/A
     pure_insertion: true

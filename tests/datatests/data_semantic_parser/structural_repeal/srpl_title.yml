@@ -15,5 +15,6 @@ expected_special_phrase:
       act:
         year: 2013
         number: 5
+      book: '3'
       structural_element:
         Title: '21'

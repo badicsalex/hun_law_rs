@@ -19,6 +19,8 @@ expected_special_phrase:
       act:
         year: 2012
         number: 100
+      parent:
+        Chapter: '27'
       structural_element:
         SubtitleBeforeArticleInclusive: 300/A
     pure_insertion: true

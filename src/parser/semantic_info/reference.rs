@@ -106,7 +106,7 @@ impl GetOutgoingReferences for BlockAmendmentWithSubtitle {
     ) -> Result<Vec<OutgoingReference>> {
         let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
         ref_builder.feed(&self.act_reference)?;
-        ref_builder.feed(&self.position)?;
+        ref_builder.feed(&self.article_relative)?;
         ref_builder.feed(&self.reference)?;
         Ok(ref_builder.get_result())
     }
@@ -163,7 +163,9 @@ impl GetOutgoingReferences for StructuralRepeal {
     ) -> Result<Vec<OutgoingReference>> {
         let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
         ref_builder.feed(&self.act_reference)?;
-        ref_builder.feed(&self.reference)?;
+        if let StructuralRepeal_position::ArticleRelativePosition(arp) = &self.position {
+            ref_builder.feed(arp)?;
+        }
         Ok(ref_builder.get_result())
     }
 }
@@ -406,13 +408,13 @@ impl FeedReferenceBuilder<ArticleReferencePart> for OutgoingReferenceBuilder<'_>
 
 impl RefPartInGrammar for ArticleReferencePart {}
 
-impl FeedReferenceBuilder<StructuralPositionReference> for OutgoingReferenceBuilder<'_> {
-    fn feed(&mut self, element: &StructuralPositionReference) -> Result<()> {
+impl FeedReferenceBuilder<ArticleRelativePosition> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &ArticleRelativePosition) -> Result<()> {
         match element {
-            StructuralPositionReference::AfterArticle(x) => self.feed(x),
-            StructuralPositionReference::BeforeArticle(x) => self.feed(x),
-            StructuralPositionReference::AnyStructuralReference(_) => Ok(()),
-        }
+            ArticleRelativePosition::AfterArticle(x) => self.feed(x)?,
+            ArticleRelativePosition::BeforeArticle(x) => self.feed(x)?,
+        };
+        Ok(())
     }
 }
 

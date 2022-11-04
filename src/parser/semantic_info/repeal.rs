@@ -47,14 +47,23 @@ pub fn convert_structural_repeal(
     abbreviation_cache: &AbbreviationCache,
     elem: &StructuralRepeal,
 ) -> Result<semantic_info::StructuralRepeal> {
-    let position = StructuralReference {
-        act: Some(convert_act_reference(
-            abbreviation_cache,
-            &elem.act_reference,
-        )?),
-        book: None,
-        structural_element: (&elem.reference).try_into()?,
-        title_only: false,
+    let act = Some(convert_act_reference(
+        abbreviation_cache,
+        &elem.act_reference,
+    )?);
+    let position = match &elem.position {
+        StructuralRepeal_position::AnyStructuralReference(asr) => {
+            let mut sr = StructuralReference::try_from(asr)?;
+            sr.act = act;
+            sr
+        }
+        StructuralRepeal_position::ArticleRelativePosition(arp) => StructuralReference {
+            act,
+            book: None,
+            parent: None,
+            structural_element: arp.try_into()?,
+            title_only: false,
+        },
     };
     Ok(semantic_info::StructuralRepeal { position })
 }

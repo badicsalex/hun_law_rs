@@ -58,6 +58,7 @@ pub fn convert_block_amendment(
             position: StructuralReference {
                 act: position.act(),
                 book: None,
+                parent: elem.parent.as_ref().map(|p| p.try_into()).transpose()?,
                 structural_element: StructuralReferenceElement::Article(article_id),
                 title_only: false,
             },
@@ -97,22 +98,20 @@ pub fn convert_subtitle_block_amendment(
     let pure_insertion = elem.is_insertion.is_some();
     let structural_element = if let Some(article) = &elem.reference.article {
         StructuralReferenceElement::SubtitleBeforeArticleInclusive(article.try_into()?)
-    } else if let Some(spr) = &elem.position {
-        spr.try_into()?
+    } else if let Some(article_relative) = &elem.article_relative {
+        article_relative.try_into()?
+    } else if let Some(title) = &elem.reference.title {
+        StructuralReferenceElement::SubtitleTitle(title.clone())
+    } else if let Some(id) = &elem.reference.id {
+        StructuralReferenceElement::SubtitleId(id.parse()?)
     } else if pure_insertion {
         // This is a best effort thing and _might_ be caused by problems with the
         // grammar, but unfortunately this really is somewhat common
-        StructuralReferenceElement::EndOfAct
+        StructuralReferenceElement::SubtitleUnknown
     } else {
         bail!("No article found at all for amendment-type BlockAmendmentWithSubtitle")
     };
-
-    let structural_element = match structural_element {
-        StructuralReferenceElement::Part(id) => StructuralReferenceElement::InPart(id),
-        StructuralReferenceElement::Title(id) => StructuralReferenceElement::InTitle(id),
-        StructuralReferenceElement::Chapter(id) => StructuralReferenceElement::InChapter(id),
-        _ => structural_element,
-    };
+    let parent = elem.parent.as_ref().map(|p| p.try_into()).transpose()?;
 
     let position = StructuralReference {
         act: Some(convert_act_reference(
@@ -120,6 +119,7 @@ pub fn convert_subtitle_block_amendment(
             &elem.act_reference,
         )?),
         book: None,
+        parent,
         structural_element,
         title_only: false,
     };

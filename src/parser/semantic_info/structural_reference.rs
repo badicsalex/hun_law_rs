@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::Result;
+use anyhow::{ensure, Result};
 use hun_law_grammar::*;
 
 use crate::{
-    reference::structural::{StructuralReference, StructuralReferenceElement},
+    reference::structural::{
+        StructuralReference, StructuralReferenceElement, StructuralReferenceParent,
+    },
     structure::StructuralElementType,
 };
 
@@ -33,43 +35,65 @@ impl TryFrom<&AnyStructuralReference> for StructuralReference {
             } else {
                 None
             },
-            structural_element: match &value.reference {
-                AnyStructuralReference_reference::ChapterReference(x) => x.try_into()?,
-                AnyStructuralReference_reference::PartReference(x) => x.try_into()?,
-                AnyStructuralReference_reference::SubtitleReference(x) => x.try_into()?,
-                AnyStructuralReference_reference::SubtitleTitle(x) => x.try_into()?,
-                AnyStructuralReference_reference::TitleReference(x) => x.try_into()?,
-            },
+            parent: None,
+            structural_element: StructuralReferenceParent::try_from(&value.reference)?.into(),
             title_only: value.title_only.is_some(),
         })
     }
 }
 
-impl TryFrom<&ChapterReference> for StructuralReferenceElement {
+impl TryFrom<&AnyStructuralReference> for StructuralReferenceParent {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &AnyStructuralReference) -> Result<Self, Self::Error> {
+        // TODO: we lose book information
+        ensure!(
+            value.title_only.is_none(),
+            "Found title_only flag in StructuralReferenceParent context"
+        );
+        StructuralReferenceParent::try_from(&value.reference)
+    }
+}
+
+impl TryFrom<&AnyStructuralReference_reference> for StructuralReferenceParent {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &AnyStructuralReference_reference) -> Result<Self, Self::Error> {
+        match value {
+            AnyStructuralReference_reference::ChapterReference(x) => x.try_into(),
+            AnyStructuralReference_reference::PartReference(x) => x.try_into(),
+            AnyStructuralReference_reference::SubtitleReference(x) => x.try_into(),
+            AnyStructuralReference_reference::SubtitleTitle(x) => x.try_into(),
+            AnyStructuralReference_reference::TitleReference(x) => x.try_into(),
+        }
+    }
+}
+
+impl TryFrom<&ChapterReference> for StructuralReferenceParent {
     type Error = anyhow::Error;
 
     fn try_from(value: &ChapterReference) -> Result<Self, Self::Error> {
-        Ok(StructuralReferenceElement::Chapter(
+        Ok(StructuralReferenceParent::Chapter(
             StructuralElementType::Chapter.parse_identifier(&value.id)?,
         ))
     }
 }
 
-impl TryFrom<&PartReference> for StructuralReferenceElement {
+impl TryFrom<&PartReference> for StructuralReferenceParent {
     type Error = anyhow::Error;
 
     fn try_from(value: &PartReference) -> Result<Self, Self::Error> {
-        Ok(StructuralReferenceElement::Part(
+        Ok(StructuralReferenceParent::Part(
             StructuralElementType::Part { is_special: false }.parse_identifier(&value.id)?,
         ))
     }
 }
 
-impl TryFrom<&TitleReference> for StructuralReferenceElement {
+impl TryFrom<&TitleReference> for StructuralReferenceParent {
     type Error = anyhow::Error;
 
     fn try_from(value: &TitleReference) -> Result<Self, Self::Error> {
-        Ok(StructuralReferenceElement::Title(
+        Ok(StructuralReferenceParent::Title(
             StructuralElementType::Title.parse_identifier(&value.id)?,
         ))
     }
@@ -82,6 +106,7 @@ impl TryFrom<&TitleInsertionWithBook> for StructuralReference {
         Ok(Self {
             act: None,
             book: Some(StructuralElementType::Book.parse_identifier(&value.book_id)?),
+            parent: None,
             structural_element: StructuralReferenceElement::Title(
                 StructuralElementType::Title.parse_identifier(&value.id)?,
             ),
@@ -90,15 +115,15 @@ impl TryFrom<&TitleInsertionWithBook> for StructuralReference {
     }
 }
 
-impl TryFrom<&SubtitleReference> for StructuralReferenceElement {
+impl TryFrom<&SubtitleReference> for StructuralReferenceParent {
     type Error = anyhow::Error;
 
     fn try_from(value: &SubtitleReference) -> Result<Self, Self::Error> {
-        Ok(StructuralReferenceElement::SubtitleId(value.id.parse()?))
+        Ok(StructuralReferenceParent::SubtitleId(value.id.parse()?))
     }
 }
 
-impl TryFrom<&SubtitleTitle> for StructuralReferenceElement {
+impl TryFrom<&SubtitleTitle> for StructuralReferenceParent {
     type Error = anyhow::Error;
 
     fn try_from(value: &SubtitleTitle) -> Result<Self, Self::Error> {
@@ -106,24 +131,20 @@ impl TryFrom<&SubtitleTitle> for StructuralReferenceElement {
             SubtitleTitle_title::Quote(x) => x,
             SubtitleTitle_title::RawTitle(x) => x,
         };
-        Ok(StructuralReferenceElement::SubtitleTitle(id.clone()))
+        Ok(StructuralReferenceParent::SubtitleTitle(id.clone()))
     }
 }
 
-impl TryFrom<&StructuralPositionReference> for StructuralReferenceElement {
+impl TryFrom<&ArticleRelativePosition> for StructuralReferenceElement {
     type Error = anyhow::Error;
 
-    fn try_from(value: &StructuralPositionReference) -> Result<Self, Self::Error> {
+    fn try_from(value: &ArticleRelativePosition) -> Result<Self, Self::Error> {
         Ok(match value {
-            StructuralPositionReference::AfterArticle(article) => {
-                StructuralReferenceElement::SubtitleAfterArticle(article.try_into()?)
+            ArticleRelativePosition::AfterArticle(x) => {
+                StructuralReferenceElement::SubtitleAfterArticle(x.try_into()?)
             }
-            StructuralPositionReference::BeforeArticle(article) => {
-                StructuralReferenceElement::SubtitleBeforeArticle(article.try_into()?)
-            }
-            StructuralPositionReference::AnyStructuralReference(asr) => {
-                // TODO: Book is dropped here
-                StructuralReference::try_from(asr)?.structural_element
+            ArticleRelativePosition::BeforeArticle(x) => {
+                StructuralReferenceElement::SubtitleBeforeArticle(x.try_into()?)
             }
         })
     }

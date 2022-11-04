@@ -204,11 +204,7 @@ fn convert_title_only_block_amendment(
         | StructuralReferenceElement::SubtitleBeforeArticleInclusive(_) => {
             convert_subtitle_only_se(lines)?
         }
-        StructuralReferenceElement::InPart(_)
-        | StructuralReferenceElement::InTitle(_)
-        | StructuralReferenceElement::InChapter(_)
-        | StructuralReferenceElement::EndOfAct
-        | StructuralReferenceElement::Article(_) => {
+        StructuralReferenceElement::SubtitleUnknown | StructuralReferenceElement::Article(_) => {
             bail!("Invalid strucutral reference for a title only amendment: {position:?}")
         }
     };

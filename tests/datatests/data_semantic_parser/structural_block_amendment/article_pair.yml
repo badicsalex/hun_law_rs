@@ -23,6 +23,8 @@ expected_special_phrase:
       act:
         year: 2012
         number: 100
+      parent:
+        SubtitleTitle: Terrorizmus finanszírozása
       structural_element:
         Article:
           start: 318/A

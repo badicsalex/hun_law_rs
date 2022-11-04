@@ -163,6 +163,7 @@ ListSeparator = ((["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," |
 
 AfterArticle = [Az] @:SingleArticleReference ("követően" | "követő" );
 BeforeArticle = [Az] @:SingleArticleReference ("megelőzően" | "megelőző" );
+ArticleRelativePosition = @:BeforeArticle | @:AfterArticle ;
 SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffix;
 
 @string
@@ -253,7 +254,7 @@ ReferenceWithSubtitle =
     SubtitleToken "és" article:SingleArticleReference |
     article:SingleArticleReference "és" Az ["azt" | "azokat" | "§-t"] "megelőző" SubtitleToken |
     id:SubtitleId  "." SubtitleToken |
-    Quote SubtitleToken |
+    title:Quote SubtitleToken |
     SubtitleToken ;
 
 AmendmentSuffix =
@@ -271,11 +272,6 @@ InsertionSuffix =
     "egészül ki" |
     "kiegészülve lép hatályba" ;
 
-StructuralPositionReference =
-    [ChapterReference] @:AfterArticle |
-    [ChapterReference] @:BeforeArticle |
-    @:AnyStructuralReference ;
-
 # This rule means: skip everything until an ActReference,
 # except if the found reference continues with "hatálybalépésével összefüggő"
 # in that case, just continue skipping
@@ -283,7 +279,7 @@ StructuralPositionReference =
 ActTitle =
     { !(ActReference !"hatálybalépésével összefüggő") AnyToken };
 
-BlockAmendment = AzAny ActTitle act_reference:ActReference [position:StructuralPositionReference]
+BlockAmendment = AzAny ActTitle act_reference:ActReference [parent:AnyStructuralReference]
     (
         # non-subtitle cases
         amended_reference:Reference AmendmentSuffix ":" |
@@ -291,12 +287,15 @@ BlockAmendment = AzAny ActTitle act_reference:ActReference [position:StructuralP
         (
             amended_reference:Reference AmendmentSuffix [","]  AmendmentCombinatorJunk
             # this is usually the exact same as in the beginning
-            [[Az] ActReference] [StructuralPositionReference]
+            [[Az] ActReference] [AnyStructuralReference]
             inserted_reference:InsertionReference InsertionSuffix ":"
         )
     );
 
-BlockAmendmentWithSubtitle = AzAny ActTitle act_reference:ActReference [position:StructuralPositionReference]
+BlockAmendmentWithSubtitle =
+    AzAny ActTitle act_reference:ActReference
+    [parent:AnyStructuralReference]
+    [article_relative:ArticleRelativePosition]
     (
         reference:ReferenceWithSubtitle AmendmentSuffix ":" |
         reference:ReferenceWithSubtitle AmendmentSuffixWithSubtitle ":" |
@@ -406,7 +405,11 @@ Repeal =
 StructuralRepeal =
     ("Nem lép hatályba" | "Hatályát veszti")
     Az ActTitle act_reference:ActReference
-    reference:StructuralPositionReference [SubtitleToken]
+    (
+        position:ArticleRelativePosition |
+        position:AnyStructuralReference
+    )
+    [SubtitleToken]
     "."
     ;
 

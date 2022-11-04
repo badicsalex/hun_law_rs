@@ -15,6 +15,7 @@ expected_special_phrase:
       act:
         year: 2012
         number: 100
-      structural_element:
-        InChapter: '23'
+      parent:
+        Chapter: '23'
+      structural_element: SubtitleUnknown
     pure_insertion: true
