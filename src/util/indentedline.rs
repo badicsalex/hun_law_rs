@@ -232,6 +232,19 @@ impl IndentedLine {
         let from = if from >= 0 { from } else { len + from };
         from.clamp(0, len) as usize
     }
+
+    pub fn as_bold(&self) -> Self {
+        Self {
+            parts: self
+                .parts
+                .iter()
+                .map(|p| IndentedLinePart { bold: true, ..*p })
+                .collect(),
+            justified: self.justified,
+            cached_content: self.cached_content.clone(),
+            cached_bold: true,
+        }
+    }
 }
 
 impl PartialEq for IndentedLine {

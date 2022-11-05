@@ -39,6 +39,8 @@ pub struct Fixup {
     pub after: Vec<String>,
     pub old: String,
     pub new: String,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub set_bold: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -125,7 +127,10 @@ impl Fixup {
             line.content() == self.old,
             "Erroneous call to apply_to_line"
         );
-        ensure!(self.old != self.new, "Useless fixup (old == new)");
+        ensure!(
+            self.old != self.new || self.set_bold,
+            "Useless fixup (old == new)"
+        );
         if self.new.is_empty() {
             return Ok(EMPTY_LINE);
         }
@@ -218,12 +223,12 @@ impl Fixup {
             // Unfortunately line.slice(-0, None) != EMPTY_LINE
             line.slice(-postfix_len, None)
         };
-
-        Ok(IndentedLine::from_multiple(&[
-            &prefix,
-            &replacement,
-            &postfix,
-        ]))
+        let result = IndentedLine::from_multiple(&[&prefix, &replacement, &postfix]);
+        if self.set_bold {
+            Ok(result.as_bold())
+        } else {
+            Ok(result)
+        }
     }
 }
 
@@ -265,6 +270,7 @@ mod tests {
             after: vec![],
             old: line.content().to_owned(),
             new: new.to_owned(),
+            set_bold: false,
         }
         .apply_to_line(line)
         .unwrap();
@@ -442,6 +448,7 @@ mod tests {
             after: vec![],
             old: String::new(),
             new: "ÍÍÍÍÍ".to_owned(),
+            set_bold: false,
         }
         .apply_to_line(&EMPTY_LINE)
         .unwrap();
@@ -458,6 +465,7 @@ mod tests {
             after: vec![],
             old: "abbbb".to_owned(),
             new: "ab".to_owned(),
+            set_bold: false,
         };
         let line = IndentedLine::from_parts(
             "abbbb"
@@ -472,5 +480,29 @@ mod tests {
         );
         let new_line = fixup.apply_to_line(&line).unwrap();
         assert_eq!(new_line.content(), "ab");
+    }
+
+    #[test]
+    fn test_set_bold() {
+        let fixup = Fixup {
+            after: vec![],
+            old: "hello".to_owned(),
+            new: "hello".to_owned(),
+            set_bold: true,
+        };
+        let line = IndentedLine::from_parts(
+            "hello"
+                .chars()
+                .map(|c| IndentedLinePart {
+                    dx: 4.8,
+                    content: c,
+                    bold: false,
+                })
+                .collect(),
+            false,
+        );
+        let new_line = fixup.apply_to_line(&line).unwrap();
+        assert!(new_line.is_bold());
+        assert!(new_line.slice(2, None).is_bold());
     }
 }

@@ -48,39 +48,96 @@
   new: 2010. évi XLIII. törvény 61. § (2) és (4) bekezdése, 65. § (3) bekezdése, 66. § (3) bekezdése és 69. § (5) bekezdése.
 - old: 'a következő 8. ponttal egészül ki:'
   new: 'a következő 8. ponttal egészül ki [HUN_LAW TODO: mellékletek]:'
-- old: '3. § (1) A polgári perrendtartásról szóló 1952. évi III. törvény a 155/A. §-t követően a következő alcímmel egészül ki:'
-  new: '3. § (1) A polgári perrendtartásról szóló 1952. évi III. törvény a 155/A. §-t követően a következő alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: '(4) A magyar állampolgárságról szóló 1993. évi LV. törvény a 25. §-át követően a következő alcímmel egészül ki:'
-  new: '(4) A magyar állampolgárságról szóló 1993. évi LV. törvény a 25. §-át követően a következő alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcím]:'
-- old: '(9) A választási eljárásról szóló 1997. évi C. törvény a 150. §-át követően a következő alcímmel egészül ki:'
-  new: '(9) A választási eljárásról szóló 1997. évi C. törvény a 150. §-át követően a következő alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
+- old: „Az Alkotmánybíróság eljárásának kezdeményezése, továbbá a Kúria eljárásának kezdeményezése önkormányzati
+  new: „Az Alkotmánybíróság eljárásának kezdeményezése, továbbá a Kúria eljárásának kezdeményezése önkormányzati
+  set_bold: true
+- old: rendelet felülvizsgálata iránt
+  new: rendelet felülvizsgálata iránt
+  set_bold: true
 - after:
-  - 175. § (1) A temetőkről és a temetkezésről szóló 1999. évi XLIII. törvény IV. Fejezete a 40. §-t követően a következő alcímmel
-  old: 'egészül ki:'
-  new: 'egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: '(7) A szabálysértésekről szóló 1999. évi LXIX. törvény 169. §-át követően a következő alcímmel egészül ki:'
-  new: '(7) A szabálysértésekről szóló 1999. évi LXIX. törvény 169. §-át követően a következő alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: '(3) Az elektronikus hírközlésről szóló 2003. évi C. törvény a 37. §-át követően a következő alcímmel egészül ki:'
-  new: '(3) Az elektronikus hírközlésről szóló 2003. évi C. törvény a 37. §-át követően a következő alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: '(6) Az elektronikus hírközlésről szóló 2003. évi C. törvény az 54/A. §-át követően a következő alcímmel egészül ki:'
-  new: '(6) Az elektronikus hírközlésről szóló 2003. évi C. törvény az 54/A. §-át követően a következő alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: 'alcímekkel egészül ki:'
-  new: 'alcímekkel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
+  - '(4) A magyar állampolgárságról szóló 1993. évi LV. törvény a 25. §-át követően a következő alcímmel egészül ki:'
+  old: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  new: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  set_bold: true
 - after:
-  - (2) A műsorterjesztés és digitális átállás szabályairól szóló 2007. évi LXXIV. törvény 44. §-át követően a következő alcímmel
-  old: 'egészül ki:'
-  new: 'egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: 'XLIII. törvény 25. §-át követően a következő alcímmel egészül ki:'
-  new: 'XLIII. törvény 25. §-át követően a következő alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: 'XLIII. törvény Az ügyvezető miniszterelnök alcíme helyébe a következő rendelkezés lép:'
-  new: 'XLIII. törvény Az ügyvezető miniszterelnök alcíme helyébe a következő rendelkezés lép [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: '(14) A jogalkotásról szóló 2010. évi CXXX. törvény a következő 14/A. alcímmel egészül ki:'
-  new: '(14) A jogalkotásról szóló 2010. évi CXXX. törvény a következő 14/A. alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: '(15) A jogalkotásról szóló 2010. évi CXXX. törvény VII. Fejezete a következő 15/A. alcímmel egészül ki:'
-  new: '(15) A jogalkotásról szóló 2010. évi CXXX. törvény VII. Fejezete a következő 15/A. alcímmel egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
+  - '(9) A választási eljárásról szóló 1997. évi C. törvény a 150. §-át követően a következő alcímmel egészül ki:'
+  old: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  new: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  set_bold: true
+- old: „A hősi temetőre, hősi temetési helyre vonatkozó különös szabályok
+  new: „A hősi temetőre, hősi temetési helyre vonatkozó különös szabályok
+  set_bold: true
+- old: „Az Európai Unió jogának való megfelelés
+  new: „Az Európai Unió jogának való megfelelés
+  set_bold: true
 - after:
-  - (12) A Pénzügyi Szervezetek Állami Felügyeletéről szóló 2010. évi CLVIII. törvény a 119. §-t követően a következő alcímmel
-  old: 'egészül ki:'
-  new: 'egészül ki [HUN_LAW TODO: nem félkövér alcímek]:'
-- old: 'következő 24/A. alcímmel kiegészülve lép hatályba:'
-  new: 'következő 24/A. alcímmel kiegészülve lép hatályba [HUN_LAW TODO: nem félkövér alcímek]:'
+  - 'a következő alcímmel egészül ki:'
+  old: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  new: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  set_bold: true
+- old: „Hatósági intézkedés
+  new: „Hatósági intézkedés
+  set_bold: true
+- old: „Felügyeleti terv
+  new: „Felügyeleti terv
+  set_bold: true
+- after:
+  - 'rendelkezés alcímét megelőzően a következő alcímmel egészül ki:'
+  old: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  new: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  set_bold: true
+- after:
+  - 'kiválasztása” alcímet megelőzően a következő alcímmel egészül ki:'
+  old: „A személyszállítási közszolgáltatás díjai, jegy- és bérletrendszerrel kapcsolatos szabályok
+  new: „A személyszállítási közszolgáltatás díjai, jegy- és bérletrendszerrel kapcsolatos szabályok
+  set_bold: true
+- old: „Még elégséges szolgáltatás az autóbuszos közforgalmú közlekedésben
+  new: „Még elégséges szolgáltatás az autóbuszos közforgalmú közlekedésben
+  set_bold: true
+- old: „Az Országgyűlés kifogása
+  new: „Az Országgyűlés kifogása
+  set_bold: true
+- old: „Átmeneti rendelkezések
+  new: „Átmeneti rendelkezések
+  set_bold: true
+- old: 21. § Az NMHH elnökének e törvény felhatalmazása alapján megalkotott rendelete hatálybalépéséig az azonos
+  new: 21. § Az NMHH elnökének e törvény felhatalmazása alapján megalkotott rendelete hatálybalépéséig az azonos tárgykörben alkotott miniszteri rendeletet kell alkalmazni.
+- old: tárgykörben alkotott miniszteri rendeletet kell alkalmazni.
+  new: ''
+- after:
+  - ''
+  old: Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  new: Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  set_bold: true
+- old: „A nemzetközi szerződéssel kapcsolatos fenntartás, kifogás, nyilatkozat és a kötelezettséget elhárító nyilatkozat
+  new: „A nemzetközi szerződéssel kapcsolatos fenntartás, kifogás, nyilatkozat és a kötelezettséget elhárító nyilatkozat
+  set_bold: true
+- old: „Még elégséges szolgáltatás a vasúti közforgalmú közlekedésben
+  new: „Még elégséges szolgáltatás a vasúti közforgalmú közlekedésben
+  set_bold: true
+- old: „Adatkezelés a vevőeszköz-támogatás érdekében
+  new: „Adatkezelés a vevőeszköz-támogatás érdekében
+  set_bold: true
+- old: „A miniszterelnök javadalmazása és juttatásai
+  new: „A miniszterelnök javadalmazása és juttatásai
+  set_bold: true
+- old: „A volt miniszterelnök juttatásai
+  new: „A volt miniszterelnök juttatásai
+  set_bold: true
+- old: „14/A. Egyes más jogi aktusok nyilvánossága
+  new: „14/A. Egyes más jogi aktusok nyilvánossága
+  set_bold: true
+- old: „15/A. A törvényalkotás nyilvánossága
+  new: „15/A. A törvényalkotás nyilvánossága
+  set_bold: true
+- old: „24/A. A közérdekű adatok központi elektronikus jegyzéke és az egységes közadatkereső rendszer
+  new: „24/A. A közérdekű adatok központi elektronikus jegyzéke és az egységes közadatkereső rendszer
+  set_bold: true
+- old: „Az ügyvezető miniszterelnök
+  new: „Az ügyvezető miniszterelnök
+  set_bold: true
+- after:
+  - 'egészül ki:'
+  old: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  new: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
+  set_bold: true

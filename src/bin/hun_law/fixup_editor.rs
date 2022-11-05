@@ -68,18 +68,22 @@ pub fn run_fixup_editor(act: &ActRawText, editor: &str) -> Result<()> {
     let mut contents = String::new();
     temp_file.seek(SeekFrom::Start(0))?;
     temp_file.read_to_string(&mut contents)?;
-    let old_lines: Vec<&str> = act.body.iter().map(|l| l.content().trim()).collect();
-    let new_lines: Vec<&str> = contents.lines().map(|l| l[5..].trim()).collect();
+    let old_lines = act
+        .body
+        .iter()
+        .map(|l| l.content().trim().to_owned())
+        .collect();
+    let new_lines = contents.lines().map(|l| l[5..].trim().to_owned()).collect();
     let mut fixups = Fixups::load(act.identifier)?;
     update_fixups(&mut fixups, old_lines, new_lines)?;
     fixups.save()?;
     Ok(())
 }
 
-fn update_fixups<'a>(
+fn update_fixups(
     fixups: &mut Fixups,
-    mut original_lines: Vec<&'a str>,
-    new_lines: Vec<&'a str>,
+    mut original_lines: Vec<String>,
+    mut new_lines: Vec<String>,
 ) -> Result<()> {
     ensure!(
         original_lines.len() == new_lines.len(),
@@ -105,17 +109,31 @@ fn update_fixups<'a>(
             })?;
         let after = original_lines[change_pos - context_len..change_pos]
             .iter()
-            .map(|l| l.to_owned().to_owned())
+            .map(|l| l.to_owned())
             .collect();
-        info!("Added fixup, old: '{}'", original_lines[change_pos]);
-        info!("             new: '{}'", new_lines[change_pos]);
+        let (set_bold, new) = if new_lines[change_pos].contains("<BOLD>") {
+            (
+                true,
+                new_lines[change_pos]
+                    .replace("<BOLD>", "")
+                    .trim()
+                    .to_owned(),
+            )
+        } else {
+            (false, new_lines[change_pos].to_owned())
+        };
+        info!("Added fixup, old: {:?}", original_lines[change_pos]);
+        info!("             new: {new:?}");
         info!("     context len: {context_len:?}");
+        info!("            bold: {set_bold:?}");
         fixups.add(Fixup {
             after,
             old: original_lines[change_pos].to_owned(),
-            new: new_lines[change_pos].to_owned(),
+            new: new.clone(),
+            set_bold,
         });
-        original_lines[change_pos] = new_lines[change_pos];
+        new_lines[change_pos] = new.clone();
+        original_lines[change_pos] = new;
     }
     Ok(())
 }
@@ -143,7 +161,11 @@ mod tests {
             temp_dir.path().to_owned(),
         )?;
 
-        update_fixups(&mut fixups, original_lines.into(), new_lines.into())?;
+        update_fixups(
+            &mut fixups,
+            original_lines.iter().map(|l| l.to_string()).collect(),
+            new_lines.iter().map(|l| l.to_string()).collect(),
+        )?;
         Ok(fixups.into())
     }
 
@@ -160,6 +182,7 @@ mod tests {
                 after: vec![],
                 old: "line 2".into(),
                 new: "modified".into(),
+                set_bold: false,
             }]
         )
     }
@@ -177,6 +200,7 @@ mod tests {
                 after: vec!["line 1".into()],
                 old: "r1".into(),
                 new: "modified".into(),
+                set_bold: false,
             }]
         );
         let fixups = run_update_fixups(
@@ -190,6 +214,7 @@ mod tests {
                 after: vec!["line 3".into()],
                 old: "r1".into(),
                 new: "modified".into(),
+                set_bold: false,
             }]
         )
     }
@@ -207,6 +232,7 @@ mod tests {
                 after: vec!["line 1".into()],
                 old: "r1".into(),
                 new: "modified".into(),
+                set_bold: false,
             }]
         );
         let fixups = run_update_fixups(
@@ -220,6 +246,7 @@ mod tests {
                 after: vec!["".into()],
                 old: "r1".into(),
                 new: "modified".into(),
+                set_bold: false,
             }]
         )
     }
@@ -238,11 +265,13 @@ mod tests {
                     after: vec![],
                     old: "line 2".into(),
                     new: "modified".into(),
+                    set_bold: false,
                 },
                 Fixup {
                     after: vec![],
                     old: "line 3".into(),
                     new: "modified 3".into(),
+                    set_bold: false,
                 }
             ]
         )
@@ -262,16 +291,19 @@ mod tests {
                     after: vec!["line 1".into()],
                     old: "rme".into(),
                     new: "modified".into(),
+                    set_bold: false,
                 },
                 Fixup {
                     after: vec![],
                     old: "rme".into(),
                     new: "modified".into(),
+                    set_bold: false,
                 },
                 Fixup {
                     after: vec!["modified".into(), "modified".into()],
                     old: "modified".into(),
                     new: "m2".into(),
+                    set_bold: false,
                 }
             ]
         )
@@ -287,6 +319,7 @@ mod tests {
                 after: vec![],
                 new: String::new(),
                 old: "line 2".into(),
+                set_bold: false,
             }]
         )
     }
@@ -304,6 +337,7 @@ mod tests {
                 after: vec!["line 1".into()],
                 new: String::new(),
                 old: "r1".into(),
+                set_bold: false,
             }]
         );
         let fixups = run_update_fixups(
@@ -317,6 +351,7 @@ mod tests {
                 after: vec!["line 3".into()],
                 new: String::new(),
                 old: "r1".into(),
+                set_bold: false,
             }]
         )
     }
@@ -331,6 +366,7 @@ mod tests {
                 after: vec!["line 1".into()],
                 new: String::new(),
                 old: "r1".into(),
+                set_bold: false,
             }]
         );
         let fixups =
@@ -341,6 +377,7 @@ mod tests {
                 after: vec!["".into()],
                 new: String::new(),
                 old: "r1".into(),
+                set_bold: false,
             }]
         )
     }
@@ -359,18 +396,39 @@ mod tests {
                     after: vec!["line 1".into()],
                     new: String::new(),
                     old: "rme".into(),
+                    set_bold: false,
                 },
                 Fixup {
                     after: vec![],
                     new: String::new(),
                     old: "rme".into(),
+                    set_bold: false,
                 },
                 Fixup {
                     after: vec!["".into()],
                     old: "modified".into(),
                     new: "m2".into(),
+                    set_bold: false,
                 }
             ]
+        )
+    }
+
+    #[test]
+    fn test_simple_bold() {
+        let fixups = run_update_fixups(
+            &["line 1", "line 2", "line 3"],
+            &["line 1", "<BOLD> line 2", "line 3"],
+        )
+        .unwrap();
+        assert_eq!(
+            fixups,
+            vec![Fixup {
+                after: vec![],
+                old: "line 2".into(),
+                new: "line 2".into(),
+                set_bold: true,
+            }]
         )
     }
 }
