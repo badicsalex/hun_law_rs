@@ -18,7 +18,6 @@
 mod grammar_generated;
 
 pub use grammar_generated::*;
-
 use peginator::{ParseError, PegParser};
 
 pub fn grammar_parse(s: &str) -> Result<Root, ParseError> {

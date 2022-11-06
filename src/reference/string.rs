@@ -190,12 +190,11 @@ mod tests {
 
     use pretty_assertions::assert_eq;
 
+    use super::*;
     use crate::identifier::{
         range::IdentifierRangeFrom, ActIdentifier, AlphabeticIdentifier, IdentifierCommon,
         NumericIdentifier, PrefixedAlphabeticIdentifier,
     };
-
-    use super::*;
     fn quick_convert_part<TR, TI>(s: &str) -> Option<TR>
     where
         TR: IdentifierRangeFrom<TI>,
