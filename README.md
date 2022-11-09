@@ -16,8 +16,8 @@ It does the following things:
 After cloning the repository, you can run it with `cargo run --release`:
 
 ```
-cargo run --release -- 2018/123
-cargo run --release -- -p act-lines -o plain 2013/31
+cargo run --release -- 2012/100
+cargo run --release -- -p act-lines -t plain --mk 2013/31
 ```
 
 Please see the output of `cargo run --release -- --help` for all options

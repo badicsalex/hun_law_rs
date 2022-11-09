@@ -16,13 +16,14 @@
 
 mod fixup_editor;
 
-use std::{fs::File, io::Write, path::PathBuf};
+use std::{collections::BTreeSet, fs::File, io::Write, path::PathBuf, str::FromStr};
 
-use anyhow::Result;
+use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 use fixup_editor::run_fixup_editor;
 use hun_law::{
     fixups::Fixups,
+    identifier::ActIdentifier,
     mk_downloader::{download_mk_issue, MkIssue, DEFAULT_MK_CROP},
     output::{CliOutput, OutputFormat},
     parser::pdf::parse_pdf,
@@ -32,15 +33,20 @@ use hun_law::{
     },
 };
 use log::info;
+use serde::{Deserialize, Deserializer};
 
 /// Hun-Law output generator
 ///
 /// Downloads Magyar Közlöny issues as PDFs and converts the Acts in them to machine-parseable formats.
 #[derive(clap::Parser, Debug)]
 struct HunLawArgs {
-    #[clap(value_parser, required = true, name = "issue")]
-    /// The  Magyar Közlöny issues to download in YEAR/ISSUE format. Example: '2013/31'
-    issues: Vec<MkIssue>,
+    #[clap(required = true, name = "id")]
+    /// Acts or Magyar Közlöny issues (if --mk is specified) to convert in long, YEAR/Number or YEAR/ISSUE format.
+    /// Examples: "2013/31", "2012. évi C. törvény"
+    ids: Vec<String>,
+    /// Ids are Magyar Közlöny issues if set
+    #[clap(long)]
+    mk: bool,
     /// Output format
     #[clap(value_enum, long, short = 't', default_value_t)]
     output_format: OutputFormat,
@@ -95,7 +101,8 @@ fn main() -> Result<()> {
     }
 
     let mut everything_ok = true;
-    for issue in &args.issues {
+    let (issues, acts) = get_issues(&args)?;
+    for issue in &issues {
         if let Err(e) = || -> Result<()> {
             let mk_name = format!("mk_{}_{}", issue.year, issue.issue);
             info!("Processing {mk_name}");
@@ -109,6 +116,11 @@ fn main() -> Result<()> {
             }
 
             for act in parse_mk_pages_into_acts(&pages)? {
+                if !acts.is_empty() && !acts.contains(&act.identifier) {
+                    log::info!("Skipping {}", act.identifier);
+                    continue;
+                }
+
                 let mut output = get_output(&act.identifier.to_string(), &args)?;
                 let process_result = if args.interactive {
                     process_single_act_interactive(act, &args, &mut output)
@@ -128,7 +140,7 @@ fn main() -> Result<()> {
     if everything_ok {
         Ok(())
     } else {
-        Err(anyhow::anyhow!("Some acts were not processed"))
+        Err(anyhow!("Some acts were not processed"))
     }
 }
 
@@ -150,6 +162,64 @@ fn get_output(filename: &str, args: &HunLawArgs) -> Result<Box<dyn std::io::Writ
             println!("------ {filename} ------");
             Ok(Box::new(std::io::stdout()))
         }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct ActToMkIssueRecord {
+    #[serde(deserialize_with = "deserialize_from_str")]
+    mk_issue: MkIssue,
+    #[serde(deserialize_with = "deserialize_from_str")]
+    act: ActIdentifier,
+}
+
+fn deserialize_from_str<'de, T, D>(deserializer: D) -> Result<T, D::Error>
+where
+    D: Deserializer<'de>,
+    T: FromStr,
+    <T as FromStr>::Err: std::fmt::Display,
+{
+    let buf = String::deserialize(deserializer)?;
+    T::from_str(&buf).map_err(serde::de::Error::custom)
+}
+
+fn get_issues(args: &HunLawArgs) -> Result<(Vec<MkIssue>, Vec<ActIdentifier>)> {
+    if args.mk {
+        Ok((
+            args.ids
+                .iter()
+                .map(|s| MkIssue::from_str(s))
+                .collect::<Result<Vec<_>>>()?,
+            Vec::new(),
+        ))
+    } else {
+        let path = "./data/act_to_mk_issue.csv";
+        let acts = args
+            .ids
+            .iter()
+            .map(|s| ActIdentifier::from_str(s))
+            .collect::<Result<Vec<_>>>()?;
+        let records = csv::Reader::from_path(path)
+            .with_context(|| anyhow!("Error opening {path}"))?
+            .deserialize()
+            .collect::<csv::Result<Vec<ActToMkIssueRecord>>>()
+            .with_context(|| anyhow!("Error parsing {path}"))?;
+        let mut issues = BTreeSet::new();
+        for act in &acts {
+            let issue = records
+                .iter()
+                .find_map(|r| {
+                    if r.act == *act {
+                        Some(r.mk_issue.clone())
+                    } else {
+                        None
+                    }
+                })
+                .ok_or_else(|| anyhow!("Could not find {act} in {path}"))?;
+            issues.insert(issue);
+        }
+
+        Ok((issues.into_iter().collect(), acts))
     }
 }
 

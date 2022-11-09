@@ -23,7 +23,7 @@ use log::info;
 
 use crate::parser::pdf::CropBox;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct MkIssue {
     pub year: i64,
     pub issue: i64,
