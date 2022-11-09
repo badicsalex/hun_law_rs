@@ -1,0 +1,27 @@
+---
+text:      "Az Art. 131. § (4) bekezdésében a „nyugdíjjárulék-alapot” szövegrészek helyébe a „társadalombiztosítási járulék-alapot” szövegek lép."
+positions: '   <  > <                     >                                                                                                      '
+abbreviations:
+  Art.:
+    year: 2017
+    number: 150
+expected_references:
+- act:
+    year: 2017
+    number: 150
+- act:
+    year: 2017
+    number: 150
+  article: '131'
+  paragraph: '4'
+expected_special_phrase:
+  TextAmendment:
+    positions:
+    - act:
+        year: 2017
+        number: 150
+      article: '131'
+      paragraph: '4'
+    replacements:
+    - from: nyugdíjjárulék-alapot
+      to: társadalombiztosítási járulék-alapot

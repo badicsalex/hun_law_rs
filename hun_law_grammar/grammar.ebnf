@@ -374,23 +374,27 @@ TextAmendment =
 
 TextAmendmentPart =
     [Az] original_text:Quote
-    ("szövegrészek"| "szövegrész") ("helyébe" | "helyett")
+    TextAmendmentToken ("helyébe" | "helyett")
     [Az] replacement_text:Quote
     (
-        &ListSeparator | "szöveggel" | "szövegrész" | "szöveg"
+        &ListSeparator | TextAmendmentToken
     )
     ;
+
+@no_skip_ws
+TextAmendmentToken = "szöveg" {HunLower};
+
 # ============ ARTICLE TITLE AMENDMENT PARSING ==============
 @no_skip_ws
-ArticleTitleToken = "cím" {HunLower}+;
+ArticleTitleToken = ["szakasz"] "cím" {HunLower}+;
 ArticleTitleAmendment =
     AzAny ActTitle act_reference:ActReference
     article:SingleArticleReference
     ArticleTitleToken
     [Az] original_text:Quote
-    ("szövegrészek"| "szövegrész") ("helyébe" | "helyett")
+    TextAmendmentToken ("helyébe" | "helyett")
     [Az] replacement_text:Quote
-    ("szöveggel" | "szövegrész" | "szöveg")
+    TextAmendmentToken
     "lép" ["hatályba"] "."
     ;
 
@@ -400,7 +404,7 @@ Repeal =
     ("Nem lép hatályba" | "Hatályát veszti")
     Az ActTitle act_reference:ActReference
     [ references:Reference { ListSeparator references:Reference } [","] ]
-    { [Az] texts:Quote ["szövegrész"] [ListSeparator]}
+    { [Az] texts:Quote [TextAmendmentToken] [ListSeparator]}
     "."
     ;
 

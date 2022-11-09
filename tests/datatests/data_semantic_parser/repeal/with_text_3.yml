@@ -1,0 +1,22 @@
+---
+text:      "Hatályát veszti az adózás rendjéről szóló 2017. évi CL. törvény 84. § (1) bekezdésének az „a székhely szerint illetékes gazdasági kamarával, valamint a székhely szerint illetékes önkormányzati jegyzővel” szövegrésze."
+positions: '                                          <                   > <                    >                                                                                                                                  '
+expected_references:
+- act:
+    year: 2017
+    number: 150
+- act:
+    year: 2017
+    number: 150
+  article: '84'
+  paragraph: '1'
+expected_special_phrase:
+  Repeal:
+    positions:
+    - act:
+        year: 2017
+        number: 150
+      article: '84'
+      paragraph: '1'
+    texts:
+    - a székhely szerint illetékes gazdasági kamarával, valamint a székhely szerint illetékes önkormányzati jegyzővel

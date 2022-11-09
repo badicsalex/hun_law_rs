@@ -1,0 +1,25 @@
+---
+text:      "Az Art. 107. §-ának szakaszcímében az „Élelmiszer-értékesítést kezelőszemélyzet nélkül végző automataberendezés” szövegrész helyébe az „Az automataberendezés” szöveg lép."
+positions: '   <  > <         >                                                                                                                                                       '
+abbreviations:
+  Art.:
+    year: 2017
+    number: 150
+expected_references:
+- act:
+    year: 2017
+    number: 150
+- act:
+    year: 2017
+    number: 150
+  article: '107'
+expected_special_phrase:
+  ArticleTitleAmendment:
+    position:
+      act:
+        year: 2017
+        number: 150
+      article: '107'
+    replacement:
+      from: Élelmiszer-értékesítést kezelőszemélyzet nélkül végző automataberendezés
+      to: Az automataberendezés
