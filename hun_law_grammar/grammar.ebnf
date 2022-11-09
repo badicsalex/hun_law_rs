@@ -344,8 +344,7 @@ EnforcementDate =
     [
         [Dash] "a"
         exception_references:Reference
-        ("szerinti"|"foglaltak"|"foglalt"|"meghatározott")
-        ("kivétellel"|"kivételével"|"kivételekkel")
+        ExceptionJunk
         [Dash]
     ]
     [ references:Reference { ListSeparator (references:Reference | AttachmentReference) } ]
@@ -358,6 +357,9 @@ EnforcementDate =
     [inline_repeal:InlineRepeal]
     "."
     ;
+
+@no_skip_ws
+ExceptionJunk = ("szerinti"|"foglalt"|"foglalt"|){HunLower} " kivétel"{HunLower};
 
 # ============ TEXT AMENDMENT PARSING ==============
 @no_skip_ws
