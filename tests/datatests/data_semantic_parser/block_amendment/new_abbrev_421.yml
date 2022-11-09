@@ -1,0 +1,28 @@
+---
+text:      "A kötelező egészségbiztosítás ellátásairól szóló 1997. évi LXXXIII. törvény 19/A. § (1) és (1a) bekezdése helyébe a következő rendelkezések lépnek:"
+positions: '                                                 <                        > <         >    <            >                                          '
+expected_references:
+- act:
+    year: 1997
+    number: 83
+- act:
+    year: 1997
+    number: 83
+  article: 19/A
+  paragraph: '1'
+- act:
+    year: 1997
+    number: 83
+  article: 19/A
+  paragraph: 1a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 1997
+        number: 83
+      article: 19/A
+      paragraph:
+        start: '1'
+        end: 1a
+    pure_insertion: false
