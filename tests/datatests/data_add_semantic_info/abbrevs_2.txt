@@ -1,0 +1,11 @@
+            1. § (1) A Nemzeti Adó- és Vámhivatal személyi állományának jogállásáról szóló 2020. évi CXXX. törvény (a továbbiakban:
+                     NAV Szjtv.) 3. § (1) bekezdés 1. pontja helyébe a következő rendelkezés lép:
+                     (E törvény alkalmazásában:)
+                     „1. alacsonyabb besorolású munkakör: az a munkakör, amely a betöltött munkakörnél alacsonyabb besorolási
+                     osztályba vagy azonos besorolási osztály esetén alacsonyabb besorolási kategóriába tartozik, azonos besorolási
+                     kategória esetén központi szervnél betöltött munkakörhöz képest a területi szervnél betöltött munkakör, továbbá
+                     a vezetői munkakört betöltők esetében a nem vezetői munkakör vagy az alacsonyabb vezetői munkakör is;”
+                  (2) A NAV Szjtv. 3. § (1) bekezdés 4. pontja helyébe a következő rendelkezés lép:
+                     (E törvény alkalmazásában:)
+                     „4. azonos besorolású munkakör: az a munkakör, amely a betöltött munkakörrel azonos besorolási osztályba és
+                     besorolási kategóriába tartozik, továbbá azonos szervezeti szinten helyezkedik el;”

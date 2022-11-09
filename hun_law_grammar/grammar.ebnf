@@ -148,7 +148,7 @@ NumericSubpointSuffix = "alpont" {HunLower};
 Abbreviation = content:AbbreviationContent;
 @string
 @no_skip_ws
-AbbreviationContent = ["új "] HunUpper {HunLower}+ (['.'] [' '] ("Sztv." | "sztv." | "tv." | "Tv." | "vhr.") | '.');
+AbbreviationContent = ["új "] HunUpper {HunAny}+ (['.'] [' '] ( "Tv." | "vhr." | {!"tv." HunAny} "tv.") | '.');
 
 
 # No "@no_skip_ws" here or below, because we actually do want to trim the string
@@ -419,6 +419,8 @@ StructuralRepeal =
 AnyToken = Word | Number | char;
 
 @char
+HunAny = HunLower | HunUpper;
+@char
 HunLower = 'a'..'z' | 'é' | 'á' | 'ő' | 'ú' | 'ö' | 'ü' | 'ó' | 'í' | 'ű';
 @char
 HunUpper = 'A'..'Z' | 'É' | 'Á' | 'Ő' | 'Ú' | 'Ö' | 'Ü' | 'Ó' | 'Í' | 'Ű';
@@ -441,10 +443,10 @@ Roman = { RomanNumeralChar }+ ; # TODO: actual grammar for this.
 RomanNumeralChar = 'I' | 'V' | 'X' | 'L' | 'C' | 'D' | 'M' ;
 
 @no_skip_ws
-Word = {HunLower | HunUpper | '-'}+ ;
+Word = {HunAny | '-'}+ ;
 
 @no_skip_ws
-CapitalizedWord = {HunUpper | HunUpper | '-'}+ ;
+CapitalizedWord = HunUpper {HunAny | '-'} ;
 
 Date = year:Number "." month:Month day:Number ("-án" | "-jén" | "-én" | ". napján");
 

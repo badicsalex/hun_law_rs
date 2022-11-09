@@ -1,0 +1,87 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+contained_abbreviations:
+  NAV Szjtv.:
+    year: 2020
+    number: 130
+children:
+- Article:
+    identifier: '1'
+    children:
+    - identifier: '1'
+      body:
+        intro: 'A Nemzeti Adó- és Vámhivatal személyi állományának jogállásáról szóló 2020. évi CXXX. törvény (a továbbiakban: NAV Szjtv.) 3. § (1) bekezdés 1. pontja helyébe a következő rendelkezés lép:'
+        children:
+          QuotedBlock:
+          - intro: 'E törvény alkalmazásában:'
+            lines: []
+      semantic_info:
+        outgoing_references:
+        - start: 83
+          end: 109
+          reference:
+            act:
+              year: 2020
+              number: 130
+        - start: 140
+          end: 169
+          reference:
+            act:
+              year: 2020
+              number: 130
+            article: '3'
+            paragraph: '1'
+            point: '1'
+        new_abbreviations:
+          NAV Szjtv.:
+            year: 2020
+            number: 130
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 2020
+                number: 130
+              article: '3'
+              paragraph: '1'
+              point: '1'
+            pure_insertion: false
+    - identifier: '2'
+      body:
+        intro: 'A NAV Szjtv. 3. § (1) bekezdés 4. pontja helyébe a következő rendelkezés lép:'
+        children:
+          QuotedBlock:
+          - intro: 'E törvény alkalmazásában:'
+            lines: []
+      semantic_info:
+        outgoing_references:
+        - start: 2
+          end: 12
+          reference:
+            act:
+              year: 2020
+              number: 130
+        - start: 13
+          end: 42
+          reference:
+            act:
+              year: 2020
+              number: 130
+            article: '3'
+            paragraph: '1'
+            point: '4'
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 2020
+                number: 130
+              article: '3'
+              paragraph: '1'
+              point: '4'
+            pure_insertion: false
