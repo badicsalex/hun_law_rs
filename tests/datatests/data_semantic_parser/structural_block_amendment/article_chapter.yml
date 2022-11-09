@@ -1,0 +1,32 @@
+---
+text:      "Az Art. XI. fejezete a következő 113/A. és 113/B. §-sal egészül ki:"
+positions: '   <  >                          <    >    <          >            '
+abbreviations:
+  Art.:
+    year: 2017
+    number: 150
+expected_references:
+- act:
+    year: 2017
+    number: 150
+- act:
+    year: 2017
+    number: 150
+  article: 113/A
+- act:
+    year: 2017
+    number: 150
+  article: 113/B
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2017
+        number: 150
+      parent:
+        Chapter: '11'
+      structural_element:
+        Article:
+          start: 113/A
+          end: 113/B
+    pure_insertion: true

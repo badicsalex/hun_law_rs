@@ -1,0 +1,21 @@
+---
+text:      "A Btk. XXIII. fejezete a következő alcímmel egészül ki:"
+positions: '  <  >                                                 '
+abbreviations:
+  Btk.:
+    year: 2012
+    number: 100
+expected_references:
+- act:
+    year: 2012
+    number: 100
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 100
+      parent:
+        Chapter: '23'
+      structural_element: SubtitleUnknown
+    pure_insertion: true

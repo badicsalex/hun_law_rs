@@ -183,23 +183,23 @@ SubtitleSuffixPossessive = ("alcíme"| "alcím címe" ) !HunLower ;
 ChapterId = Roman [["/"] 'A'..'Z'];
 ChapterReference = id:ChapterId  "." ChapterSuffix;
 @no_skip_ws
-ChapterSuffix = "Fejezet" {HunLower};
+ChapterSuffix = ("fejezet" | "Fejezet") {HunLower};
 
 PartReference = id:HungarianOrdinalCapital PartSuffix;
 @no_skip_ws
-PartSuffix = "Rész" {HunLower};
+PartSuffix = ("rész" | "Rész") {HunLower};
 
 @string
 TitleId = Roman [["/"] 'A'..'Z'];
 TitleReference = id:TitleId "." TitleSuffix;
 @no_skip_ws
-TitleSuffix = "Cím" {HunLower};
+TitleSuffix = ("cím" | "Cím") {HunLower};
 
 @no_skip_ws
 TitleOnlyToken = "címe" ['i'];
 
 AnyStructuralReference =
-    [book_id:HungarianOrdinalCapital ("Könyv" | "KÖNYV")]
+    [book_id:HungarianOrdinalCapital ("könyv" | "Könyv" | "KÖNYV")]
     (
         reference:SubtitleReference |
         reference:SubtitleTitle |
