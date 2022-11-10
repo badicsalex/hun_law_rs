@@ -56,6 +56,9 @@ struct HunLawArgs {
     /// Interactively fix errors with a fixup editor, should they occur during parsing
     #[clap(long, short)]
     interactive: bool,
+    /// Force showing the fixup editor by emulating a failure. Use with -i
+    #[clap(long)]
+    force_fixup_editor: bool,
     /// Editor to use for interactive fixups
     #[clap(long, short, default_value = "nvim")]
     editor: String,
@@ -265,7 +268,12 @@ fn process_single_act(
 
     act.add_semantic_info()?;
     act.convert_block_amendments()?;
-    act.cli_output(args.width, args.output_format, output)
+    act.cli_output(args.width, args.output_format, output)?;
+    if args.force_fixup_editor {
+        Err(anyhow!("Forcing fixup editor because of parameters"))
+    } else {
+        Ok(())
+    }
 }
 
 fn confirm(s: &str) -> Result<bool> {
