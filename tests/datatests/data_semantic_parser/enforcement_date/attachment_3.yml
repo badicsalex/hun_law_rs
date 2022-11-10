@@ -1,0 +1,95 @@
+# Attachment references are not actually processed, but the rest has to be extracted
+text:      "Az 1. §–3. §, a 7. § (2) bekezdése, a 11. §, a 12. § 2–6. pontja, a 13. §–15. §, a 17. §–19. §, a 29. §, a 32. §–37. §, a 40. §, a 41. §, a 43. § 4. és 5. pontja, a 44. §, a 45. §, a 46. § 1., 2. és 4–6. pontja, a 47. §, az 51. §, az 53. §, az 57. §–61. §, a 65. §, az 1. és a 2. melléklet 2020. január 1-jén lép hatályba."
+positions: '   <       >    <                >    <   >    <               >    <         >    <         >    <   >    <         >    <   >    <   >    <      >    <       >    <   >    <   >    <      >  <>    <         >    <   >     <   >     <   >     <         >    <   >                                                          '
+expected_references:
+- article:
+    start: '1'
+    end: '3'
+- article: '7'
+  paragraph: '2'
+- article: '11'
+- article: '12'
+  point:
+    start: '2'
+    end: '6'
+- article:
+    start: '13'
+    end: '15'
+- article:
+    start: '17'
+    end: '19'
+- article: '29'
+- article:
+    start: '32'
+    end: '37'
+- article: '40'
+- article: '41'
+- article: '43'
+  point: '4'
+- article: '43'
+  point: '5'
+- article: '44'
+- article: '45'
+- article: '46'
+  point: '1'
+- article: '46'
+  point: '2'
+- article: '46'
+  point:
+    start: '4'
+    end: '6'
+- article: '47'
+- article: '51'
+- article: '53'
+- article:
+    start: '57'
+    end: '61'
+- article: '65'
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+    - article:
+        start: '1'
+        end: '3'
+    - article: '7'
+      paragraph: '2'
+    - article: '11'
+    - article: '12'
+      point:
+        start: '2'
+        end: '6'
+    - article:
+        start: '13'
+        end: '15'
+    - article:
+        start: '17'
+        end: '19'
+    - article: '29'
+    - article:
+        start: '32'
+        end: '37'
+    - article: '40'
+    - article: '41'
+    - article: '43'
+      point: '4'
+    - article: '43'
+      point: '5'
+    - article: '44'
+    - article: '45'
+    - article: '46'
+      point: '1'
+    - article: '46'
+      point: '2'
+    - article: '46'
+      point:
+        start: '4'
+        end: '6'
+    - article: '47'
+    - article: '51'
+    - article: '53'
+    - article:
+        start: '57'
+        end: '61'
+    - article: '65'
+    date:
+      Date: 2020-01-01

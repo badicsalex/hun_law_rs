@@ -211,7 +211,8 @@ AnyStructuralReference =
 
 # ============ Other references ============
 
-AttachmentReference = (start:Number Dash end:Number | id:Number) "." AttachmentSuffix;
+AttachmentReference = @:AttachmentReferencePart {ListSeparator @:AttachmentReferencePart} AttachmentSuffix;
+AttachmentReferencePart = (start:Number Dash end:Number | id:Number) ".";
 @no_skip_ws
 AttachmentSuffix = "melléklet" {HunLower};
 
