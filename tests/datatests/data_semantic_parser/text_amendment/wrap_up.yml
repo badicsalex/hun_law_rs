@@ -22,6 +22,7 @@ expected_special_phrase:
         number: 420
       article: 18/A
       paragraph: '3'
+      amended_part: WrapUpOnly
     replacements:
     - from: köteles a beszámoló könyvvizsgálatát elvégeztetni
       to: a beszámoló könyvvizsgálatát a számviteli szétválasztásra vonatkozóan elvégezteti

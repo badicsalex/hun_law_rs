@@ -144,18 +144,21 @@ expected_special_phrase:
         number: 420
       article: 17/C
       paragraph: '2'
+      amended_part: IntroOnly
     - act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
       point: a
+      amended_part: IntroOnly
     - act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
       point: b
+      amended_part: IntroOnly
     - act:
         year: 2042
         number: 420
@@ -181,6 +184,7 @@ expected_special_phrase:
       article: 17/C
       paragraph: '2'
       point: e
+      amended_part: IntroOnly
     - act:
         year: 2042
         number: 420

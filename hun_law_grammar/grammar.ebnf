@@ -363,12 +363,19 @@ EnforcementDate =
 ExceptionJunk = ("szerinti"|"foglalt"|"foglalt"|){HunLower} " kivétel"{HunLower};
 
 # ============ TEXT AMENDMENT PARSING ==============
-@no_skip_ws
-IntroWrapupToken = ("nyitó" | "záró" ) Whitespace "szövegrész" {HunLower};
+IntroToken = "nyitó";
+WrapUpToken = "záró";
+
+ReferenceWithIntroWrapup =
+    reference:Reference
+    [
+        (token:IntroToken | token:WrapUpToken)
+        TextAmendmentToken
+    ];
 
 TextAmendment =
     AzAny ActTitle act_reference:ActReference
-    { references:Reference [IntroWrapupToken] [ListSeparator] }+
+    { references:ReferenceWithIntroWrapup [ListSeparator] }+
     parts:TextAmendmentPart { ListSeparator parts:TextAmendmentPart} [","]
     "lép" ["hatályba"] "."
     ;

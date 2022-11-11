@@ -240,6 +240,10 @@ impl<'a> OutgoingReferenceBuilder<'a> {
     pub fn get_result(self) -> Vec<OutgoingReference> {
         self.result
     }
+
+    pub fn take_result(&mut self) -> Vec<OutgoingReference> {
+        std::mem::take(&mut self.result)
+    }
 }
 
 pub trait FeedReferenceBuilder<T> {
@@ -332,6 +336,21 @@ impl FeedReferenceBuilder<InsertionReference> for OutgoingReferenceBuilder<'_> {
         self.end = element.position.end;
         self.record_one()?;
         Ok(())
+    }
+}
+
+impl FeedReferenceBuilder<Vec<ReferenceWithIntroWrapup>> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &Vec<ReferenceWithIntroWrapup>) -> Result<()> {
+        for part in element {
+            self.feed(part)?
+        }
+        Ok(())
+    }
+}
+
+impl FeedReferenceBuilder<ReferenceWithIntroWrapup> for OutgoingReferenceBuilder<'_> {
+    fn feed(&mut self, element: &ReferenceWithIntroWrapup) -> Result<()> {
+        self.feed(&element.reference)
     }
 }
 

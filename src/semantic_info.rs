@@ -87,8 +87,24 @@ pub struct BlockAmendment {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct TextAmendment {
-    pub positions: Vec<Reference>,
+    pub positions: Vec<TextAmendmentReference>,
     pub replacements: Vec<TextAmendmentReplacement>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct TextAmendmentReference {
+    #[serde(flatten)]
+    pub reference: Reference,
+    #[serde(default, skip_serializing_if = "TextAmendmentSAEPart::is_default")]
+    pub amended_part: TextAmendmentSAEPart,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum TextAmendmentSAEPart {
+    #[default]
+    All,
+    IntroOnly,
+    WrapUpOnly,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -133,4 +149,10 @@ pub struct StructuralBlockAmendment {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct StructuralRepeal {
     pub position: StructuralReference,
+}
+
+impl TextAmendmentSAEPart {
+    pub fn is_default(&self) -> bool {
+        *self == TextAmendmentSAEPart::All
+    }
 }
