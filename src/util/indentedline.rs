@@ -203,7 +203,15 @@ impl IndentedLine {
 
     /// Appends this line to the string, using a space if necessary
     pub fn append_to(&self, s: &mut String) {
-        if !self.is_empty() && !s.is_empty() && !s.ends_with('-') {
+        let with_space = if self.is_empty() || s.is_empty() {
+            false
+        } else if s.ends_with('-') {
+            self.content().starts_with("és ") || self.content().starts_with("vagy ")
+        } else {
+            true
+        };
+
+        if with_space {
             s.push(' ');
         }
         s.push_str(self.content());
@@ -641,5 +649,23 @@ mod tests {
         assert_eq!(line.indent_at(len + 100), 27.5);
         assert_eq!(line.indent_at(-len), 5.4);
         assert_eq!(line.indent_at(-len - 100), 5.4);
+    }
+
+    #[test]
+    fn test_append_to() {
+        assert_eq!(
+            IndentedLine::join(&[
+                IndentedLine::from_test_str("megkezdésének napján a munkaerő-"),
+                IndentedLine::from_test_str("kölcsönzési szerződéssel érintett"),
+            ]),
+            "megkezdésének napján a munkaerő-kölcsönzési szerződéssel érintett"
+        );
+        assert_eq!(
+            IndentedLine::join(&[
+                IndentedLine::from_test_str("ezzel teljesíti az állami adó-"),
+                IndentedLine::from_test_str("és vámhatósághoz történő"),
+            ]),
+            "ezzel teljesíti az állami adó- és vámhatósághoz történő"
+        );
     }
 }
