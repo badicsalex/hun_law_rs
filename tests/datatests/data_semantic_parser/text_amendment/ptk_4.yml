@@ -12,12 +12,11 @@ expected_references:
     paragraph: "2"
 expected_special_phrase:
   TextAmendment:
-    positions:
-      - act:
-          year: 2013
-          number: 5
-        article: "3:88"
-        paragraph: "2"
-    replacements:
-      - from: "tárgyévi adózott eredménye, illetve"
-        to: "az előző üzleti évi adózott eredménnyel kiegészített"
+  - reference:
+      act:
+        year: 2013
+        number: 5
+      article: 3:88
+      paragraph: '2'
+    from: tárgyévi adózott eredménye, illetve
+    to: az előző üzleti évi adózott eredménnyel kiegészített

@@ -68,7 +68,7 @@ pub enum SpecialPhrase {
     BlockAmendment(BlockAmendment),
     EnforcementDate(EnforcementDate),
     Repeal(Repeal),
-    TextAmendment(TextAmendment),
+    TextAmendment(Vec<TextAmendment>),
     StructuralBlockAmendment(StructuralBlockAmendment),
     StructuralRepeal(StructuralRepeal),
 }
@@ -76,7 +76,8 @@ pub enum SpecialPhrase {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ArticleTitleAmendment {
     pub position: Reference,
-    pub replacement: TextAmendmentReplacement,
+    pub from: String,
+    pub to: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -87,16 +88,11 @@ pub struct BlockAmendment {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct TextAmendment {
-    pub positions: Vec<TextAmendmentReference>,
-    pub replacements: Vec<TextAmendmentReplacement>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct TextAmendmentReference {
-    #[serde(flatten)]
     pub reference: Reference,
     #[serde(default, skip_serializing_if = "TextAmendmentSAEPart::is_default")]
     pub amended_part: TextAmendmentSAEPart,
+    pub from: String,
+    pub to: String,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -105,12 +101,6 @@ pub enum TextAmendmentSAEPart {
     All,
     IntroOnly,
     WrapUpOnly,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct TextAmendmentReplacement {
-    pub from: String,
-    pub to: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -136,8 +126,6 @@ pub enum EnforcementDateType {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Repeal {
     pub positions: Vec<Reference>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub texts: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

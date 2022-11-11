@@ -16,13 +16,12 @@ expected_references:
   paragraph: '3'
 expected_special_phrase:
   TextAmendment:
-    positions:
-    - act:
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 18/A
       paragraph: '3'
-      amended_part: WrapUpOnly
-    replacements:
-    - from: köteles a beszámoló könyvvizsgálatát elvégeztetni
-      to: a beszámoló könyvvizsgálatát a számviteli szétválasztásra vonatkozóan elvégezteti
+    amended_part: WrapUpOnly
+    from: köteles a beszámoló könyvvizsgálatát elvégeztetni
+    to: a beszámoló könyvvizsgálatát a számviteli szétválasztásra vonatkozóan elvégezteti

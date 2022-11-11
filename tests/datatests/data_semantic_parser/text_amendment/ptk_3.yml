@@ -23,19 +23,21 @@ expected_references:
     point: "b"
 expected_special_phrase:
   TextAmendment:
-    positions:
-      - act:
-          year: 2013
-          number: 5
-        article: "3:186"
-        paragraph: "1"
-        point: "b"
-      - act:
-          year: 2013
-          number: 5
-        article: "3:263"
-        paragraph: "1"
-        point: "b"
-    replacements:
-      - from: "az utolsó beszámoló szerinti üzleti év könyveinek lezárása óta kimutatott, az előző üzleti évi"
-        to: "a közbenső mérlegben kimutatott"
+  - reference:
+      act:
+        year: 2013
+        number: 5
+      article: 3:186
+      paragraph: '1'
+      point: b
+    from: az utolsó beszámoló szerinti üzleti év könyveinek lezárása óta kimutatott, az előző üzleti évi
+    to: a közbenső mérlegben kimutatott
+  - reference:
+      act:
+        year: 2013
+        number: 5
+      article: 3:263
+      paragraph: '1'
+      point: b
+    from: az utolsó beszámoló szerinti üzleti év könyveinek lezárása óta kimutatott, az előző üzleti évi
+    to: a közbenső mérlegben kimutatott

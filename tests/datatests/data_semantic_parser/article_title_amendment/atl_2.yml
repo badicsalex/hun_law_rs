@@ -20,7 +20,6 @@ expected_special_phrase:
         year: 2013
         number: 5
       article: "5:99"
-    replacement:
-      from: átruházása
-      to: átruházása és megterhelése
+    from: átruházása
+    to: átruházása és megterhelése
 

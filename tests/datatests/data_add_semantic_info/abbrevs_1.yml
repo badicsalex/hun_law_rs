@@ -80,15 +80,14 @@ children:
                   paragraph: "7"
             special_phrase:
               TextAmendment:
-                positions:
-                  - act:
-                      year: 2020
-                      number: 3
-                    article: "12"
-                    paragraph: "7"
-                replacements:
-                  - from: fontatlan
-                    to: nem fontos
+              - reference:
+                  act:
+                    year: 2020
+                    number: 3
+                  article: "12"
+                  paragraph: "7"
+                from: fontatlan
+                to: nem fontos
   - Article:
       identifier: "4"
       children:
@@ -148,6 +147,5 @@ children:
                     year: 2020
                     number: 3
                   article: "12"
-                replacement:
-                  from: röv.
-                  to: rövidítés
+                from: röv.
+                to: rövidítés

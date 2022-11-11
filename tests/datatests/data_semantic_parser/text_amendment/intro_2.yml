@@ -123,106 +123,157 @@ expected_references:
   paragraph: '4'
 expected_special_phrase:
   TextAmendment:
-    positions:
-    - act:
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 11/G
       paragraph: '4'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: '15'
       paragraph: '8'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: '17'
       paragraph: '2'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
-      amended_part: IntroOnly
-    - act:
+    amended_part: IntroOnly
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
       point: a
-      amended_part: IntroOnly
-    - act:
+    amended_part: IntroOnly
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
       point: b
-      amended_part: IntroOnly
-    - act:
+    amended_part: IntroOnly
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
       point: b
       subpoint: ba
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
       point: c
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
       point: d
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/C
       paragraph: '2'
       point: e
-      amended_part: IntroOnly
-    - act:
+    amended_part: IntroOnly
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/D
       paragraph: '1'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/D
       paragraph: '2'
       point: a
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/D
       paragraph: '6'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/E
       paragraph: '7'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/H
       paragraph: '5'
       point: b
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/S
       paragraph: '6'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/S
       paragraph: '9'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/S
@@ -230,16 +281,21 @@ expected_special_phrase:
       point:
         start: a
         end: c
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/T
       paragraph: '1'
-    - act:
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet
+  - reference:
+      act:
         year: 2042
         number: 420
       article: 17/T
       paragraph: '4'
-    replacements:
-    - from: a szövetkezeti hitelintézet
-      to: az integrált hitelintézet
+    from: a szövetkezeti hitelintézet
+    to: az integrált hitelintézet

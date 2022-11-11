@@ -16,12 +16,12 @@ expected_references:
   paragraph: '4'
 expected_special_phrase:
   TextAmendment:
-    positions:
-    - act:
+  - reference:
+      act:
         year: 2017
         number: 150
       article: '131'
       paragraph: '4'
     replacements:
-    - from: nyugdíjjárulék-alapot
-      to: társadalombiztosítási járulék-alapot
+    from: nyugdíjjárulék-alapot
+    to: társadalombiztosítási járulék-alapot

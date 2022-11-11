@@ -16,14 +16,19 @@ expected_references:
     paragraph: "8"
 expected_special_phrase:
   TextAmendment:
-    positions:
-      - act:
-          year: 2013
-          number: 240
-        article: "12"
-        paragraph: "8"
-    replacements:
-      - from: "(3)–(5a) bekezdés"
-        to: "(3)–(5a) és (5c) bekezdés"
-      - from: "(4)–(5a) bekezdés"
-        to: "(4)–(5a) és (5c) bekezdés"
+  - reference:
+      act:
+        year: 2013
+        number: 240
+      article: '12'
+      paragraph: '8'
+    from: (3)–(5a) bekezdés
+    to: (3)–(5a) és (5c) bekezdés
+  - reference:
+      act:
+        year: 2013
+        number: 240
+      article: '12'
+      paragraph: '8'
+    from: (4)–(5a) bekezdés
+    to: (4)–(5a) és (5c) bekezdés

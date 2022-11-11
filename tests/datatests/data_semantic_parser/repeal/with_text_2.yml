@@ -15,12 +15,12 @@ expected_references:
     article: 116/B
     paragraph: "1"
 expected_special_phrase:
-  Repeal:
-    positions:
-      - act:
-          year: 2016
-          number: 68
-        article: 116/B
-        paragraph: "1"
-    texts:
-      - ", jogi személyiség nélküli gazdasági társaság"
+  TextAmendment:
+  - reference:
+      act:
+        year: 2016
+        number: 68
+      article: 116/B
+      paragraph: '1'
+    from: ', jogi személyiség nélküli gazdasági társaság'
+    to: ''

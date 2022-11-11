@@ -16,12 +16,11 @@ expected_references:
   paragraph: '3'
 expected_special_phrase:
   TextAmendment:
-    positions:
-    - act:
+  - reference:
+      act:
         year: 2017
         number: 90
       article: '13'
       paragraph: '3'
-    replacements:
-    - from: ügyszakának kijelölt bírája
-      to: ügyszakának bírája
+    from: ügyszakának kijelölt bírája
+    to: ügyszakának bírája

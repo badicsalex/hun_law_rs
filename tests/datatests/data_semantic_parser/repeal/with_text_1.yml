@@ -15,12 +15,12 @@ expected_references:
     article: "5:96"
     paragraph: "3"
 expected_special_phrase:
-  Repeal:
-    positions:
-      - act:
-          year: 2013
-          number: 5
-        article: "5:96"
-        paragraph: "3"
-    texts:
-      - "A zálogjogosulti bizományos kérheti, hogy az ingatlan-nyilvántartás, a lajstrom vagy a hitelbiztosítéki nyilvántartás zálogjogosultként feltüntesse."
+  TextAmendment:
+  - reference:
+      act:
+        year: 2013
+        number: 5
+      article: 5:96
+      paragraph: '3'
+    from: A zálogjogosulti bizományos kérheti, hogy az ingatlan-nyilvántartás, a lajstrom vagy a hitelbiztosítéki nyilvántartás zálogjogosultként feltüntesse.
+    to: ''

@@ -21,19 +21,35 @@ expected_references:
     paragraph: "1"
 expected_special_phrase:
   TextAmendment:
-    positions:
-      - act:
-          year: 2012
-          number: 100
-        article: "294"
-        paragraph: "1"
-      - act:
-          year: 2012
-          number: 100
-        article: "296"
-        paragraph: "1"
-    replacements:
-      - from: "előnyt kér, az előnyt"
-        to: "jogtalan előnyt kér, a jogtalan előnyt"
-      - from: "előny kérőjével"
-        to: "jogtalan előny kérőjével"
+  - reference:
+      act:
+        year: 2012
+        number: 100
+      article: '294'
+      paragraph: '1'
+    from: előnyt kér, az előnyt
+    to: jogtalan előnyt kér, a jogtalan előnyt
+  - reference:
+      act:
+        year: 2012
+        number: 100
+      article: '294'
+      paragraph: '1'
+    from: előny kérőjével
+    to: jogtalan előny kérőjével
+  - reference:
+      act:
+        year: 2012
+        number: 100
+      article: '296'
+      paragraph: '1'
+    from: előnyt kér, az előnyt
+    to: jogtalan előnyt kér, a jogtalan előnyt
+  - reference:
+      act:
+        year: 2012
+        number: 100
+      article: '296'
+      paragraph: '1'
+    from: előny kérőjével
+    to: jogtalan előny kérőjével

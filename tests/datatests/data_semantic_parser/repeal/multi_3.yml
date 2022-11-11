@@ -16,14 +16,22 @@ expected_references:
     paragraph: "3"
     point: a
 expected_special_phrase:
-  Repeal:
-    positions:
-      - act:
-          year: 1991
-          number: 4
-        article: "39"
-        paragraph: "3"
-        point: a
-    texts:
-      - "a pályakezdők munkanélküli segélye, az előnyugdíj"
-      - az álláskeresést ösztönző juttatás
+  TextAmendment:
+  - reference:
+      act:
+        year: 1991
+        number: 4
+      article: '39'
+      paragraph: '3'
+      point: a
+    from: a pályakezdők munkanélküli segélye, az előnyugdíj
+    to: ''
+  - reference:
+      act:
+        year: 1991
+        number: 4
+      article: '39'
+      paragraph: '3'
+      point: a
+    from: az álláskeresést ösztönző juttatás
+    to: ''

@@ -16,12 +16,11 @@ expected_references:
     paragraph: "3"
 expected_special_phrase:
   TextAmendment:
-    positions:
-      - act:
-          year: 2013
-          number: 5
-        article: "7:43"
-        paragraph: "3"
-    replacements:
-      - from: "Semmis"
-        to: "Érvénytelen"
+  - reference:
+      act:
+        year: 2013
+        number: 5
+      article: 7:43
+      paragraph: '3'
+    from: Semmis
+    to: Érvénytelen

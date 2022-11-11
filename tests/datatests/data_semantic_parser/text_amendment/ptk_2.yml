@@ -16,14 +16,19 @@ expected_references:
     paragraph: "2"
 expected_special_phrase:
   TextAmendment:
-    positions:
-      - act:
-          year: 2013
-          number: 5
-        article: "4:129"
-        paragraph: "2"
-    replacements:
-      - from: "átmeneti nevelésbe vett vagy tartós nevelésbe vett"
-        to: "nevelésbe vett"
-      - from: "a gyermeket a tartós nevelésbe vételt vagy az örökbefogadhatóvá nyilvánítást követően"
-        to: "a nevelésbe vett, örökbefogadható gyermeket"
+  - reference:
+      act:
+        year: 2013
+        number: 5
+      article: 4:129
+      paragraph: '2'
+    from: átmeneti nevelésbe vett vagy tartós nevelésbe vett
+    to: nevelésbe vett
+  - reference:
+      act:
+        year: 2013
+        number: 5
+      article: 4:129
+      paragraph: '2'
+    from: a gyermeket a tartós nevelésbe vételt vagy az örökbefogadhatóvá nyilvánítást követően
+    to: a nevelésbe vett, örökbefogadható gyermeket

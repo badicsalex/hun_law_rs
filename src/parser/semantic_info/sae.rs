@@ -217,9 +217,7 @@ pub fn extract_special_phrase(
         hun_law_grammar::Root_content::EnforcementDate(x) => {
             Some(convert_enforcement_date(abbreviation_cache, x)?.into())
         }
-        hun_law_grammar::Root_content::Repeal(x) => {
-            Some(convert_repeal(abbreviation_cache, x)?.into())
-        }
+        hun_law_grammar::Root_content::Repeal(x) => Some(convert_repeal(abbreviation_cache, x)?),
         hun_law_grammar::Root_content::StructuralRepeal(x) => {
             Some(convert_structural_repeal(abbreviation_cache, x)?.into())
         }

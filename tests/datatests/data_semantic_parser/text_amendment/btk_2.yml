@@ -31,27 +31,35 @@ expected_references:
   paragraph: '4'
 expected_special_phrase:
   TextAmendment:
-    positions:
-    - act:
+  - reference:
+      act:
         year: 2012
         number: 100
       article: '38'
       paragraph: '3'
-    - act:
+    from: ítéletében
+    to: az ügydöntő határozatában
+  - reference:
+      act:
         year: 2012
         number: 100
       article: '39'
       paragraph: '1'
-    - act:
+    from: ítéletében
+    to: az ügydöntő határozatában
+  - reference:
+      act:
         year: 2012
         number: 100
       article: '47'
       paragraph: '3'
-    - act:
+    from: ítéletében
+    to: az ügydöntő határozatában
+  - reference:
+      act:
         year: 2012
         number: 100
       article: '50'
       paragraph: '4'
-    replacements:
-    - from: ítéletében
-      to: az ügydöntő határozatában
+    from: ítéletében
+    to: az ügydöntő határozatában

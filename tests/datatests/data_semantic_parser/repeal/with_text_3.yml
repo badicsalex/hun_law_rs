@@ -11,12 +11,12 @@ expected_references:
   article: '84'
   paragraph: '1'
 expected_special_phrase:
-  Repeal:
-    positions:
-    - act:
+  TextAmendment:
+  - reference:
+      act:
         year: 2017
         number: 150
       article: '84'
       paragraph: '1'
-    texts:
-    - a székhely szerint illetékes gazdasági kamarával, valamint a székhely szerint illetékes önkormányzati jegyzővel
+    from: a székhely szerint illetékes gazdasági kamarával, valamint a székhely szerint illetékes önkormányzati jegyzővel
+    to: ''

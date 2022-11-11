@@ -20,6 +20,5 @@ expected_special_phrase:
         year: 2017
         number: 150
       article: '107'
-    replacement:
-      from: Élelmiszer-értékesítést kezelőszemélyzet nélkül végző automataberendezés
-      to: Az automataberendezés
+    from: Élelmiszer-értékesítést kezelőszemélyzet nélkül végző automataberendezés
+    to: Az automataberendezés

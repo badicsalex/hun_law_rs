@@ -16,12 +16,11 @@ expected_references:
     paragraph: "7"
 expected_special_phrase:
   TextAmendment:
-    positions:
-      - act:
-          year: 2013
-          number: 240
-        article: "12"
-        paragraph: "7"
-    replacements:
-      - from: "(4)–(5a) bekezdésben"
-        to: "(4)–(5a) és (5c) bekezdésben"
+  - reference:
+      act:
+        year: 2013
+        number: 240
+      article: '12'
+      paragraph: '7'
+    from: (4)–(5a) bekezdésben
+    to: (4)–(5a) és (5c) bekezdésben

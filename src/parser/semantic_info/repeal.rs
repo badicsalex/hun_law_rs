@@ -18,11 +18,36 @@ use anyhow::Result;
 use hun_law_grammar::*;
 
 use super::reference::convert_act_reference;
+use super::text_amendment::convert_text_amendment;
 use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
 use crate::reference::{self, structural::StructuralReference};
 use crate::semantic_info;
 
 pub fn convert_repeal(
+    abbreviation_cache: &AbbreviationCache,
+    elem: &Repeal,
+) -> Result<semantic_info::SpecialPhrase> {
+    if elem.texts.is_empty() {
+        Ok(convert_element_repeal(abbreviation_cache, elem)?.into())
+    } else {
+        // Text repeals are jsut spicy text amendments
+        let fake_ta = TextAmendment {
+            act_reference: elem.act_reference.clone(),
+            references: elem.references.clone(),
+            parts: elem
+                .texts
+                .iter()
+                .map(|p| TextAmendmentPart {
+                    from: p.clone(),
+                    to: String::new(),
+                })
+                .collect(),
+        };
+        Ok(convert_text_amendment(abbreviation_cache, &fake_ta)?.into())
+    }
+}
+
+pub fn convert_element_repeal(
     abbreviation_cache: &AbbreviationCache,
     elem: &Repeal,
 ) -> Result<semantic_info::Repeal> {
@@ -37,10 +62,7 @@ pub fn convert_repeal(
         positions.push(act_id.into());
     }
 
-    Ok(semantic_info::Repeal {
-        positions,
-        texts: elem.texts.clone(),
-    })
+    Ok(semantic_info::Repeal { positions })
 }
 
 pub fn convert_structural_repeal(

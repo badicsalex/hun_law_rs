@@ -19,42 +19,33 @@ use hun_law_grammar::*;
 
 use super::abbreviation::AbbreviationCache;
 use super::reference::{FeedReferenceBuilder, OutgoingReferenceBuilder};
-use crate::semantic_info::TextAmendmentReference;
+use crate::semantic_info::OutgoingReference;
 use crate::semantic_info::{self, TextAmendmentSAEPart};
 
 pub fn convert_text_amendment(
     abbreviation_cache: &AbbreviationCache,
     elem: &TextAmendment,
-) -> Result<semantic_info::TextAmendment> {
-    let mut positions = Vec::new();
+) -> Result<Vec<semantic_info::TextAmendment>> {
+    let mut result = Vec::new();
     let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
     ref_builder.feed(&elem.act_reference)?;
     for ta_reference in &elem.references {
         ref_builder.feed(&ta_reference.reference)?;
-        for reference in ref_builder.take_result() {
-            if !reference.reference.is_act_only() {
-                positions.push(TextAmendmentReference {
-                    reference: reference.reference,
-                    amended_part: convert_intro_wrapup_token(&ta_reference.token),
-                })
+        for OutgoingReference { reference, .. } in ref_builder.take_result() {
+            if !reference.is_act_only() {
+                for TextAmendmentPart { from, to } in &elem.parts {
+                    result.push(semantic_info::TextAmendment {
+                        reference: reference.clone(),
+                        amended_part: convert_intro_wrapup_token(&ta_reference.token),
+                        from: from.clone(),
+                        to: to.clone(),
+                    })
+                }
             }
         }
     }
-    let replacements = elem.parts.iter().map(From::from).collect();
 
-    Ok(semantic_info::TextAmendment {
-        positions,
-        replacements,
-    })
-}
-
-impl From<&TextAmendmentPart> for semantic_info::TextAmendmentReplacement {
-    fn from(tap: &TextAmendmentPart) -> Self {
-        Self {
-            from: tap.original_text.clone(),
-            to: tap.replacement_text.clone(),
-        }
-    }
+    Ok(result)
 }
 
 fn convert_intro_wrapup_token(

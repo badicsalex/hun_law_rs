@@ -15,12 +15,11 @@ expected_references:
   article: '16'
 expected_special_phrase:
   TextAmendment:
-    positions:
-    - act:
+  - reference:
+      act:
         year: 2042
         number: 420
       article: '16'
-      amended_part: IntroOnly
-    replacements:
-    - from: nyolc évig
-      to: annak keletkezésétől számított nyolcadik év utolsó napjáig
+    amended_part: IntroOnly
+    from: nyolc évig
+    to: annak keletkezésétől számított nyolcadik év utolsó napjáig

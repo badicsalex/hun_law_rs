@@ -15,11 +15,10 @@ expected_references:
     article: "29"
 expected_special_phrase:
   TextAmendment:
-    positions:
-      - act:
-          year: 2069
-          number: 420
-        article: "29"
-    replacements:
-      - from: "idézőjelek„ idéző„j”elekben ”jellegű"
-        to: "„na ne”"
+  - reference:
+      act:
+        year: 2069
+        number: 420
+      article: '29'
+    from: idézőjelek„ idéző„j”elekben ”jellegű
+    to: „na ne”

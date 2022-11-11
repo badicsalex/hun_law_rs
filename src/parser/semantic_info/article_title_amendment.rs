@@ -42,9 +42,7 @@ pub fn convert_article_title_amendment(
 
     Ok(semantic_info::ArticleTitleAmendment {
         position,
-        replacement: semantic_info::TextAmendmentReplacement {
-            from: elem.original_text.clone(),
-            to: elem.replacement_text.clone(),
-        },
+        from: elem.from.clone(),
+        to: elem.to.clone(),
     })
 }
