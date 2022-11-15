@@ -1,0 +1,11 @@
+---
+text:      "Az Art. 1. melléklet 8. pontjában a „munkaügyi hatósággal” szövegrész helyébe a „foglalkoztatás-felügyeleti hatósággal” szöveg lép."
+positions: '   <  >                                                                                                                            '
+abbreviations:
+  Art.:
+    year: 2017
+    number: 150
+expected_references:
+- act:
+    year: 2017
+    number: 150

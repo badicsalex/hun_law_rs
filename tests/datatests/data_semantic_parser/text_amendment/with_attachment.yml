@@ -1,0 +1,26 @@
+---
+text:      "Az Art. 131. § (19) bekezdésében és 1. melléklet 8. pontjában a „munkaügyi hatóságnak” szövegrész helyébe a „foglalkoztatás-felügyeleti hatóságnak” szöveg lép."
+positions: '   <  > <                      >                                                                                                                               '
+abbreviations:
+  Art.:
+    year: 2017
+    number: 150
+expected_references:
+- act:
+    year: 2017
+    number: 150
+- act:
+    year: 2017
+    number: 150
+  article: '131'
+  paragraph: '19'
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      act:
+        year: 2017
+        number: 150
+      article: '131'
+      paragraph: '19'
+    from: munkaügyi hatóságnak
+    to: foglalkoztatás-felügyeleti hatóságnak

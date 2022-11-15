@@ -36,6 +36,7 @@ ListOfSimpleExpressions = {contents:AnySimpleExpression}+;
 AnySimpleExpression =
     @:Quote |
     @:CompoundReference |
+    @:AttachmentReference |
     @:AnyToken ;
 
 CompoundReference =
@@ -211,7 +212,10 @@ AnyStructuralReference =
 
 # ============ Other references ============
 
-AttachmentReference = @:AttachmentReferencePart {ListSeparator @:AttachmentReferencePart} AttachmentSuffix;
+AttachmentReference =
+    attachment:AttachmentReferencePart {ListSeparator attachment:AttachmentReferencePart} AttachmentSuffix
+    [point:NumericPointReference]
+    ;
 AttachmentReferencePart = (start:Number Dash end:Number | id:Number) ".";
 @no_skip_ws
 AttachmentSuffix = "melléklet" {HunLower};
@@ -375,7 +379,8 @@ ReferenceWithIntroWrapup =
 
 TextAmendment =
     AzAny ActTitle act_reference:ActReference
-    { references:ReferenceWithIntroWrapup [ListSeparator] }+
+    references:ReferenceWithIntroWrapup [ListSeparator]
+    { (references:ReferenceWithIntroWrapup | AttachmentReference) [ListSeparator] }
     parts:TextAmendmentPart { ListSeparator parts:TextAmendmentPart} [","]
     "lép" ["hatályba"] "."
     ;
