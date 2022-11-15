@@ -500,9 +500,14 @@ impl StructuralBlockAmendment {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct LastChange {
     pub date: NaiveDate,
-    /// The act part that casued the change. None means
-    /// something automatic (like auto-repealing amendments)
-    pub cause: Option<Reference>,
+    pub cause: ChangeCause,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ChangeCause {
+    Amendment(Reference),
+    AutoRepeal,
+    Other(String),
 }
 
 macro_rules! simple_dbg_ctx {
