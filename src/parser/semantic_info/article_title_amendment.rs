@@ -46,3 +46,28 @@ pub fn convert_article_title_amendment(
         to: elem.to.clone(),
     })
 }
+
+pub fn convert_article_title_repeal(
+    abbreviation_cache: &AbbreviationCache,
+    elem: &ArticleTitleRepeal,
+) -> Result<semantic_info::ArticleTitleAmendment> {
+    let mut positions_iter = elem
+        .get_outgoing_references(abbreviation_cache)?
+        .into_iter()
+        .map(reference::Reference::from)
+        .filter(|r| !r.is_act_only());
+
+    let position = positions_iter
+        .next()
+        .ok_or_else(|| anyhow!("Too many references found in article titel amendment"))?;
+    ensure!(
+        positions_iter.next().is_none(),
+        "Too many references found in article title amendment"
+    );
+
+    Ok(semantic_info::ArticleTitleAmendment {
+        position,
+        from: elem.text.clone(),
+        to: String::new(),
+    })
+}

@@ -23,6 +23,7 @@ Root =
     content:BlockAmendmentStructural $ |
     content:TextAmendment $ |
     content:ArticleTitleAmendment $ |
+    content:ArticleTitleRepeal $ |
     content:EnforcementDate $ |
     content:Repeal $ |
     content:StructuralRepeal $ |
@@ -409,6 +410,15 @@ ArticleTitleAmendment =
     [Az] to:Quote
     TextAmendmentToken
     "lép" ["hatályba"] "."
+    ;
+ArticleTitleRepeal =
+    ("Nem lép hatályba" | "Hatályát veszti")
+    AzAny ActTitle act_reference:ActReference
+    article:SingleArticleReference
+    ArticleTitleToken
+    [Az] text:Quote
+    TextAmendmentToken
+    "."
     ;
 
 # ============ REPEAL PARSING ==============

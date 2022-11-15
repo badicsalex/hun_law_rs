@@ -44,6 +44,7 @@ impl GetOutgoingReferences for Root {
     ) -> Result<Vec<OutgoingReference>> {
         match &self.content {
             Root_content::ArticleTitleAmendment(c) => c.get_outgoing_references(abbreviation_cache),
+            Root_content::ArticleTitleRepeal(c) => c.get_outgoing_references(abbreviation_cache),
             Root_content::BlockAmendment(c) => c.get_outgoing_references(abbreviation_cache),
             Root_content::BlockAmendmentStructural(c) => {
                 c.get_outgoing_references(abbreviation_cache)
@@ -63,6 +64,18 @@ impl GetOutgoingReferences for Root {
 }
 
 impl GetOutgoingReferences for ArticleTitleAmendment {
+    fn get_outgoing_references(
+        &self,
+        abbreviation_cache: &AbbreviationCache,
+    ) -> Result<Vec<OutgoingReference>> {
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&self.act_reference)?;
+        ref_builder.feed(&self.article)?;
+        Ok(ref_builder.get_result())
+    }
+}
+
+impl GetOutgoingReferences for ArticleTitleRepeal {
     fn get_outgoing_references(
         &self,
         abbreviation_cache: &AbbreviationCache,

@@ -1,0 +1,24 @@
+---
+text:      "Hatályát veszti az Art. 165. § szakaszcímében az „és az előzetes konzultáció díja” szövegrész."
+positions: '                   <  > <    >                                                                '
+abbreviations:
+  Art.:
+    year: 2017
+    number: 150
+expected_references:
+- act:
+    year: 2017
+    number: 150
+- act:
+    year: 2017
+    number: 150
+  article: '165'
+expected_special_phrase:
+  ArticleTitleAmendment:
+    position:
+      act:
+        year: 2017
+        number: 150
+      article: '165'
+    from: és az előzetes konzultáció díja
+    to: ''

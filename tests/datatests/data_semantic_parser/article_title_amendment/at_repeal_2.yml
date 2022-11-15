@@ -1,0 +1,24 @@
+---
+text:      "Hatályát veszti az Art. 235. § szakaszcímében az „élelmiszer-értékesítést kezelőszemélyzet nélkül végző” szövegrész."
+positions: '                   <  > <    >                                                                                      '
+abbreviations:
+  Art.:
+    year: 2017
+    number: 150
+expected_references:
+- act:
+    year: 2017
+    number: 150
+- act:
+    year: 2017
+    number: 150
+  article: '235'
+expected_special_phrase:
+  ArticleTitleAmendment:
+    position:
+      act:
+        year: 2017
+        number: 150
+      article: '235'
+    from: élelmiszer-értékesítést kezelőszemélyzet nélkül végző
+    to: ''
