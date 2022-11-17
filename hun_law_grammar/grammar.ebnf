@@ -231,7 +231,9 @@ InsertionToken = AmendmentCombinatorJunk TheFollowing;
 
 @position
 InsertionReference =
-        InsertionToken article:ArticleReference [paragraph:ParagraphReference]
+        InsertionToken article:ArticleReference paragraph:ParagraphReference
+    |
+        InsertionToken article:ArticleReference [ListSeparator article:ArticleReference]
     |
         [[Az] article:ArticleReference | "a §"]
         InsertionToken

@@ -439,6 +439,7 @@ impl FeedReferenceBuilder<ArticleReferencePart> for OutgoingReferenceBuilder<'_>
 }
 
 impl RefPartInGrammar for ArticleReferencePart {}
+impl RefPartInGrammar for Vec<ArticleReferencePart> {}
 
 impl FeedReferenceBuilder<ArticleRelativePosition> for OutgoingReferenceBuilder<'_> {
     fn feed(&mut self, element: &ArticleRelativePosition) -> Result<()> {

@@ -1,0 +1,28 @@
+---
+text:      "Az államháztartásról szóló 2011. évi CXCV. törvény 7. alcíme a következő 9/A. §-sal és 9/B. §-sal egészül ki:"
+positions: '                           <                     >                       <  >          <        >            '
+expected_references:
+- act:
+    year: 2011
+    number: 195
+- act:
+    year: 2011
+    number: 195
+  article: 9/A
+- act:
+    year: 2011
+    number: 195
+  article: 9/B
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 195
+      parent:
+        SubtitleId: '7'
+      structural_element:
+        Article:
+          start: 9/A
+          end: 9/B
+    pure_insertion: true
