@@ -279,11 +279,11 @@ InsertionSuffix =
     "kiegészülve lép hatályba" ;
 
 # This rule means: skip everything until an ActReference,
-# except if the found reference continues with "hatálybalépésével összefüggő"
+# except if the found reference continues with some typical phrases
 # in that case, just continue skipping
 @memoize
 ActTitle =
-    { !(ActReference !"hatálybalépésével összefüggő") AnyToken };
+    { !(ActReference !("hatálybalépés" | "módosítás")) AnyToken };
 
 BlockAmendment = AzAny ActTitle act_reference:ActReference [parent:AnyStructuralReference]
     (

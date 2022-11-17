@@ -1,0 +1,18 @@
+---
+text:      "Hatályát veszti a jövedéki adóról szóló 2016. évi LXVIII. törvény módosításáról szóló 2017. évi XXI. törvény 4. §-a."
+positions: '                                                                                      <                    > <    > '
+expected_references:
+- act:
+    year: 2017
+    number: 21
+- act:
+    year: 2017
+    number: 21
+  article: '4'
+expected_special_phrase:
+  Repeal:
+    positions:
+    - act:
+        year: 2017
+        number: 21
+      article: '4'
