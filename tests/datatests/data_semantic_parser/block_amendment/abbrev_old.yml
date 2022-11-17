@@ -1,0 +1,27 @@
+---
+text:      "A régi Jöt. 24. § (1) bekezdés f) pontja helyébe a következő rendelkezés lép:"
+positions: '  <       > <                          >                                     '
+abbreviations:
+  régi Jöt.:
+    year: 2003
+    number: 127
+expected_references:
+- act:
+    year: 2003
+    number: 127
+- act:
+    year: 2003
+    number: 127
+  article: '24'
+  paragraph: '1'
+  point: f
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2003
+        number: 127
+      article: '24'
+      paragraph: '1'
+      point: f
+    pure_insertion: false
