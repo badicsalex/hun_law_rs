@@ -1,0 +1,16 @@
+---
+text:      "Az államháztartásról szóló 2011. évi CXCV. törvény 60. alcíme helyébe a következő alcím lép:"
+positions: '                           <                     >                                          '
+expected_references:
+- act:
+    year: 2011
+    number: 195
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 195
+      structural_element:
+        SubtitleId: '60'
+    pure_insertion: false
