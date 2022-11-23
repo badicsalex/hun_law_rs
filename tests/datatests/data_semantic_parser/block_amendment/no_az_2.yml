@@ -1,0 +1,25 @@
+---
+text:      "A Ptk. 5:96. § (3) bekezdése helyébe a következő rendelkezés lép:"
+positions: '  <  > <                   >                                     '
+abbreviations:
+  Ptk.:
+    year: 2013
+    number: 5
+expected_references:
+- act:
+    year: 2013
+    number: 5
+- act:
+    year: 2013
+    number: 5
+  article: 5:96
+  paragraph: '3'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 5
+      article: 5:96
+      paragraph: '3'
+    pure_insertion: false

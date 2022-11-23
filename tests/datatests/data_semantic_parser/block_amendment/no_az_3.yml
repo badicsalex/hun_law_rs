@@ -1,0 +1,21 @@
+---
+text:      "Az egészségügyi tevékenység végzésének egyes kérdéseiről szóló 2003. évi LXXXIV. törvény 11/A. §-a következő (7a) bekezdéssel egészül ki:"
+positions: '                                                               <                       > <                                  >            '
+expected_references:
+- act:
+    year: 2003
+    number: 84
+- act:
+    year: 2003
+    number: 84
+  article: 11/A
+  paragraph: 7a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2003
+        number: 84
+      article: 11/A
+      paragraph: 7a
+    pure_insertion: true

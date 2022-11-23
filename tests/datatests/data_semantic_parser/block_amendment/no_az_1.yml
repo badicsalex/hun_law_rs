@@ -1,0 +1,21 @@
+---
+text:      "A kormányzati igazgatásról szóló 2018. évi CXXV. törvény 201/A. §-a következő (3a) bekezdéssel egészül ki:"
+positions: '                                 <                     > <                                   >            '
+expected_references:
+- act:
+    year: 2018
+    number: 125
+- act:
+    year: 2018
+    number: 125
+  article: 201/A
+  paragraph: 3a
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2018
+        number: 125
+      article: 201/A
+      paragraph: 3a
+    pure_insertion: true

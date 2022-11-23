@@ -227,7 +227,7 @@ AttachmentSuffix = "melléklet" {HunLower};
 
 AmendmentCombinatorJunk = {"és" | "valamint" | "ezzel" | "egyidejűleg"};
 @no_skip_ws
-TheFollowing = "a következő" | "az alábbi" {HunLower};
+TheFollowing = ["a " | "az "] ("következő" | "alábbi" {HunLower});
 
 InsertionToken = AmendmentCombinatorJunk TheFollowing;
 

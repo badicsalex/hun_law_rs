@@ -1,0 +1,32 @@
+---
+text:      "A személyszállítási szolgáltatásokról szóló 2012. évi XLI. törvény (a továbbiakban: Sztv.) 8. §-a következő (13) és (14) bekezdéssel egészül ki:"
+positions: '                                            <                    >                         <                   >    <              >            '
+expected_new_abbreviations:
+  Sztv.:
+    year: 2012
+    number: 41
+expected_references:
+- act:
+    year: 2012
+    number: 41
+- act:
+    year: 2012
+    number: 41
+  article: '8'
+  paragraph: '13'
+- act:
+    year: 2012
+    number: 41
+  article: '8'
+  paragraph: '14'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2012
+        number: 41
+      article: '8'
+      paragraph:
+        start: '13'
+        end: '14'
+    pure_insertion: true
