@@ -31,7 +31,9 @@ impl SubtitleParserFactory {
         if !line.is_bold() {
             None
         } else if let Some((_, identifier, _, title)) =
-            regex_captures!("^([0-9]+(/[A-Z])?)\\. ([^§].*)$", line.content())
+            // That [^é§] is there to make sure we do not match
+            // articles, or subtitles containting act references
+            regex_captures!("^([0-9]+(/[A-Z])?)\\. ([^é§].*)$", line.content())
         {
             Some(SubtitleParser {
                 identifier: Some(identifier.parse().ok()?),
