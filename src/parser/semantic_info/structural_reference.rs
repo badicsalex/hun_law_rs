@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::{ensure, Result};
+use anyhow::{anyhow, ensure, Result};
 use hun_law_grammar::*;
 
 use crate::{
@@ -63,8 +63,7 @@ impl TryFrom<&AnyStructuralReference_reference> for StructuralReferenceParent {
         match value {
             AnyStructuralReference_reference::ChapterReference(x) => x.try_into(),
             AnyStructuralReference_reference::PartReference(x) => x.try_into(),
-            AnyStructuralReference_reference::SubtitleReference(x) => x.try_into(),
-            AnyStructuralReference_reference::SubtitleRange(x) => x.try_into(),
+            AnyStructuralReference_reference::SubtitleReferencePart(x) => x.try_into(),
             AnyStructuralReference_reference::SubtitleTitle(x) => x.try_into(),
             AnyStructuralReference_reference::TitleReference(x) => x.try_into(),
         }
@@ -117,21 +116,21 @@ impl TryFrom<&TitleInsertionWithBook> for StructuralReference {
     }
 }
 
-impl TryFrom<&SubtitleReference> for StructuralReferenceParent {
+impl TryFrom<&SubtitleReferencePart> for StructuralReferenceParent {
     type Error = anyhow::Error;
 
-    fn try_from(value: &SubtitleReference) -> Result<Self, Self::Error> {
-        Ok(StructuralReferenceParent::SubtitleId(value.id.parse()?))
-    }
-}
-
-impl TryFrom<&SubtitleRange> for StructuralReferenceParent {
-    type Error = anyhow::Error;
-
-    fn try_from(value: &SubtitleRange) -> Result<Self, Self::Error> {
-        Ok(StructuralReferenceParent::SubtitleRange(
-            IdentifierRange::from_range(value.start.parse()?, value.end.parse()?),
-        ))
+    fn try_from(value: &SubtitleReferencePart) -> Result<Self, Self::Error> {
+        if let Some(id) = &value.id {
+            Ok(StructuralReferenceParent::SubtitleId(id.parse()?))
+        } else if let (Some(start), Some(end)) = (&value.start, &value.end) {
+            Ok(StructuralReferenceParent::SubtitleRange(
+                IdentifierRange::from_range(start.parse()?, end.parse()?),
+            ))
+        } else {
+            Err(anyhow!(
+                "Grammar produced an invalid combination in SubtitleReferencePart"
+            ))
+        }
     }
 }
 

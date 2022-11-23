@@ -171,8 +171,9 @@ SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffix;
 @string
 RawTitle = CapitalizedWord {!(["című"] SubtitleSuffixPossessive) AnyToken};
 
-SubtitleReference = id:SubtitleId  "." SubtitleSuffix;
-SubtitleRange = start:SubtitleId  ["."] Dash end:SubtitleId "." SubtitleSuffix;
+SubtitlesReference = @:SubtitleReferencePart { ListSeparator @:SubtitleReferencePart } SubtitleSuffix;
+SubtitleReferencePart = start:SubtitleId ["."] Dash end:SubtitleId "." | id:SubtitleId ".";
+
 @string
 SubtitleId = Number [["/"] 'A'..'Z'];
 @no_skip_ws
@@ -207,8 +208,7 @@ AnyStructuralReference =
         reference:ChapterReference |
         reference:PartReference |
         reference:TitleReference |
-        reference:SubtitleRange |
-        reference:SubtitleReference |
+        reference:SubtitleReferencePart SubtitleSuffix |
         reference:SubtitleTitle
     )
     [title_only:TitleOnlyToken];
@@ -369,7 +369,7 @@ EnforcementDate =
     "."
     ;
 
-EnforcementDateReference = @:Reference | @:AnyStructuralReference | @:AttachmentReference;
+EnforcementDateReference = @:Reference | @:AnyStructuralReference | @:SubtitlesReference | @:AttachmentReference;
 
 @no_skip_ws
 ExceptionJunk = ("szerinti"|"foglalt"|"foglalt"|){HunLower} " kivétel"{HunLower};

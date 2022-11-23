@@ -23,6 +23,7 @@ use super::{
     reference::{FeedReferenceBuilder, OutgoingReferenceBuilder},
 };
 use crate::{
+    reference::structural::{StructuralReference, StructuralReferenceParent},
     semantic_info::{self, EnforcementDateType},
     util::hun_str::{text_to_month_hun, FromHungarianString},
 };
@@ -37,6 +38,17 @@ pub fn convert_enforcement_date(
         match ed_reference {
             EnforcementDateReference::AnyStructuralReference(asr) => {
                 structural_positions.push(asr.try_into()?)
+            }
+            EnforcementDateReference::SubtitlesReference(srs) => {
+                for sr in srs {
+                    structural_positions.push(StructuralReference {
+                        act: None,
+                        book: None,
+                        parent: None,
+                        structural_element: StructuralReferenceParent::try_from(sr)?.into(),
+                        title_only: false,
+                    })
+                }
             }
             EnforcementDateReference::AttachmentReference(_) => {}
             EnforcementDateReference::Reference(r) => ref_builder.feed(r)?,

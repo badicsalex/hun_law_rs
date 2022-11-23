@@ -1,0 +1,121 @@
+text:      "Az I. Fejezet, a 3–9. alcím, a 12–14. alcím, a 44. § 15., 17., 19., 20. és 28. pontja, az 52. §, az 56. §, az 58. § 9., 11., 12., 15. és 16. pontja, a 19–25. alcím, a 73. § a)–c) és e)–j) pontja, a 74. § (1)–(3) bekezdése, a 75. §, a 28–31. alcím, a 33–35. alcím, a 37–41. alcím, a 43–45. alcím, a 104. §, a 105. §, a 107. §, a 47., 49. és 51. alcím, valamint az 1. melléklet 2023. február 1-jén lép hatályba."
+positions: '                                               <       >  < >  < >  < >    <        >     <   >     <   >     <      >  < >  < >  < >    <        >                    <         >    <          >    <                     >    <   >                                                                    <    >    <    >    <    >                                                                                     '
+expected_references:
+- article: '44'
+  point: '15'
+- article: '44'
+  point: '17'
+- article: '44'
+  point: '19'
+- article: '44'
+  point: '20'
+- article: '44'
+  point: '28'
+- article: '52'
+- article: '56'
+- article: '58'
+  point: '9'
+- article: '58'
+  point: '11'
+- article: '58'
+  point: '12'
+- article: '58'
+  point: '15'
+- article: '58'
+  point: '16'
+- article: '73'
+  point:
+    start: a
+    end: c
+- article: '73'
+  point:
+    start: e
+    end: j
+- article: '74'
+  paragraph:
+    start: '1'
+    end: '3'
+- article: '75'
+- article: '104'
+- article: '105'
+- article: '107'
+expected_special_phrase:
+  EnforcementDate:
+    positions:
+    - article: '44'
+      point: '15'
+    - article: '44'
+      point: '17'
+    - article: '44'
+      point: '19'
+    - article: '44'
+      point: '20'
+    - article: '44'
+      point: '28'
+    - article: '52'
+    - article: '56'
+    - article: '58'
+      point: '9'
+    - article: '58'
+      point: '11'
+    - article: '58'
+      point: '12'
+    - article: '58'
+      point: '15'
+    - article: '58'
+      point: '16'
+    - article: '73'
+      point:
+        start: a
+        end: c
+    - article: '73'
+      point:
+        start: e
+        end: j
+    - article: '74'
+      paragraph:
+        start: '1'
+        end: '3'
+    - article: '75'
+    - article: '104'
+    - article: '105'
+    - article: '107'
+    structural_positions:
+    - structural_element:
+        Chapter: '1'
+    - structural_element:
+        SubtitleRange:
+          start: '3'
+          end: '9'
+    - structural_element:
+        SubtitleRange:
+          start: '12'
+          end: '14'
+    - structural_element:
+        SubtitleRange:
+          start: '19'
+          end: '25'
+    - structural_element:
+        SubtitleRange:
+          start: '28'
+          end: '31'
+    - structural_element:
+        SubtitleRange:
+          start: '33'
+          end: '35'
+    - structural_element:
+        SubtitleRange:
+          start: '37'
+          end: '41'
+    - structural_element:
+        SubtitleRange:
+          start: '43'
+          end: '45'
+    - structural_element:
+        SubtitleId: '47'
+    - structural_element:
+        SubtitleId: '49'
+    - structural_element:
+        SubtitleId: '51'
+    date:
+      Date: 2023-02-01
