@@ -1,0 +1,18 @@
+---
+text:      "A bíróságok szervezetéről és igazgatásáról szóló 2011. évi CLXI. törvény 10–12. alcíme helyébe a következő rendelkezések lépnek:"
+positions: '                                                 <                     >                                                        '
+expected_references:
+- act:
+    year: 2011
+    number: 161
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 161
+      structural_element:
+        SubtitleRange:
+          start: '10'
+          end: '12'
+    pure_insertion: false

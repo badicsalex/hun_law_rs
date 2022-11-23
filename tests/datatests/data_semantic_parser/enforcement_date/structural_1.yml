@@ -1,0 +1,9 @@
+text:      "A 8. alcím az e törvény kihirdetését követő ötödik napon lép hatályba."
+positions: '                                                                      '
+expected_special_phrase:
+  EnforcementDate:
+    structural_positions:
+    - structural_element:
+        SubtitleId: '8'
+    date:
+      DaysAfterPublication: 5

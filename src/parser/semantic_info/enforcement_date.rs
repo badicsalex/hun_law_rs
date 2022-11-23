@@ -32,7 +32,16 @@ pub fn convert_enforcement_date(
     elem: &EnforcementDate,
 ) -> Result<semantic_info::EnforcementDate> {
     let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
-    ref_builder.feed(&elem.references)?;
+    let mut structural_positions = Vec::new();
+    for ed_reference in &elem.references {
+        match ed_reference {
+            EnforcementDateReference::AnyStructuralReference(asr) => {
+                structural_positions.push(asr.try_into()?)
+            }
+            EnforcementDateReference::AttachmentReference(_) => {}
+            EnforcementDateReference::Reference(r) => ref_builder.feed(r)?,
+        }
+    }
     let positions = ref_builder
         .get_result()
         .into_iter()
@@ -47,6 +56,7 @@ pub fn convert_enforcement_date(
 
     Ok(semantic_info::EnforcementDate {
         positions,
+        structural_positions,
         date,
         inline_repeal,
     })

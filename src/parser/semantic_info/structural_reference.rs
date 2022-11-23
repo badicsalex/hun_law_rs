@@ -18,6 +18,7 @@ use anyhow::{ensure, Result};
 use hun_law_grammar::*;
 
 use crate::{
+    identifier::range::{IdentifierRange, IdentifierRangeFrom},
     reference::structural::{
         StructuralReference, StructuralReferenceElement, StructuralReferenceParent,
     },
@@ -63,6 +64,7 @@ impl TryFrom<&AnyStructuralReference_reference> for StructuralReferenceParent {
             AnyStructuralReference_reference::ChapterReference(x) => x.try_into(),
             AnyStructuralReference_reference::PartReference(x) => x.try_into(),
             AnyStructuralReference_reference::SubtitleReference(x) => x.try_into(),
+            AnyStructuralReference_reference::SubtitleRange(x) => x.try_into(),
             AnyStructuralReference_reference::SubtitleTitle(x) => x.try_into(),
             AnyStructuralReference_reference::TitleReference(x) => x.try_into(),
         }
@@ -120,6 +122,16 @@ impl TryFrom<&SubtitleReference> for StructuralReferenceParent {
 
     fn try_from(value: &SubtitleReference) -> Result<Self, Self::Error> {
         Ok(StructuralReferenceParent::SubtitleId(value.id.parse()?))
+    }
+}
+
+impl TryFrom<&SubtitleRange> for StructuralReferenceParent {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &SubtitleRange) -> Result<Self, Self::Error> {
+        Ok(StructuralReferenceParent::SubtitleRange(
+            IdentifierRange::from_range(value.start.parse()?, value.end.parse()?),
+        ))
     }
 }
 

@@ -39,6 +39,7 @@ pub enum StructuralReferenceElement {
     Title(NumericIdentifier),
     Chapter(NumericIdentifier),
     SubtitleId(NumericIdentifier),
+    SubtitleRange(IdentifierRange<NumericIdentifier>),
     SubtitleTitle(String),
     SubtitleAfterArticle(ArticleIdentifier),
     /// Only the subtitle before the article (for amendment purposes)
@@ -57,6 +58,7 @@ pub enum StructuralReferenceParent {
     Title(NumericIdentifier),
     Chapter(NumericIdentifier),
     SubtitleId(NumericIdentifier),
+    SubtitleRange(IdentifierRange<NumericIdentifier>),
     SubtitleTitle(String),
 }
 
@@ -67,6 +69,9 @@ impl From<StructuralReferenceParent> for StructuralReferenceElement {
             StructuralReferenceParent::Title(x) => StructuralReferenceElement::Title(x),
             StructuralReferenceParent::Chapter(x) => StructuralReferenceElement::Chapter(x),
             StructuralReferenceParent::SubtitleId(x) => StructuralReferenceElement::SubtitleId(x),
+            StructuralReferenceParent::SubtitleRange(x) => {
+                StructuralReferenceElement::SubtitleRange(x)
+            }
             StructuralReferenceParent::SubtitleTitle(x) => {
                 StructuralReferenceElement::SubtitleTitle(x)
             }

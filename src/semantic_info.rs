@@ -107,6 +107,8 @@ pub enum TextAmendmentSAEPart {
 pub struct EnforcementDate {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub positions: Vec<Reference>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub structural_positions: Vec<StructuralReference>,
     pub date: EnforcementDateType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline_repeal: Option<NaiveDate>,

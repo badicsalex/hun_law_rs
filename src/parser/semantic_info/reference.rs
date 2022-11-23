@@ -131,7 +131,11 @@ impl GetOutgoingReferences for EnforcementDate {
         abbreviation_cache: &AbbreviationCache,
     ) -> Result<Vec<OutgoingReference>> {
         let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
-        ref_builder.feed(&self.references)?;
+        for ed_ref in &self.references {
+            if let EnforcementDateReference::Reference(normal_ref) = ed_ref {
+                ref_builder.feed(normal_ref)?;
+            }
+        }
         Ok(ref_builder.get_result())
     }
 }
