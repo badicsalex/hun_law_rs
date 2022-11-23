@@ -1,0 +1,21 @@
+---
+text:      "A mező- és erdőgazdasági földek forgalmáról szóló 2013. évi CXXII. törvénnyel összefüggő egyes rendelkezésekről és átmeneti szabályokról szóló 2013. évi CCXII. törvény 108/E. § (4) bekezdése helyébe a következő rendelkezés lép:"
+positions: '                                                                                                                                               <                      > <                    >                                     '
+expected_references:
+- act:
+    year: 2013
+    number: 212
+- act:
+    year: 2013
+    number: 212
+  article: 108/E
+  paragraph: '4'
+expected_special_phrase:
+  BlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 212
+      article: 108/E
+      paragraph: '4'
+    pure_insertion: false

@@ -287,7 +287,7 @@ InsertionSuffix =
 # in that case, just continue skipping
 @memoize
 ActTitle =
-    { !(ActReference !("hatálybalépés" | "módosítás")) AnyToken };
+    { !(ActReference !("hatálybalépés" | "módosítás" | "összefüggő")) AnyToken };
 
 BlockAmendment = AzAny ActTitle act_reference:ActReference [parent:AnyStructuralReference]
     (
