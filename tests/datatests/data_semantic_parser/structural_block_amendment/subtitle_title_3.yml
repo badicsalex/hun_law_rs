@@ -1,0 +1,21 @@
+---
+text:      "Az Fsztv. 5. alcím címe helyébe a következő alcím cím lép:"
+positions: '   <    >                                                 '
+abbreviations:
+  Fsztv.:
+    year: 2013
+    number: 235
+expected_references:
+- act:
+    year: 2013
+    number: 235
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2013
+        number: 235
+      structural_element:
+        SubtitleId: '5'
+      title_only: true
+    pure_insertion: false

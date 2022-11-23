@@ -273,10 +273,10 @@ AmendmentSuffix =
     TheFollowing "szerint módosul";
 
 AmendmentSuffixWithSubtitle =
-    "helyébe" TheFollowing ["rendelkezés és"] "alcím" ["és rendelkezés"] ("lép" | "lépnek") ;
+    "helyébe" TheFollowing ["rendelkezés és"] "alcím" ["cím"] ["és rendelkezés"] ("lép" | "lépnek") ;
 
 AmendmentSuffixWithStructural =
-    "helyébe" TheFollowing ["alcím" | "cím" | "fejezet" | "Fejezet" | "rész"] "lép" ;
+    "helyébe" TheFollowing ["alcím" ["cím"] | "cím" | "fejezet" | "Fejezet" | "rész"] "lép" ;
 
 InsertionSuffix =
     "egészül ki" |

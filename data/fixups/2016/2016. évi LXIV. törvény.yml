@@ -2,3 +2,12 @@
   new: 125. § Ez a törvény 2016. július 1-jén lép hatályba.
 - old: 127. § E törvény
   new: 126. § E törvény
+- old: „Közszolgálati jogviszony, kormányzati szolgálati jogviszony, állami szolgálati jogviszony és szolgálati viszony”
+  new: „Közszolgálati jogviszony, kormányzati szolgálati jogviszony, állami szolgálati jogviszony és szolgálati viszony”
+  set_bold: true
+- old: „Jövedelemkiegészítés közalkalmazotti, kormányzati szolgálati vagy állami szolgálati jogviszonyban álló
+  new: „Jövedelemkiegészítés közalkalmazotti, kormányzati szolgálati vagy állami szolgálati jogviszonyban álló
+  set_bold: true
+- old: egészségügyi dolgozók illetményének és pénzellátásának együttfolyósítási tilalmára tekintettel”
+  new: egészségügyi dolgozók illetményének és pénzellátásának együttfolyósítási tilalmára tekintettel”
+  set_bold: true
