@@ -4,3 +4,4 @@ expected_special_phrase:
   EnforcementDate:
     date:
       DaysAfterPublication: 15
+    is_default: true

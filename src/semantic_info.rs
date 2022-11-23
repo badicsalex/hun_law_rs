@@ -109,6 +109,8 @@ pub struct EnforcementDate {
     pub positions: Vec<Reference>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub structural_positions: Vec<StructuralReference>,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub is_default: bool,
     pub date: EnforcementDateType,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inline_repeal: Option<NaiveDate>,

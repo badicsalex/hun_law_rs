@@ -5,3 +5,4 @@ expected_special_phrase:
     date:
       DayInMonthAfterPublication:
         day: 15
+    is_default: true

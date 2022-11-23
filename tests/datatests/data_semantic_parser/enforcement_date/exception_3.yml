@@ -5,3 +5,4 @@ expected_special_phrase:
   EnforcementDate:
     date:
       Date: 2012-07-01
+    is_default: true

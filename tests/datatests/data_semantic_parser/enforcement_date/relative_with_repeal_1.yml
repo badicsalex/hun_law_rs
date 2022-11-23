@@ -5,3 +5,4 @@ expected_special_phrase:
     date:
       DaysAfterPublication: 1
     inline_repeal: 2019-12-31
+    is_default: true

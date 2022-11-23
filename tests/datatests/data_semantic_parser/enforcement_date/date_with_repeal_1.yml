@@ -5,3 +5,4 @@ expected_special_phrase:
     date:
       Date: 2014-01-01
     inline_repeal: 2015-12-31
+    is_default: true

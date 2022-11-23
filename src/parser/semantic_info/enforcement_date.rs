@@ -57,6 +57,7 @@ pub fn convert_enforcement_date(
     Ok(semantic_info::EnforcementDate {
         positions,
         structural_positions,
+        is_default: elem.references.is_empty(),
         date,
         inline_repeal,
     })
