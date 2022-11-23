@@ -343,6 +343,15 @@ impl From<ActIdentifier> for Reference {
     }
 }
 
+impl From<IdentifierRange<ArticleIdentifier>> for Reference {
+    fn from(article: IdentifierRange<ArticleIdentifier>) -> Self {
+        Reference {
+            article: Some(article),
+            ..Default::default()
+        }
+    }
+}
+
 impl From<(ActIdentifier, IdentifierRange<ArticleIdentifier>)> for Reference {
     fn from((act, article): (ActIdentifier, IdentifierRange<ArticleIdentifier>)) -> Self {
         Reference {
