@@ -58,19 +58,23 @@ ReferenceWithPoint = (alphabetic_point:AlphabeticPointReference | numeric_point:
 ReferenceWithSubpoint = alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference;
 
 ActReference =
-    @:Abbreviation |
-    @:ActIdWithFromNowOn ;
+    @:ActIdWithFromNowOn |
+    @:Abbreviation
+    ;
+
+# The check here is a hack, since it mutates state and doesn't check anything,
+# but this is an experimental solution right now. Proper, semantic support should
+# be implemented in peginator if this works out
+@check(crate::store_abbreviation)
 ActIdWithFromNowOn =
     act_id:ActId
     [
-        "(" "a" "továbbiakban" [":"]
-        (
-            abbreviation:Abbreviation ["törvény"] |
-            ActId |
-            {Word}+
-        )
-        ")"
+        "(" "a" "továbbiakban" [":"] ( ActId | abbreviation:PotentialAbbreviation ) ")"
     ];
+
+@string
+@no_skip_ws
+PotentialAbbreviation = {!")" char}+;
 
 @position
 ActId = year:Number "." "évi" number:Roman "." ActSuffix;
@@ -148,9 +152,9 @@ NumericSubpointSuffix = "alpont" {HunLower};
 
 @position
 Abbreviation = content:AbbreviationContent;
-@string
-@no_skip_ws
-AbbreviationContent = ["új " | "régi "] !(Roman ".") HunUpper {HunAny}+ (['.'] [' '] ( "Tv." | "vhr." | {!"tv." HunAny} "tv.") | '.');
+
+@extern(crate::parse_abbreviation)
+AbbreviationContent;
 
 
 # No "@no_skip_ws" here or below, because we actually do want to trim the string

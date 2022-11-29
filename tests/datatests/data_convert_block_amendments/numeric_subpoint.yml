@@ -5,6 +5,10 @@ identifier:
 subject: A tesztelésről
 preamble: ""
 publication_date: 2345-06-07
+contained_abbreviations:
+  MFB törvény:
+    year: 2001
+    number: 20
 children:
   - Article:
       identifier: "1"
@@ -36,6 +40,10 @@ children:
                   paragraph: "2"
                   point: d
                   subpoint: "1"
+            new_abbreviations:
+              MFB törvény:
+                year: 2001
+                number: 20
             special_phrase:
               BlockAmendment:
                 position:

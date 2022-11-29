@@ -19,6 +19,7 @@ fn regen_grammar() {
         .destination("src/grammar_generated.rs")
         .prefix("use derive_visitor::{Drive, Visitor};".into())
         .derives(vec!["Debug".into(), "Clone".into(), "Drive".into()])
+        .user_context_type("crate::CustomParseState")
         .format()
         .run_exit_on_error();
     println!("cargo:rerun-if-changed=grammar.ebnf");

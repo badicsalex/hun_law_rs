@@ -1,0 +1,126 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+contained_abbreviations:
+  Közép-európai Épített Örökség Megőrző Alapítvány tv.:
+    year: 2020
+    number: 93
+children:
+- Article:
+    identifier: '1'
+    children:
+    - identifier: '1'
+      body:
+        intro: 'A Közép-európai Épített Örökség Megőrző Alapítványról és a Közép-európai Épített Örökség Megőrző Alapítvány részére történő vagyonjuttatásról szóló 2020. évi XCIII. törvény (a továbbiakban: Közép-európai Épített Örökség Megőrző Alapítvány tv.) 2. § (6) bekezdése helyébe a következő rendelkezés lép:'
+        children:
+          BlockAmendment:
+            children:
+              Paragraph:
+              - identifier: '6'
+                body: 'Az 1. melléklet szerinti vagyonelemek elidegenítéséből származó bevételnek az elidegenítés költségeinek kiegyenlítést követően fennmaradó részét az Alapítvány a közfeladatot ellátó közérdekű vagyonkezelő alapítványokról szóló 2021. évi IX. törvény (a továbbiakban: KEKVA tv.) 1. mellékletében meghatározott közfeladatainak ellátására és közérdekű céljainak megvalósítására köteles fordítani.'
+      semantic_info:
+        outgoing_references:
+        - start: 183
+          end: 210
+          reference:
+            act:
+              year: 2020
+              number: 93
+        - start: 295
+          end: 315
+          reference:
+            act:
+              year: 2020
+              number: 93
+            article: '2'
+            paragraph: '6'
+        new_abbreviations:
+          Közép-európai Épített Örökség Megőrző Alapítvány tv.:
+            year: 2020
+            number: 93
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 2020
+                number: 93
+              article: '2'
+              paragraph: '6'
+            pure_insertion: false
+    - identifier: '2'
+      body:
+        intro: 'A Közép-európai Épített Örökség Megőrző Alapítvány tv. 2. § (8) bekezdése helyébe a következő rendelkezés lép:'
+        children:
+          BlockAmendment:
+            children:
+              Paragraph:
+              - identifier: '8'
+                body: Az Alapítvány a KEKVA tv. 1. mellékletében meghatározott közfeladatainak ellátására és közérdekű céljainak megvalósítása érdekében az Alapítvány részére a miniszter által vezetett minisztérium fejezetéhez tartozó fejezeti kezelési előirányzatai terhére adomány juttatható, kötelezettség teljesíthető.
+      semantic_info:
+        outgoing_references:
+        - start: 2
+          end: 66
+          reference:
+            act:
+              year: 2020
+              number: 93
+        - start: 67
+          end: 87
+          reference:
+            act:
+              year: 2020
+              number: 93
+            article: '2'
+            paragraph: '8'
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 2020
+                number: 93
+              article: '2'
+              paragraph: '8'
+            pure_insertion: false
+- Article:
+    identifier: '2'
+    children:
+    - body:
+        intro: 'A Közép-európai Épített Örökség Megőrző Alapítvány tv. 4. §-a helyébe a következő rendelkezés lép:'
+        children:
+          StructuralBlockAmendment:
+            children:
+            - Article:
+                identifier: '4'
+                children:
+                - identifier: '1'
+                  body: A 2. § (1)–(7) bekezdése az Alaptörvény 38. cikk (1) és (2) bekezdése alapján sarkalatosnak minősül.
+                - identifier: '2'
+                  body: A 2. § (6)–(8) bekezdése az Alaptörvény 38. cikk (6) bekezdése alapján sarkalatosnak minősül.
+      semantic_info:
+        outgoing_references:
+        - start: 2
+          end: 66
+          reference:
+            act:
+              year: 2020
+              number: 93
+        - start: 67
+          end: 74
+          reference:
+            act:
+              year: 2020
+              number: 93
+            article: '4'
+        special_phrase:
+          StructuralBlockAmendment:
+            position:
+              act:
+                year: 2020
+                number: 93
+              structural_element:
+                Article: '4'
+            pure_insertion: false

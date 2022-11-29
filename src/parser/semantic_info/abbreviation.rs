@@ -27,8 +27,7 @@ pub fn get_new_abbreviations(root: &Root) -> Result<Vec<(String, ActIdentifier)>
     let act_id_visitor = |abbrev: &ActIdWithFromNowOn| {
         if let Some(abbrev_elem) = &abbrev.abbreviation {
             result.push(
-                ActIdentifier::try_from(&abbrev.act_id)
-                    .map(|act_id| (abbrev_elem.content.clone(), act_id)),
+                ActIdentifier::try_from(&abbrev.act_id).map(|act_id| (abbrev_elem.clone(), act_id)),
             )
         }
     };
@@ -77,6 +76,10 @@ impl AbbreviationCache {
 
     pub fn has_changed(&self) -> bool {
         self.has_changed
+    }
+
+    pub fn all_abbreviations(&self) -> Vec<String> {
+        self.cache.keys().cloned().collect()
     }
 }
 

@@ -18,8 +18,35 @@
 mod grammar_generated;
 
 pub use grammar_generated::*;
-use peginator::{ParseError, PegParser};
+use peginator::{NoopTracer, ParseError, PegParserAdvanced};
 
-pub fn grammar_parse(s: &str) -> Result<Root, ParseError> {
-    Root::parse(s)
+#[derive(Debug, Default)]
+pub struct CustomParseState {
+    known_abbreviations: Vec<String>,
+}
+
+pub fn grammar_parse(s: &str, known_abbreviations: Vec<String>) -> Result<Root, ParseError> {
+    let mut parse_state = CustomParseState {
+        known_abbreviations,
+    };
+    Root::parse_advanced::<NoopTracer>(s, &Default::default(), &mut parse_state)
+}
+
+pub fn store_abbreviation(c: &ActIdWithFromNowOn, state: &mut CustomParseState) -> bool {
+    if let Some(abbrev) = &c.abbreviation {
+        state.known_abbreviations.push(abbrev.clone())
+    }
+    true
+}
+
+pub fn parse_abbreviation(
+    s: &str,
+    state: &mut CustomParseState,
+) -> Result<(String, usize), &'static str> {
+    for known_abbrev in &state.known_abbreviations {
+        if s.starts_with(known_abbrev) {
+            return Ok((known_abbrev.clone(), known_abbrev.len()));
+        }
+    }
+    Err("Not a known abbreviation")
 }

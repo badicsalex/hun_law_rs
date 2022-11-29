@@ -1,6 +1,5 @@
----
 text:      "A Btk. 283. § (2) és (2a) bekezdése ismert, de a Cti., Kkt tv., és a Xxtv. 69. §-a ismeretlen."
-positions: "  <  > <        >    <            >                                                           "
+positions: "  <  > <        >    <            >                                        <     >            "
 abbreviations:
   "Btk.":
     year: 2012
@@ -19,3 +18,5 @@ expected_references:
       number: 100
     article: "283"
     paragraph: "2a"
+    # Known limitation
+  - article: "69"

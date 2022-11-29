@@ -2,7 +2,7 @@
 text:      "A pénzügyi tranzakciós illetékről szóló 2012. évi CXVI. törvény (a továbbiakban: Pti. törvény) 7. § (1) bekezdése helyébe a következő rendelkezés lép:"
 positions: "                                        <                     >                                <                >                                     "
 expected_new_abbreviations:
-  "Pti.":
+  "Pti. törvény":
     year: 2012
     number: 116
 expected_references:
