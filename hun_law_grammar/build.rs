@@ -15,7 +15,7 @@
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
 fn regen_grammar() {
-    peginator::buildscript::Compile::file("grammar.ebnf")
+    peginator_codegen::Compile::file("grammar.ebnf")
         .destination("src/grammar_generated.rs")
         .prefix("use derive_visitor::{Drive, Visitor};".into())
         .derives(vec!["Debug".into(), "Clone".into(), "Drive".into()])

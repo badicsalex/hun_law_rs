@@ -8,7 +8,7 @@ license = "GPL-3.0-only"
 
 [dependencies]
 derive-visitor = { version = "0.2.1", features = ["std-types-drive"] }
-peginator = { path = "../../peginator" }
+peginator = { path = "../../peginator/runtime", default-features = false }
 
 [build-dependencies]
-peginator = { path = "../../peginator" }
+peginator_codegen = { path = "../../peginator/codegen" }
