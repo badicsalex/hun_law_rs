@@ -17,10 +17,12 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2017
-        number: 90
-      article: '13'
-      paragraph: '3'
+      SAE:
+        reference:
+          act:
+            year: 2017
+            number: 90
+          article: '13'
+          paragraph: '3'
     from: ügyszakának kijelölt bírája
     to: ügyszakának bírája

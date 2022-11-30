@@ -13,10 +13,12 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2017
-        number: 150
-      article: '84'
-      paragraph: '1'
+      SAE:
+        reference:
+          act:
+            year: 2017
+            number: 150
+          article: '84'
+          paragraph: '1'
     from: a székhely szerint illetékes gazdasági kamarával, valamint a székhely szerint illetékes önkormányzati jegyzővel
     to: ''

@@ -17,11 +17,13 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2017
-        number: 150
-      article: '131'
-      paragraph: '4'
+      SAE:
+        reference:
+          act:
+            year: 2017
+            number: 150
+          article: '131'
+          paragraph: '4'
     replacements:
     from: nyugdíjjárulék-alapot
     to: társadalombiztosítási járulék-alapot

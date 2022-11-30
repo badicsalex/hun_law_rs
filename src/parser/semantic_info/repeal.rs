@@ -33,7 +33,18 @@ pub fn convert_repeal(
         // Text repeals are jsut spicy text amendments
         let fake_ta = TextAmendment {
             act_reference: elem.act_reference.clone(),
-            references: elem.references.clone(),
+            references: elem
+                .references
+                .iter()
+                .map(|r| match r {
+                    Repeal_references::ArticleTitleReference(x) => {
+                        TextAmendmentReference::ArticleTitleReference(x.clone())
+                    }
+                    Repeal_references::ReferenceWithIntroWrapup(x) => {
+                        TextAmendmentReference::ReferenceWithIntroWrapup(x.clone())
+                    }
+                })
+                .collect(),
             parts: elem
                 .texts
                 .iter()

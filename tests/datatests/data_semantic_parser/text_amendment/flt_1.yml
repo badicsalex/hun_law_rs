@@ -18,11 +18,13 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 1991
-        number: 4
-      article: '30'
-      paragraph: '1'
-      point: a
+      SAE:
+        reference:
+          act:
+            year: 1991
+            number: 4
+          article: '30'
+          paragraph: '1'
+          point: a
     from: a 25. § (1) bekezdésének c)–d) pontjában
     to: a 25. § (1) bekezdésének d) pontjában

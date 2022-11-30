@@ -1,0 +1,18 @@
+---
+text:      "Az Itv. Tételes illetékek alcím címében az „illetékek” szövegrész helyébe az „illetékek a polgári eljárásban” szöveg lép."
+expected_references:
+- act:
+    year: 1990
+    number: 93
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      Structural:
+        act:
+          year: 1990
+          number: 93
+        structural_element:
+          SubtitleTitle: Tételes illetékek
+        title_only: true
+    from: illetékek
+    to: illetékek a polgári eljárásban

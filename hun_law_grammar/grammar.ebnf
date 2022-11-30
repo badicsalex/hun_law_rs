@@ -22,8 +22,6 @@ Root =
     content:BlockAmendmentWithSubtitle $ |
     content:BlockAmendmentStructural $ |
     content:TextAmendment $ |
-    content:ArticleTitleAmendment $ |
-    content:ArticleTitleRepeal $ |
     content:EnforcementDate $ |
     content:Repeal $ |
     content:StructuralRepeal $ |
@@ -185,7 +183,7 @@ SubtitleSuffix = "alcím" {HunLower};
 
 # !HunLower is there to prevent "alcímekkel" from matching
 @no_skip_ws
-SubtitleSuffixPossessive = ("alcíme"| "alcím címe" ) !HunLower ;
+SubtitleSuffixPossessive = ("alcíme" | "alcímében" | "alcím címe" | "alcím címében") !HunLower ;
 
 @string
 ChapterId = Roman [["/"] 'A'..'Z'];
@@ -204,7 +202,7 @@ TitleReference = id:TitleId "." TitleSuffix;
 TitleSuffix = ("cím" | "Cím") {HunLower};
 
 @no_skip_ws
-TitleOnlyToken = "címe" ['i'];
+TitleOnlyToken = "címe" ['i'] | "címé" {HunLower};
 
 AnyStructuralReference =
     [book_id:HungarianOrdinalCapital ("könyv" | "Könyv" | "KÖNYV")]
@@ -216,6 +214,11 @@ AnyStructuralReference =
         reference:SubtitleTitle
     )
     [title_only:TitleOnlyToken];
+
+AnyStructuralReferenceWithParent =
+    parent: AnyStructuralReference
+    [ child: AnyStructuralReference ]
+    ;
 
 # ============ Other references ============
 
@@ -379,6 +382,10 @@ EnforcementDateReference = @:Reference | @:AnyStructuralReference | @:SubtitlesR
 ExceptionJunk = ("szerinti"|"foglalt"|"foglalt"|){HunLower} " kivétel"{HunLower};
 
 # ============ TEXT AMENDMENT PARSING ==============
+@no_skip_ws
+ArticleTitleToken = ["szakasz"] "cím" {HunLower}+;
+ArticleTitleReference = article:SingleArticleReference ArticleTitleToken ;
+
 IntroToken = "nyitó";
 WrapUpToken = "záró";
 
@@ -389,10 +396,15 @@ ReferenceWithIntroWrapup =
         TextAmendmentToken
     ];
 
+TextAmendmentReference =
+    @:ArticleTitleReference |
+    @:ReferenceWithIntroWrapup |
+    @:AnyStructuralReferenceWithParent;
+
 TextAmendment =
     AzAny ActTitle act_reference:ActReference
-    references:ReferenceWithIntroWrapup [ListSeparator]
-    { (references:ReferenceWithIntroWrapup | AttachmentReference) [ListSeparator] }
+    references:TextAmendmentReference [ListSeparator]
+    { (references:TextAmendmentReference | AttachmentReference) [ListSeparator] }
     parts:TextAmendmentPart { ListSeparator parts:TextAmendmentPart} [","]
     "lép" ["hatályba"] "."
     ;
@@ -409,35 +421,13 @@ TextAmendmentPart =
 @no_skip_ws
 TextAmendmentToken = "szöveg" {HunLower};
 
-# ============ ARTICLE TITLE AMENDMENT PARSING ==============
-@no_skip_ws
-ArticleTitleToken = ["szakasz"] "cím" {HunLower}+;
-ArticleTitleAmendment =
-    AzAny ActTitle act_reference:ActReference
-    article:SingleArticleReference
-    ArticleTitleToken
-    [Az] from:Quote
-    TextAmendmentToken ("helyébe" | "helyett")
-    [Az] to:Quote
-    TextAmendmentToken
-    "lép" ["hatályba"] "."
-    ;
-ArticleTitleRepeal =
-    ("Nem lép hatályba" | "Hatályát veszti")
-    AzAny ActTitle act_reference:ActReference
-    article:SingleArticleReference
-    ArticleTitleToken
-    [Az] text:Quote
-    TextAmendmentToken
-    "."
-    ;
-
 # ============ REPEAL PARSING ==============
 
 Repeal =
     ("Nem lép hatályba" | "Hatályát veszti")
     Az ActTitle act_reference:ActReference
-    { references:ReferenceWithIntroWrapup [ListSeparator] }
+    # TODO: use TextAmendmentReference, but keep StructuralRepeal in mind somehow
+    { (references:ArticleTitleReference | references:ReferenceWithIntroWrapup) [ListSeparator] }
     { [Az] texts:Quote [TextAmendmentToken] [ListSeparator]}
     "."
     ;

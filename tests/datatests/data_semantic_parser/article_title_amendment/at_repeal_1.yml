@@ -14,11 +14,12 @@ expected_references:
     number: 150
   article: '165'
 expected_special_phrase:
-  ArticleTitleAmendment:
-    position:
-      act:
-        year: 2017
-        number: 150
-      article: '165'
+  TextAmendment:
+  - reference:
+      ArticleTitle:
+        act:
+          year: 2017
+          number: 150
+        article: '165'
     from: és az előzetes konzultáció díja
     to: ''

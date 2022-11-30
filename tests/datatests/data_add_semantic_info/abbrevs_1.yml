@@ -81,11 +81,13 @@ children:
             special_phrase:
               TextAmendment:
               - reference:
-                  act:
-                    year: 2020
-                    number: 3
-                  article: "12"
-                  paragraph: "7"
+                  SAE:
+                    reference:
+                      act:
+                        year: 2020
+                        number: 3
+                      article: "12"
+                      paragraph: "7"
                 from: fontatlan
                 to: nem fontos
   - Article:
@@ -141,11 +143,12 @@ children:
                     number: 3
                   article: "12"
             special_phrase:
-              ArticleTitleAmendment:
-                position:
-                  act:
-                    year: 2020
-                    number: 3
-                  article: "12"
+              TextAmendment:
+              - reference:
+                  ArticleTitle:
+                    act:
+                      year: 2020
+                      number: 3
+                    article: "12"
                 from: röv.
                 to: rövidítés

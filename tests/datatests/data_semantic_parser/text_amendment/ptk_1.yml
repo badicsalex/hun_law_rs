@@ -17,10 +17,12 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2013
-        number: 5
-      article: 7:43
-      paragraph: '3'
+      SAE:
+        reference:
+          act:
+            year: 2013
+            number: 5
+          article: 7:43
+          paragraph: '3'
     from: Semmis
     to: Érvénytelen

@@ -14,11 +14,12 @@ expected_references:
     number: 150
   article: '235'
 expected_special_phrase:
-  ArticleTitleAmendment:
-    position:
-      act:
-        year: 2017
-        number: 150
-      article: '235'
+  TextAmendment:
+  - reference:
+      ArticleTitle:
+        act:
+          year: 2017
+          number: 150
+        article: '235'
     from: élelmiszer-értékesítést kezelőszemélyzet nélkül végző
     to: ''

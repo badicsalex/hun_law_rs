@@ -32,34 +32,42 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2012
-        number: 100
-      article: '38'
-      paragraph: '3'
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 100
+          article: '38'
+          paragraph: '3'
     from: ítéletében
     to: az ügydöntő határozatában
   - reference:
-      act:
-        year: 2012
-        number: 100
-      article: '39'
-      paragraph: '1'
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 100
+          article: '39'
+          paragraph: '1'
     from: ítéletében
     to: az ügydöntő határozatában
   - reference:
-      act:
-        year: 2012
-        number: 100
-      article: '47'
-      paragraph: '3'
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 100
+          article: '47'
+          paragraph: '3'
     from: ítéletében
     to: az ügydöntő határozatában
   - reference:
-      act:
-        year: 2012
-        number: 100
-      article: '50'
-      paragraph: '4'
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 100
+          article: '50'
+          paragraph: '4'
     from: ítéletében
     to: az ügydöntő határozatában

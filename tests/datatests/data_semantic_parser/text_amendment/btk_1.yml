@@ -22,34 +22,42 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2012
-        number: 100
-      article: '294'
-      paragraph: '1'
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 100
+          article: '294'
+          paragraph: '1'
     from: előnyt kér, az előnyt
     to: jogtalan előnyt kér, a jogtalan előnyt
   - reference:
-      act:
-        year: 2012
-        number: 100
-      article: '294'
-      paragraph: '1'
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 100
+          article: '294'
+          paragraph: '1'
     from: előny kérőjével
     to: jogtalan előny kérőjével
   - reference:
-      act:
-        year: 2012
-        number: 100
-      article: '296'
-      paragraph: '1'
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 100
+          article: '296'
+          paragraph: '1'
     from: előnyt kér, az előnyt
     to: jogtalan előnyt kér, a jogtalan előnyt
   - reference:
-      act:
-        year: 2012
-        number: 100
-      article: '296'
-      paragraph: '1'
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 100
+          article: '296'
+          paragraph: '1'
     from: előny kérőjével
     to: jogtalan előny kérőjével

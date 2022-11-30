@@ -14,12 +14,13 @@ expected_references:
       number: 5
     article: "5:99"
 expected_special_phrase:
-  ArticleTitleAmendment:
-    position:
-      act:
-        year: 2013
-        number: 5
-      article: "5:99"
+  TextAmendment:
+  - reference:
+      ArticleTitle:
+        act:
+          year: 2013
+          number: 5
+        article: "5:99"
     from: átruházása
     to: átruházása és megterhelése
 

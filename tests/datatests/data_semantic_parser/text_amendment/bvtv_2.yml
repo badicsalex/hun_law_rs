@@ -17,18 +17,22 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2013
-        number: 240
-      article: '12'
-      paragraph: '8'
+      SAE:
+        reference:
+          act:
+            year: 2013
+            number: 240
+          article: '12'
+          paragraph: '8'
     from: (3)–(5a) bekezdés
     to: (3)–(5a) és (5c) bekezdés
   - reference:
-      act:
-        year: 2013
-        number: 240
-      article: '12'
-      paragraph: '8'
+      SAE:
+        reference:
+          act:
+            year: 2013
+            number: 240
+          article: '12'
+          paragraph: '8'
     from: (4)–(5a) bekezdés
     to: (4)–(5a) és (5c) bekezdés

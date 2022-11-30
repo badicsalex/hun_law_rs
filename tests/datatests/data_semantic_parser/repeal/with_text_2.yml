@@ -17,10 +17,12 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2016
-        number: 68
-      article: 116/B
-      paragraph: '1'
+      SAE:
+        reference:
+          act:
+            year: 2016
+            number: 68
+          article: 116/B
+          paragraph: '1'
     from: ', jogi személyiség nélküli gazdasági társaság'
     to: ''

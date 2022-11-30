@@ -19,7 +19,6 @@ use hun_law_grammar::grammar_parse;
 
 use super::{
     abbreviation::{get_new_abbreviations, AbbreviationCache},
-    article_title_amendment::{convert_article_title_amendment, convert_article_title_repeal},
     block_amendment::{
         convert_block_amendment, convert_structural_block_amendment,
         convert_subtitle_block_amendment,
@@ -201,13 +200,6 @@ pub fn extract_special_phrase(
 ) -> Result<Option<SpecialPhrase>> {
     Ok(match &root.content {
         hun_law_grammar::Root_content::ListOfSimpleExpressions(_) => None,
-
-        hun_law_grammar::Root_content::ArticleTitleAmendment(x) => {
-            Some(convert_article_title_amendment(abbreviation_cache, x)?.into())
-        }
-        hun_law_grammar::Root_content::ArticleTitleRepeal(x) => {
-            Some(convert_article_title_repeal(abbreviation_cache, x)?.into())
-        }
         hun_law_grammar::Root_content::BlockAmendment(x) => {
             Some(convert_block_amendment(abbreviation_cache, x)?)
         }

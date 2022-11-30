@@ -14,11 +14,12 @@ expected_references:
       number: 5
     article: "6:534"
 expected_special_phrase:
-  ArticleTitleAmendment:
-    position:
-      act:
-        year: 2013
-        number: 5
-      article: "6:534"
+  TextAmendment:
+  - reference:
+      ArticleTitle:
+        act:
+          year: 2013
+          number: 5
+        article: "6:534"
     from: életviszonyok
     to: értékviszonyok

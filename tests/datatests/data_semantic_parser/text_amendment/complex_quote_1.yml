@@ -16,9 +16,11 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2069
-        number: 420
-      article: '28'
+      SAE:
+        reference:
+          act:
+            year: 2069
+            number: 420
+          article: '28'
     from: idézőjelek „idézőjelekben” jellegű
     to: „na ne”

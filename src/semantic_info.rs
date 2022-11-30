@@ -64,20 +64,12 @@ impl<'a> From<&'a OutgoingReference> for &'a Reference {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, FromVariants)]
 pub enum SpecialPhrase {
-    ArticleTitleAmendment(ArticleTitleAmendment),
     BlockAmendment(BlockAmendment),
     EnforcementDate(EnforcementDate),
     Repeal(Repeal),
     TextAmendment(Vec<TextAmendment>),
     StructuralBlockAmendment(StructuralBlockAmendment),
     StructuralRepeal(StructuralRepeal),
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct ArticleTitleAmendment {
-    pub position: Reference,
-    pub from: String,
-    pub to: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -88,11 +80,20 @@ pub struct BlockAmendment {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct TextAmendment {
-    pub reference: Reference,
-    #[serde(default, skip_serializing_if = "TextAmendmentSAEPart::is_default")]
-    pub amended_part: TextAmendmentSAEPart,
+    pub reference: TextAmendmentReference,
     pub from: String,
     pub to: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum TextAmendmentReference {
+    SAE {
+        reference: Reference,
+        #[serde(default, skip_serializing_if = "TextAmendmentSAEPart::is_default")]
+        amended_part: TextAmendmentSAEPart,
+    },
+    Structural(StructuralReference),
+    ArticleTitle(Reference),
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq)]

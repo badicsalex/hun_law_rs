@@ -17,10 +17,12 @@ expected_references:
 expected_special_phrase:
   TextAmendment:
   - reference:
-      act:
-        year: 2017
-        number: 150
-      article: '131'
-      paragraph: '19'
+      SAE:
+        reference:
+          act:
+            year: 2017
+            number: 150
+          article: '131'
+          paragraph: '19'
     from: munkaügyi hatóságnak
     to: foglalkoztatás-felügyeleti hatóságnak

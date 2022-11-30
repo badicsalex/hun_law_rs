@@ -18,7 +18,7 @@ use anyhow::Result;
 use hun_law_grammar::*;
 
 use super::abbreviation::AbbreviationCache;
-use super::reference::{FeedReferenceBuilder, OutgoingReferenceBuilder};
+use super::reference::{convert_act_reference, FeedReferenceBuilder, OutgoingReferenceBuilder};
 use crate::semantic_info::OutgoingReference;
 use crate::semantic_info::{self, TextAmendmentSAEPart};
 
@@ -28,21 +28,48 @@ pub fn convert_text_amendment(
 ) -> Result<Vec<semantic_info::TextAmendment>> {
     let mut result = Vec::new();
     let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+    let act_id = convert_act_reference(abbreviation_cache, &elem.act_reference)?;
     ref_builder.feed(&elem.act_reference)?;
     for ta_reference in &elem.references {
-        ref_builder.feed(&ta_reference.reference)?;
-        for OutgoingReference { reference, .. } in ref_builder.take_result() {
-            if !reference.is_act_only() {
-                for TextAmendmentPart { from, to } in &elem.parts {
-                    result.push(semantic_info::TextAmendment {
-                        reference: reference.clone(),
-                        amended_part: convert_intro_wrapup_token(&ta_reference.token),
-                        from: from.clone(),
-                        to: to.clone(),
-                    })
+        match ta_reference {
+            TextAmendmentReference::AnyStructuralReferenceWithParent(raw_struct_ref) => {
+                let mut struct_ref =
+                    crate::reference::structural::StructuralReference::try_from(raw_struct_ref)?;
+                struct_ref.act = Some(act_id);
+                record_one_ref(
+                    elem,
+                    &semantic_info::TextAmendmentReference::Structural(struct_ref),
+                    &mut result,
+                );
+            }
+            TextAmendmentReference::ArticleTitleReference(atr) => {
+                ref_builder.feed(atr)?;
+                for OutgoingReference { reference, .. } in ref_builder.take_result() {
+                    if !reference.is_act_only() {
+                        record_one_ref(
+                            elem,
+                            &semantic_info::TextAmendmentReference::ArticleTitle(reference.clone()),
+                            &mut result,
+                        );
+                    }
                 }
             }
-        }
+            TextAmendmentReference::ReferenceWithIntroWrapup(rwiw) => {
+                ref_builder.feed(rwiw)?;
+                for OutgoingReference { reference, .. } in ref_builder.take_result() {
+                    if !reference.is_act_only() {
+                        record_one_ref(
+                            elem,
+                            &semantic_info::TextAmendmentReference::SAE {
+                                reference: reference.clone(),
+                                amended_part: convert_intro_wrapup_token(&rwiw.token),
+                            },
+                            &mut result,
+                        );
+                    }
+                }
+            }
+        };
     }
 
     Ok(result)
@@ -55,5 +82,19 @@ fn convert_intro_wrapup_token(
         Some(ReferenceWithIntroWrapup_token::IntroToken(_)) => TextAmendmentSAEPart::IntroOnly,
         Some(ReferenceWithIntroWrapup_token::WrapUpToken(_)) => TextAmendmentSAEPart::WrapUpOnly,
         None => TextAmendmentSAEPart::All,
+    }
+}
+
+fn record_one_ref(
+    elem: &TextAmendment,
+    reference: &semantic_info::TextAmendmentReference,
+    result: &mut Vec<semantic_info::TextAmendment>,
+) {
+    for TextAmendmentPart { from, to } in &elem.parts {
+        result.push(semantic_info::TextAmendment {
+            reference: reference.clone(),
+            from: from.clone(),
+            to: to.clone(),
+        })
     }
 }

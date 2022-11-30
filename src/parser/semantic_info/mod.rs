@@ -23,7 +23,6 @@ use crate::{
 };
 
 pub mod abbreviation;
-pub mod article_title_amendment;
 pub mod block_amendment;
 pub mod enforcement_date;
 pub mod reference;

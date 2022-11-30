@@ -43,6 +43,22 @@ impl TryFrom<&AnyStructuralReference> for StructuralReference {
     }
 }
 
+impl TryFrom<&AnyStructuralReferenceWithParent> for StructuralReference {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &AnyStructuralReferenceWithParent) -> Result<Self, Self::Error> {
+        if let Some(child) = &value.child {
+            let mut converted_child = StructuralReference::try_from(child)?;
+            let converted_parent = StructuralReferenceParent::try_from(&value.parent)?;
+            // TODO: We lost book information.
+            converted_child.parent = Some(converted_parent);
+            Ok(converted_child)
+        } else {
+            StructuralReference::try_from(&value.parent)
+        }
+    }
+}
+
 impl TryFrom<&AnyStructuralReference> for StructuralReferenceParent {
     type Error = anyhow::Error;
 
