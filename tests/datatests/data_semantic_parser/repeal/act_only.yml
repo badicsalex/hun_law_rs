@@ -6,7 +6,7 @@ expected_references:
     number: 4
 expected_special_phrase:
   Repeal:
-    positions:
-    - act:
+  - Reference:
+      act:
         year: 1978
         number: 4

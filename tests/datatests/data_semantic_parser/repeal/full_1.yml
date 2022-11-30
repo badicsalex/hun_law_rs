@@ -12,8 +12,8 @@ expected_references:
     paragraph: "2"
 expected_special_phrase:
   Repeal:
-    positions:
-      - act:
+  - Reference:
+        act:
           year: 2013
           number: 5
         article: "6:155"

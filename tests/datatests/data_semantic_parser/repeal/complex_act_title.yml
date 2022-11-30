@@ -11,8 +11,8 @@ expected_references:
   article: '4'
 expected_special_phrase:
   Repeal:
-    positions:
-    - act:
+  - Reference:
+      act:
         year: 2017
         number: 21
       article: '4'

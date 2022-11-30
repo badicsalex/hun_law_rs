@@ -37,8 +37,8 @@ children:
                           paragraph: "4"
                     special_phrase:
                       Repeal:
-                        positions:
-                          - act:
+                        - Reference:
+                            act:
                               year: 1959
                               number: 4
                             article: "261"
@@ -79,12 +79,13 @@ children:
                           paragraph: "2"
                     special_phrase:
                       Repeal:
-                        positions:
-                          - act:
+                        - Reference:
+                            act:
                               year: 1997
                               number: 141
                             article: 16/A
-                          - act:
+                        - Reference:
+                            act:
                               year: 1997
                               number: 141
                             article: "91"
@@ -112,8 +113,8 @@ children:
                         number: 100
                     special_phrase:
                       Repeal:
-                        positions:
-                          - act:
+                        - Reference:
+                            act:
                               year: 2012
                               number: 100
                             article: "1"
@@ -128,8 +129,8 @@ children:
                             year: 2012
                             number: 100
                     special_phrase:
-                      StructuralRepeal:
-                        position:
+                      Repeal:
+                      - StructuralReference:
                           act:
                             year: 2012
                             number: 100

@@ -50,8 +50,8 @@ children:
                     end: "5"
             special_phrase:
               Repeal:
-                positions:
-                  - act:
+                - Reference:
+                    act:
                       year: 2020
                       number: 3
                     article: "1"

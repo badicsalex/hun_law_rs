@@ -66,10 +66,9 @@ impl<'a> From<&'a OutgoingReference> for &'a Reference {
 pub enum SpecialPhrase {
     BlockAmendment(BlockAmendment),
     EnforcementDate(EnforcementDate),
-    Repeal(Repeal),
+    Repeal(Vec<RepealReference>),
     TextAmendment(Vec<TextAmendment>),
     StructuralBlockAmendment(StructuralBlockAmendment),
-    StructuralRepeal(StructuralRepeal),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -128,20 +127,16 @@ pub enum EnforcementDateType {
     },
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct Repeal {
-    pub positions: Vec<Reference>,
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, FromVariants)]
+pub enum RepealReference {
+    Reference(Reference),
+    StructuralReference(StructuralReference),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct StructuralBlockAmendment {
     pub position: StructuralReference,
     pub pure_insertion: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct StructuralRepeal {
-    pub position: StructuralReference,
 }
 
 impl TextAmendmentSAEPart {

@@ -55,7 +55,6 @@ impl GetOutgoingReferences for Root {
                 c.get_outgoing_references(abbreviation_cache)
             }
             Root_content::Repeal(c) => c.get_outgoing_references(abbreviation_cache),
-            Root_content::StructuralRepeal(c) => c.get_outgoing_references(abbreviation_cache),
             Root_content::TextAmendment(c) => c.get_outgoing_references(abbreviation_cache),
         }
     }
@@ -143,20 +142,6 @@ impl GetOutgoingReferences for Repeal {
         let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
         ref_builder.feed(&self.act_reference)?;
         ref_builder.feed(&self.references)?;
-        Ok(ref_builder.get_result())
-    }
-}
-
-impl GetOutgoingReferences for StructuralRepeal {
-    fn get_outgoing_references(
-        &self,
-        abbreviation_cache: &AbbreviationCache,
-    ) -> Result<Vec<OutgoingReference>> {
-        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
-        ref_builder.feed(&self.act_reference)?;
-        if let StructuralRepeal_position::ArticleRelativePosition(arp) = &self.position {
-            ref_builder.feed(arp)?;
-        }
         Ok(ref_builder.get_result())
     }
 }
@@ -357,7 +342,12 @@ impl FeedReferenceBuilder<Vec<TextAmendmentReference>> for OutgoingReferenceBuil
 impl FeedReferenceBuilder<TextAmendmentReference> for OutgoingReferenceBuilder<'_> {
     fn feed(&mut self, element: &TextAmendmentReference) -> Result<()> {
         match element {
-            TextAmendmentReference::AnyStructuralReferenceWithParent(_) => Ok(()),
+            TextAmendmentReference::TextAmendmentStructuralReference(tasr) => match &tasr.child {
+                TextAmendmentStructuralReference_child::AnyStructuralReference(_) => Ok(()),
+                TextAmendmentStructuralReference_child::ArticleRelativePosition(arp) => {
+                    self.feed(arp)
+                }
+            },
             TextAmendmentReference::ArticleTitleReference(x) => self.feed(x),
             TextAmendmentReference::ReferenceWithIntroWrapup(x) => self.feed(x),
         }
@@ -370,23 +360,6 @@ impl FeedReferenceBuilder<ArticleTitleReference> for OutgoingReferenceBuilder<'_
     }
 }
 
-impl FeedReferenceBuilder<Vec<Repeal_references>> for OutgoingReferenceBuilder<'_> {
-    fn feed(&mut self, element: &Vec<Repeal_references>) -> Result<()> {
-        for part in element {
-            self.feed(part)?
-        }
-        Ok(())
-    }
-}
-
-impl FeedReferenceBuilder<Repeal_references> for OutgoingReferenceBuilder<'_> {
-    fn feed(&mut self, element: &Repeal_references) -> Result<()> {
-        match element {
-            Repeal_references::ArticleTitleReference(x) => self.feed(x),
-            Repeal_references::ReferenceWithIntroWrapup(x) => self.feed(x),
-        }
-    }
-}
 trait RefPartInGrammar {}
 
 macro_rules! impl_rcp {

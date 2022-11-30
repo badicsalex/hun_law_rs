@@ -1,0 +1,26 @@
+---
+text:      "A Fmhtv. 1. §-át megelőző alcím-címében a „Polgári” szövegrész helyébe a „polgári” szöveg lép."
+positions: '  <    > <     >                                                                              '
+abbreviations:
+  Fmhtv.:
+    year: 2009
+    number: 50
+expected_references:
+- act:
+    year: 2009
+    number: 50
+- act:
+    year: 2009
+    number: 50
+  article: '1'
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      Structural:
+        act:
+          year: 2009
+          number: 50
+        structural_element:
+          SubtitleBeforeArticle: '1'
+    from: Polgári
+    to: polgári

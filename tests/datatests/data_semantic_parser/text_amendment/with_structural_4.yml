@@ -1,0 +1,25 @@
+---
+text:      "A Ctv. IV. Fejezet VI. Cím címében a „hiánypótlás nélküli elutasítása” szövegrész helyébe a „hiánypótlás nélküli visszautasítása” szöveg lép."
+positions: '  <  >                                                                                                                                       '
+abbreviations:
+  Ctv.:
+    year: 2006
+    number: 5
+expected_references:
+- act:
+    year: 2006
+    number: 5
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      Structural:
+        act:
+          year: 2006
+          number: 5
+        parent:
+          Chapter: '4'
+        structural_element:
+          Title: '6'
+        title_only: true
+    from: hiánypótlás nélküli elutasítása
+    to: hiánypótlás nélküli visszautasítása

@@ -1,0 +1,46 @@
+---
+text:      "A Kbtv. II. Fejezetének címében, a 7. §-a előtti alcím címében, a IV. Fejezetének címében a „közlekedésbiztonsági szerv” szövegrész helyébe a „közlekedésbiztonsági szervek” szöveg lép."
+positions: '  <   >                            <    >                                                                                                                                               '
+abbreviations:
+  Kbtv.:
+    year: 2005
+    number: 184
+expected_references:
+- act:
+    year: 2005
+    number: 184
+- act:
+    year: 2005
+    number: 184
+  article: '7'
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      Structural:
+        act:
+          year: 2005
+          number: 184
+        structural_element:
+          Chapter: '2'
+        title_only: true
+    from: közlekedésbiztonsági szerv
+    to: közlekedésbiztonsági szervek
+  - reference:
+      Structural:
+        act:
+          year: 2005
+          number: 184
+        structural_element:
+          SubtitleBeforeArticle: '7'
+    from: közlekedésbiztonsági szerv
+    to: közlekedésbiztonsági szervek
+  - reference:
+      Structural:
+        act:
+          year: 2005
+          number: 184
+        structural_element:
+          Chapter: '4'
+        title_only: true
+    from: közlekedésbiztonsági szerv
+    to: közlekedésbiztonsági szervek

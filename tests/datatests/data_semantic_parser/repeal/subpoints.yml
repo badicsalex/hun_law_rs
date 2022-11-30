@@ -21,15 +21,16 @@ expected_references:
     subpoint: ah
 expected_special_phrase:
   Repeal:
-    positions:
-      - act:
+    - Reference:
+        act:
           year: 2012
           number: 100
         article: "388"
         paragraph: "4"
         point: a
         subpoint: ag
-      - act:
+    - Reference:
+        act:
           year: 2012
           number: 100
         article: "388"

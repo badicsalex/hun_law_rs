@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Hun-law. If not, see <http://www.gnu.org/licenses/>.
 
-use anyhow::Result;
+use anyhow::{bail, ensure, Result};
 use hun_law_grammar::*;
 
-use super::reference::convert_act_reference;
-use super::text_amendment::convert_text_amendment;
-use super::{abbreviation::AbbreviationCache, reference::GetOutgoingReferences};
-use crate::reference::{self, structural::StructuralReference};
-use crate::semantic_info;
+use super::abbreviation::AbbreviationCache;
+use super::reference::{convert_act_reference, FeedReferenceBuilder, OutgoingReferenceBuilder};
+use super::text_amendment::convert_text_amendment_references;
+use crate::semantic_info::{self, RepealReference, TextAmendmentSAEPart};
 
 pub fn convert_repeal(
     abbreviation_cache: &AbbreviationCache,
@@ -30,52 +29,61 @@ pub fn convert_repeal(
     if elem.texts.is_empty() {
         Ok(convert_element_repeal(abbreviation_cache, elem)?.into())
     } else {
-        // Text repeals are jsut spicy text amendments
-        let fake_ta = TextAmendment {
-            act_reference: elem.act_reference.clone(),
-            references: elem
-                .references
-                .iter()
-                .map(|r| match r {
-                    Repeal_references::ArticleTitleReference(x) => {
-                        TextAmendmentReference::ArticleTitleReference(x.clone())
-                    }
-                    Repeal_references::ReferenceWithIntroWrapup(x) => {
-                        TextAmendmentReference::ReferenceWithIntroWrapup(x.clone())
-                    }
-                })
-                .collect(),
-            parts: elem
-                .texts
-                .iter()
-                .map(|p| TextAmendmentPart {
-                    from: p.clone(),
+        let mut result = Vec::new();
+        let mut ref_builder = OutgoingReferenceBuilder::new(abbreviation_cache);
+        ref_builder.feed(&elem.act_reference)?;
+        for reference in convert_text_amendment_references(
+            &elem.act_reference,
+            &elem.references,
+            abbreviation_cache,
+        )? {
+            for text in &elem.texts {
+                result.push(semantic_info::TextAmendment {
+                    reference: reference.clone(),
+                    from: text.clone(),
                     to: String::new(),
                 })
-                .collect(),
-        };
-        Ok(convert_text_amendment(abbreviation_cache, &fake_ta)?.into())
+            }
+        }
+        Ok(result.into())
     }
 }
-
 pub fn convert_element_repeal(
     abbreviation_cache: &AbbreviationCache,
     elem: &Repeal,
-) -> Result<semantic_info::Repeal> {
-    let mut positions: Vec<_> = elem
-        .get_outgoing_references(abbreviation_cache)?
-        .into_iter()
-        .map(reference::Reference::from)
-        .filter(|r| !r.is_act_only())
-        .collect();
-    if positions.is_empty() {
-        let act_id = convert_act_reference(abbreviation_cache, &elem.act_reference)?;
-        positions.push(act_id.into());
+) -> Result<Vec<RepealReference>> {
+    let mut result = Vec::new();
+    for ta_reference in convert_text_amendment_references(
+        &elem.act_reference,
+        &elem.references,
+        abbreviation_cache,
+    )? {
+        result.push(match ta_reference {
+            semantic_info::TextAmendmentReference::SAE {
+                reference,
+                amended_part,
+            } => {
+                ensure!(
+                    amended_part == TextAmendmentSAEPart::All,
+                    "Cannot repeal part of a SAE ({reference:?}, {amended_part:?})"
+                );
+                RepealReference::Reference(reference)
+            }
+            semantic_info::TextAmendmentReference::Structural(reference) => {
+                RepealReference::StructuralReference(reference)
+            }
+            semantic_info::TextAmendmentReference::ArticleTitle(at) => {
+                bail!("Cannot repeal article title {at:?}")
+            }
+        })
     }
-
-    Ok(semantic_info::Repeal { positions })
+    if result.is_empty() {
+        let act_id = convert_act_reference(abbreviation_cache, &elem.act_reference)?;
+        result.push(RepealReference::Reference(act_id.into()));
+    }
+    Ok(result)
 }
-
+/*
 pub fn convert_structural_repeal(
     abbreviation_cache: &AbbreviationCache,
     elem: &StructuralRepeal,
@@ -99,4 +107,4 @@ pub fn convert_structural_repeal(
         },
     };
     Ok(semantic_info::StructuralRepeal { position })
-}
+}*/

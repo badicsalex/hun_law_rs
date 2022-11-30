@@ -1,0 +1,66 @@
+---
+text:      "Hatályát veszti az Országgyűlésről szóló 2012. évi XXXVI. törvény 40/H. alcím címében, 124/V. § (1) bekezdésében, 137. § (4) bekezdésében, 138. § (1) bekezdés a) pontjában az „az Országgyűlés Irodaháza,” szövegrész."
+positions: '                                         <                      >                      <                       >  <                     >  <                              >                                            '
+expected_references:
+- act:
+    year: 2012
+    number: 36
+- act:
+    year: 2012
+    number: 36
+  article: 124/V
+  paragraph: '1'
+- act:
+    year: 2012
+    number: 36
+  article: '137'
+  paragraph: '4'
+- act:
+    year: 2012
+    number: 36
+  article: '138'
+  paragraph: '1'
+  point: a
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      Structural:
+        act:
+          year: 2012
+          number: 36
+        structural_element:
+          SubtitleId: 40h
+        title_only: true
+    from: az Országgyűlés Irodaháza,
+    to: ''
+  - reference:
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 36
+          article: 124/V
+          paragraph: '1'
+    from: az Országgyűlés Irodaháza,
+    to: ''
+  - reference:
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 36
+          article: '137'
+          paragraph: '4'
+    from: az Országgyűlés Irodaháza,
+    to: ''
+  - reference:
+      SAE:
+        reference:
+          act:
+            year: 2012
+            number: 36
+          article: '138'
+          paragraph: '1'
+          point: a
+    from: az Országgyűlés Irodaháza,
+    to: ''

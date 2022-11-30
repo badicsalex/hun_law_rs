@@ -1,5 +1,10 @@
 ---
 text:      "Az Itv. Tételes illetékek alcím címében az „illetékek” szövegrész helyébe az „illetékek a polgári eljárásban” szöveg lép."
+positions: "   <  >                                                                                                                  "
+abbreviations:
+  Itv.:
+    year: 1990
+    number: 93
 expected_references:
 - act:
     year: 1990

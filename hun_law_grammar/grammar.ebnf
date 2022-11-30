@@ -24,7 +24,6 @@ Root =
     content:TextAmendment $ |
     content:EnforcementDate $ |
     content:Repeal $ |
-    content:StructuralRepeal $ |
     content:ListOfSimpleExpressions $ ;
 
 # ============ STRUCTURE PARSING ============
@@ -166,7 +165,7 @@ ListSeparator = ((["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," |
 # ============= STRUCTURAL REFERENCES =============
 
 AfterArticle = [Az] @:SingleArticleReference ("követően" | "követő" );
-BeforeArticle = [Az] @:SingleArticleReference ("megelőzően" | "megelőző" );
+BeforeArticle = [Az] @:SingleArticleReference ("megelőzően" | "megelőző" | "előtti");
 ArticleRelativePosition = @:BeforeArticle | @:AfterArticle ;
 SubtitleTitle = ( title:Quote | title:RawTitle ) ["című"] SubtitleSuffix;
 
@@ -204,6 +203,7 @@ TitleSuffix = ("cím" | "Cím") {HunLower};
 @no_skip_ws
 TitleOnlyToken = "címe" ['i'] | "címé" {HunLower};
 
+@memoize
 AnyStructuralReference =
     [book_id:HungarianOrdinalCapital ("könyv" | "Könyv" | "KÖNYV")]
     (
@@ -214,11 +214,6 @@ AnyStructuralReference =
         reference:SubtitleTitle
     )
     [title_only:TitleOnlyToken];
-
-AnyStructuralReferenceWithParent =
-    parent: AnyStructuralReference
-    [ child: AnyStructuralReference ]
-    ;
 
 # ============ Other references ============
 
@@ -265,7 +260,7 @@ TitleInsertionWithBook =
 
 # Note: conflicts with "TitleOnly" stuff due to the last term
 @no_skip_ws
-SubtitleToken = "alcímmel" | "alcímekkel" | "alcím-megjelölése" | "alcím-megjelölés" |  "alcíme" | "alcím" [" cím" {HunLower}];
+SubtitleToken = "alcímmel" | "alcímekkel" | "alcím-megjelölése" | "alcím-megjelölés" |  "alcíme" | "alcím" [ (" " | "-") "cím" {HunLower}];
 
 ReferenceWithSubtitle =
     SubtitleToken "és" article:SingleArticleReference |
@@ -396,10 +391,17 @@ ReferenceWithIntroWrapup =
         TextAmendmentToken
     ];
 
+TextAmendmentStructuralReference =
+    parent:AnyStructuralReference child:ArticleRelativePosition SubtitleToken |
+    parent:AnyStructuralReference child:AnyStructuralReference |
+    child:ArticleRelativePosition SubtitleToken |
+    child:AnyStructuralReference
+    ;
+
 TextAmendmentReference =
     @:ArticleTitleReference |
-    @:ReferenceWithIntroWrapup |
-    @:AnyStructuralReferenceWithParent;
+    @:TextAmendmentStructuralReference |
+    @:ReferenceWithIntroWrapup ;
 
 TextAmendment =
     AzAny ActTitle act_reference:ActReference
@@ -427,22 +429,10 @@ Repeal =
     ("Nem lép hatályba" | "Hatályát veszti")
     Az ActTitle act_reference:ActReference
     # TODO: use TextAmendmentReference, but keep StructuralRepeal in mind somehow
-    { (references:ArticleTitleReference | references:ReferenceWithIntroWrapup) [ListSeparator] }
+    { (references:TextAmendmentReference) [ListSeparator] }
     { [Az] texts:Quote [TextAmendmentToken] [ListSeparator]}
     "."
     ;
-
-StructuralRepeal =
-    ("Nem lép hatályba" | "Hatályát veszti")
-    Az ActTitle act_reference:ActReference
-    (
-        position:ArticleRelativePosition |
-        position:AnyStructuralReference
-    )
-    [SubtitleToken]
-    "."
-    ;
-
 
 # ============ SIMPLE TOKENS ============
 

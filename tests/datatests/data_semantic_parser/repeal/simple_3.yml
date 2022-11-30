@@ -16,8 +16,8 @@ expected_references:
     point: f
 expected_special_phrase:
   Repeal:
-    positions:
-      - act:
+    - Reference:
+        act:
           year: 2012
           number: 142
         article: "116"

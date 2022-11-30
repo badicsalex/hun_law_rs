@@ -14,8 +14,8 @@ expected_references:
       number: 100
     article: "297"
 expected_special_phrase:
-  StructuralRepeal:
-    position:
+  Repeal:
+  - StructuralReference:
       act:
         year: 2012
         number: 100

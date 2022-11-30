@@ -10,8 +10,8 @@ expected_references:
       year: 2012
       number: 100
 expected_special_phrase:
-  StructuralRepeal:
-    position:
+  Repeal:
+  - StructuralReference:
       act:
         year: 2012
         number: 100

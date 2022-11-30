@@ -31,23 +31,26 @@ expected_references:
     point: p
 expected_special_phrase:
   Repeal:
-    positions:
-      - act:
+    - Reference:
+        act:
           year: 2013
           number: 5
         article: "8:6"
         point: a
-      - act:
+    - Reference:
+        act:
           year: 2013
           number: 5
         article: "8:6"
         point: l
-      - act:
+    - Reference:
+        act:
           year: 2013
           number: 5
         article: "8:6"
         point: n
-      - act:
+    - Reference:
+        act:
           year: 2013
           number: 5
         article: "8:6"

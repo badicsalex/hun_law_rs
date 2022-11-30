@@ -25,7 +25,7 @@ use super::{
     },
     enforcement_date::convert_enforcement_date,
     reference::GetOutgoingReferences,
-    repeal::{convert_repeal, convert_structural_repeal},
+    repeal::convert_repeal,
     text_amendment::convert_text_amendment,
 };
 use crate::{
@@ -213,9 +213,6 @@ pub fn extract_special_phrase(
             Some(convert_enforcement_date(abbreviation_cache, x)?.into())
         }
         hun_law_grammar::Root_content::Repeal(x) => Some(convert_repeal(abbreviation_cache, x)?),
-        hun_law_grammar::Root_content::StructuralRepeal(x) => {
-            Some(convert_structural_repeal(abbreviation_cache, x)?.into())
-        }
         hun_law_grammar::Root_content::TextAmendment(x) => {
             Some(convert_text_amendment(abbreviation_cache, x)?.into())
         }

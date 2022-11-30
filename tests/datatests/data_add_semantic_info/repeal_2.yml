@@ -43,13 +43,14 @@ children:
                         number: 1
                     special_phrase:
                       Repeal:
-                        positions:
-                          - act:
+                        - Reference:
+                            act:
                               year: 2020
                               number: 1
                             article: "1"
                             paragraph: "1"
-                          - act:
+                        - Reference:
+                            act:
                               year: 2020
                               number: 1
                             article: "1"
@@ -71,8 +72,8 @@ children:
                         number: 1
                     special_phrase:
                       Repeal:
-                        positions:
-                          - act:
+                        - Reference:
+                            act:
                               year: 2020
                               number: 1
                             article: "2"
@@ -94,8 +95,8 @@ children:
                         number: 1
                     special_phrase:
                       Repeal:
-                        positions:
-                          - act:
+                        - Reference:
+                            act:
                               year: 2020
                               number: 1
                             article: "3"
