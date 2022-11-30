@@ -1,0 +1,26 @@
+---
+text:      "A Be. Hatálybalépés alcíme a következő 606/C. §-sal egészül ki:"
+positions: '  < >                                  <          >            '
+abbreviations:
+  Be.:
+    year: 2017
+    number: 90
+expected_references:
+- act:
+    year: 2017
+    number: 90
+- act:
+    year: 2017
+    number: 90
+  article: 606/C
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2017
+        number: 90
+      parent:
+        SubtitleTitle: Hatálybalépés
+      structural_element:
+        Article: 606/C
+    pure_insertion: true

@@ -1,0 +1,20 @@
+---
+text:      "A központi államigazgatási szervekről, valamint a Kormány tagjai és az államtitkárok jogállásáról szóló 2010. évi XLIII. törvény Az ügyvezető miniszterelnök alcíme helyébe a következő rendelkezés lép:"
+positions: '                                                                                                        <                      >                                                                        '
+abbreviations:
+  Be.:
+    year: 2017
+    number: 90
+expected_references:
+- act:
+    year: 2010
+    number: 43
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2010
+        number: 43
+      structural_element:
+        SubtitleTitle: Az ügyvezető miniszterelnök
+    pure_insertion: false
