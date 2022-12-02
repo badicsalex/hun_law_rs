@@ -1,0 +1,26 @@
+---
+text:      "Az Nbtv. 30. §-át követő „A Terrorelhárítási Információs és Bűnügyi Elemző Központ működésére vonatkozó különös rendelkezések” alcím címében az „A Terrorelhárítási Információs és Bűnügyi Elemző Központ” szövegrész helyébe az „A Nemzeti Információs Központ” szöveg lép."
+positions: '   <   > <      >                                                                                                                                                                                                                                                           '
+abbreviations:
+  Nbtv.:
+    year: 1995
+    number: 125
+expected_references:
+- act:
+    year: 1995
+    number: 125
+- act:
+    year: 1995
+    number: 125
+  article: '30'
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      Structural:
+        act:
+          year: 1995
+          number: 125
+        structural_element:
+          SubtitleAfterArticle: '30'
+    from: A Terrorelhárítási Információs és Bűnügyi Elemző Központ
+    to: A Nemzeti Információs Központ

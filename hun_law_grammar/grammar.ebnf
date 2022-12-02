@@ -391,10 +391,12 @@ ReferenceWithIntroWrapup =
         TextAmendmentToken
     ];
 
+TextAmendmentSubtitleJunk = SubtitleTitle [TitleOnlyToken] | [SubtitleReferencePart] SubtitleToken;
+
 TextAmendmentStructuralReference =
-    parent:AnyStructuralReference child:ArticleRelativePosition SubtitleToken |
+    parent:AnyStructuralReference child:ArticleRelativePosition TextAmendmentSubtitleJunk |
     parent:AnyStructuralReference child:AnyStructuralReference |
-    child:ArticleRelativePosition SubtitleToken |
+    child:ArticleRelativePosition TextAmendmentSubtitleJunk |
     child:AnyStructuralReference
     ;
 
