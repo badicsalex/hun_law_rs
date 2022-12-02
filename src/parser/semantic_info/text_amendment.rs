@@ -84,6 +84,19 @@ pub fn convert_text_amendment_references(
                     }
                 }
             }
+            TextAmendmentReference::SubtitlesReference(srs) => {
+                for sr in srs {
+                    result.push(semantic_info::TextAmendmentReference::Structural(
+                        StructuralReference {
+                            act: Some(act_id),
+                            book: None,
+                            parent: None,
+                            structural_element: StructuralReferenceParent::try_from(sr)?.into(),
+                            title_only: false,
+                        },
+                    ));
+                }
+            }
             TextAmendmentReference::ReferenceWithIntroWrapup(rwiw) => {
                 ref_builder.feed(rwiw)?;
                 for OutgoingReference { reference, .. } in ref_builder.take_result() {

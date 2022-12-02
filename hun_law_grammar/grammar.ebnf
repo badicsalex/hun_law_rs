@@ -401,6 +401,7 @@ TextAmendmentStructuralReference =
 TextAmendmentReference =
     @:ArticleTitleReference |
     @:TextAmendmentStructuralReference |
+    @:SubtitlesReference |
     @:ReferenceWithIntroWrapup ;
 
 TextAmendment =

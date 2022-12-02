@@ -1,0 +1,48 @@
+---
+text:      "Hatályát veszti a veszélyhelyzet megszűnésével összefüggő átmeneti szabályokról és a járványügyi készültségről szóló 2020. évi LVIII. törvény 83. §-a, 89. §-a, 90. §-a, valamint 42. és 70. alcíme."
+positions: '                                                                                                                     <                      > <     >  <     >  <     >                             '
+expected_references:
+- act:
+    year: 2020
+    number: 58
+- act:
+    year: 2020
+    number: 58
+  article: '83'
+- act:
+    year: 2020
+    number: 58
+  article: '89'
+- act:
+    year: 2020
+    number: 58
+  article: '90'
+expected_special_phrase:
+  Repeal:
+  - Reference:
+      act:
+        year: 2020
+        number: 58
+      article: '83'
+  - Reference:
+      act:
+        year: 2020
+        number: 58
+      article: '89'
+  - Reference:
+      act:
+        year: 2020
+        number: 58
+      article: '90'
+  - StructuralReference:
+      act:
+        year: 2020
+        number: 58
+      structural_element:
+        SubtitleId: '42'
+  - StructuralReference:
+      act:
+        year: 2020
+        number: 58
+      structural_element:
+        SubtitleId: '70'
