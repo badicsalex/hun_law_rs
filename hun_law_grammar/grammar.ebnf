@@ -260,7 +260,7 @@ TitleInsertionWithBook =
 
 # Note: conflicts with "TitleOnly" stuff due to the last term
 @no_skip_ws
-SubtitleToken = "alcímmel" | "alcímekkel" | "alcím-megjelölése" | "alcím-megjelölés" |  "alcíme" | "alcím" [ (" " | "-") "cím" {HunLower}];
+SubtitleToken = "alcím" ['-'] {HunLower} [ " " "cím" {HunLower}];
 
 ReferenceWithSubtitle =
     SubtitleToken "és" article:SingleArticleReference |

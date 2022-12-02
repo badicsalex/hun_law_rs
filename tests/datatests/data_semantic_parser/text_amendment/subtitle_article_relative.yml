@@ -1,0 +1,22 @@
+---
+text:      "A Magyarország helyi önkormányzatairól szóló 2011. évi CLXXXIX. törvény 27. §-t megelőző alcímében a „Megyei” szövegrész helyébe a „Vármegyei” szöveg lép."
+positions: '                                             <                        > <     >                                                                           '
+expected_references:
+- act:
+    year: 2011
+    number: 189
+- act:
+    year: 2011
+    number: 189
+  article: '27'
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      Structural:
+        act:
+          year: 2011
+          number: 189
+        structural_element:
+          SubtitleBeforeArticle: '27'
+    from: Megyei
+    to: Vármegyei
