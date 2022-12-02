@@ -1,0 +1,24 @@
+---
+text:      "Hatályát veszíti a Külszolgtv. 3. § (3) bekezdése."
+positions: '                   <         > <                > '
+abbreviations:
+  Külszolgtv.:
+    year: 2016
+    number: 73
+expected_references:
+- act:
+    year: 2016
+    number: 73
+- act:
+    year: 2016
+    number: 73
+  article: '3'
+  paragraph: '3'
+expected_special_phrase:
+  Repeal:
+  - Reference:
+      act:
+        year: 2016
+        number: 73
+      article: '3'
+      paragraph: '3'

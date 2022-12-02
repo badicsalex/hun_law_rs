@@ -430,7 +430,7 @@ TextAmendmentToken = "szöveg" {HunLower};
 # ============ REPEAL PARSING ==============
 
 Repeal =
-    ("Nem lép hatályba" | "Hatályát veszti")
+    ("Nem lép hatályba" | "Hatályát veszti" | "Hatályát veszíti")
     Az ActTitle act_reference:ActReference
     # TODO: use TextAmendmentReference, but keep StructuralRepeal in mind somehow
     { (references:TextAmendmentReference) [ListSeparator] }
