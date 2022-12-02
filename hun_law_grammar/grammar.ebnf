@@ -184,6 +184,10 @@ SubtitleSuffix = "alcím" {HunLower};
 @no_skip_ws
 SubtitleSuffixPossessive = ("alcíme" | "alcímében" | "alcím címe" | "alcím címében") !HunLower ;
 
+BookReference = id:HungarianOrdinalCapital BookSuffix;
+@no_skip_ws
+BookSuffix = ("könyv" | "Könyv" | "KÖNYV") {HunAny};
+
 @string
 ChapterId = Roman [["/"] 'A'..'Z'];
 ChapterReference = id:ChapterId  "." ChapterSuffix;
@@ -205,7 +209,7 @@ TitleOnlyToken = "címe" ['i'] | "címé" {HunLower};
 
 @memoize
 AnyStructuralReference =
-    [book_id:HungarianOrdinalCapital ("könyv" | "Könyv" | "KÖNYV")]
+    [book:BookReference]
     (
         reference:ChapterReference |
         reference:PartReference |
@@ -252,11 +256,6 @@ InsertionReference =
         InsertionToken
         (alphabetic_subpoint:AlphabeticSubpointReference | numeric_subpoint:NumericSubpointReference)
     ;
-
-TitleInsertionWithBook =
-    book_id:HungarianOrdinalCapital ("Könyve" | "KÖNYVE")
-    InsertionToken
-    id:TitleId "." TitleSuffix;
 
 # Note: conflicts with "TitleOnly" stuff due to the last term
 @no_skip_ws
@@ -314,13 +313,15 @@ BlockAmendmentWithSubtitle =
         InsertionToken reference:ReferenceWithSubtitle is_insertion:InsertionSuffix ":"
     );
 
-BlockAmendmentStructural = AzAny ActTitle act_reference:ActReference
+BlockAmendmentStructural =
+    AzAny ActTitle act_reference:ActReference
     [ArticleRelativePosition]
     (
-        reference:AnyStructuralReference AmendmentSuffix ":" |
-        reference:AnyStructuralReference AmendmentSuffixWithStructural ":" |
-        InsertionToken reference:AnyStructuralReference is_insertion:InsertionSuffix ":" |
-        reference:TitleInsertionWithBook is_insertion:InsertionSuffix ":"
+        parent:AnyStructuralReference reference:AnyStructuralReference ( AmendmentSuffix | AmendmentSuffixWithStructural ) ":" |
+        reference:AnyStructuralReference ( AmendmentSuffix | AmendmentSuffixWithStructural ) ":" |
+        parent:AnyStructuralReference InsertionToken reference:AnyStructuralReference is_insertion:InsertionSuffix ":" |
+        # book reference is not in AnyStructuralReference, hence the special case
+        [book:BookReference] InsertionToken reference:AnyStructuralReference is_insertion:InsertionSuffix ":"
     );
 
 

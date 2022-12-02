@@ -25,7 +25,7 @@ use crate::{
     reference::{
         self,
         parts::AnyReferencePart,
-        structural::{StructuralReference, StructuralReferenceElement},
+        structural::{StructuralReference, StructuralReferenceElement, StructuralReferenceParent},
     },
     semantic_info,
 };
@@ -78,13 +78,27 @@ pub fn convert_structural_block_amendment(
     abbreviation_cache: &AbbreviationCache,
     elem: &BlockAmendmentStructural,
 ) -> Result<semantic_info::StructuralBlockAmendment> {
-    let position = StructuralReference {
-        act: Some(convert_act_reference(
-            abbreviation_cache,
-            &elem.act_reference,
-        )?),
-        ..(&elem.reference).try_into()?
+    let act = Some(convert_act_reference(
+        abbreviation_cache,
+        &elem.act_reference,
+    )?);
+    let mut position = if let Some(parent) = &elem.parent {
+        // TODO: we lose book information!
+        let parent = Some(StructuralReferenceParent::try_from(parent)?);
+        StructuralReference {
+            act,
+            parent,
+            ..StructuralReference::try_from(&elem.reference)?
+        }
+    } else {
+        StructuralReference {
+            act,
+            ..StructuralReference::try_from(&elem.reference)?
+        }
     };
+    if let Some(book) = &elem.book {
+        position.book = Some(book.try_into()?);
+    }
     Ok(semantic_info::StructuralBlockAmendment {
         position,
         pure_insertion: elem.is_insertion.is_some(),
@@ -127,15 +141,4 @@ pub fn convert_subtitle_block_amendment(
         position,
         pure_insertion,
     })
-}
-
-impl TryFrom<&BlockAmendmentStructural_reference> for StructuralReference {
-    type Error = anyhow::Error;
-
-    fn try_from(value: &BlockAmendmentStructural_reference) -> Result<Self, Self::Error> {
-        match value {
-            BlockAmendmentStructural_reference::AnyStructuralReference(x) => x.try_into(),
-            BlockAmendmentStructural_reference::TitleInsertionWithBook(x) => x.try_into(),
-        }
-    }
 }

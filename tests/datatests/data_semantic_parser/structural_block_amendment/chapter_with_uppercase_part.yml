@@ -1,0 +1,18 @@
+---
+text:      "A nemzeti felsőoktatásról szóló 2011. évi CCIV. törvény KILENCEDIK RÉSZE a következő XXXII/A. Fejezettel egészül ki:"
+positions: '                                <                     >                                                             '
+expected_references:
+- act:
+    year: 2011
+    number: 204
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2011
+        number: 204
+      parent:
+        Part: '9'
+      structural_element:
+        Chapter: 32a
+    pure_insertion: true

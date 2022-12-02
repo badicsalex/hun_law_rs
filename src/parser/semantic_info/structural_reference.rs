@@ -18,7 +18,10 @@ use anyhow::{anyhow, ensure, Result};
 use hun_law_grammar::*;
 
 use crate::{
-    identifier::range::{IdentifierRange, IdentifierRangeFrom},
+    identifier::{
+        range::{IdentifierRange, IdentifierRangeFrom},
+        NumericIdentifier,
+    },
     reference::structural::{
         StructuralReference, StructuralReferenceElement, StructuralReferenceParent,
     },
@@ -31,11 +34,7 @@ impl TryFrom<&AnyStructuralReference> for StructuralReference {
     fn try_from(value: &AnyStructuralReference) -> Result<Self, Self::Error> {
         Ok(Self {
             act: None,
-            book: if let Some(book_id) = &value.book_id {
-                Some(StructuralElementType::Book.parse_identifier(book_id)?)
-            } else {
-                None
-            },
+            book: value.book.as_ref().map(TryFrom::try_from).transpose()?,
             parent: None,
             structural_element: StructuralReferenceParent::try_from(&value.reference)?.into(),
             title_only: value.title_only.is_some(),
@@ -100,22 +99,6 @@ impl TryFrom<&TitleReference> for StructuralReferenceParent {
     }
 }
 
-impl TryFrom<&TitleInsertionWithBook> for StructuralReference {
-    type Error = anyhow::Error;
-
-    fn try_from(value: &TitleInsertionWithBook) -> Result<Self, Self::Error> {
-        Ok(Self {
-            act: None,
-            book: Some(StructuralElementType::Book.parse_identifier(&value.book_id)?),
-            parent: None,
-            structural_element: StructuralReferenceElement::Title(
-                StructuralElementType::Title.parse_identifier(&value.id)?,
-            ),
-            title_only: false,
-        })
-    }
-}
-
 impl TryFrom<&SubtitleReferencePart> for StructuralReferenceParent {
     type Error = anyhow::Error;
 
@@ -158,5 +141,13 @@ impl TryFrom<&ArticleRelativePosition> for StructuralReferenceElement {
                 StructuralReferenceElement::SubtitleBeforeArticle(x.try_into()?)
             }
         })
+    }
+}
+
+impl TryFrom<&BookReference> for NumericIdentifier {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &BookReference) -> Result<Self, Self::Error> {
+        StructuralElementType::Book.parse_identifier(&value.id)
     }
 }
