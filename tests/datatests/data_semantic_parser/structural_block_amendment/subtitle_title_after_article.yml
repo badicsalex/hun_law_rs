@@ -1,0 +1,24 @@
+---
+text:      "A közjegyzőkről szóló 1991. évi XLI. törvény a 133. §-át követően a következő „Egyoldalú kötelezettségvállaló nyilatkozat” alcím címmel és 134. §-sal egészül ki:"
+positions: '                      <                    >   <       >                                                                                   <        >            '
+expected_references:
+- act:
+    year: 1991
+    number: 41
+- act:
+    year: 1991
+    number: 41
+  article: '133'
+- act:
+    year: 1991
+    number: 41
+  article: '134'
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 1991
+        number: 41
+      structural_element:
+        SubtitleBeforeArticleInclusive: '134'
+    pure_insertion: true
