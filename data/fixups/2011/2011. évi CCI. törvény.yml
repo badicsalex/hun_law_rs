@@ -143,3 +143,9 @@
   set_bold: true
 - old: CLXXXIV.
   new: CLXXXIV. törvény
+- old: „A választás, a népszavazás, a népi kezdeményezés és az európai polgári kezdeményezés rendje elleni
+  new: „A választás, a népszavazás, a népi kezdeményezés és az európai polgári kezdeményezés rendje elleni
+  set_bold: true
+- old: bűncselekmény”
+  new: bűncselekmény”
+  set_bold: true
