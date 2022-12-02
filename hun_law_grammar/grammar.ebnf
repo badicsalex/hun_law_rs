@@ -315,6 +315,7 @@ BlockAmendmentWithSubtitle =
     );
 
 BlockAmendmentStructural = AzAny ActTitle act_reference:ActReference
+    [ArticleRelativePosition]
     (
         reference:AnyStructuralReference AmendmentSuffix ":" |
         reference:AnyStructuralReference AmendmentSuffixWithStructural ":" |

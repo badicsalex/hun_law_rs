@@ -1,0 +1,20 @@
+---
+text:      "A Külszolgtv. az 56. §-t követően a következő III/A. Fejezettel egészül ki:"
+positions: '  <         >                                                              '
+abbreviations:
+  Külszolgtv.:
+    year: 2016
+    number: 73
+expected_references:
+- act:
+    year: 2016
+    number: 73
+expected_special_phrase:
+  StructuralBlockAmendment:
+    position:
+      act:
+        year: 2016
+        number: 73
+      structural_element:
+        Chapter: 3a
+    pure_insertion: true
