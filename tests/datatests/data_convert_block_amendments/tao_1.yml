@@ -1,0 +1,128 @@
+---
+identifier:
+  year: 2345
+  number: 13
+subject: A tesztelésről
+preamble: ""
+publication_date: 2345-06-07
+contained_abbreviations:
+  Tao. törvény:
+    year: 1996
+    number: 81
+children:
+- Article:
+    identifier: '1'
+    children:
+    - identifier: '1'
+      body:
+        intro: 'A társasági adóról és az osztalékadóról szóló 1996. évi LXXXI. törvény (a továbbiakban: Tao. törvény) 4. § 5. pontja helyébe a következő rendelkezés lép:'
+        children:
+          BlockAmendment:
+            intro: E törvény alkalmazásában
+            children:
+              NumericPoint:
+              - identifier: '5'
+                body: 'bejelentett részesedés: a'
+      semantic_info:
+        outgoing_references:
+        - start: 56
+          end: 83
+          reference:
+            act:
+              year: 1996
+              number: 81
+        - start: 118
+          end: 133
+          reference:
+            act:
+              year: 1996
+              number: 81
+            article: '4'
+            point: '5'
+        new_abbreviations:
+          Tao. törvény:
+            year: 1996
+            number: 81
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 1996
+                number: 81
+              article: '4'
+              point: '5'
+            pure_insertion: false
+    - identifier: '2'
+      body:
+        intro: 'A Tao. törvény 4. § 33. pont d) alpontja helyébe a következő rendelkezés lép:'
+        children:
+          BlockAmendment:
+            intro: 'E törvény alkalmazásában telephely:'
+            children:
+              AlphabeticSubpoint:
+              - identifier: d
+                body: a külföldi személyt ingatlan értékesítése esetén,
+      semantic_info:
+        outgoing_references:
+        - start: 2
+          end: 16
+          reference:
+            act:
+              year: 1996
+              number: 81
+        - start: 17
+          end: 43
+          reference:
+            act:
+              year: 1996
+              number: 81
+            article: '4'
+            point: '33'
+            subpoint: d
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 1996
+                number: 81
+              article: '4'
+              point: '33'
+              subpoint: d
+            pure_insertion: false
+    - identifier: '3'
+      body:
+        intro: 'A Tao. törvény 7. § (1) bekezdés dz) pontja helyébe a következő rendelkezés lép:'
+        children:
+          BlockAmendment:
+            intro: 'Az adózás előtti eredményt csökkenti:'
+            children:
+              AlphabeticPoint:
+              - identifier: dz
+                body: a bejelentett értékvesztés,
+      semantic_info:
+        outgoing_references:
+        - start: 2
+          end: 16
+          reference:
+            act:
+              year: 1996
+              number: 81
+        - start: 17
+          end: 47
+          reference:
+            act:
+              year: 1996
+              number: 81
+            article: '7'
+            paragraph: '1'
+            point: dz
+        special_phrase:
+          BlockAmendment:
+            position:
+              act:
+                year: 1996
+                number: 81
+              article: '7'
+              paragraph: '1'
+              point: dz
+            pure_insertion: false

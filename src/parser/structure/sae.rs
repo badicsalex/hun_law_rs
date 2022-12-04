@@ -345,7 +345,7 @@ impl SAEParser for AlphabeticPointParser {
 
     fn parse_header(&self, line: &IndentedLine) -> Option<(Self::IdentifierType, IndentedLine)> {
         line.parse_header(
-            regex!("^([a-z]|cs|dz|gy|ly|ny|sz|ty)\\) +(.*)$"),
+            regex!("^([a-z]|cs|dz|gy|ly|ny|sz|ty|zs)\\) +(.*)$"),
             &["pont", "alpont"],
         )
     }

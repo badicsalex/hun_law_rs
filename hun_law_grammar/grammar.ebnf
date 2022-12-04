@@ -102,7 +102,7 @@ ParagraphReference = @:ParagraphReferencePart { ListSeparator @:ParagraphReferen
 ParagraphReferencePart = "(" start:ParagraphId ")" Dash "(" end:ParagraphId ")" | "(" id:ParagraphId ")";
 @string
 @no_skip_ws
-ParagraphId = Number ['a'..'z'];
+ParagraphId = Number [ SuffixChar ];
 @no_skip_ws
 ParagraphSuffix = "bekezdés" {HunLower};
 
@@ -112,7 +112,7 @@ AlphabeticPointReference =  @:AlphabeticPointReferencePart { ListSeparator @:Alp
 AlphabeticPointReferencePart = start:AlphabeticPointId [")"] Dash end:AlphabeticPointId ")" | id:AlphabeticPointId ")";
 @string
 @no_skip_ws
-AlphabeticPointId = "ny" | "sz" | 'a'..'z';
+AlphabeticPointId = SuffixChar;
 @no_skip_ws
 AlphabeticPointSuffix = "pont" {HunLower};
 
@@ -122,7 +122,7 @@ NumericPointReference= @:NumericPointReferencePart { ListSeparator @:NumericPoin
 NumericPointReferencePart = start:NumericPointId Dash end:NumericPointId "." | id:NumericPointId "." ;
 @string
 @no_skip_ws
-NumericPointId = Number [["/"] 'a'..'z'];
+NumericPointId = Number [["/"] SuffixChar];
 @no_skip_ws
 NumericPointSuffix = "pont" {HunLower};
 
@@ -161,6 +161,9 @@ Quote = "„" @:QuoteInner '”' ;
 QuoteInner = {!('„' | '”') char} { "„" QuoteInner  '”' {!('„' | '”') char} };
 
 ListSeparator = ((["," | ";"] ("és" | "valamint" | "illetve" | "vagy")) | "," | ";") [Az];
+
+@no_skip_ws
+SuffixChar = 'cs' | 'dz' | 'gy' | 'ly' | 'ny' | 'sz' | 'ty' | 'zs' | 'a'..'z';
 
 # ============= STRUCTURAL REFERENCES =============
 
