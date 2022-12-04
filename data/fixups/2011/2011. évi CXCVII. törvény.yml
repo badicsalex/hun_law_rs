@@ -1,8 +1,13 @@
----
 - after:
-    - biztosíték teljesítéséért a vezetőtől való behajthatatlanság esetén kezesként felel. A külföldi székhelyű vállalkozás
-    - az említett kezesi kötelezettségéből eredő fizetési kötelezettségét nem teljesítheti a fióktelepe rendelkezésére
+  - biztosíték teljesítéséért a vezetőtől való behajthatatlanság esetén kezesként felel. A külföldi székhelyű vállalkozás
+  - az említett kezesi kötelezettségéből eredő fizetési kötelezettségét nem teljesítheti a fióktelepe rendelkezésére
   old: bocsátott vagyonból.”
   new: bocsátott vagyonból.
 - old: (8) bekezdése.”
   new: (8) bekezdése.
+- after:
+  - 11. Záró rendelkezések
+  old: ''
+  new: 161. § ---
+- old: „(3) A 36. § (4a) bekezdésében foglalt adatok bejegyzését a tagok a cégjegyzékben vezetett adataik első változásakor
+  new: „(1) A 36. § (4a) bekezdésében foglalt adatok bejegyzését a tagok a cégjegyzékben vezetett adataik első változásakor
