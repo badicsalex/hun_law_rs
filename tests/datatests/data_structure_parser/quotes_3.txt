@@ -28,7 +28,7 @@ is tartalmaz”
 (ou
 tro)
 
-6. § Special case, doesnt need to work well:
+6. § Multi intro and wrap_up:
 (int
 
 ro)

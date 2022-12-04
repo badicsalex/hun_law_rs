@@ -56,6 +56,9 @@ impl QuotedBlockParser {
     }
 
     fn state_start(&mut self, line: &IndentedLine) {
+        if line.is_empty() {
+            return;
+        }
         let line = if line.content().starts_with(['„', '“']) {
             self.state = Self::state_inside_quoted_block;
             line.slice(1, None)
@@ -67,6 +70,9 @@ impl QuotedBlockParser {
     }
 
     fn state_start_expect_intro(&mut self, line: &IndentedLine) {
+        if line.is_empty() {
+            return;
+        }
         let line = if line.content().starts_with(['(', '[']) {
             self.state = Self::state_quoted_block_intro;
             line.slice(1, None)
@@ -84,7 +90,7 @@ impl QuotedBlockParser {
         {
             line.slice(0, Some(-1))
                 .append_to(&mut self.quoted_block_intro);
-            self.state = Self::state_waiting_for_quoted_block;
+            self.state = Self::state_start_expect_intro;
         } else {
             line.append_to(&mut self.quoted_block_intro);
         }
@@ -97,7 +103,7 @@ impl QuotedBlockParser {
         {
             line.slice(0, Some(-1))
                 .append_to(&mut self.quoted_block_wrap_up);
-            self.state = Self::state_wrap_up;
+            self.state = Self::state_waiting_for_quoted_block_wrap_up;
         } else {
             line.append_to(&mut self.quoted_block_wrap_up);
         }
@@ -110,7 +116,18 @@ impl QuotedBlockParser {
         let line = if line.content().starts_with(['„', '“']) {
             self.state = Self::state_inside_quoted_block;
             line.slice(1, None)
-        } else if line.content().starts_with(['(', '[']) {
+        } else {
+            self.state = Self::state_waiting_for_quoted_block_wrap_up;
+            line.clone()
+        };
+        (self.state)(self, &line);
+    }
+
+    fn state_waiting_for_quoted_block_wrap_up(&mut self, line: &IndentedLine) {
+        if line.is_empty() {
+            return;
+        }
+        let line = if line.content().starts_with(['(', '[']) {
             self.state = Self::state_quoted_block_wrap_up;
             line.slice(1, None)
         } else {
@@ -145,15 +162,30 @@ impl QuotedBlockParser {
         lines: &[IndentedLine],
     ) -> Result<ExtractMultipleResult<ParagraphChildren>> {
         let expect_intro = previous_nonempty_line.map_or(false, |l| l.content().ends_with(':'));
-        let mut state = Self::new(expect_intro);
 
+        // Fast fail path
+        if let Some(first_line) = lines.get(0) {
+            let search_for: &[char] = if expect_intro {
+                &['(', '[', '„', '“']
+            } else {
+                &['„', '“']
+            };
+            if !first_line.content().starts_with(search_for) {
+                bail!("Could not find quoted block starting token");
+            }
+        } else {
+            bail!("Empty line list for quoted block");
+        }
+
+        let mut state = Self::new(expect_intro);
         for line in lines {
             state.parse_line(line)?;
         }
 
         ensure!(
             state.state as usize == Self::state_waiting_for_quoted_block as usize
-                || state.state as usize == Self::state_wrap_up as usize,
+                || state.state as usize == Self::state_wrap_up as usize
+                || state.state as usize == Self::state_waiting_for_quoted_block_wrap_up as usize,
             "Quoted block parser ended in invalid state"
         );
 

@@ -54,14 +54,15 @@ children:
       identifier: "6"
       children:
         - body:
-            intro: "Special case, doesnt need to work well: [int ro] [int ro]"
+            intro: "Multi intro and wrap_up:"
             children:
               QuotedBlock:
+                - intro: int ro int ro
+                  lines: []
                 - lines: []
                 - lines: []
-                - lines: []
-                  wrap_up: ou tro
-            wrap_up: "[ou tro] extra wrap up"
+                  wrap_up: ou tro ou tro
+            wrap_up: extra wrap up
   - Article:
       identifier: "7"
       children:
