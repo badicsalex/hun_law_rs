@@ -51,9 +51,6 @@
 - old: „Az Alkotmánybíróság eljárásának kezdeményezése, továbbá a Kúria eljárásának kezdeményezése önkormányzati
   new: „Az Alkotmánybíróság eljárásának kezdeményezése, továbbá a Kúria eljárásának kezdeményezése önkormányzati
   set_bold: true
-- old: rendelet felülvizsgálata iránt
-  new: rendelet felülvizsgálata iránt
-  set_bold: true
 - after:
   - '(4) A magyar állampolgárságról szóló 1993. évi LV. törvény a 25. §-át követően a következő alcímmel egészül ki:'
   old: „Az Alaptörvény sarkalatosságra vonatkozó követelményének való megfelelés
@@ -145,7 +142,4 @@
   new: CLXXXIV. törvény
 - old: „A választás, a népszavazás, a népi kezdeményezés és az európai polgári kezdeményezés rendje elleni
   new: „A választás, a népszavazás, a népi kezdeményezés és az európai polgári kezdeményezés rendje elleni
-  set_bold: true
-- old: bűncselekmény”
-  new: bűncselekmény”
   set_bold: true
