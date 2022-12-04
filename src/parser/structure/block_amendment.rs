@@ -130,8 +130,27 @@ fn convert_simple_block_amendment(
 
     Ok(match position.get_last_part() {
         AnyReferencePart::Paragraph(id) => {
+            let article_header = format!(
+                "{}. § ",
+                position
+                    .article()
+                    .ok_or_else(|| anyhow!("Paragraph amendment didn't contain article"))?
+                    .first_in_range()
+            );
+            let mut trimmed_lines;
+            let lines_to_parse = if lines[0].content().starts_with(&article_header) {
+                trimmed_lines = Vec::from(lines);
+                trimmed_lines[0] = trimmed_lines[0].slice_bytes(article_header.len(), None);
+                &trimmed_lines
+            } else {
+                lines
+            };
             ParagraphParser
-                .extract_multiple(lines, &BA_PARSE_PARAMS, Some(id.first_in_range().into()))?
+                .extract_multiple(
+                    lines_to_parse,
+                    &BA_PARSE_PARAMS,
+                    Some(id.first_in_range().into()),
+                )?
                 .elements
         }
         AnyReferencePart::Point(RefPartPoint::Numeric(id)) => {
