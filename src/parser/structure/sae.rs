@@ -308,8 +308,7 @@ impl SAEParser for ParagraphParser {
         body: &[IndentedLine],
         params: &SAEParseParams,
     ) -> Result<ExtractMultipleResult<Self::ChildrenType>> {
-        QuotedBlockParser
-            .extract_multiple(previous_nonempty_line, body)
+        QuotedBlockParser::extract_multiple(previous_nonempty_line, body)
             .or_else(|_| NumericPointParser.extract_multiple(body, params, None))
             .or_else(|_| AlphabeticPointParser.extract_multiple(body, params, None))
     }
