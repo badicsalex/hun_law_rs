@@ -226,11 +226,20 @@ AnyStructuralReference =
 
 AttachmentReference =
     attachment:AttachmentReferencePart {ListSeparator attachment:AttachmentReferencePart} AttachmentSuffix
-    [point:NumericPointReference]
+    {AttachmentJunk}
     ;
 AttachmentReferencePart = (start:Number Dash end:Number | id:Number) ".";
 @no_skip_ws
-AttachmentSuffix = "melléklet" {HunLower};
+AttachmentSuffix = ["számú "] "melléklet" {HunLower};
+
+@no_skip_ws
+AttachmentJunk =
+    AttachmentJunkIdChars Whitespace ("pont" | "alpont" | "rész" | "fejezet" | "sor" | "oszlop" ) {HunLower} |
+    "foglalt táblázat" {HunLower} |
+    "cím" {HunLower};
+
+@no_skip_ws
+AttachmentJunkIdChars = Quote | {'a'..'z' | 'A'..'Z' | '0'..'9' | '-' | '.' | '(' | ')'};
 
 # ============ BLOCK AMENDMENT PARSING ============
 
@@ -413,12 +422,12 @@ TextAmendmentReference =
     @:ArticleTitleReference |
     @:TextAmendmentStructuralReference |
     @:SubtitlesReference |
-    @:ReferenceWithIntroWrapup ;
+    @:ReferenceWithIntroWrapup |
+    @:AttachmentReference;
 
 TextAmendment =
     AzAny ActTitle act_reference:ActReference
-    references:TextAmendmentReference [ListSeparator]
-    { (references:TextAmendmentReference | AttachmentReference) [ListSeparator] }
+    { references:TextAmendmentReference [ListSeparator] }+
     parts:TextAmendmentPart { ListSeparator parts:TextAmendmentPart} [","]
     "lép" ["hatályba"] "."
     ;
@@ -440,7 +449,6 @@ TextAmendmentToken = "szöveg" {HunLower};
 Repeal =
     ("Nem lép hatályba" | "Hatályát veszti" | "Hatályát veszíti")
     Az ActTitle act_reference:ActReference
-    # TODO: use TextAmendmentReference, but keep StructuralRepeal in mind somehow
     { (references:TextAmendmentReference) [ListSeparator] }
     { [Az] texts:Quote [TextAmendmentToken] [ListSeparator]}
     "."

@@ -1,0 +1,13 @@
+---
+text:      "A személyi jövedelemadóról szóló 1995. évi CXVII. törvény 1. számú melléklet 8.19. pont b) alpontjában a „gazdaságpolitikáért felelős miniszter” szövegrészek helyébe a „költségvetés makrogazdasági megalapozásáért felelős miniszter” szöveg lép."
+positions: '                                 <                      >                                                                                                                                                                                          '
+abbreviations:
+  Art.:
+    year: 2017
+    number: 150
+expected_references:
+- act:
+    year: 1995
+    number: 117
+expected_special_phrase:
+  TextAmendment: []

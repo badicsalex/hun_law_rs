@@ -1,0 +1,8 @@
+text:      "Hatályát veszti az adózás rendjéről szóló 2017. évi CL. törvény 2. melléklet II. fejezet A pont 2. alpontja."
+positions: '                                          <                   >                                             '
+expected_references:
+- act:
+    year: 2017
+    number: 150
+expected_special_phrase:
+  Repeal: []

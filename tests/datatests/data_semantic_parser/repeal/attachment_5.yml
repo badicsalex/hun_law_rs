@@ -1,0 +1,8 @@
+text:      "Hatályát veszti a kormányzati igazgatásról szóló 2018. évi CXXV. törvény 3. melléklet IV. pont 16. alpontjában az „álláshelyi elismerés,” szövegrész."
+positions: '                                                 <                     >                                                                             '
+expected_references:
+- act:
+    year: 2018
+    number: 125
+expected_special_phrase:
+  TextAmendment: []

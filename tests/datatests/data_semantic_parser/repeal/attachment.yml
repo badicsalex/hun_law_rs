@@ -1,0 +1,8 @@
+text:      "Hatályát veszti a honvédek jogállásáról szóló 2012. évi CCV. törvény 3. melléklete."
+positions: '                                              <                    >               '
+expected_references:
+- act:
+    year: 2012
+    number: 205
+expected_special_phrase:
+  Repeal: []

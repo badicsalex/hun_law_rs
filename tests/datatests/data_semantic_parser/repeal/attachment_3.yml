@@ -1,0 +1,8 @@
+text:      "Hatályát veszti a személyi jövedelemadóról szóló 1995. évi CXVII. törvény 6. számú melléklet 1. pontjában az „az általános forgalmi adózás tekintetében is” szövegrész."
+positions: '                                                 <                      >                                                                                              '
+expected_references:
+- act:
+    year: 1995
+    number: 117
+expected_special_phrase:
+  TextAmendment: []

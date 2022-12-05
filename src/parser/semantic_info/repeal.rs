@@ -77,7 +77,7 @@ pub fn convert_element_repeal(
             }
         })
     }
-    if result.is_empty() {
+    if elem.references.is_empty() {
         let act_id = convert_act_reference(abbreviation_cache, &elem.act_reference)?;
         result.push(RepealReference::Reference(act_id.into()));
     }

@@ -9,3 +9,5 @@ expected_references:
 - act:
     year: 2017
     number: 150
+expected_special_phrase:
+  TextAmendment: []

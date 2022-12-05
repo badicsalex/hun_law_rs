@@ -108,6 +108,7 @@ pub fn convert_text_amendment_references(
                     }
                 }
             }
+            TextAmendmentReference::AttachmentReference(_) => {}
         };
     }
     Ok(result)

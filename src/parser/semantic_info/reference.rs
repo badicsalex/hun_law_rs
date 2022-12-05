@@ -351,6 +351,7 @@ impl FeedReferenceBuilder<TextAmendmentReference> for OutgoingReferenceBuilder<'
             TextAmendmentReference::ArticleTitleReference(x) => self.feed(x),
             TextAmendmentReference::SubtitlesReference(_) => Ok(()),
             TextAmendmentReference::ReferenceWithIntroWrapup(x) => self.feed(x),
+            TextAmendmentReference::AttachmentReference(_) => Ok(()),
         }
     }
 }

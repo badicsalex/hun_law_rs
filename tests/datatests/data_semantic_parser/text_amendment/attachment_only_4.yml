@@ -1,0 +1,9 @@
+---
+text:      "A külképviseletekről és a tartós külszolgálatról szóló 2016. évi LXXIII. törvény 1. melléklet I. részében foglalt táblázat „Vezetői munkakörök” sor „Munkakör” oszlopában az „igazgatója” szövegrész helyébe az „igazgató” szöveg lép."
+positions: '                                                       <                       >                                                                                                                                                      '
+expected_references:
+- act:
+    year: 2016
+    number: 73
+expected_special_phrase:
+  TextAmendment: []

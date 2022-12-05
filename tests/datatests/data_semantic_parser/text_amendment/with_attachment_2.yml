@@ -1,0 +1,28 @@
+---
+text:      "A Külszolgtv. 35/C. § (1) bekezdésében és 3. mellékletének címében a „valamint az európai uniós ügyek koordinációjáért felelős miniszter” szövegrész helyébe az „az európai uniós ügyek koordinációjáért felelős miniszter, valamint a kulturális diplomáciáért és a külföldi magyar kulturális intézetekért felelős miniszter” szöveg lép."
+positions: '  <         > <                      >                                                                                                                                                                                                                                                                                                     '
+abbreviations:
+  Külszolgtv.:
+    year: 2016
+    number: 73
+expected_references:
+- act:
+    year: 2016
+    number: 73
+- act:
+    year: 2016
+    number: 73
+  article: 35/C
+  paragraph: '1'
+expected_special_phrase:
+  TextAmendment:
+  - reference:
+      SAE:
+        reference:
+          act:
+            year: 2016
+            number: 73
+          article: 35/C
+          paragraph: '1'
+    from: valamint az európai uniós ügyek koordinációjáért felelős miniszter
+    to: az európai uniós ügyek koordinációjáért felelős miniszter, valamint a kulturális diplomáciáért és a külföldi magyar kulturális intézetekért felelős miniszter

@@ -1,0 +1,9 @@
+---
+text:      "A külképviseletekről és a tartós külszolgálatról szóló 2016. évi LXXIII. törvény 1. melléklet I. részében foglalt táblázat „Adminisztratív munkakörök” sor „Munkakör” oszlopában a „Titkársági referens” szövegrész helyébe a „Titkársági referens, kulturális intézeti titkársági referens” szöveg lép."
+positions: '                                                       <                       >                                                                                                                                                                                                                        '
+expected_references:
+- act:
+    year: 2016
+    number: 73
+expected_special_phrase:
+  TextAmendment: []
