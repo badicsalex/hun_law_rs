@@ -1,0 +1,12 @@
+text:      "Hatályát veszti az At. 1. melléklet a) pont 3.4. alpontja és 14–15. pontja."
+positions: '                   < >                                                     '
+abbreviations:
+  At.:
+    year: 2010
+    number: 1
+expected_references:
+- act:
+    year: 2010
+    number: 1
+expected_special_phrase:
+  Repeal: []

@@ -1,0 +1,13 @@
+---
+text:      "Az Üjt. 2. melléklet 8., 9. és 11. pontjában a „helyi” szövegrészek helyébe a „járási” szöveg lép."
+positions: '   <  >                                                                                           '
+abbreviations:
+  Üjt.:
+    year: 2011
+    number: 164
+expected_references:
+- act:
+    year: 2011
+    number: 164
+expected_special_phrase:
+  TextAmendment: []

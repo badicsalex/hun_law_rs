@@ -1,0 +1,13 @@
+---
+text:      "A Tao tv. 6. számú melléklet A) fejezet 1. és 3. pontjában a „ , vagy – ha nem minősül közhasznú szervezetnek –” szövegrész helyébe az „és” szöveg lép."
+positions: '  <     >                                                                                                                                              '
+abbreviations:
+  Tao tv.:
+    year: 1996
+    number: 81
+expected_references:
+- act:
+    year: 1996
+    number: 81
+expected_special_phrase:
+  TextAmendment: []

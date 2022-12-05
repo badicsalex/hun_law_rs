@@ -1,0 +1,13 @@
+---
+text:      "A nemzeti vagyonról szóló 2011. évi CXCVI. törvény 2. melléklet III. pont 2–19. alpontjában a „Megye” szövegrész helyébe a „Vármegye” szöveg lép."
+positions: '                          <                      >                                                                                               '
+abbreviations:
+  Szja tv.:
+    year: 1995
+    number: 157
+expected_references:
+- act:
+    year: 2011
+    number: 196
+expected_special_phrase:
+  TextAmendment: []

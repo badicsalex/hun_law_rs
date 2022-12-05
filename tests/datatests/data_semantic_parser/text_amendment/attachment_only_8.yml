@@ -1,0 +1,13 @@
+---
+text:      "Az Szja tv. 3. számú melléklet II. fejezet 6. pontjában és IV. fejezet 3. pontjában a „9 Ft/km” szövegrész helyébe a „15 Ft/km” szöveg lép."
+positions: '   <      >                                                                                                                                '
+abbreviations:
+  Szja tv.:
+    year: 1995
+    number: 157
+expected_references:
+- act:
+    year: 1995
+    number: 157
+expected_special_phrase:
+  TextAmendment: []

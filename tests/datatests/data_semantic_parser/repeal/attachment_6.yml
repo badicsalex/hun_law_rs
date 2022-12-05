@@ -1,0 +1,12 @@
+text:      "Hatályát veszti a Ve. 3. melléklet f) pont fc), fd) és fh) alpontja, valamint g) pontja."
+positions: '                  < >                                                                   '
+abbreviations:
+  Ve.:
+    year: 2013
+    number: 36
+expected_references:
+- act:
+    year: 2013
+    number: 36
+expected_special_phrase:
+  Repeal: []

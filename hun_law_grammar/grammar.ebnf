@@ -226,7 +226,7 @@ AnyStructuralReference =
 
 AttachmentReference =
     attachment:AttachmentReferencePart {ListSeparator attachment:AttachmentReferencePart} AttachmentSuffix
-    {AttachmentJunk}
+    {AttachmentJunk [ListSeparator]}
     ;
 AttachmentReferencePart = (start:Number Dash end:Number | id:Number) ".";
 @no_skip_ws
@@ -234,12 +234,15 @@ AttachmentSuffix = ["számú "] "melléklet" {HunLower};
 
 @no_skip_ws
 AttachmentJunk =
-    AttachmentJunkIdChars Whitespace ("pont" | "alpont" | "rész" | "fejezet" | "sor" | "oszlop" ) {HunLower} |
+    {AttachmentJunkId [ListSeparator [Whitespace]]}+ Whitespace ("pont" | "alpont" | "rész" | "fejezet" | "sor" | "oszlop" ) {HunLower} |
     "foglalt táblázat" {HunLower} |
     "cím" {HunLower};
 
 @no_skip_ws
-AttachmentJunkIdChars = Quote | {'a'..'z' | 'A'..'Z' | '0'..'9' | '-' | '.' | '(' | ')'};
+AttachmentJunkId = Quote | {AttachmentJunkIdChar}+;
+
+@char
+AttachmentJunkIdChar = 'a'..'z' | 'A'..'Z' | '0'..'9' | Dash | '.' | '(' | ')';
 
 # ============ BLOCK AMENDMENT PARSING ============
 
