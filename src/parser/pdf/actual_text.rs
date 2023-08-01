@@ -85,8 +85,7 @@ impl ActualTextCollector {
             .get("ActualText")?
             .as_string()
             .ok()?
-            .to_string_lossy()
-            .ok()?;
+            .to_string_lossy();
         Some(ActualTextCollector::new(actual_text))
     }
 }

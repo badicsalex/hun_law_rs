@@ -58,7 +58,7 @@ impl Default for CropBox {
 pub use page_of_lines::PageOfLines;
 
 pub fn parse_pdf(buffer: &[u8], crop: CropBox) -> Result<Vec<PageOfLines>> {
-    let pdf_file = pdf::file::File::from_data(buffer)?;
+    let pdf_file = pdf::file::FileOptions::uncached().load(buffer)?;
     let mut font_cache = FontCache::default();
     let mut result = Vec::new();
     for page in pdf_file.pages() {
